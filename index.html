@@ -264,9 +264,19 @@
         }
     </script>
 
-    <audio id="audio-fail" preload="auto" src="https://translate.google.com/translate_tts?ie=UTF-8&tl=he&client=tw-ob&q=%D7%91%D7%95%D7%90+%D7%A0%D7%A0%D7%A1%D7%94+%D7%A9%D7%95%D7%91"></audio>
-    <audio id="audio-scribble" preload="auto" src="https://translate.google.com/translate_tts?ie=UTF-8&tl=he&client=tw-ob&q=%D7%A7%D7%A9%D7%A7%D7%A9%D7%A0%D7%95+%D7%A7%D7%A6%D7%AA%2C+%D7%91%D7%95%D7%90+%D7%A0%D7%A0%D7%A1%D7%94+%D7%A9%D7%95%D7%91"></audio>
-    <audio id="dynamic-audio" preload="auto"></audio>
+    <script>
+        function speakHebrew(text) {
+            try {
+                if (!window.speechSynthesis) return;
+                window.speechSynthesis.cancel();
+                let utt = new SpeechSynthesisUtterance(text);
+                utt.lang = 'he-IL';
+                utt.rate = 0.88;
+                utt.pitch = 1.1;
+                window.speechSynthesis.speak(utt);
+            } catch(e) {}
+        }
+    </script>
 
     <div id="start-screen" style="display:flex; flex-direction:column; align-items:center;">
         <div style="font-size: clamp(80px, 20vw, 150px); margin-top: 10vh; animation: superPop 1s ease-out forwards; text-shadow: 0 10px 20px rgba(0,0,0,0.3);">🚀</div>
@@ -434,12 +444,11 @@
             }
         };
 
-        function speakSuccess(isFinal = false) { 
-            let a = get('dynamic-audio'); let pool = audioUrls[userGender]; let text = "";
-            if (isFinal) { text = pool.life[rand(0,1)]; } 
+        function speakSuccess(isFinal = false) {
+            let pool = audioUrls[userGender]; let text = "";
+            if (isFinal) { text = pool.life[rand(0,1)]; }
             else { globalSuccessCount++; if (globalSuccessCount % 2 === 0) text = pool.kapara[rand(0,1)]; else text = pool.reg[rand(0,2)]; }
-            a.src = "https://translate.google.com/translate_tts?ie=UTF-8&tl=he&client=tw-ob&q=" + enc(text); 
-            try{ a.volume = 1.0; a.play().catch(()=>{}); }catch(e){}
+            speakHebrew(text);
         }
 
         function showKisses() {
@@ -470,7 +479,7 @@
 
         function openGenderScreen() {
             playClickSound(); initAudio(); hideAllScreens(); show('gender-screen');
-            D.querySelectorAll('audio').forEach(a => { a.volume = 0; try { let p = a.play(); if(p && p.then) p.then(()=>{ a.pause(); a.currentTime=0; a.volume=1; }).catch(()=>{}); else { a.pause(); a.currentTime=0; a.volume=1; } } catch(e){} });
+            // audio unlocked via Web Speech API - no preload needed
         }
         
         function setGender(g) {
@@ -481,17 +490,7 @@
                 get('win-header').textContent = 'כל הכבוד רועי! 🏆';
                 // Play voice intro for boy - use a dedicated new Audio to avoid conflicts
                 try {
-                    let introSrc = "https://translate.google.com/translate_tts?ie=UTF-8&tl=he&client=tw-ob&q=" + enc("רועי, שמעתי שאתה ילד חכם, אז בוא נשחק יחד");
-                    let intro = new Audio(introSrc);
-                    intro.volume = 1.0;
-                    intro.addEventListener('canplaythrough', function() {
-                        intro.play().catch(function(){});
-                    }, { once: true });
-                    intro.load();
-                    // Fallback: try playing after a short delay if canplaythrough didn't fire
-                    setTimeout(function() { 
-                        try { if(intro.paused) intro.play().catch(function(){}); } catch(e){} 
-                    }, 500);
+                    speakHebrew("רועי, שמעתי שאתה ילד חכם, אז בוא נשחק יחד");
                 } catch(e){ console.error('Intro audio error:', e); }
             }
             else { get('hub-header').textContent = 'מרכז המשחקים'; get('win-header').textContent = 'כל הכבוד! 🏆'; }
@@ -575,7 +574,7 @@
                 } else {
                     mistakesInLevel++; playErrorSound(); if(btn) btn.classList.add('dimmed'); 
                     let fl = get('feedback-layer'); fl.innerHTML = `<span>🤔</span><div class="feedback-msg">${isScribble ? 'קשקשנו קצת, בוא ננסה שוב' : 'בוא ננסה שוב'}</div>`; show('feedback-layer');
-                    let a = isScribble ? get('audio-scribble') : get('audio-fail'); if(a) { a.currentTime = 0; a.play().catch(()=>{}); }
+                    speakHebrew(isScribble ? 'קשקשנו קצת, בוא ננסה שוב' : 'בוא ננסה שוב');
                     gameErrorTimeout = setTimeout(() => { try { hide('feedback-layer'); if(failCallback) failCallback(); } catch(err) { console.error('failCallback error:', err); } }, 1500);
                 }
             } catch(err) { console.error(err); isProcessing = false; }
@@ -740,7 +739,7 @@
                 let f=0; let s=Math.max(1,Math.floor(pLen/40)); 
                 function anim(){ 
                     if(f>=pLen){ 
-                        if(pathType==='fly'){ aEl.style.transition='opacity 0.2s'; aEl.style.opacity='0'; try{let ae=get('audio-eat'); ae.currentTime=0; ae.play().catch(()=>{});}catch(e){} } 
+                        if(pathType==='fly'){ aEl.style.transition='opacity 0.2s'; aEl.style.opacity='0'; } 
                         if(sEl)sEl.classList.remove('siren-active'); 
                         isProcessing = false;
                         handleAnswer(true, null, loadPathRound, null); return; 
