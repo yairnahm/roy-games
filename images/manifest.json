@@ -14,5 +14,8 @@
   {"nameHe": "רועי ויהלי ואלין", "nameEn": "Roy, Yahli & Alin",  "file": "roy-yahli-alin.jpg"},
   {"nameHe": "רועי ויונה",       "nameEn": "Roy & Yona",         "file": "roy-yona.jpg"},
   {"nameHe": "רועי ואבאס",       "nameEn": "Roy & Abas",         "file": "roy-abas.jpg"},
-  {"nameHe": "רועי",             "nameEn": "Roy",                "file": "roy.jpg"}
+  {"nameHe": "רועי",             "nameEn": "Roy",                "file": "roy.jpg"},
+  {"nameHe": "סבתא ורועי",      "nameEn": "Savta & Roy",        "file": "savta-roy.jpg"},
+  {"nameHe": "אבא וסבתא",       "nameEn": "Aba & Savta",        "file": "aba-savta.jpg"},
+  {"nameHe": "אבא, סבתא ואריאה","nameEn": "Aba, Savta & Arya",  "file": "aba-savta-arya.jpg"}
 ]
