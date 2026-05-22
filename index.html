@@ -265,36 +265,12 @@
     </script>
 
     <script>
-        let _heVoice = null;
-        function _loadHeVoice() {
-            let vs = speechSynthesis.getVoices();
-            let he = vs.find(v => v.lang && v.lang.startsWith('he'));
-            if (he) _heVoice = he;
-        }
-        if (window.speechSynthesis) {
-            speechSynthesis.onvoiceschanged = _loadHeVoice;
-            _loadHeVoice();
-        }
-        function speakHebrew(text) {
+        let _currentAudio = null;
+        function playAudio(filename) {
             try {
-                if (!window.speechSynthesis) return;
-                if (speechSynthesis.speaking) speechSynthesis.cancel();
-                let utt = new SpeechSynthesisUtterance(text);
-                utt.lang = 'he-IL';
-                utt.rate = 0.88;
-                utt.pitch = 1.1;
-                let doSpeak = function() {
-                    _loadHeVoice();
-                    if (_heVoice) utt.voice = _heVoice;
-                    try { speechSynthesis.resume(); } catch(e) {}
-                    speechSynthesis.speak(utt);
-                };
-                if (_heVoice || speechSynthesis.getVoices().length > 0) {
-                    doSpeak();
-                } else {
-                    speechSynthesis.addEventListener('voiceschanged', doSpeak, { once: true });
-                    setTimeout(doSpeak, 500);
-                }
+                if (_currentAudio) { _currentAudio.pause(); _currentAudio.currentTime = 0; }
+                _currentAudio = new Audio('./audio/' + filename);
+                _currentAudio.play().catch(function(){});
             } catch(e) {}
         }
     </script>
@@ -452,24 +428,24 @@
         function playClickSound() { playTone(600, 'sine', 0.1, 0, 0.05); }
 
         const enc = encodeURIComponent;
-        const audioUrls = {
+        const audioFiles = {
             boy: {
-                reg: ["קוֹל הַכָּבוֹד, אַתָּה אַלּוּף", "עֲבוֹדָה מַדְהִימָה", "אֵיזֶה יֹפִי, קוֹל הַכָּבוֹד"],
-                kapara: ["מְעוּלֶה, כַּפָּרָה עָלֶיךָ", "קוֹל הַכָּבוֹד, כַּפָּרָה עָלֶיךָ"],
-                life: ["מְעוּלֶה, אַתָּה הַחַיִּים שֶׁלִּי", "קוֹל הַכָּבוֹד, אַתָּה הַחַיִּים שֶׁלִּי"]
+                reg: ['b-reg1.mp3', 'shared-reg2.mp3', 'shared-reg3.mp3'],
+                kapara: ['b-kap1.mp3', 'b-kap2.mp3'],
+                life: ['b-life1.mp3', 'b-life2.mp3']
             },
             girl: {
-                reg: ["קוֹל הַכָּבוֹד, אַתְּ אַלּוּפָה", "עֲבוֹדָה מַדְהִימָה", "אֵיזֶה יֹפִי, קוֹל הַכָּבוֹד"],
-                kapara: ["מְעוּלֶה, כַּפָּרָה עָלַיִךְ", "קוֹל הַכָּבוֹד, כַּפָּרָה עָלַיִךְ"],
-                life: ["מְעוּלֶה, אַתְּ הַחַיִּים שֶׁלִּי", "קוֹל הַכָּבוֹד, אַתְּ הַחַיִּים שֶׁלִּי"]
+                reg: ['g-reg1.mp3', 'shared-reg2.mp3', 'shared-reg3.mp3'],
+                kapara: ['g-kap1.mp3', 'g-kap2.mp3'],
+                life: ['g-life1.mp3', 'g-life2.mp3']
             }
         };
 
         function speakSuccess(isFinal = false) {
-            let pool = audioUrls[userGender]; let text = "";
-            if (isFinal) { text = pool.life[rand(0,1)]; }
-            else { globalSuccessCount++; if (globalSuccessCount % 2 === 0) text = pool.kapara[rand(0,1)]; else text = pool.reg[rand(0,2)]; }
-            speakHebrew(text);
+            let pool = audioFiles[userGender]; let file = "";
+            if (isFinal) { file = pool.life[rand(0,1)]; }
+            else { globalSuccessCount++; if (globalSuccessCount % 2 === 0) file = pool.kapara[rand(0,1)]; else file = pool.reg[rand(0,2)]; }
+            playAudio(file);
         }
 
         function showKisses() {
@@ -500,7 +476,6 @@
 
         function openGenderScreen() {
             playClickSound(); initAudio(); hideAllScreens(); show('gender-screen');
-            // audio unlocked via Web Speech API - no preload needed
         }
         
         function setGender(g) {
@@ -511,7 +486,7 @@
                 get('win-header').textContent = 'כל הכבוד רועי! 🏆';
                 // Play voice intro for boy - use a dedicated new Audio to avoid conflicts
                 try {
-                    speakHebrew("רועי, שמעתי שאתה ילד חכם, אז בוא נשחק יחד");
+                    playAudio('intro-boy.mp3');
                 } catch(e){ console.error('Intro audio error:', e); }
             }
             else { get('hub-header').textContent = 'מרכז המשחקים'; get('win-header').textContent = 'כל הכבוד! 🏆'; }
@@ -595,7 +570,7 @@
                 } else {
                     mistakesInLevel++; playErrorSound(); if(btn) btn.classList.add('dimmed'); 
                     let fl = get('feedback-layer'); fl.innerHTML = `<span>🤔</span><div class="feedback-msg">${isScribble ? 'קשקשנו קצת, בוא ננסה שוב' : 'בוא ננסה שוב'}</div>`; show('feedback-layer');
-                    speakHebrew(isScribble ? 'קשקשנו קצת, בוא ננסה שוב' : 'בוא ננסה שוב');
+                    playAudio(isScribble ? 'err2.mp3' : 'err1.mp3');
                     gameErrorTimeout = setTimeout(() => { try { hide('feedback-layer'); if(failCallback) failCallback(); } catch(err) { console.error('failCallback error:', err); } }, 1500);
                 }
             } catch(err) { console.error(err); isProcessing = false; }
