@@ -366,7 +366,7 @@
             <div class="hub-card" style="position:relative;" onclick="openDifficultyScreen('shadow', '👤', 'של מי הצללית?')"><div class="hub-icon">👤</div><div class="hub-title">צלליות</div></div>
             <div class="hub-card" style="position:relative;" onclick="openDifficultyScreen('halfhalf', '✂️', 'השלם את החצי')"><span class="star-badge" data-game="halfhalf" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">✨</span><div class="hub-icon">✂️</div><div class="hub-title">השלם חצי</div></div>
             <div class="hub-card" style="position:relative;" onclick="openDifficultyScreen('chrono', '⏳', 'מהתחלה לסוף')"><span class="star-badge" data-game="chrono" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">⏳</div><div class="hub-title">רצף כרונולוגי</div></div>
-            <div class="hub-card" style="position:relative;" onclick="openDifficultyScreen('faces', '📸', 'מי זה?')"><div class="hub-icon">📸</div><div class="hub-title">מי זה?</div></div>
+            <div id="faces-hub-card" class="hub-card hidden" style="position:relative;" onclick="openDifficultyScreen('faces', '📸', 'מי זה?')"><div class="hub-icon">📸</div><div class="hub-title">מי זה?</div></div>
         </div>
     </div>
 
@@ -971,24 +971,23 @@
 
         // ==========================================
         // 18. מי זה? (זיהוי פנים מתמונות)
+        // תמונות מנוהלות דרך images/manifest.json בלבד.
+        // להוסיף תמונה: העלה קובץ jpg לתיקיית images/ והוסף שורה ל-manifest.json
         // ==========================================
         const FACES_BASE = './images/';
-        const facesPool = [
-            { name: 'אבא יאיר', file: 'aba-yair.jpg' },
-            { name: 'אלין', file: 'alin.jpg' },
-            { name: 'אריאה ואבא', file: 'arya-aba.jpg' },
-            { name: 'אריאה', file: 'arya.jpg' },
-            { name: 'יהלי', file: 'yahli.jpg' },
-            { name: 'סבא', file: 'saba.jpg' },
-            { name: 'סבתא', file: 'savta.jpg' },
-            { name: 'עדי', file: 'adi.jpg' },
-            { name: 'רועי ואבא אוהד', file: 'roy-ohad.jpg' },
-            { name: 'רועי ואבא יאיר', file: 'roy-aba-yair.jpg' },
-            { name: 'רועי ואמילי', file: 'roy-emily.jpg' },
-            { name: 'רועי ויהלי ואלין', file: 'roy-yahli-alin.jpg' },
-            { name: 'רועי ויונה', file: 'roy-yona.jpg' },
-            { name: 'רועי', file: 'roy.jpg' }
-        ];
+        let facesPool = [];
+
+        // טוען את רשימת התמונות מהקובץ החיצוני בלי לשבור את שאר האתר אם חסר
+        fetch('./images/manifest.json')
+            .then(r => { if (!r.ok) throw new Error('no manifest'); return r.json(); })
+            .then(data => {
+                if (Array.isArray(data) && data.length >= 4) {
+                    facesPool = data;
+                    let card = document.getElementById('faces-hub-card');
+                    if (card) card.classList.remove('hidden');
+                }
+            })
+            .catch(() => { /* manifest חסר — כרטיס "מי זה?" נשאר מוסתר */ });
         let facesOrder = [];
         function initFacesGame() {
             get('active-game-title').textContent = 'מי זה? 📸';
