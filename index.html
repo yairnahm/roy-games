@@ -265,15 +265,36 @@
     </script>
 
     <script>
+        let _heVoice = null;
+        function _loadHeVoice() {
+            let vs = speechSynthesis.getVoices();
+            let he = vs.find(v => v.lang && v.lang.startsWith('he'));
+            if (he) _heVoice = he;
+        }
+        if (window.speechSynthesis) {
+            speechSynthesis.onvoiceschanged = _loadHeVoice;
+            _loadHeVoice();
+        }
         function speakHebrew(text) {
             try {
                 if (!window.speechSynthesis) return;
-                window.speechSynthesis.cancel();
+                if (speechSynthesis.speaking) speechSynthesis.cancel();
                 let utt = new SpeechSynthesisUtterance(text);
                 utt.lang = 'he-IL';
                 utt.rate = 0.88;
                 utt.pitch = 1.1;
-                window.speechSynthesis.speak(utt);
+                let doSpeak = function() {
+                    _loadHeVoice();
+                    if (_heVoice) utt.voice = _heVoice;
+                    try { speechSynthesis.resume(); } catch(e) {}
+                    speechSynthesis.speak(utt);
+                };
+                if (_heVoice || speechSynthesis.getVoices().length > 0) {
+                    doSpeak();
+                } else {
+                    speechSynthesis.addEventListener('voiceschanged', doSpeak, { once: true });
+                    setTimeout(doSpeak, 500);
+                }
             } catch(e) {}
         }
     </script>
