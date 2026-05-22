@@ -1070,7 +1070,7 @@
                 let card = D.createElement('div');
                 card.style.cssText = 'background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,0.15);border:4px solid #4CAF50;cursor:pointer;transition:transform 0.15s;';
                 card.onpointerdown = () => { playAudio(facesLang + '/' + p.file.replace('.jpg','') + '.mp3'); };
-                card.innerHTML = `<img src="${FACES_BASE + encodeURIComponent(p.file)}" style="width:100%;aspect-ratio:1/1;object-fit:cover;display:block;"><div style="padding:8px 6px;font-size:clamp(14px,3vmin,20px);font-weight:900;text-align:center;color:#333;direction:${facesLang==='he'?'rtl':'ltr'};">${name}</div>`;
+                card.innerHTML = `<img src="${FACES_BASE + encodeURIComponent(p.file)}" style="width:100%;aspect-ratio:1/1;object-fit:contain;background:#f0f0f0;display:block;"><div style="padding:8px 6px;font-size:clamp(14px,3vmin,20px);font-weight:900;text-align:center;color:#333;direction:${facesLang==='he'?'rtl':'ltr'};">${name}</div>`;
                 grid.appendChild(card);
             });
         }
@@ -1122,7 +1122,7 @@
                 let wrap = get('faces-photo-wrap'); wrap.innerHTML = '';
                 let img = D.createElement('img');
                 img.src = FACES_BASE + encodeURIComponent(correct.file);
-                img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;';
+                img.style.cssText = 'width:100%;height:100%;object-fit:contain;background:#f0f0f0;display:block;';
                 img.onerror = function() { wrap.innerHTML = '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:70px;">🖼️</div>'; };
                 wrap.appendChild(img);
                 let opts = shuffle([correct].concat(shuffle(wrongPool).slice(0, 3)));
