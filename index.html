@@ -366,7 +366,16 @@
             <div class="hub-card" style="position:relative;" onclick="openDifficultyScreen('shadow', '👤', 'של מי הצללית?')"><div class="hub-icon">👤</div><div class="hub-title">צלליות</div></div>
             <div class="hub-card" style="position:relative;" onclick="openDifficultyScreen('halfhalf', '✂️', 'השלם את החצי')"><span class="star-badge" data-game="halfhalf" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">✨</span><div class="hub-icon">✂️</div><div class="hub-title">השלם חצי</div></div>
             <div class="hub-card" style="position:relative;" onclick="openDifficultyScreen('chrono', '⏳', 'מהתחלה לסוף')"><span class="star-badge" data-game="chrono" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">⏳</div><div class="hub-title">רצף כרונולוגי</div></div>
-            <div id="faces-hub-card" class="hub-card hidden" style="position:relative;" onclick="openDifficultyScreen('faces', '📸', 'מי זה?')"><div class="hub-icon">📸</div><div class="hub-title">מי זה?</div></div>
+            <div id="faces-hub-card" class="hub-card hidden" style="position:relative;" onclick="openFacesLangScreen()"><div class="hub-icon">📸</div><div class="hub-title">מי זה?</div></div>
+        </div>
+    </div>
+
+    <div id="faces-lang-screen" class="hidden" style="display:flex; flex-direction:column; align-items:center;">
+        <div class="top-bar" style="align-self:stretch;"><button class="exit-btn" onclick="backToHub()">➜ חזור</button><div style="width: 60px;"></div></div>
+        <h1 style="margin-top: 10vh;">באיזו שפה נשחק? 📸</h1>
+        <div class="grid-container" style="gap:5vmin; margin-top:5vmin;">
+            <div class="grid-card" onclick="startFacesGame('he')" style="width:clamp(120px, 25vw, 200px); border-color:#2196F3;"><div style="font-size:clamp(40px, 8vw, 80px);">🇮🇱</div><h2>עברית</h2></div>
+            <div class="grid-card" onclick="startFacesGame('en')" style="width:clamp(120px, 25vw, 200px); border-color:#F44336;"><div style="font-size:clamp(40px, 8vw, 80px);">🇬🇧</div><h2>English</h2></div>
         </div>
     </div>
 
@@ -494,7 +503,7 @@
             updateWalletDisplay();
         }
 
-        function hideAllScreens() { ['start-screen', 'gender-screen', 'hub-screen', 'unified-diff-screen', 'active-game-container', 'level-complete-overlay', 'missing-lang-screen'].forEach(hide); }
+        function hideAllScreens() { ['start-screen', 'gender-screen', 'hub-screen', 'unified-diff-screen', 'active-game-container', 'level-complete-overlay', 'missing-lang-screen', 'faces-lang-screen'].forEach(hide); }
         function backToHub() { playClickSound(); hideAllScreens(); setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); }
         
         function openDifficultyScreen(gameId, icon, title) {
@@ -542,7 +551,7 @@
             }, 50);
         }
 
-        function quitActiveGame() { playClickSound(); hideAllScreens(); if(currentGameMode === 'emotion' || currentGameMode === 'missing') { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); } else { show('unified-diff-screen'); } }
+        function quitActiveGame() { playClickSound(); hideAllScreens(); if(currentGameMode === 'emotion' || currentGameMode === 'missing') { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); } else if(currentGameMode === 'faces') { show('faces-lang-screen'); } else { show('unified-diff-screen'); } }
         function updateProgressUI() { for(let i=0;i<4;i++) { let d = get(`active-progress-container-dot-${i}`); if(d){ if(i < currentStep) d.classList.add('fill'); else d.classList.remove('fill'); } } }
 
         function handleAnswer(isCorrect, btn, successCallback, failCallback, isScribble = false) {
@@ -576,11 +585,12 @@
             } catch(err) { console.error(err); isProcessing = false; }
         }
 
-        function closeLevelComplete() { 
-            playClickSound(); hideAllScreens(); 
-            if(currentGameMode==='missing') { show('missing-lang-screen'); } 
+        function closeLevelComplete() {
+            playClickSound(); hideAllScreens();
+            if(currentGameMode==='missing') { show('missing-lang-screen'); }
             else if(currentGameMode==='emotion') { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); }
-            else { 
+            else if(currentGameMode==='faces') { show('faces-lang-screen'); }
+            else {
                 try {
                     let nextLvlBtn = get('lvl-'+(currentDifficulty+1)+'-btn');
                     if(mistakesInLevel === 0 && currentDifficulty < 5 && nextLvlBtn && nextLvlBtn.style.display !== 'none') { 
@@ -976,6 +986,7 @@
         // ==========================================
         const FACES_BASE = './images/';
         let facesPool = [];
+        let facesLang = 'he'; // 'he' or 'en'
 
         // טוען את רשימת התמונות מהקובץ החיצוני בלי לשבור את שאר האתר אם חסר
         fetch('./images/manifest.json')
@@ -988,11 +999,25 @@
                 }
             })
             .catch(() => { /* manifest חסר — כרטיס "מי זה?" נשאר מוסתר */ });
+
+        function openFacesLangScreen() {
+            playClickSound(); hideAllScreens(); setAppBackground('faces'); show('faces-lang-screen');
+        }
+        function startFacesGame(lang) {
+            facesLang = lang;
+            playClickSound(); currentGameMode = 'faces'; currentDifficulty = 1; currentStep = 0; mistakesInLevel = 0; isProcessing = false;
+            hideAllScreens(); show('active-game-container');
+            let pContainer = get('active-progress-container'); pContainer.innerHTML = '';
+            for (let i = 0; i < 4; i++) { let d = D.createElement('div'); d.className = 'progress-dot'; d.id = `active-progress-container-dot-${i}`; pContainer.appendChild(d); }
+            updateProgressUI(); get('game-workspace').innerHTML = '';
+            setTimeout(() => initFacesGame(), 50);
+        }
+
         let facesOrder = [];
         function initFacesGame() {
             get('active-game-title').textContent = 'מי זה? 📸';
             get('game-workspace').innerHTML = `
-                <div id="faces-name" style="font-size:clamp(26px,6vmin,48px);font-weight:900;background:rgba(255,255,255,0.95);padding:12px 30px;border-radius:20px;box-shadow:0 4px 15px rgba(0,0,0,0.12);margin-bottom:15px;color:#333;direction:rtl;border:3px solid #fff;"></div>
+                <div id="faces-name" style="font-size:clamp(26px,6vmin,48px);font-weight:900;background:rgba(255,255,255,0.95);padding:12px 30px;border-radius:20px;box-shadow:0 4px 15px rgba(0,0,0,0.12);margin-bottom:15px;color:#333;direction:${facesLang === 'he' ? 'rtl' : 'ltr'};border:3px solid #fff;"></div>
                 <div id="faces-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:clamp(8px,2vmin,16px);width:100%;max-width:660px;margin:0 auto;"></div>
             `;
             facesOrder = shuffle(createRange(facesPool.length)).slice(0, 4);
@@ -1000,12 +1025,17 @@
         }
         function loadFacesRound() {
             let correct = facesPool[facesOrder[currentStep]];
-            get('faces-name').textContent = correct.name;
-            let others = facesPool.filter((_, i) => facesOrder.indexOf(i) === -1 || i === facesOrder[currentStep]);
+            let nameField = facesLang === 'he' ? 'nameHe' : 'nameEn';
+            let correctName = correct[nameField] || correct.nameHe;
+            get('faces-name').textContent = correctName;
+            // play name audio
+            let audioKey = correct.file.replace('.jpg', '');
+            playAudio(facesLang + '/' + audioKey + '.mp3');
             let wrongPool = facesPool.filter((_, i) => i !== facesOrder[currentStep]);
             let opts = shuffle([correct].concat(shuffle(wrongPool).slice(0, 3)));
             let grid = get('faces-grid'); grid.innerHTML = '';
             opts.forEach((o, idx) => {
+                let oName = o[nameField] || o.nameHe;
                 let w = D.createElement('div'); w.style.position = 'relative';
                 let b = D.createElement('button');
                 b.style.cssText = 'width:100%;aspect-ratio:1/1;border:5px solid #4CAF50;border-radius:20px;cursor:pointer;padding:4px;overflow:hidden;box-shadow:0 6px 14px rgba(0,0,0,0.18);transition:0.2s;touch-action:manipulation;outline:none;background:#fff;display:flex;align-items:center;justify-content:center;';
@@ -1014,7 +1044,7 @@
                 img.style.cssText = 'width:100%;height:100%;object-fit:contain;display:block;pointer-events:none;border-radius:12px;';
                 img.onerror = function() { this.style.display='none'; b.innerHTML += '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:clamp(40px,10vw,70px);pointer-events:none;">🖼️</div>'; };
                 b.appendChild(img);
-                b.onclick = (e) => { if (isProcessing) return; handleAnswer(o.name === correct.name, b, loadFacesRound, null); };
+                b.onclick = (e) => { if (isProcessing) return; handleAnswer(oName === correctName, b, loadFacesRound, null); };
                 let n = D.createElement('div'); n.className = 'option-number'; n.textContent = idx + 1;
                 w.appendChild(b); w.appendChild(n); grid.appendChild(w);
             });
