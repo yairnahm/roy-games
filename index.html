@@ -265,6 +265,32 @@
     </script>
 
     <script>
+        function playGulpSound() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const now = ctx.currentTime;
+                // noise burst — הצליל "גּ" של הבליעה
+                const bufLen = Math.floor(ctx.sampleRate * 0.07);
+                const buf = ctx.createBuffer(1, bufLen, ctx.sampleRate);
+                const d = buf.getChannelData(0);
+                for (let i = 0; i < bufLen; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / bufLen);
+                const ns = ctx.createBufferSource(); ns.buffer = buf;
+                const filt = ctx.createBiquadFilter(); filt.type = 'bandpass'; filt.frequency.value = 380; filt.Q.value = 4;
+                const ng = ctx.createGain(); ng.gain.value = 0.55;
+                ns.connect(filt); filt.connect(ng); ng.connect(ctx.destination); ns.start(now);
+                // גלישה יורדת — הגרון
+                const osc = ctx.createOscillator(); osc.type = 'sine';
+                osc.frequency.setValueAtTime(420, now + 0.05);
+                osc.frequency.exponentialRampToValueAtTime(55, now + 0.35);
+                const g = ctx.createGain();
+                g.gain.setValueAtTime(0, now + 0.05);
+                g.gain.linearRampToValueAtTime(0.45, now + 0.09);
+                g.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+                osc.connect(g); g.connect(ctx.destination);
+                osc.start(now + 0.05); osc.stop(now + 0.4);
+            } catch(e) {}
+        }
+
         let _currentAudio = null;
         function playAudio(filename) {
             try {
@@ -374,8 +400,25 @@
         <div class="top-bar" style="align-self:stretch;"><button class="exit-btn" onclick="backToHub()">➜ חזור</button><div style="width: 60px;"></div></div>
         <h1 style="margin-top: 10vh;">באיזו שפה נשחק? 📸</h1>
         <div class="grid-container" style="gap:5vmin; margin-top:5vmin;">
-            <div class="grid-card" onclick="startFacesGame('he')" style="width:clamp(120px, 25vw, 200px); border-color:#2196F3;"><div style="font-size:clamp(40px, 8vw, 80px);">🇮🇱</div><h2>עברית</h2></div>
-            <div class="grid-card" onclick="startFacesGame('en')" style="width:clamp(120px, 25vw, 200px); border-color:#F44336;"><div style="font-size:clamp(40px, 8vw, 80px);">🇬🇧</div><h2>English</h2></div>
+            <div class="grid-card" onclick="openFacesModeScreen('he')" style="width:clamp(120px, 25vw, 200px); border-color:#2196F3;"><div style="font-size:clamp(40px, 8vw, 80px);">🇮🇱</div><h2>עברית</h2></div>
+            <div class="grid-card" onclick="openFacesModeScreen('en')" style="width:clamp(120px, 25vw, 200px); border-color:#F44336;"><div style="font-size:clamp(40px, 8vw, 80px);">🇬🇧</div><h2>English</h2></div>
+        </div>
+    </div>
+
+    <div id="faces-mode-screen" class="hidden" style="display:flex; flex-direction:column; align-items:center;">
+        <div class="top-bar" style="align-self:stretch;"><button class="exit-btn" onclick="openFacesLangScreen()">➜ חזור</button><div style="width: 60px;"></div></div>
+        <h1 style="margin-top: 8vh;">איזה מצב? 🎮</h1>
+        <div class="grid-container" style="gap:5vmin; margin-top:5vmin;">
+            <div class="grid-card" onclick="startFacesGame('normal')" style="width:clamp(130px, 28vw, 220px); border-color:#4CAF50;">
+                <div style="font-size:clamp(36px,7vw,70px);">📛➡️📸</div>
+                <h2 style="margin-top:8px;">מצא את הפנים</h2>
+                <p style="font-size:clamp(12px,2.5vw,16px);color:#666;margin:4px 0 0;">רואים שם, בוחרים תמונה</p>
+            </div>
+            <div class="grid-card" onclick="startFacesGame('reverse')" style="width:clamp(130px, 28vw, 220px); border-color:#FF9800;">
+                <div style="font-size:clamp(36px,7vw,70px);">📸➡️📛</div>
+                <h2 style="margin-top:8px;">מי זה?</h2>
+                <p style="font-size:clamp(12px,2.5vw,16px);color:#666;margin:4px 0 0;">רואים תמונה, בוחרים שם</p>
+            </div>
         </div>
     </div>
 
@@ -503,7 +546,7 @@
             updateWalletDisplay();
         }
 
-        function hideAllScreens() { ['start-screen', 'gender-screen', 'hub-screen', 'unified-diff-screen', 'active-game-container', 'level-complete-overlay', 'missing-lang-screen', 'faces-lang-screen'].forEach(hide); }
+        function hideAllScreens() { ['start-screen', 'gender-screen', 'hub-screen', 'unified-diff-screen', 'active-game-container', 'level-complete-overlay', 'missing-lang-screen', 'faces-lang-screen', 'faces-mode-screen'].forEach(hide); }
         function backToHub() { playClickSound(); hideAllScreens(); setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); }
         
         function openDifficultyScreen(gameId, icon, title) {
@@ -551,7 +594,7 @@
             }, 50);
         }
 
-        function quitActiveGame() { playClickSound(); hideAllScreens(); if(currentGameMode === 'emotion' || currentGameMode === 'missing') { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); } else if(currentGameMode === 'faces') { show('faces-lang-screen'); } else { show('unified-diff-screen'); } }
+        function quitActiveGame() { playClickSound(); hideAllScreens(); if(currentGameMode === 'emotion' || currentGameMode === 'missing') { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); } else if(currentGameMode === 'faces') { show('faces-mode-screen'); } else { show('unified-diff-screen'); } }
         function updateProgressUI() { for(let i=0;i<4;i++) { let d = get(`active-progress-container-dot-${i}`); if(d){ if(i < currentStep) d.classList.add('fill'); else d.classList.remove('fill'); } } }
 
         function handleAnswer(isCorrect, btn, successCallback, failCallback, isScribble = false) {
@@ -589,7 +632,7 @@
             playClickSound(); hideAllScreens();
             if(currentGameMode==='missing') { show('missing-lang-screen'); }
             else if(currentGameMode==='emotion') { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); }
-            else if(currentGameMode==='faces') { show('faces-lang-screen'); }
+            else if(currentGameMode==='faces') { show('faces-mode-screen'); }
             else {
                 try {
                     let nextLvlBtn = get('lvl-'+(currentDifficulty+1)+'-btn');
@@ -745,7 +788,7 @@
                 let f=0; let s=Math.max(1,Math.floor(pLen/40)); 
                 function anim(){ 
                     if(f>=pLen){ 
-                        if(pathType==='fly'){ aEl.style.transition='transform 0.15s, opacity 0.15s'; aEl.style.transform='scale(0.1)'; aEl.style.opacity='0'; let tEl2=get('p-target'); if(tEl2){tEl2.style.transition='transform 0.2s'; tEl2.style.transform='translate(-50%,-50%) scale(1.25)'; setTimeout(()=>{tEl2.style.transform='translate(-50%,-50%) scale(1)';},200);} }
+                        if(pathType==='fly'){ playGulpSound(); aEl.style.transition='transform 0.15s, opacity 0.15s'; aEl.style.transform='scale(0.1)'; aEl.style.opacity='0'; let tEl2=get('p-target'); if(tEl2){tEl2.style.transition='transform 0.2s'; tEl2.style.transform='translate(-50%,-50%) scale(1.25)'; setTimeout(()=>{tEl2.style.transform='translate(-50%,-50%) scale(1)';},200);} }
                         if(sEl)sEl.classList.remove('siren-active'); 
                         isProcessing = false;
                         handleAnswer(true, null, loadPathRound, null); return; 
@@ -987,6 +1030,7 @@
         const FACES_BASE = './images/';
         let facesPool = [];
         let facesLang = 'he'; // 'he' or 'en'
+        let facesMode = 'normal'; // 'normal' (name→photo) or 'reverse' (photo→name)
 
         // טוען את רשימת התמונות מהקובץ החיצוני בלי לשבור את שאר האתר אם חסר
         fetch('./images/manifest.json')
@@ -1003,8 +1047,11 @@
         function openFacesLangScreen() {
             playClickSound(); hideAllScreens(); setAppBackground('faces'); show('faces-lang-screen');
         }
-        function startFacesGame(lang) {
-            facesLang = lang;
+        function openFacesModeScreen(lang) {
+            facesLang = lang; playClickSound(); hideAllScreens(); show('faces-mode-screen');
+        }
+        function startFacesGame(mode) {
+            facesMode = mode;
             playClickSound(); currentGameMode = 'faces'; currentDifficulty = 1; currentStep = 0; mistakesInLevel = 0; isProcessing = false;
             hideAllScreens(); show('active-game-container');
             let pContainer = get('active-progress-container'); pContainer.innerHTML = '';
@@ -1015,11 +1062,18 @@
 
         let facesOrder = [];
         function initFacesGame() {
-            get('active-game-title').textContent = 'מי זה? 📸';
-            get('game-workspace').innerHTML = `
-                <div id="faces-name" style="font-size:clamp(26px,6vmin,48px);font-weight:900;background:rgba(255,255,255,0.95);padding:12px 30px;border-radius:20px;box-shadow:0 4px 15px rgba(0,0,0,0.12);margin-bottom:15px;color:#333;direction:${facesLang === 'he' ? 'rtl' : 'ltr'};border:3px solid #fff;"></div>
-                <div id="faces-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:clamp(8px,2vmin,16px);width:100%;max-width:660px;margin:0 auto;"></div>
-            `;
+            get('active-game-title').textContent = facesMode === 'reverse' ? 'מי זה? 🔄' : 'מצא את הפנים! 📸';
+            if (facesMode === 'reverse') {
+                get('game-workspace').innerHTML = `
+                    <div id="faces-photo-wrap" style="width:clamp(160px,38vmin,260px);height:clamp(160px,38vmin,260px);margin:0 auto 18px;border-radius:22px;overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,0.22);border:4px solid #fff;background:#eee;"></div>
+                    <div id="faces-name-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:clamp(8px,2vmin,14px);width:100%;max-width:580px;margin:0 auto;"></div>
+                `;
+            } else {
+                get('game-workspace').innerHTML = `
+                    <div id="faces-name" style="font-size:clamp(26px,6vmin,48px);font-weight:900;background:rgba(255,255,255,0.95);padding:12px 30px;border-radius:20px;box-shadow:0 4px 15px rgba(0,0,0,0.12);margin-bottom:15px;color:#333;direction:${facesLang === 'he' ? 'rtl' : 'ltr'};border:3px solid #fff;"></div>
+                    <div id="faces-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:clamp(8px,2vmin,16px);width:100%;max-width:660px;margin:0 auto;"></div>
+                `;
+            }
             facesOrder = shuffle(createRange(facesPool.length)).slice(0, 4);
             loadFacesRound();
         }
@@ -1027,27 +1081,48 @@
             let correct = facesPool[facesOrder[currentStep]];
             let nameField = facesLang === 'he' ? 'nameHe' : 'nameEn';
             let correctName = correct[nameField] || correct.nameHe;
-            get('faces-name').textContent = correctName;
-            // play name audio
             let audioKey = correct.file.replace('.jpg', '');
             playAudio(facesLang + '/' + audioKey + '.mp3');
             let wrongPool = facesPool.filter((_, i) => i !== facesOrder[currentStep]);
-            let opts = shuffle([correct].concat(shuffle(wrongPool).slice(0, 3)));
-            let grid = get('faces-grid'); grid.innerHTML = '';
-            opts.forEach((o, idx) => {
-                let oName = o[nameField] || o.nameHe;
-                let w = D.createElement('div'); w.style.position = 'relative';
-                let b = D.createElement('button');
-                b.style.cssText = 'width:100%;aspect-ratio:1/1;border:5px solid #4CAF50;border-radius:20px;cursor:pointer;padding:4px;overflow:hidden;box-shadow:0 6px 14px rgba(0,0,0,0.18);transition:0.2s;touch-action:manipulation;outline:none;background:#fff;display:flex;align-items:center;justify-content:center;';
+
+            if (facesMode === 'reverse') {
+                // show photo, pick name
+                let wrap = get('faces-photo-wrap'); wrap.innerHTML = '';
                 let img = D.createElement('img');
-                img.src = FACES_BASE + encodeURIComponent(o.file);
-                img.style.cssText = 'width:100%;height:100%;object-fit:contain;display:block;pointer-events:none;border-radius:12px;';
-                img.onerror = function() { this.style.display='none'; b.innerHTML += '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:clamp(40px,10vw,70px);pointer-events:none;">🖼️</div>'; };
-                b.appendChild(img);
-                b.onclick = (e) => { if (isProcessing) return; handleAnswer(oName === correctName, b, loadFacesRound, null); };
-                let n = D.createElement('div'); n.className = 'option-number'; n.textContent = idx + 1;
-                w.appendChild(b); w.appendChild(n); grid.appendChild(w);
-            });
+                img.src = FACES_BASE + encodeURIComponent(correct.file);
+                img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;';
+                img.onerror = function() { wrap.innerHTML = '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:70px;">🖼️</div>'; };
+                wrap.appendChild(img);
+                let opts = shuffle([correct].concat(shuffle(wrongPool).slice(0, 3)));
+                let grid = get('faces-name-grid'); grid.innerHTML = '';
+                opts.forEach((o) => {
+                    let oName = o[nameField] || o.nameHe;
+                    let b = D.createElement('button');
+                    b.style.cssText = `width:100%;padding:clamp(10px,2vmin,18px) 8px;border:4px solid #FF9800;border-radius:16px;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,0.15);transition:0.2s;touch-action:manipulation;outline:none;background:#fff;font-size:clamp(15px,3.5vmin,22px);font-weight:800;color:#333;direction:${facesLang==='he'?'rtl':'ltr'};`;
+                    b.textContent = oName;
+                    b.onclick = () => { if (isProcessing) return; handleAnswer(oName === correctName, b, loadFacesRound, null); };
+                    grid.appendChild(b);
+                });
+            } else {
+                // show name, pick photo
+                get('faces-name').textContent = correctName;
+                let opts = shuffle([correct].concat(shuffle(wrongPool).slice(0, 3)));
+                let grid = get('faces-grid'); grid.innerHTML = '';
+                opts.forEach((o, idx) => {
+                    let oName = o[nameField] || o.nameHe;
+                    let w = D.createElement('div'); w.style.position = 'relative';
+                    let b = D.createElement('button');
+                    b.style.cssText = 'width:100%;aspect-ratio:1/1;border:5px solid #4CAF50;border-radius:20px;cursor:pointer;padding:4px;overflow:hidden;box-shadow:0 6px 14px rgba(0,0,0,0.18);transition:0.2s;touch-action:manipulation;outline:none;background:#fff;display:flex;align-items:center;justify-content:center;';
+                    let img = D.createElement('img');
+                    img.src = FACES_BASE + encodeURIComponent(o.file);
+                    img.style.cssText = 'width:100%;height:100%;object-fit:contain;display:block;pointer-events:none;border-radius:12px;';
+                    img.onerror = function() { this.style.display='none'; b.innerHTML += '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:clamp(40px,10vw,70px);pointer-events:none;">🖼️</div>'; };
+                    b.appendChild(img);
+                    b.onclick = (e) => { if (isProcessing) return; handleAnswer(oName === correctName, b, loadFacesRound, null); };
+                    let n = D.createElement('div'); n.className = 'option-number'; n.textContent = idx + 1;
+                    w.appendChild(b); w.appendChild(n); grid.appendChild(w);
+                });
+            }
         }
 
     </script>
