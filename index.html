@@ -422,6 +422,12 @@
         </div>
     </div>
 
+    <div id="faces-summary-screen" class="hidden" style="display:flex;flex-direction:column;align-items:center;padding:16px 12px;">
+        <h2 style="margin:8px 0 16px;font-size:clamp(22px,5vmin,36px);">אלה הם! 🌟</h2>
+        <div id="faces-summary-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:clamp(10px,3vmin,20px);width:100%;max-width:580px;margin:0 auto 20px;"></div>
+        <button class="action-btn" onclick="showFacesLevelComplete()" style="font-size:clamp(18px,4vw,26px);padding:14px 36px;">המשך ▶</button>
+    </div>
+
     <div id="missing-lang-screen" class="hidden" style="display:flex; flex-direction:column; align-items:center;">
         <div class="top-bar" style="align-self:stretch;"><button class="exit-btn" onclick="backToHub()">➜ חזור</button><div style="width: 60px;"></div></div>
         <h1 style="margin-top: 10vh;">באיזו שפה נשחק?</h1>
@@ -546,7 +552,7 @@
             updateWalletDisplay();
         }
 
-        function hideAllScreens() { ['start-screen', 'gender-screen', 'hub-screen', 'unified-diff-screen', 'active-game-container', 'level-complete-overlay', 'missing-lang-screen', 'faces-lang-screen', 'faces-mode-screen'].forEach(hide); }
+        function hideAllScreens() { ['start-screen', 'gender-screen', 'hub-screen', 'unified-diff-screen', 'active-game-container', 'level-complete-overlay', 'missing-lang-screen', 'faces-lang-screen', 'faces-mode-screen', 'faces-summary-screen'].forEach(hide); }
         function backToHub() { playClickSound(); hideAllScreens(); setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); }
         
         function openDifficultyScreen(gameId, icon, title) {
@@ -606,16 +612,25 @@
                     playSuccessSound(); speakSuccess(isFinal); 
                     try { if(typeof confetti === 'function') confetti({particleCount: 150, origin:{y:0.6}, zIndex:1000}); } catch(e){}
                     showKisses();
-                    let fl = get('feedback-layer'); fl.innerHTML = '<span>🥳</span>'; show('feedback-layer');
-                    setTimeout(() => { 
+                    let fl = get('feedback-layer');
+                    if (currentGameMode === 'faces') {
+                        let nf = facesLang === 'he' ? 'nameHe' : 'nameEn';
+                        let cp = facesPool[facesOrder[currentStep]];
+                        let cName = cp ? (cp[nf] || cp.nameHe) : '';
+                        let cFile = cp ? cp.file : '';
+                        fl.innerHTML = `<span>🥳</span><img src="${FACES_BASE + encodeURIComponent(cFile)}" style="width:clamp(80px,18vmin,130px);height:clamp(80px,18vmin,130px);object-fit:cover;border-radius:50%;border:4px solid #fff;box-shadow:0 4px 14px rgba(0,0,0,0.3);margin:8px auto;display:block;"><div style="font-size:clamp(20px,5vmin,32px);font-weight:900;color:#fff;text-shadow:0 2px 6px rgba(0,0,0,0.35);direction:${facesLang==='he'?'rtl':'ltr'};margin-top:4px;">${cName}</div>`;
+                    } else {
+                        fl.innerHTML = '<span>🥳</span>';
+                    }
+                    show('feedback-layer');
+                    setTimeout(() => {
                         try {
-                            hide('feedback-layer'); currentStep++; updateProgressUI(); isProcessing = false; 
+                            hide('feedback-layer'); currentStep++; updateProgressUI(); isProcessing = false;
                             if(currentStep > 3) {
                                 let se = 4; if (mistakesInLevel === 1) se = 3; else if (mistakesInLevel === 2) se = 2; else if (mistakesInLevel > 2) se = 1;
-                                for(let i=1; i<=4; i++) { let st = get(`star-${i}`); if(st) st.classList.remove('earned'); if(i<=se) setTimeout(()=> { if(st) st.classList.add('earned'); playClickSound(); }, i*300); }
-                                show('level-complete-overlay');
-                                // Award star for this game+level
+                                for(let i=1; i<=4; i++) { let st = get(`star-${i}`); if(st) st.classList.remove('earned'); if(i<=se) setTimeout(()=>{ if(st) st.classList.add('earned'); playClickSound(); }, i*300); }
                                 awardStar(currentGameMode, currentDifficulty);
+                                if(currentGameMode === 'faces') { showFacesSummary(); } else { show('level-complete-overlay'); }
                             } else if(successCallback) { successCallback(); }
                         } catch(err) { console.error('handleAnswer timeout error:', err); isProcessing = false; }
                     }, 2800);
@@ -1043,6 +1058,25 @@
                 }
             })
             .catch(() => { /* manifest חסר — כרטיס "מי זה?" נשאר מוסתר */ });
+
+        function showFacesSummary() {
+            hideAllScreens(); setAppBackground('faces'); show('faces-summary-screen');
+            let nf = facesLang === 'he' ? 'nameHe' : 'nameEn';
+            let grid = get('faces-summary-grid'); grid.innerHTML = '';
+            facesOrder.forEach(idx => {
+                let p = facesPool[idx];
+                if (!p) return;
+                let name = p[nf] || p.nameHe;
+                let card = D.createElement('div');
+                card.style.cssText = 'background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,0.15);border:4px solid #4CAF50;cursor:pointer;transition:transform 0.15s;';
+                card.onpointerdown = () => { playAudio(facesLang + '/' + p.file.replace('.jpg','') + '.mp3'); };
+                card.innerHTML = `<img src="${FACES_BASE + encodeURIComponent(p.file)}" style="width:100%;aspect-ratio:1/1;object-fit:cover;display:block;"><div style="padding:8px 6px;font-size:clamp(14px,3vmin,20px);font-weight:900;text-align:center;color:#333;direction:${facesLang==='he'?'rtl':'ltr'};">${name}</div>`;
+                grid.appendChild(card);
+            });
+        }
+        function showFacesLevelComplete() {
+            hideAllScreens(); show('level-complete-overlay');
+        }
 
         function openFacesLangScreen() {
             playClickSound(); hideAllScreens(); setAppBackground('faces'); show('faces-lang-screen');
