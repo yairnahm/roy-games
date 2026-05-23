@@ -453,7 +453,7 @@
     </div>
 
     <div id="active-game-container" class="hidden">
-        <div class="top-bar"><button class="exit-btn" onclick="quitActiveGame()">➜ יציאה</button><div id="active-progress-container" class="progress-container"></div></div>
+        <div id="active-top-bar" class="top-bar"><button class="exit-btn" onclick="quitActiveGame()">➜ יציאה</button><div id="active-progress-container" class="progress-container"></div></div>
         <h2 id="active-game-title" style="margin-bottom: 20px;"></h2>
         <div id="game-workspace"></div>
     </div>
@@ -618,6 +618,7 @@
             playClickSound(); currentDifficulty = level; currentStep = 0; mistakesInLevel = 0; isProcessing = false; isDrawing = false;
             hideAllScreens(); show('active-game-container');
             // restore chrome that faces game hides
+            get('active-top-bar').style.display = '';
             get('active-game-title').style.display = '';
             get('active-progress-container').style.display = '';
 
@@ -1150,7 +1151,8 @@
         let facesOrder = [];
         function initFacesGame() {
             get('active-game-title').textContent = facesMode === 'reverse' ? 'מי זה? 🔄' : 'מצא את הפנים! 📸';
-            // hide chrome — only exit btn + name + grid visible
+            // hide chrome — only name + grid visible
+            get('active-top-bar').style.display = 'none';
             get('active-game-title').style.display = 'none';
             get('active-progress-container').style.display = 'none';
             if (facesMode === 'reverse') {
