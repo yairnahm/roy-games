@@ -1203,7 +1203,7 @@
                     imgWrap.appendChild(img);
                     let nameBar = D.createElement('div');
                     nameBar.style.cssText = 'background:rgba(25,25,55,0.82);padding:3px 4px 5px;text-align:center;pointer-events:none;width:100%;';
-                    nameBar.innerHTML = `<div style="font-size:clamp(10px,2.6vmin,17px);font-weight:800;color:#fff;direction:rtl;line-height:1.25;text-shadow:0 1px 3px rgba(0,0,0,0.6);">${o.nameHe}</div><div style="font-size:clamp(9px,2vmin,14px);font-weight:700;color:#cde;direction:ltr;line-height:1.2;letter-spacing:0.04em;">${o.nameEn}</div>`;
+                    nameBar.innerHTML = `<div style="font-size:clamp(13px,3.5vmin,22px);font-weight:800;color:#fff;direction:${facesLang==='he'?'rtl':'ltr'};line-height:1.3;text-shadow:0 1px 3px rgba(0,0,0,0.6);padding:0 4px;">${oName}</div>`;
                     b.appendChild(imgWrap); b.appendChild(nameBar);
                     b.onclick = (e) => { if (isProcessing) return; handleAnswer(oName === correctName, b, loadFacesRound, null); };
                     let n = D.createElement('div'); n.className = 'option-number'; n.textContent = idx + 1;
