@@ -90,7 +90,8 @@
         #minimap-area { width: 30%; max-width: 180px; background: rgba(255,255,255,0.9); border: 3px solid #2196F3; border-radius: 20px; padding: 10px; display: flex; flex-direction: column; align-items: center; }
         #previewCanvas { width: 100%; height: auto; aspect-ratio: 1/1; border: 2px dashed #ccc; border-radius: 10px; background: #fafafa; }
 
-        #count-items-area { display: flex; flex-wrap: wrap; justify-content: center; align-content: center; gap: 15px; padding: 20px; width: 100%; height: 100%; box-sizing: border-box; z-index: 5; position: absolute; top: 0; left: 0; pointer-events: none;}
+        #count-items-area { display: flex; flex-wrap: wrap; justify-content: center; align-content: center; gap: 15px; padding: 20px; width: 100%; height: 100%; box-sizing: border-box; z-index: 1; position: absolute; top: 0; left: 0; pointer-events: none;}
+        #countCanvas { position: absolute !important; top: 0; left: 0; width: 100% !important; height: 100% !important; z-index: 2; }
         .text-option-btn { width: clamp(65px, 16vmin, 130px); height: clamp(65px, 16vmin, 130px); background: #fff; border: 5px solid #4CAF50; border-radius: 20px; cursor: pointer; box-shadow: 0 6px 12px rgba(0,0,0,0.15); transition: 0.2s; font-size: clamp(40px, 8vw, 60px); font-weight: 900; color: #333; display: flex; align-items: center; justify-content: center; touch-action: manipulation; outline: none; }
         .text-option-btn * { pointer-events: none; }
 
@@ -744,8 +745,8 @@
         }
 
         // 3. Counting
-        let cCanvas, cCtx, cTargets = [];
-        function initCountingGame() { get('game-workspace').innerHTML=`<div id="count-items-wrapper" class="canvas-container" style="aspect-ratio:3/2;"><canvas id="countCanvas" class="drawing-canvas"></canvas><div id="count-items-area"></div></div><div class="opts-row" id="count-opts"></div>`; cCanvas=get('countCanvas'); cCtx=cCanvas.getContext('2d'); cCanvas.onpointerdown=(e)=>{if(isProcessing)return; if(e.cancelable)e.preventDefault(); isDrawing=true; let p=getCpos(e); cCtx.beginPath(); cCtx.moveTo(p.x,p.y); cCtx.lineCap='round'; cCtx.lineWidth=6; cCtx.strokeStyle='rgba(255,0,0,0.5)';}; cCanvas.onpointermove=(e)=>{if(!isDrawing)return; if(e.cancelable)e.preventDefault(); let p=getCpos(e); cCtx.lineTo(p.x,p.y); cCtx.stroke(); cCtx.beginPath(); cCtx.moveTo(p.x,p.y);}; cCanvas.onpointerup=cCanvas.onpointercancel=cCanvas.onpointerout=()=>{isDrawing=false;}; 
+        let cCanvas, cCtx, cTargets = [], cItemEls = [], cTouched = new Set(), cTouchCount = 0;
+        function initCountingGame() { get('game-workspace').innerHTML=`<div id="count-items-wrapper" class="canvas-container" style="aspect-ratio:3/2;"><canvas id="countCanvas" class="drawing-canvas"></canvas><div id="count-items-area"></div></div><div class="opts-row" id="count-opts"></div>`; cCanvas=get('countCanvas'); cCtx=cCanvas.getContext('2d'); cCanvas.onpointerdown=(e)=>{if(isProcessing)return; if(e.cancelable)e.preventDefault(); isDrawing=true; let p=getCpos(e); cCtx.beginPath(); cCtx.moveTo(p.x,p.y); cCtx.lineCap='round'; cCtx.lineWidth=6; cCtx.strokeStyle='rgba(255,0,0,0.5)';}; cCanvas.onpointermove=(e)=>{if(!isDrawing)return; if(e.cancelable)e.preventDefault(); let p=getCpos(e); cCtx.lineTo(p.x,p.y); cCtx.stroke(); cCtx.beginPath(); cCtx.moveTo(p.x,p.y); if(currentDifficulty<=2&&cItemEls.length>0){let cr=cCanvas.getBoundingClientRect(); cItemEls.forEach((el,idx)=>{if(cTouched.has(idx))return; let er=el.getBoundingClientRect(); let ix=(er.left+er.right)/2,iy=(er.top+er.bottom)/2; let ex=(ix-cr.left)*(600/cr.width),ey=(iy-cr.top)*(400/cr.height); if(Math.hypot(p.x-ex,p.y-ey)<46){cTouched.add(idx);cTouchCount++; cCtx.save(); cCtx.font='bold 34px Arial'; cCtx.textAlign='center'; cCtx.textBaseline='middle'; cCtx.strokeStyle='white'; cCtx.lineWidth=6; cCtx.strokeText(cTouchCount,ex,ey); cCtx.fillStyle='#e53935'; cCtx.fillText(cTouchCount,ex,ey); cCtx.restore(); cCtx.beginPath(); cCtx.moveTo(p.x,p.y);}});}  }; cCanvas.onpointerup=cCanvas.onpointercancel=cCanvas.onpointerout=()=>{isDrawing=false;}; 
             if(currentDifficulty===1) cTargets=[rand(1,4),rand(2,5),rand(1,5),rand(3,6)];
             else if(currentDifficulty===2) cTargets=shuffle([rand(4,6),rand(5,7),rand(6,8),rand(7,9)]);
             else if(currentDifficulty===3) cTargets=shuffle([rand(7,9),rand(8,10),rand(9,12),rand(10,12)]);
@@ -756,9 +757,10 @@
         function getCpos(e){ let r=cCanvas.getBoundingClientRect(); let cx = e.clientX !== undefined ? e.clientX : (e.touches && e.touches.length > 0 ? e.touches[0].clientX : 0); let cy = e.clientY !== undefined ? e.clientY : (e.touches && e.touches.length > 0 ? e.touches[0].clientY : 0); return { x: (cx - r.left) * (600 / r.width), y: (cy - r.top) * (400 / r.height) }; }
         function loadCountingRound() { 
             cCanvas.width=600; cCanvas.height=400; cCtx.clearRect(0,0,600,400);
-            let tgt=cTargets[currentStep]; let area=get('count-items-area'); area.innerHTML=''; 
+            let tgt=cTargets[currentStep]; let area=get('count-items-area'); area.innerHTML='';
+            cItemEls=[]; cTouched=new Set(); cTouchCount=0;
             let allIcons = ['🚗','✈️','🚂','🍎','🐶','🎈','⚽','🧸']; let icon = allIcons[rand(0,allIcons.length-1)];
-            
+
             if (currentDifficulty === 5) {
                 get('active-game-title').textContent = `כמה ${icon} יש כאן? 🔢`;
                 let distractors = allIcons.filter(i => i !== icon);
@@ -768,10 +770,10 @@
                 for(let i=0;i<rand(3,6);i++) allItems.push(d1);
                 for(let i=0;i<rand(3,6);i++) allItems.push(d2);
                 allItems = shuffle(allItems);
-                allItems.forEach(item => { let d=D.createElement('div'); d.style.fontSize='clamp(30px,6vw,50px)'; d.style.transform=`rotate(${rand(-20,20)}deg)`; d.textContent=item; area.appendChild(d); });
+                allItems.forEach(item => { let d=D.createElement('div'); d.style.fontSize='clamp(30px,6vw,50px)'; d.style.transform=`rotate(${rand(-20,20)}deg)`; d.textContent=item; area.appendChild(d); if(item===icon) cItemEls.push(d); });
             } else {
                 get('active-game-title').textContent = 'כמה יש כאן? 🔢';
-                for(let i=0;i<tgt;i++){let d=D.createElement('div'); d.style.fontSize= currentDifficulty>=4 ? 'clamp(25px,5vw,40px)' : 'clamp(40px,8vw,70px)'; d.style.transform=`rotate(${rand(-20,20)}deg)`; d.textContent=icon; area.appendChild(d);}
+                for(let i=0;i<tgt;i++){let d=D.createElement('div'); d.style.fontSize= currentDifficulty>=4 ? 'clamp(25px,5vw,40px)' : 'clamp(40px,8vw,70px)'; d.style.transform=`rotate(${rand(-20,20)}deg)`; d.textContent=icon; area.appendChild(d); cItemEls.push(d);}
             }
 
             let opts=[tgt]; while(opts.length<4){let r=tgt+rand(-3,3); if(r>0 && r<=25 && opts.indexOf(r)===-1)opts.push(r);} opts=shuffle(opts); 
