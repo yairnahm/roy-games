@@ -1167,10 +1167,10 @@
         // ==========================================
         const MG_BASE = './images/mg/';
         const mgPuzzles = [
-            { top:'top0.jpg', left:'left0.jpg', right:'right0.jpg', success:'success0.jpg', flex:'left'  },
+            { top:'top0.jpg', left:'left0.jpg', right:'right0.jpg', success:'success0.jpg', flex:'right' },
             { top:'top1.jpg', left:'left1.jpg', right:'right1.jpg', success:'success1.jpg', flex:'left'  },
             { top:'top2.jpg', left:'left2.jpg', right:'right2.jpg', success:'success2.jpg', flex:'right' },
-            { top:'top3.jpg', left:'left3.jpg', right:'right3.jpg', success:'success3.jpg',  flex:'right' },
+            { top:'top3.jpg', left:'left3.jpg', right:'right3.jpg', success:'success3.jpg', flex:'right' },
             { top:'top4.jpg', left:'left4.jpg', right:'right4.jpg', success:'success4.jpg', flex:'left'  },
             { top:'top5.jpg', left:'left5.jpg', right:'right5.jpg', success:'success5.jpg', flex:'left'  },
             { top:'top6.jpg', left:'left6.jpg', right:'right6.jpg', success:'success6.jpg', flex:'right' },
@@ -1184,37 +1184,124 @@
         function initMgGame() {
             get('active-game-title').textContent = 'מר גמיש 🤸';
             get('game-workspace').innerHTML = `
-                <img src="${MG_BASE}char.jpg" style="position:fixed;top:65px;left:10px;width:clamp(38px,8vmin,62px);height:clamp(38px,8vmin,62px);object-fit:cover;border-radius:50%;border:3px solid #fff;box-shadow:0 3px 10px rgba(0,0,0,0.25);z-index:50;">
-                <div id="mg-top-wrap" style="width:clamp(120px,34vmin,210px);border-radius:20px;overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,0.2);border:4px solid #fff;background:#f0f0f0;margin:0 auto 10px;">
+                <div id="mg-top-wrap" style="width:clamp(110px,26vmin,180px);border-radius:18px;overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,0.2);border:4px solid #fff;background:#f0f0f0;margin:0 auto 10px;flex-shrink:0;">
                     <img id="mg-top-img" style="width:100%;aspect-ratio:1/1;object-fit:contain;display:block;">
                 </div>
-                <div style="font-size:clamp(15px,3.2vmin,20px);font-weight:700;color:#1a5c3a;margin-bottom:10px;text-shadow:0 1px 3px rgba(255,255,255,0.8);">⬇️ לאן נלך עם מר גמיש?</div>
-                <div id="mg-choices" style="display:flex;gap:clamp(10px,3vmin,24px);width:100%;max-width:620px;margin:0 auto;justify-content:center;">
-                    <button id="mg-btn-left" style="flex:1;max-width:46%;border:5px solid #2196F3;border-radius:22px;padding:5px;cursor:pointer;background:#fff;box-shadow:0 6px 16px rgba(0,0,0,0.2);touch-action:manipulation;overflow:hidden;outline:none;transition:transform 0.1s;">
-                        <img id="mg-img-left" style="width:100%;aspect-ratio:1/1;object-fit:contain;display:block;border-radius:16px;background:#f5f5f5;">
-                    </button>
-                    <button id="mg-btn-right" style="flex:1;max-width:46%;border:5px solid #2196F3;border-radius:22px;padding:5px;cursor:pointer;background:#fff;box-shadow:0 6px 16px rgba(0,0,0,0.2);touch-action:manipulation;overflow:hidden;outline:none;transition:transform 0.1s;">
-                        <img id="mg-img-right" style="width:100%;aspect-ratio:1/1;object-fit:contain;display:block;border-radius:16px;background:#f5f5f5;">
-                    </button>
+                <div style="font-size:clamp(13px,2.8vmin,18px);font-weight:700;color:#1a5c3a;margin-bottom:8px;text-shadow:0 1px 3px rgba(255,255,255,0.8);">גרור את מר גמיש לכיוון הנכון!</div>
+                <div id="mg-arena" style="position:relative;width:100%;flex:1;min-height:clamp(170px,38vmin,260px);user-select:none;touch-action:none;">
+                    <!-- מסלול -->
+                    <div style="position:absolute;top:50%;left:2%;width:96%;height:8px;background:rgba(255,255,255,0.45);border-radius:8px;transform:translateY(-50%);box-shadow:0 2px 6px rgba(0,0,0,0.12);pointer-events:none;"></div>
+                    <div style="position:absolute;top:50%;left:30%;transform:translate(-50%,-60%);font-size:clamp(20px,5vmin,34px);opacity:0.55;pointer-events:none;">◄</div>
+                    <div style="position:absolute;top:50%;left:70%;transform:translate(-50%,-60%);font-size:clamp(20px,5vmin,34px);opacity:0.55;pointer-events:none;">►</div>
+                    <!-- בחירה שמאל -->
+                    <div id="mg-zone-left" style="position:absolute;left:0;top:50%;transform:translateY(-50%);width:28%;border-radius:18px;overflow:hidden;border:5px solid #2196F3;background:#fff;box-shadow:0 6px 16px rgba(0,0,0,0.2);transition:transform 0.15s,box-shadow 0.15s;">
+                        <img id="mg-img-left" style="width:100%;aspect-ratio:1/1;object-fit:contain;display:block;background:#f5f5f5;">
+                    </div>
+                    <!-- בחירה ימין -->
+                    <div id="mg-zone-right" style="position:absolute;right:0;top:50%;transform:translateY(-50%);width:28%;border-radius:18px;overflow:hidden;border:5px solid #2196F3;background:#fff;box-shadow:0 6px 16px rgba(0,0,0,0.2);transition:transform 0.15s,box-shadow 0.15s;">
+                        <img id="mg-img-right" style="width:100%;aspect-ratio:1/1;object-fit:contain;display:block;background:#f5f5f5;">
+                    </div>
+                    <!-- מר גמיש - ניתן לגרירה -->
+                    <img id="mg-char-drag" src="${MG_BASE}char.jpg"
+                        style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+                               width:clamp(80px,18vmin,130px);height:clamp(80px,18vmin,130px);
+                               object-fit:cover;border-radius:50%;border:5px solid #fff;
+                               box-shadow:0 6px 20px rgba(0,0,0,0.35);cursor:grab;
+                               touch-action:none;z-index:10;">
                 </div>
             `;
             mgOrder = shuffle(createRange(mgPuzzles.length)).slice(0, 4);
             loadMgRound();
+            setupMgDrag();
         }
 
         function loadMgRound() {
             let puz = mgPuzzles[mgOrder[currentStep]];
-            get('mg-top-img').src  = MG_BASE + puz.top;
-            get('mg-img-left').src = MG_BASE + puz.left;
-            get('mg-img-right').src= MG_BASE + puz.right;
-            get('mg-btn-left').onclick  = () => { if(isProcessing) return; handleMgChoice('left',  puz); };
-            get('mg-btn-right').onclick = () => { if(isProcessing) return; handleMgChoice('right', puz); };
+            get('mg-top-img').src   = MG_BASE + puz.top;
+            get('mg-img-left').src  = MG_BASE + puz.left;
+            get('mg-img-right').src = MG_BASE + puz.right;
+            // reset zones
+            let lz = get('mg-zone-left'); let rz = get('mg-zone-right');
+            if(lz) { lz.style.transform='translateY(-50%) scale(1)'; lz.style.boxShadow='0 6px 16px rgba(0,0,0,0.2)'; lz.style.borderColor='#2196F3'; }
+            if(rz) { rz.style.transform='translateY(-50%) scale(1)'; rz.style.boxShadow='0 6px 16px rgba(0,0,0,0.2)'; rz.style.borderColor='#2196F3'; }
+            // snap char back to center
+            let ch = get('mg-char-drag');
+            if(ch) { ch.style.transition='left 0.35s ease'; ch.style.left='50%'; setTimeout(()=>{ if(ch) ch.style.transition='none'; }, 380); }
+        }
+
+        function setupMgDrag() {
+            const charEl = get('mg-char-drag');
+            if (!charEl) return;
+            let dragging = false;
+            let triggered = false;
+
+            function getPuz() { return mgPuzzles[mgOrder[currentStep]]; }
+
+            charEl.onpointerdown = (e) => {
+                if (isProcessing) return;
+                e.preventDefault();
+                dragging = true; triggered = false;
+                charEl.setPointerCapture(e.pointerId);
+                charEl.style.transition = 'none';
+                charEl.style.cursor = 'grabbing';
+            };
+
+            charEl.onpointermove = (e) => {
+                if (!dragging || isProcessing || triggered) return;
+                e.preventDefault();
+                const arena = get('mg-arena');
+                if (!arena) return;
+                const ar = arena.getBoundingClientRect();
+                let newLeft = ((e.clientX - ar.left) / ar.width) * 100;
+                newLeft = Math.max(14, Math.min(86, newLeft));
+                charEl.style.left = newLeft + '%';
+
+                const charRect = charEl.getBoundingClientRect();
+                const lz = get('mg-zone-left'); const rz = get('mg-zone-right');
+                if (!lz || !rz) return;
+                const lr = lz.getBoundingClientRect(); const rr = rz.getBoundingClientRect();
+
+                const overLeft  = charRect.left  < lr.right  && charRect.right > lr.left;
+                const overRight = charRect.right > rr.left   && charRect.left  < rr.right;
+
+                // visual feedback while hovering
+                lz.style.transform = overLeft  ? 'translateY(-50%) scale(1.08)' : 'translateY(-50%) scale(1)';
+                lz.style.boxShadow = overLeft  ? '0 0 28px rgba(33,150,243,0.75)' : '0 6px 16px rgba(0,0,0,0.2)';
+                lz.style.borderColor = overLeft  ? '#43e97b' : '#2196F3';
+                rz.style.transform = overRight ? 'translateY(-50%) scale(1.08)' : 'translateY(-50%) scale(1)';
+                rz.style.boxShadow = overRight ? '0 0 28px rgba(33,150,243,0.75)' : '0 6px 16px rgba(0,0,0,0.2)';
+                rz.style.borderColor = overRight ? '#43e97b' : '#2196F3';
+
+                if (overLeft || overRight) {
+                    triggered = true; dragging = false;
+                    const side = overLeft ? 'left' : 'right';
+                    // snap char to zone center
+                    const zr = overLeft ? lr : rr;
+                    const ar2 = arena.getBoundingClientRect();
+                    const snapLeft = ((zr.left + zr.width / 2 - ar2.left) / ar2.width) * 100;
+                    charEl.style.transition = 'left 0.15s ease';
+                    charEl.style.left = snapLeft + '%';
+                    charEl.style.cursor = 'grab';
+                    setTimeout(() => handleMgChoice(side, getPuz()), 180);
+                }
+            };
+
+            charEl.onpointerup = charEl.onpointercancel = (e) => {
+                if (!dragging) return;
+                dragging = false;
+                charEl.style.cursor = 'grab';
+                charEl.style.transition = 'left 0.35s ease';
+                charEl.style.left = '50%';
+                setTimeout(() => { if(charEl) charEl.style.transition = 'none'; }, 380);
+                const lz = get('mg-zone-left'); const rz = get('mg-zone-right');
+                if(lz) { lz.style.transform='translateY(-50%) scale(1)'; lz.style.boxShadow='0 6px 16px rgba(0,0,0,0.2)'; lz.style.borderColor='#2196F3'; }
+                if(rz) { rz.style.transform='translateY(-50%) scale(1)'; rz.style.boxShadow='0 6px 16px rgba(0,0,0,0.2)'; rz.style.borderColor='#2196F3'; }
+            };
         }
 
         function handleMgChoice(side, puz) {
             if(isProcessing) return;
             if(side === puz.flex) {
-                // בחירת מר גמיש — הצג תמונת הפעולה הגמישה
                 isProcessing = true;
                 playErrorSound();
                 let src = puz.success ? (MG_BASE + puz.success) : (MG_BASE + 'char.jpg');
@@ -1236,7 +1323,6 @@
                     } else { loadMgRound(); }
                 }, 3000);
             } else {
-                // בחירה פונקציונלית — הצלחה!
                 handleAnswer(true, null, loadMgRound, null);
             }
         }
