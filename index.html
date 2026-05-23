@@ -616,11 +616,14 @@
 
         function startGameEngine(level) {
             playClickSound(); currentDifficulty = level; currentStep = 0; mistakesInLevel = 0; isProcessing = false; isDrawing = false;
-            hideAllScreens(); show('active-game-container'); 
-            
-            let pContainer = get('active-progress-container'); pContainer.innerHTML=''; 
+            hideAllScreens(); show('active-game-container');
+            // restore chrome that faces game hides
+            get('active-game-title').style.display = '';
+            get('active-progress-container').style.display = '';
+
+            let pContainer = get('active-progress-container'); pContainer.innerHTML='';
             for(let i=0;i<4;i++) { let d=D.createElement('div'); d.className='progress-dot'; d.id=`active-progress-container-dot-${i}`; pContainer.appendChild(d); }
-            updateProgressUI(); get('game-workspace').innerHTML = ''; 
+            updateProgressUI(); get('game-workspace').innerHTML = '';
             
             setTimeout(() => {
                 if(currentGameMode === 'memory') initMemoryGame();
@@ -1147,6 +1150,9 @@
         let facesOrder = [];
         function initFacesGame() {
             get('active-game-title').textContent = facesMode === 'reverse' ? 'מי זה? 🔄' : 'מצא את הפנים! 📸';
+            // hide chrome — only exit btn + name + grid visible
+            get('active-game-title').style.display = 'none';
+            get('active-progress-container').style.display = 'none';
             if (facesMode === 'reverse') {
                 get('game-workspace').innerHTML = `
                     <div id="faces-photo-wrap" style="width:clamp(160px,38vmin,260px);height:clamp(160px,38vmin,260px);margin:0 auto 18px;border-radius:22px;overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,0.22);border:4px solid #fff;background:#eee;"></div>
@@ -1154,8 +1160,8 @@
                 `;
             } else {
                 get('game-workspace').innerHTML = `
-                    <div id="faces-name" style="font-size:clamp(39px,9vmin,72px);font-weight:900;background:rgba(255,255,255,0.95);padding:12px 30px;border-radius:20px;box-shadow:0 4px 15px rgba(0,0,0,0.12);margin-bottom:15px;color:#333;direction:${facesLang === 'he' ? 'rtl' : 'ltr'};border:3px solid #fff;"></div>
-                    <div id="faces-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:clamp(8px,2vmin,16px);width:100%;max-width:660px;margin:0 auto;"></div>
+                    <div id="faces-name" style="font-size:clamp(39px,9vmin,72px);font-weight:900;background:rgba(255,255,255,0.95);padding:10px 28px;border-radius:20px;box-shadow:0 4px 15px rgba(0,0,0,0.12);margin-bottom:10px;color:#333;direction:${facesLang === 'he' ? 'rtl' : 'ltr'};border:3px solid #fff;"></div>
+                    <div id="faces-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:clamp(8px,2vmin,16px);width:100%;max-width:800px;margin:0 auto;"></div>
                 `;
             }
             facesOrder = shuffle(createRange(facesPool.length)).slice(0, 4);
