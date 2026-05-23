@@ -486,6 +486,23 @@
         function playSuccessSound() { playTone(523.25, 'sine', 0.5, 0); playTone(659.25, 'sine', 0.5, 0.1); playTone(783.99, 'sine', 0.5, 0.2); playTone(1046.50, 'sine', 1.0, 0.3); }
         function playErrorSound() { playTone(300, 'triangle', 0.3, 0); playTone(250, 'triangle', 0.4, 0.15); }
         function playClickSound() { playTone(600, 'sine', 0.1, 0, 0.05); }
+        function playMgHappySound() {
+            if(!audioCtx) return; initAudio();
+            // Bouncy spring melody: quick low boing → ascending bounce → high finale
+            const seq = [
+                [261.63, 'triangle', 0.10, 0.00, 0.22],  // C4  – boing kick
+                [523.25, 'sine',     0.09, 0.09, 0.18],  // C5  – bounce up
+                [415.30, 'sine',     0.07, 0.17, 0.12],  // Ab4 – dip
+                [659.25, 'sine',     0.09, 0.23, 0.18],  // E5  – bounce up
+                [523.25, 'sine',     0.06, 0.31, 0.10],  // C5  – small dip
+                [783.99, 'sine',     0.09, 0.36, 0.20],  // G5  – bounce up
+                [1046.50,'sine',     0.12, 0.44, 0.20],  // C6  – pre-finale
+                [1318.51,'sine',     0.50, 0.55, 0.24],  // E6  – BIG finale
+                [1567.98,'sine',     0.30, 0.60, 0.10],  // G6  – sparkle
+                [2093.00,'sine',     0.20, 0.65, 0.06],  // C7  – twinkle
+            ];
+            seq.forEach(([f,t,d,s,v]) => playTone(f,t,d,s,v));
+        }
 
         const enc = encodeURIComponent;
         const audioFiles = {
@@ -1323,6 +1340,7 @@
                     } else { loadMgRound(); }
                 }, 3000);
             } else {
+                playMgHappySound();
                 handleAnswer(true, null, loadMgRound, null);
             }
         }
