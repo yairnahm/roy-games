@@ -34,6 +34,7 @@
         body.bg-bigger { background: linear-gradient(135deg, #ffe259 0%, #ffa751 100%); }
         body.bg-emotion { background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); }
         body.bg-faces { background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%); }
+        body.bg-mgamish { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
 
         #bg-animations { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1; overflow: hidden; }
         .bg-floating-icon { position: absolute; font-size: clamp(60px, 15vw, 150px); opacity: 0.15; animation: floatRandom 25s linear infinite;}
@@ -393,6 +394,7 @@
             <div class="hub-card" style="position:relative;" onclick="openDifficultyScreen('halfhalf', '✂️', 'השלם את החצי')"><span class="star-badge" data-game="halfhalf" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">✨</span><div class="hub-icon">✂️</div><div class="hub-title">השלם חצי</div></div>
             <div class="hub-card" style="position:relative;" onclick="openDifficultyScreen('chrono', '⏳', 'מהתחלה לסוף')"><span class="star-badge" data-game="chrono" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">⏳</div><div class="hub-title">רצף כרונולוגי</div></div>
             <div id="faces-hub-card" class="hub-card hidden" style="position:relative;" onclick="openFacesLangScreen()"><div class="hub-icon">📸</div><div class="hub-title">מי זה?</div></div>
+            <div class="hub-card" style="position:relative;" onclick="openMgGame()"><div class="hub-icon">🤸</div><div class="hub-title">מר גמיש</div></div>
         </div>
     </div>
 
@@ -465,7 +467,7 @@
     <div id="feedback-layer" class="hidden feedback-icon"></div>
 
     <script>
-        const bgIcons = { 'memory': ['🧠','💭','💡'], 'tracing': ['✏️','🎨','📐'], 'counting': ['🔢','🧮','➕'], 'sequence': ['🔄','✨','🎯'], 'fly': ['🪰','💨'], 'cop': ['🚓','🚨'], 'diff': ['🔎','👀'], 'oddone': ['🍎','🐶','🚗'], 'missing': ['A','B','C'], 'tools': ['🔨','🔧','🔩'], 'context': ['🧩','🖼️','🎨'], 'vparts': ['🚗','✈️','🚂','⛵','🚁'], 'habitat': ['🏠','🌳','🌊'], 'shadow': ['👤','🌑','👀'], 'halfhalf': ['✂️','🎨','🧩'], 'chrono': ['⏳','📅','🔄'], 'bigger': ['⚖️','🐘','🐭','🔢'], 'emotion': ['😄','😢','😡','😱'], 'faces': ['📸','❤️','👨‍👩‍👧‍👦','🤳'] };
+        const bgIcons = { 'memory': ['🧠','💭','💡'], 'tracing': ['✏️','🎨','📐'], 'counting': ['🔢','🧮','➕'], 'sequence': ['🔄','✨','🎯'], 'fly': ['🪰','💨'], 'cop': ['🚓','🚨'], 'diff': ['🔎','👀'], 'oddone': ['🍎','🐶','🚗'], 'missing': ['A','B','C'], 'tools': ['🔨','🔧','🔩'], 'context': ['🧩','🖼️','🎨'], 'vparts': ['🚗','✈️','🚂','⛵','🚁'], 'habitat': ['🏠','🌳','🌊'], 'shadow': ['👤','🌑','👀'], 'halfhalf': ['✂️','🎨','🧩'], 'chrono': ['⏳','📅','🔄'], 'bigger': ['⚖️','🐘','🐭','🔢'], 'emotion': ['😄','😢','😡','😱'], 'faces': ['📸','❤️','👨‍👩‍👧‍👦','🤳'], 'mgamish': ['🤸','💪','🌟','🤸‍♂️'] };
         function setAppBackground(theme) {
             D.body.className = 'bg-' + theme; let bg = get('bg-animations'); bg.innerHTML = '';
             if(theme !== 'hub' && bgIcons[theme]) {
@@ -597,10 +599,11 @@
                 else if(currentGameMode === 'bigger') initBiggerGame();
                 else if(currentGameMode === 'emotion') initEmotionGame();
                 else if(currentGameMode === 'faces') initFacesGame();
+                else if(currentGameMode === 'mgamish') initMgGame();
             }, 50);
         }
 
-        function quitActiveGame() { playClickSound(); hideAllScreens(); if(currentGameMode === 'emotion' || currentGameMode === 'missing') { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); } else if(currentGameMode === 'faces') { show('faces-mode-screen'); } else { show('unified-diff-screen'); } }
+        function quitActiveGame() { playClickSound(); hideAllScreens(); if(currentGameMode === 'emotion' || currentGameMode === 'missing' || currentGameMode === 'mgamish') { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); } else if(currentGameMode === 'faces') { show('faces-mode-screen'); } else { show('unified-diff-screen'); } }
         function updateProgressUI() { for(let i=0;i<4;i++) { let d = get(`active-progress-container-dot-${i}`); if(d){ if(i < currentStep) d.classList.add('fill'); else d.classList.remove('fill'); } } }
 
         function handleAnswer(isCorrect, btn, successCallback, failCallback, isScribble = false) {
@@ -613,7 +616,9 @@
                     try { if(typeof confetti === 'function') confetti({particleCount: 150, origin:{y:0.6}, zIndex:1000}); } catch(e){}
                     showKisses();
                     let fl = get('feedback-layer');
-                    if (currentGameMode === 'faces') {
+                    if (currentGameMode === 'mgamish') {
+                        fl.innerHTML = '<span style="font-size:clamp(90px,28vmin,180px);line-height:1;filter:drop-shadow(0 6px 12px rgba(0,0,0,0.3));">👍</span>';
+                    } else if (currentGameMode === 'faces') {
                         let nf = facesLang === 'he' ? 'nameHe' : 'nameEn';
                         let cp = facesPool[facesOrder[currentStep]];
                         let cName = cp ? (cp[nf] || cp.nameHe) : '';
@@ -646,7 +651,7 @@
         function closeLevelComplete() {
             playClickSound(); hideAllScreens();
             if(currentGameMode==='missing') { show('missing-lang-screen'); }
-            else if(currentGameMode==='emotion') { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); }
+            else if(currentGameMode==='emotion' || currentGameMode==='mgamish') { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); }
             else if(currentGameMode==='faces') { show('faces-mode-screen'); }
             else {
                 try {
@@ -1154,6 +1159,84 @@
                     let n = D.createElement('div'); n.className = 'option-number'; n.textContent = idx + 1;
                     w.appendChild(b); w.appendChild(n); grid.appendChild(w);
                 });
+            }
+        }
+
+        // ==========================================
+        // 19. מר גמיש
+        // ==========================================
+        const MG_BASE = './images/mg/';
+        const mgPuzzles = [
+            { top:'top0.jpg', left:'left0.jpg', right:'right0.jpg', success:'success0.jpg', flex:'left'  },
+            { top:'top1.jpg', left:'left1.jpg', right:'right1.jpg', success:'success1.jpg', flex:'left'  },
+            { top:'top2.jpg', left:'left2.jpg', right:'right2.jpg', success:'success2.jpg', flex:'right' },
+            { top:'top3.jpg', left:'left3.jpg', right:'right3.jpg', success:null,           flex:'right' },
+            { top:'top4.jpg', left:'left4.jpg', right:'right4.jpg', success:'success4.jpg', flex:'left'  },
+            { top:'top5.jpg', left:'left5.jpg', right:'right5.jpg', success:'success5.jpg', flex:'left'  },
+        ];
+        let mgOrder = [];
+
+        function openMgGame() {
+            playClickSound(); currentGameMode = 'mgamish'; startGameEngine(1);
+        }
+
+        function initMgGame() {
+            get('active-game-title').textContent = 'מר גמיש 🤸';
+            get('game-workspace').innerHTML = `
+                <img src="${MG_BASE}char.jpg" style="position:fixed;top:65px;left:10px;width:clamp(38px,8vmin,62px);height:clamp(38px,8vmin,62px);object-fit:cover;border-radius:50%;border:3px solid #fff;box-shadow:0 3px 10px rgba(0,0,0,0.25);z-index:50;">
+                <div id="mg-top-wrap" style="width:clamp(120px,34vmin,210px);border-radius:20px;overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,0.2);border:4px solid #fff;background:#f0f0f0;margin:0 auto 10px;">
+                    <img id="mg-top-img" style="width:100%;aspect-ratio:1/1;object-fit:contain;display:block;">
+                </div>
+                <div style="font-size:clamp(15px,3.2vmin,20px);font-weight:700;color:#1a5c3a;margin-bottom:10px;text-shadow:0 1px 3px rgba(255,255,255,0.8);">⬇️ לאן נלך עם מר גמיש?</div>
+                <div id="mg-choices" style="display:flex;gap:clamp(10px,3vmin,24px);width:100%;max-width:620px;margin:0 auto;justify-content:center;">
+                    <button id="mg-btn-left" style="flex:1;max-width:46%;border:5px solid #2196F3;border-radius:22px;padding:5px;cursor:pointer;background:#fff;box-shadow:0 6px 16px rgba(0,0,0,0.2);touch-action:manipulation;overflow:hidden;outline:none;transition:transform 0.1s;">
+                        <img id="mg-img-left" style="width:100%;aspect-ratio:1/1;object-fit:contain;display:block;border-radius:16px;background:#f5f5f5;">
+                    </button>
+                    <button id="mg-btn-right" style="flex:1;max-width:46%;border:5px solid #2196F3;border-radius:22px;padding:5px;cursor:pointer;background:#fff;box-shadow:0 6px 16px rgba(0,0,0,0.2);touch-action:manipulation;overflow:hidden;outline:none;transition:transform 0.1s;">
+                        <img id="mg-img-right" style="width:100%;aspect-ratio:1/1;object-fit:contain;display:block;border-radius:16px;background:#f5f5f5;">
+                    </button>
+                </div>
+            `;
+            mgOrder = shuffle(createRange(mgPuzzles.length)).slice(0, 4);
+            loadMgRound();
+        }
+
+        function loadMgRound() {
+            let puz = mgPuzzles[mgOrder[currentStep]];
+            get('mg-top-img').src  = MG_BASE + puz.top;
+            get('mg-img-left').src = MG_BASE + puz.left;
+            get('mg-img-right').src= MG_BASE + puz.right;
+            get('mg-btn-left').onclick  = () => { if(isProcessing) return; handleMgChoice('left',  puz); };
+            get('mg-btn-right').onclick = () => { if(isProcessing) return; handleMgChoice('right', puz); };
+        }
+
+        function handleMgChoice(side, puz) {
+            if(isProcessing) return;
+            if(side === puz.flex) {
+                // בחירת מר גמיש — הצג תמונת הפעולה הגמישה
+                isProcessing = true;
+                playErrorSound();
+                let src = puz.success ? (MG_BASE + puz.success) : (MG_BASE + 'char.jpg');
+                let fl = get('feedback-layer');
+                fl.style.background = 'rgba(0,0,0,0.88)';
+                fl.innerHTML = `<img src="${src}" style="max-width:88vw;max-height:78vh;border-radius:24px;object-fit:contain;box-shadow:0 8px 32px rgba(0,0,0,0.5);animation:popIn 0.4s ease-out;">`;
+                show('feedback-layer');
+                gameErrorTimeout = setTimeout(() => {
+                    fl.style.background = '';
+                    hide('feedback-layer');
+                    mistakesInLevel++;
+                    currentStep++; updateProgressUI();
+                    isProcessing = false;
+                    if(currentStep > 3) {
+                        let se = 4; if(mistakesInLevel===1) se=3; else if(mistakesInLevel===2) se=2; else if(mistakesInLevel>2) se=1;
+                        for(let i=1;i<=4;i++){let st=get(`star-${i}`);if(st)st.classList.remove('earned');if(i<=se)setTimeout(()=>{if(st)st.classList.add('earned');playClickSound();},i*300);}
+                        awardStar(currentGameMode, currentDifficulty);
+                        show('level-complete-overlay');
+                    } else { loadMgRound(); }
+                }, 3000);
+            } else {
+                // בחירה פונקציונלית — הצלחה!
+                handleAnswer(true, null, loadMgRound, null);
             }
         }
 
