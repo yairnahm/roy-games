@@ -812,10 +812,12 @@
         function goSeqOpts() { playClickSound(); get('sequence-target').style.transform='scale(0)'; get('sequence-target').style.opacity='0'; setTimeout(()=>{ get('active-game-title').textContent='מה היה הסדר הנכון? ❓'; hide('seq-btn'); let opts=[seqTarget]; let rem=seqIcons.filter(x=>seqTarget.indexOf(x)===-1); while(opts.length<4){let n=currentDifficulty===1?[seqTarget[rand(0,3)]].concat(shuffle(rem).slice(0,3)) : (currentDifficulty===2?[...shuffle(seqTarget).slice(0,3),rem[0]] : [...seqTarget]); n=shuffle(n); if(!opts.some(o=>o.join('')===n.join('')) && n.join('')!==seqTarget.join('')) opts.push(n);} opts=shuffle(opts); let c=get('sequence-opts'); c.innerHTML=''; show('sequence-opts'); opts.forEach((o,i)=>{let w=D.createElement('div'); w.className='option-wrapper'; w.style.width='100%'; w.style.maxWidth='550px'; w.style.position='relative'; let b=D.createElement('button'); b.className='sequence-option-btn'; b.innerHTML = o.map(x=>`<span class="seq-opt-item">${x}</span>`).join(''); b.onclick=(e)=>{if(isProcessing)return; handleAnswer(o.join('')===seqTarget.join(''), b, startSequenceRound, null);}; let n=D.createElement('div'); n.className='option-number'; n.textContent=i+1; w.appendChild(b); w.appendChild(n); c.appendChild(w); }); }, 500); }
 
         // 5+6. Path
-        let pathType = 'fly'; let pCanvas, pCtx; let pPath=[], pDist=0, pStrokes=[], pLast=null, pLen=0;
+        let pathType = 'fly'; let pCanvas, pCtx; let pPath=[], pDist=0, pStrokes=[], pLast=null, pLen=0; let flyGameCount=0;
         function initPathGame() {
             pathType = currentGameMode; get('active-game-title').textContent = pathType==='fly' ? 'הובילו את הזבוב אל הפה! 🪰' : 'השוטר רודף אחרי הגנב! 🚓';
-            let tIcon = pathType==='fly' ? `<img src="./images/fly-target.jpg" style="width:clamp(80px,16vw,130px);height:clamp(80px,16vw,130px);object-fit:cover;object-position:center 30%;border-radius:50%;border:4px solid #fff;box-shadow:0 4px 14px rgba(0,0,0,0.35);display:block;" alt="פה פתוח">` : `<div style="font-size:clamp(60px, 12vw, 90px); filter:drop-shadow(0 5px 5px rgba(0,0,0,0.2));">🏃‍♂️</div>`;
+            if(pathType==='fly') flyGameCount++;
+            let flyImg = (flyGameCount%2===0) ? './images/fly-geko.webp' : './images/fly-target.jpg';
+            let tIcon = pathType==='fly' ? `<img src="${flyImg}" style="width:clamp(80px,16vw,130px);height:clamp(80px,16vw,130px);object-fit:cover;object-position:center 30%;border-radius:50%;border:4px solid #fff;box-shadow:0 4px 14px rgba(0,0,0,0.35);display:block;" alt="פה פתוח">` : `<div style="font-size:clamp(60px, 12vw, 90px); filter:drop-shadow(0 5px 5px rgba(0,0,0,0.2));">🏃‍♂️</div>`;
             let aIcon = pathType==='fly' ? `<div style="font-size:clamp(60px, 12vw, 90px); animation:flap 0.15s infinite alternate; filter:drop-shadow(0 5px 5px rgba(0,0,0,0.2));">🪰</div>` : `<div style="font-size:clamp(60px, 12vw, 90px); filter:drop-shadow(0 5px 5px rgba(0,0,0,0.2)); position:relative;">🚓<div id="p-siren" class="siren-light"></div></div>`;
             get('game-workspace').innerHTML = `<div id="path-canvas-wrapper" class="canvas-container" style="aspect-ratio:2/1;"><canvas id="pathCanvas" class="drawing-canvas"></canvas><div id="p-target" class="path-character">${tIcon}</div><div id="p-actor" class="path-character">${aIcon}</div></div>`;
             pCanvas = get('pathCanvas'); pCtx = pCanvas.getContext('2d');
@@ -826,7 +828,7 @@
         }
         function getPpos(e){ let r=pCanvas.getBoundingClientRect(); let cx = e.clientX !== undefined ? e.clientX : (e.touches && e.touches.length > 0 ? e.touches[0].clientX : 0); let cy = e.clientY !== undefined ? e.clientY : (e.touches && e.touches.length > 0 ? e.touches[0].clientY : 0); return { x: (cx - r.left) * (800 / r.width), y: (cy - r.top) * (400 / r.height) }; }
         function loadPathRound() {
-            pCanvas.width=800; pCanvas.height=400; pCtx.clearRect(0,0,800,400); pStrokes=[]; pPath=[]; let aEl=get('p-actor'); let tEl=get('p-target'); aEl.style.transition='none'; aEl.style.opacity='1';
+            pCanvas.width=800; pCanvas.height=400; pCtx.clearRect(0,0,800,400); pStrokes=[]; pPath=[]; let aEl=get('p-actor'); let tEl=get('p-target'); aEl.style.transition='none'; aEl.style.opacity='1'; aEl.style.transform='';
             let sy=rand(20,80), ey=rand(20,80); let ax=pathType==='fly'?90:85; let tx=pathType==='fly'?10:15;
             if(currentDifficulty===1){ for(let i=0;i<=100;i+=2){let t=i/100; pPath.push({x:(ax-(ax-tx)*t)*8, y:(sy+(ey-sy)*t + Math.sin(t*Math.PI)*15)*4, h:false});} }
             else if(currentDifficulty===2){ sy=50;ey=50; for(let i=0;i<=100;i+=2){let t=i/100; pPath.push({x:(ax-(ax-tx)*t)*8, y:(50 + Math.sin(t*Math.PI*2)*25)*4, h:false});} }
