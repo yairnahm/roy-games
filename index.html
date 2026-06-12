@@ -1163,7 +1163,7 @@
             } else {
                 get('game-workspace').innerHTML = `
                     <div id="faces-name" style="font-size:clamp(39px,9vmin,72px);font-weight:900;background:rgba(255,255,255,0.95);padding:10px 28px;border-radius:20px;box-shadow:0 4px 15px rgba(0,0,0,0.12);margin-bottom:10px;color:#333;direction:${facesLang === 'he' ? 'rtl' : 'ltr'};border:3px solid #fff;"></div>
-                    <div id="faces-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:clamp(8px,2vmin,16px);width:100%;max-width:800px;margin:0 auto;"></div>
+                    <div id="faces-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:clamp(6px,1.5vmin,14px);width:100%;max-width:min(800px,98vw);margin:0 auto;"></div>
                 `;
             }
             facesOrder = shuffle(createRange(facesPool.length)).slice(0, 4);
@@ -1203,10 +1203,10 @@
                     let w = D.createElement('div'); w.style.position = 'relative';
                     let b = D.createElement('button');
                     b.style.cssText = 'width:100%;border:5px solid #4CAF50;border-radius:20px;cursor:pointer;padding:0;overflow:hidden;box-shadow:0 6px 14px rgba(0,0,0,0.18);transition:0.2s;touch-action:manipulation;outline:none;background:#f0f0f0;display:flex;flex-direction:column;';
-                    let imgWrap = D.createElement('div'); imgWrap.style.cssText = 'width:100%;aspect-ratio:1/1;overflow:hidden;flex-shrink:0;';
+                    let imgWrap = D.createElement('div'); imgWrap.style.cssText = 'width:100%;aspect-ratio:1/1;overflow:hidden;flex-shrink:0;max-height:clamp(100px,30vmin,220px);';
                     let img = D.createElement('img');
                     img.src = FACES_BASE + encodeURIComponent(o.file);
-                    img.style.cssText = 'width:100%;height:100%;object-fit:contain;display:block;pointer-events:none;background:#f0f0f0;';
+                    img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;background:#f0f0f0;';
                     img.onerror = function() { this.style.display='none'; imgWrap.innerHTML += '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:clamp(40px,10vw,70px);pointer-events:none;">🖼️</div>'; };
                     imgWrap.appendChild(img);
                     let nameBar = D.createElement('div');
