@@ -50,7 +50,7 @@
         h2 { font-size: clamp(20px, 4.5vmin, 35px); color: #333; background: #ffffffcc; display: inline-block; padding: 1.5vmin 4vmin; border-radius: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin: 1vmin; }
 
         .sys-btn { position: fixed; top: 10px; left: 10px; z-index: 1000; background: rgba(255,255,255,0.9); border: 2px solid #ccc; border-radius: 15px; padding: 8px 15px; font-family: 'Rubik', sans-serif; font-weight: bold; font-size: clamp(14px, 3vw, 18px); color: #333; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: 0.2s; }
-        .action-btn { font-family: 'Rubik', sans-serif; font-size: clamp(20px, 4vmin, 30px); padding: 2vmin 6vmin; background: linear-gradient(to bottom, #ff9a9e 0%, #fecfef 100%); color: #d81159; border: 4px solid #fff; border-radius: 50px; cursor: pointer; box-shadow: 0 8px 15px rgba(0,0,0,0.2); font-weight: 900; margin-top: 3vmin; transition: 0.2s; outline: none; }
+        .action-btn { font-family: 'Rubik', sans-serif; font-size: clamp(18px, 3.5vmin, 28px); padding: 1.5vmin 5vmin; background: linear-gradient(to bottom, #ff9a9e 0%, #fecfef 100%); color: #d81159; border: 4px solid #fff; border-radius: 50px; cursor: pointer; box-shadow: 0 8px 15px rgba(0,0,0,0.2); font-weight: 900; margin-top: 1.5vmin; flex-shrink: 0; transition: 0.2s; outline: none; }
         .action-btn.dimmed { opacity: 0.5; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
 
         #loader-wrapper { width: 80%; max-width: 400px; height: 15px; background: #fff; border-radius: 10px; margin-top: 20px; border: 2px solid #ccc; overflow: hidden; box-shadow: inset 0 2px 5px rgba(0,0,0,0.1); margin-left: auto; margin-right: auto;}
@@ -64,7 +64,7 @@
         .progress-dot.fill { background: #4CAF50; transform: scale(1.3); border-color: #C8E6C9; }
 
         .hub-container, .grid-container { display: flex; justify-content: center; gap: 3vmin; flex-wrap: wrap; margin-top: 3vmin; max-width: 900px; margin-left: auto; margin-right: auto; }
-        .hub-card, .grid-card { background: white; border: 4px solid #fff; border-radius: 25px; padding: 3vmin; width: clamp(100px, 18vw, 160px); cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.15); transition: 0.3s; display: flex; flex-direction: column; align-items: center; }
+        .hub-card, .grid-card { background: white; border: 4px solid #fff; border-radius: 25px; padding: 2vmin; width: clamp(85px, 15vw, 145px); cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.15); transition: 0.3s; display: flex; flex-direction: column; align-items: center; }
         .hub-icon, .grid-card-icon { font-size: clamp(40px, 7vw, 60px); margin-bottom: 1vmin; }
         .hub-title, .grid-card-name { font-size: clamp(14px, 3vw, 20px); font-weight: 900; color: #333; line-height: 1.1; }
         .level-card { border-color: #9C27B0; }
@@ -80,7 +80,8 @@
         .option-btn * { pointer-events: none; }
         .dimmed { opacity: 0.4; filter: grayscale(100%); pointer-events: none; border-color: #adb5bd; transform: scale(0.95); }
 
-        #game-workspace { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 900px; margin: 0 auto; }
+        #active-game-container { display: flex; flex-direction: column; max-height: 100svh; overflow: hidden; box-sizing: border-box; }
+        #game-workspace { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 900px; margin: 0 auto; flex: 1; overflow: hidden; }
         .opts-row { display: flex; justify-content: center; gap: clamp(10px, 3vw, 20px); flex-wrap: wrap; background: rgba(255, 255, 255, 0.6); border-radius: 25px; padding: 2vmin; margin-top: 2vmin; box-shadow: inset 0 0 20px rgba(255,255,255,0.5); width: 100%; max-width: 800px; }
 
         /* קנבסים ויסודות ציור */
@@ -293,6 +294,35 @@
             } catch(e) {}
         }
 
+        // ===== SMART FACE CROP =====
+        const FACE_POSITIONS = {
+            "aba-savta-arya.jpg": "51.4% 34.2%",
+            "aba-savta.jpg":      "68.7% 25.9%",
+            "aba-yair.jpg":       "55.6% 43.9%",
+            "adi.jpg":            "39.7% 31.4%",
+            "alin.jpg":           "57.3% 46.9%",
+            "arya-aba.jpg":       "29.6% 59.3%",
+            "arya.jpg":           "54.7% 15.6%",
+            "fly-target.jpg":     "55.1% 37.7%",
+            "roy-aba-yair.jpg":   "50% 15%",
+            "roy-abas.jpg":       "27.5% 17.4%",
+            "roy-emily.jpg":      "42.3% 22.6%",
+            "roy-ohad.jpg":       "34.1% 5.2%",
+            "roy-yahli-alin.jpg": "63.6% 16.6%",
+            "roy-yona.jpg":       "45.1% 32.0%",
+            "roy.jpg":            "51.0% 49.2%",
+            "saba.jpg":           "52.8% 51.6%",
+            "savta-roy.jpg":      "24.9% 18.2%",
+            "savta.jpg":          "65.5% 51.8%",
+            "yahel.jpg":          "52.0% 32.2%",
+            "yahli.jpg":          "55.6% 45.7%"
+        };
+        function applySmartCrop(img) {
+            var fname = decodeURIComponent(img.src.split('/').pop());
+            var pos = FACE_POSITIONS[fname] || '50% 15%';
+            img.style.objectPosition = pos;
+        }
+
         let _currentAudio = null;
         function playAudio(filename) {
             try {
@@ -425,10 +455,10 @@
         </div>
     </div>
 
-    <div id="faces-summary-screen" class="hidden" style="display:flex;flex-direction:column;align-items:center;padding:16px 12px;">
-        <h2 style="margin:8px 0 16px;font-size:clamp(22px,5vmin,36px);">אלה הם! 🌟</h2>
-        <div id="faces-summary-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:clamp(10px,3vmin,20px);width:100%;max-width:580px;margin:0 auto 20px;"></div>
-        <button class="action-btn" onclick="showFacesLevelComplete()" style="font-size:clamp(18px,4vw,26px);padding:14px 36px;">המשך ▶</button>
+    <div id="faces-summary-screen" class="hidden" style="display:flex;flex-direction:column;align-items:center;padding:8px 12px;height:100svh;max-height:100svh;overflow:hidden;box-sizing:border-box;">
+        <h2 style="margin:4px 0 8px;font-size:clamp(18px,4vmin,30px);flex-shrink:0;">אלה הם! 🌟</h2>
+        <div id="faces-summary-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:clamp(6px,2vmin,14px);width:100%;max-width:580px;margin:0 auto;flex:1;overflow:hidden;"></div>
+        <button class="action-btn" onclick="showFacesLevelComplete()" style="flex-shrink:0;margin-top:1vmin;">המשך ▶</button>
     </div>
 
     <div id="missing-lang-screen" class="hidden" style="display:flex; flex-direction:column; align-items:center;">
@@ -1124,7 +1154,8 @@
                 let card = D.createElement('div');
                 card.style.cssText = 'background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,0.15);border:4px solid #4CAF50;cursor:pointer;transition:transform 0.15s;';
                 card.onpointerdown = () => { playAudio(facesLang + '/' + p.file.replace('.jpg','') + '.mp3'); };
-                card.innerHTML = `<img src="${FACES_BASE + encodeURIComponent(p.file)}" style="width:100%;aspect-ratio:1/1;object-fit:contain;background:#f0f0f0;display:block;"><div style="padding:8px 6px;font-size:clamp(21px,4.5vmin,30px);font-weight:900;text-align:center;color:#333;direction:${facesLang==='he'?'rtl':'ltr'};">${name}</div>`;
+                var fpos = FACE_POSITIONS[p.file] || '50% 15%';
+                card.innerHTML = `<img src="${FACES_BASE + encodeURIComponent(p.file)}" style="width:100%;aspect-ratio:1/1;max-height:clamp(80px,22vmin,170px);object-fit:cover;object-position:${fpos};background:#f0f0f0;display:block;"><div style="padding:4px 6px;font-size:clamp(14px,3.2vmin,22px);font-weight:900;text-align:center;color:#333;direction:${facesLang==='he'?'rtl':'ltr'};">${name}</div>`;
                 grid.appendChild(card);
             });
         }
@@ -1180,9 +1211,10 @@
                 let wrap = get('faces-photo-wrap'); wrap.innerHTML = '';
                 let img = D.createElement('img');
                 img.src = FACES_BASE + encodeURIComponent(correct.file);
-                img.style.cssText = 'width:100%;height:100%;object-fit:contain;background:#f0f0f0;display:block;';
+                img.style.cssText = 'width:100%;height:100%;object-fit:cover;object-position:top center;display:block;';
                 img.onerror = function() { wrap.innerHTML = '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:70px;">🖼️</div>'; };
                 wrap.appendChild(img);
+                applySmartCrop(img);
                 let opts = shuffle([correct].concat(shuffle(wrongPool).slice(0, 3)));
                 let grid = get('faces-name-grid'); grid.innerHTML = '';
                 opts.forEach((o) => {
@@ -1206,9 +1238,10 @@
                     let imgWrap = D.createElement('div'); imgWrap.style.cssText = 'width:100%;aspect-ratio:1/1;overflow:hidden;flex-shrink:0;max-height:clamp(100px,30vmin,220px);';
                     let img = D.createElement('img');
                     img.src = FACES_BASE + encodeURIComponent(o.file);
-                    img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;background:#f0f0f0;';
+                    img.style.cssText = 'width:100%;height:100%;object-fit:cover;object-position:top center;display:block;pointer-events:none;background:#f0f0f0;';
                     img.onerror = function() { this.style.display='none'; imgWrap.innerHTML += '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:clamp(40px,10vw,70px);pointer-events:none;">🖼️</div>'; };
                     imgWrap.appendChild(img);
+                    applySmartCrop(img);
                     let nameBar = D.createElement('div');
                     nameBar.style.cssText = 'background:rgba(25,25,55,0.82);padding:3px 4px 5px;text-align:center;pointer-events:none;width:100%;';
                     nameBar.innerHTML = `<div style="font-size:clamp(13px,3.5vmin,22px);font-weight:800;color:#fff;direction:${facesLang==='he'?'rtl':'ltr'};line-height:1.3;text-shadow:0 1px 3px rgba(0,0,0,0.6);padding:0 4px;">${oName}</div>`;
