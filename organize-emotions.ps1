@@ -1,10 +1,6 @@
-# הרץ קובץ זה מ-PowerShell כדי לארגן תמונות הרגשות
-# Run: Right-click → Run with PowerShell
-
 $dl  = "$env:USERPROFILE\Downloads"
 $dst = "$env:USERPROFILE\Desktop\roy-games\images\emotions"
 
-# צור תיקיות
 New-Item -ItemType Directory -Force "$dst\boy" | Out-Null
 New-Item -ItemType Directory -Force "$dst\girl" | Out-Null
 
@@ -19,31 +15,20 @@ $names = @(
 
 $moved = 0
 foreach ($n in $names) {
-    $gender = $n.Split('-')[0]                         # boy or girl
-    $part   = $n -replace "^$gender-", ""             # face-happy, eyes-sad, etc.
-
-    # נסה PNG ואחר כך JPG ואחר כך WEBP
+    $gender = $n.Split('-')[0]
+    $part   = $n -replace "^$gender-", ""
     $src = $null
     foreach ($ext in @('png','jpg','jpeg','webp')) {
         $candidate = Join-Path $dl "$n.$ext"
         if (Test-Path $candidate) { $src = $candidate; break }
     }
-
     if ($src) {
         $dest = Join-Path $dst "$gender\$part.jpg"
         Copy-Item $src $dest -Force
         $moved++
-        Write-Host "✅ $n → $gender/$part.jpg"
+        Write-Host "OK: $n -> $gender/$part.jpg"
     } else {
-        Write-Host "❌ לא נמצא: $n (Downloads)"
+        Write-Host "MISSING: $n"
     }
 }
-
-Write-Host ""
-Write-Host "הועברו $moved מתוך $($names.Count) תמונות."
-if ($moved -lt $names.Count) {
-    Write-Host ""
-    Write-Host "תמונות שחסרות — אם שמרת ידנית מ-ChatGPT, הן עשויות להיות"
-    Write-Host "בשם אחר. בדוק את תיקיית ה-Downloads ושנה שמות בהתאם."
-}
-Read-Host "לחץ Enter לסיום"
+Write-Host "Done: $moved of $($names.Count) moved."
