@@ -1322,24 +1322,19 @@
 
             get('game-workspace').innerHTML = `
                 <div style="display:flex;flex-direction:column;align-items:center;
-                            gap:clamp(8px,2vmin,16px);width:100%;max-width:600px;">
-                    <!-- פנים עם כיסוי על החלק הנסתר -->
-                    <div style="position:relative;width:clamp(140px,30vmin,210px);
-                                aspect-ratio:1/1;border-radius:20px;overflow:hidden;
-                                box-shadow:0 8px 25px rgba(0,0,0,0.3);border:6px solid #fff;
+                            gap:clamp(10px,2.5vmin,18px);width:100%;max-width:620px;">
+                    <!-- פנים מכוסות (תמונה מוכנה מראש) -->
+                    <div style="width:clamp(180px,40vmin,280px);aspect-ratio:1/1;
+                                border-radius:22px;overflow:hidden;
+                                box-shadow:0 8px 28px rgba(0,0,0,0.3);border:6px solid #fff;
                                 background:#f0f0f0;flex-shrink:0;">
                         <img id="emp-face-img" style="width:100%;height:100%;object-fit:cover;display:block;">
-                        <div id="emp-cover"
-                             style="position:absolute;background:rgba(255,255,255,0.93);
-                                    border:3px dashed #bbb;border-radius:10px;
-                                    display:flex;align-items:center;justify-content:center;
-                                    font-size:clamp(18px,4vmin,28px);">❓</div>
                     </div>
                     <!-- שאלה -->
                     <div id="emp-question"
-                         style="font-size:clamp(16px,3.5vmin,22px);font-weight:900;color:#fff;
+                         style="font-size:clamp(17px,3.8vmin,24px);font-weight:900;color:#fff;
                                 text-shadow:0 2px 4px rgba(0,0,0,0.4);background:rgba(0,0,0,0.25);
-                                padding:5px 16px;border-radius:14px;text-align:center;"></div>
+                                padding:6px 18px;border-radius:14px;text-align:center;"></div>
                     <!-- אפשרויות בשורה -->
                     <div id="emp-opts"
                          style="display:flex;flex-direction:row;justify-content:center;
@@ -1353,26 +1348,13 @@
             const round = emPartsRounds[currentStep];
             if (!round) return;
 
-            // פנים
+            // פנים — גרסה עם הכיסוי אפוי בתוך התמונה
+            const suffix  = round.qtype === 'eyes' ? 'noeyes' : 'nomouth';
             const faceImg = get('emp-face-img');
-            faceImg.src   = `${EMPARTS_BASE}${round.gender}/face-${round.faceEmo}.png`;
+            faceImg.src   = `${EMPARTS_BASE}${round.gender}/face-${round.faceEmo}-${suffix}.jpg`;
             faceImg.style.animation = 'none';
             void faceImg.offsetWidth;
             faceImg.style.animation = 'popIn 0.45s';
-
-            // כיסוי על עיניים או פה
-            const cover = get('emp-cover');
-            if (round.qtype === 'eyes') {
-                cover.style.top    = '28%';
-                cover.style.left   = '8%';
-                cover.style.width  = '84%';
-                cover.style.height = '26%';
-            } else {
-                cover.style.top    = '60%';
-                cover.style.left   = '10%';
-                cover.style.width  = '80%';
-                cover.style.height = '26%';
-            }
 
             // שאלה
             const qHe = { eyes: 'איזה עיניים שייכות?', mouth: 'איזה פה שייך?' };
@@ -1383,11 +1365,11 @@
             opts.innerHTML = '';
             round.options.forEach(emo => {
                 const isCorrect = (emo === round.faceEmo);
-                const imgSrc    = `${EMPARTS_BASE}${round.gender}/${round.qtype}-${emo}.png`;
+                const imgSrc    = `${EMPARTS_BASE}${round.gender}/${round.qtype}-${emo}.jpg`;
 
                 const btn = D.createElement('button');
                 btn.className = 'emp-opt-btn';
-                btn.style.width = 'clamp(110px,26vmin,170px)';
+                btn.style.width = 'clamp(120px,28vmin,185px)';
                 btn.style.aspectRatio = '3/1';
 
                 const img = D.createElement('img');
