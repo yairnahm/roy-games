@@ -1531,4 +1531,13 @@
                         awardStar(currentGameMode, currentDifficulty);
                         show('level-complete-overlay');
                     } else { loadMgRound(); }
-  
+                }, 3000);
+            } else {
+                playMgHappySound();
+                handleAnswer(true, null, loadMgRound, null);
+            }
+        }
+
+    </script>
+</body>
+</html>
