@@ -35,6 +35,21 @@
         body.bg-emotion { background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); }
         body.bg-faces { background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%); }
         body.bg-mgamish { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+        body.bg-emparts { background: linear-gradient(135deg, #f9d423 0%, #ff4e50 100%); }
+
+        /* ---- emotion-parts game ---- */
+        #emp-face-wrap { flex-shrink: 0; }
+        .emp-opt-btn {
+            width: 100%; aspect-ratio: 3/1; border: 5px solid rgba(255,255,255,0.65);
+            border-radius: 16px; overflow: hidden; cursor: pointer; padding: 0;
+            background: #fff; box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+            transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+            touch-action: manipulation; outline: none; animation: popIn 0.35s;
+        }
+        .emp-opt-btn:hover { transform: scale(1.03); box-shadow: 0 7px 20px rgba(0,0,0,0.22); }
+        .emp-opt-btn img { width:100%; height:100%; object-fit:cover; display:block; pointer-events:none; }
+        .emp-opt-btn.correct-flash { border-color: #4CAF50; box-shadow: 0 0 0 4px #4CAF50; }
+        .emp-opt-btn.wrong-flash  { border-color: #f44336; animation: shake 0.4s; }
 
         #bg-animations { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1; overflow: hidden; }
         .bg-floating-icon { position: absolute; font-size: clamp(60px, 15vw, 150px); opacity: 0.15; animation: floatRandom 25s linear infinite;}
@@ -425,6 +440,7 @@
             <div class="hub-card" style="position:relative;" onclick="openDifficultyScreen('halfhalf', '✂️', 'השלם את החצי')"><span class="star-badge" data-game="halfhalf" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">✨</span><div class="hub-icon">✂️</div><div class="hub-title">השלם חצי</div></div>
             <div class="hub-card" style="position:relative;" onclick="openDifficultyScreen('chrono', '⏳', 'מהתחלה לסוף')"><span class="star-badge" data-game="chrono" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">⏳</div><div class="hub-title">רצף כרונולוגי</div></div>
             <div id="faces-hub-card" class="hub-card hidden" style="position:relative;" onclick="openFacesLangScreen()"><div class="hub-icon">📸</div><div class="hub-title">מי זה?</div></div>
+            <div class="hub-card" style="position:relative;" onclick="openDifficultyScreen('emparts','👁️','פנים ורגשות')"><div class="hub-icon">👁️</div><div class="hub-title">פנים ורגשות</div></div>
             <div class="hub-card" style="position:relative;" onclick="openMgGame()"><div class="hub-icon">🤸</div><div class="hub-title">מר גמיש</div></div>
         </div>
     </div>
@@ -635,6 +651,10 @@
                 startGameEngine(1); // עוקף את מסך הרמות למשחק רגשות
                 return;
             }
+            if(gameId === 'emparts') {
+                startGameEngine(1); // עוקף את מסך הרמות
+                return;
+            }
             get('unified-diff-title').textContent = `${icon} ${title}`; 
             let advGames = ['counting', 'oddone', 'diff', 'bigger'];
             get('lvl-4-btn').style.display = advGames.indexOf(gameId) > -1 ? 'flex' : 'none';
@@ -674,12 +694,13 @@
                 else if(currentGameMode === 'chrono') initChronoGame();
                 else if(currentGameMode === 'bigger') initBiggerGame();
                 else if(currentGameMode === 'emotion') initEmotionGame();
+                else if(currentGameMode === 'emparts') initEmPartsGame();
                 else if(currentGameMode === 'faces') initFacesGame();
                 else if(currentGameMode === 'mgamish') initMgGame();
             }, 50);
         }
 
-        function quitActiveGame() { playClickSound(); hideAllScreens(); if(currentGameMode === 'emotion' || currentGameMode === 'missing' || currentGameMode === 'mgamish') { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); } else if(currentGameMode === 'faces') { show('faces-mode-screen'); } else { show('unified-diff-screen'); } }
+        function quitActiveGame() { playClickSound(); hideAllScreens(); if(currentGameMode === 'emotion' || currentGameMode === 'emparts' || currentGameMode === 'missing' || currentGameMode === 'mgamish') { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); } else if(currentGameMode === 'faces') { show('faces-mode-screen'); } else { show('unified-diff-screen'); } }
         function updateProgressUI() { for(let i=0;i<4;i++) { let d = get(`active-progress-container-dot-${i}`); if(d){ if(i < currentStep) d.classList.add('fill'); else d.classList.remove('fill'); } } }
 
         function handleAnswer(isCorrect, btn, successCallback, failCallback, isScribble = false) {
@@ -727,7 +748,7 @@
         function closeLevelComplete() {
             playClickSound(); hideAllScreens();
             if(currentGameMode==='missing') { show('missing-lang-screen'); }
-            else if(currentGameMode==='emotion' || currentGameMode==='mgamish') { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); }
+            else if(currentGameMode==='emotion' || currentGameMode==='emparts' || currentGameMode==='mgamish') { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); }
             else if(currentGameMode==='faces') { show('faces-mode-screen'); }
             else {
                 try {
@@ -1273,6 +1294,103 @@
 
         function openMgGame() {
             playClickSound(); currentGameMode = 'mgamish'; startGameEngine(1);
+        }
+
+        // ==========================================
+        // משחק פנים ורגשות — התאמת עיניים / פה לפנים
+        // תמונות: images/emotions/{boy|girl}/{face|eyes|mouth}-{emotion}.jpg
+        // ==========================================
+        const EMPARTS_BASE = './images/emotions/';
+        const EM_EMOTIONS  = ['happy','sad','angry','surprised','scared'];
+        let emPartsRounds  = [];   // [{gender, faceEmo, qtype, options:[emo,...]}]
+
+        function initEmPartsGame() {
+            get('active-game-title').textContent = 'פנים ורגשות 👁️';
+
+            // 4 rounds: 2 boy + 2 girl, 2 eyes + 2 mouth, random order
+            const genders  = shuffle(['boy','boy','girl','girl']);
+            const qtypes   = shuffle(['eyes','eyes','mouth','mouth']);
+            emPartsRounds  = [];
+            for (let i = 0; i < 4; i++) {
+                const gender   = genders[i];
+                const qtype    = qtypes[i];
+                const faceEmo  = EM_EMOTIONS[Math.floor(Math.random() * EM_EMOTIONS.length)];
+                const wrongs   = shuffle(EM_EMOTIONS.filter(e => e !== faceEmo)).slice(0, 2);
+                const options  = shuffle([faceEmo, ...wrongs]);
+                emPartsRounds.push({ gender, faceEmo, qtype, options });
+            }
+
+            get('game-workspace').innerHTML = `
+                <div style="display:flex;flex-direction:row;gap:clamp(8px,2vmin,18px);align-items:center;
+                            width:100%;max-width:min(860px,98vw);justify-content:center;flex:1;min-height:0;">
+                    <!-- פנים + שאלה -->
+                    <div style="display:flex;flex-direction:column;align-items:center;gap:clamp(6px,1.4vmin,12px);flex-shrink:0;">
+                        <div id="emp-face-wrap"
+                             style="width:clamp(95px,24vmin,175px);aspect-ratio:1/1;border-radius:20px;
+                                    overflow:hidden;box-shadow:0 8px 25px rgba(0,0,0,0.28);
+                                    border:5px solid #fff;background:#f0f0f0;">
+                            <img id="emp-face-img" style="width:100%;height:100%;object-fit:cover;display:block;">
+                        </div>
+                        <div id="emp-question"
+                             style="font-size:clamp(11px,2.4vmin,17px);font-weight:900;color:#fff;
+                                    text-shadow:0 2px 4px rgba(0,0,0,0.35);background:rgba(0,0,0,0.25);
+                                    padding:5px 10px;border-radius:12px;text-align:center;
+                                    max-width:clamp(95px,24vmin,175px);line-height:1.3;">
+                        </div>
+                    </div>
+                    <!-- חץ -->
+                    <div style="font-size:clamp(18px,3.8vmin,34px);flex-shrink:0;opacity:0.8;">👉</div>
+                    <!-- אפשרויות -->
+                    <div id="emp-opts"
+                         style="flex:1;min-width:0;display:flex;flex-direction:column;
+                                gap:clamp(5px,1.2vmin,10px);">
+                    </div>
+                </div>
+            `;
+            loadEmPartsRound();
+        }
+
+        function loadEmPartsRound() {
+            const round = emPartsRounds[currentStep];
+            if (!round) return;
+
+            // פנים
+            const faceImg = get('emp-face-img');
+            faceImg.src   = `${EMPARTS_BASE}${round.gender}/face-${round.faceEmo}.jpg`;
+            faceImg.style.animation = 'none';
+            void faceImg.offsetWidth;
+            faceImg.style.animation = 'popIn 0.45s';
+
+            // שאלה
+            const qHebrew = { eyes: 'איזה עיניים\nשייכות?', mouth: 'איזה פה\nשייך?' };
+            get('emp-question').innerHTML = (qHebrew[round.qtype] || '').replace('\n','<br>');
+
+            // אפשרויות
+            const opts = get('emp-opts');
+            opts.innerHTML = '';
+            round.options.forEach(emo => {
+                const isCorrect = (emo === round.faceEmo);
+                const imgSrc    = `${EMPARTS_BASE}${round.gender}/${round.qtype}-${emo}.jpg`;
+
+                const btn = D.createElement('button');
+                btn.className = 'emp-opt-btn';
+
+                const img = D.createElement('img');
+                img.src = imgSrc;
+                img.alt = emo;
+                btn.appendChild(img);
+
+                btn.onclick = () => {
+                    if (isProcessing) return;
+                    if (isCorrect) {
+                        btn.classList.add('correct-flash');
+                    } else {
+                        btn.classList.add('wrong-flash');
+                    }
+                    handleAnswer(isCorrect, btn, loadEmPartsRound, null);
+                };
+                opts.appendChild(btn);
+            });
         }
 
         function initMgGame() {
