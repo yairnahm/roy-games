@@ -183,16 +183,15 @@
         #star-wallet-display { animation: starPulse 3s ease-in-out infinite; }
 
         /* ── משחק לחלוק ולהצליח ── */
-        .sharing-scene { display:flex; flex-direction:column; align-items:center; gap:2vmin; padding:0 2vmin; max-width:640px; margin:0 auto; width:100%; }
-        .sharing-situation { width:min(88vw,380px); height:min(50vw,230px); object-fit:cover; border-radius:20px; box-shadow:0 8px 28px rgba(0,0,0,0.18); border:4px solid #fff; flex-shrink:0; }
-        .sharing-question { font-size:clamp(15px,3.2vmin,20px); font-weight:700; color:#333; margin:0; line-height:1.4; text-align:center; max-width:520px; background:rgba(255,255,255,0.88); padding:1.8vmin 3vmin; border-radius:16px; cursor:pointer; }
-        .sharing-img-choices { display:flex; gap:4vmin; justify-content:center; margin-top:1vmin; }
-        .sharing-img-btn { width:clamp(130px,38vw,210px); height:clamp(100px,28vw,165px); border:5px solid rgba(255,255,255,0.85); border-radius:18px; overflow:hidden; cursor:pointer; padding:0; background:#fff; box-shadow:0 6px 18px rgba(0,0,0,0.2); transition:transform 0.15s,box-shadow 0.15s,border-color 0.2s; touch-action:manipulation; outline:none; animation:popIn 0.35s; }
+        .sharing-scene { display:flex; flex-direction:column; align-items:center; gap:1.5vmin; padding:0 1vmin; max-width:700px; margin:0 auto; width:100%; }
+        .sharing-question { font-size:clamp(12px,2.4vmin,16px); font-weight:700; color:#333; margin:0; line-height:1.35; text-align:center; max-width:90vw; background:rgba(255,255,255,0.88); padding:1.2vmin 2.5vmin; border-radius:12px; cursor:pointer; }
+        .sharing-img-choices { display:flex; gap:3vmin; justify-content:center; width:100%; }
+        .sharing-img-btn { width:min(44vw,290px); height:min(32vw,210px); border:5px solid rgba(255,255,255,0.85); border-radius:20px; overflow:hidden; cursor:pointer; padding:0; background:#fff; box-shadow:0 8px 22px rgba(0,0,0,0.2); transition:transform 0.15s,box-shadow 0.15s,border-color 0.2s; touch-action:manipulation; outline:none; animation:popIn 0.35s; flex-shrink:0; }
         .sharing-img-btn img { width:100%; height:100%; object-fit:cover; pointer-events:none; display:block; }
-        .sharing-img-btn:hover { transform:scale(1.04); box-shadow:0 10px 24px rgba(0,0,0,0.28); }
+        .sharing-img-btn:hover { transform:scale(1.04); box-shadow:0 12px 28px rgba(0,0,0,0.28); }
         .sharing-img-btn:active { transform:scale(0.96); }
         .sharing-img-btn:disabled { opacity:0.4; cursor:not-allowed; transform:none; }
-        .sharing-img-btn.correct-flash { border-color:#4CAF50; box-shadow:0 0 0 4px #4CAF50; }
+        .sharing-img-btn.correct-flash { border-color:#4CAF50; box-shadow:0 0 0 6px #4CAF50; }
         .sharing-img-btn.wrong-flash { border-color:#f44336; animation:shake 0.4s; }
     </style>
 </head>
@@ -1745,54 +1744,100 @@
         // ── לחלוק ולהצליח ──
         function initSharingGame() {
             const SCENES = [
-                { question:'אורי ונועם רוצים לשחק עם המשאית האדומה, אבל יש רק אחת. מה יעשה אורי?', situation:'images/sharing/03_scene1_truck_basic.webp', badImg:'images/sharing/04_scene1_truck_bad_choice.webp', goodImg:'images/sharing/05_scene1_truck_good_choice.webp' },
-                { question:'אורי משחק בטאבלט. נועם רוצה גם לשחק. מה יעשה אורי?', situation:'images/sharing/06_scene2_tablet_basic.webp', badImg:'images/sharing/07_scene2_tablet_bad_choice.webp', goodImg:'images/sharing/08_scene2_tablet_good_choice.webp' },
-                { question:'נשארה עוגייה אחת. גם אורי וגם נועם רוצים אותה. מה יעשה אורי?', situation:'images/sharing/09_scene3_cookie_basic.webp', badImg:'images/sharing/10_scene3_cookie_bad_choice.webp', goodImg:'images/sharing/11_scene3_cookie_good_choice.webp' },
-                { question:'אורי רוצה לרדת בגלשן, אבל ילדים אחרים מחכים בתור. מה יעשה אורי?', situation:'images/sharing/12_scene4_playground_basic.webp', badImg:'images/sharing/13_scene4_playground_bad_choice.webp', goodImg:'images/sharing/14_scene4_playground_good_choice.webp' },
+                {
+                    question: 'אורי ונועם רוצים לשחק עם המשאית האדומה, אבל יש רק אחת. מה יעשה אורי?',
+                    speakQ:   'אורי ונועם רוצים לשחק עם המשאית האדומה, אבל יש רק אחת. מה יעשה אורי?',
+                    feedback: 'נכון מאוד! אורי ונועם משחקים יחד עם המשאית, כל אחד בתורו!',
+                    badImg:  'images/sharing/04_scene1_truck_bad_choice.webp',
+                    goodImg: 'images/sharing/05_scene1_truck_good_choice.webp'
+                },
+                {
+                    question: 'אורי משחק בטאבלט. נועם רוצה גם לשחק. מה יעשה אורי?',
+                    speakQ:   'אורי משחק ב tablet. נועם רוצה גם לשחק. מה יעשה אורי?',
+                    feedback: 'כל הכבוד! אורי ונועם משחקים ב tablet בתורות. כך חברים אמיתיים עושים!',
+                    badImg:  'images/sharing/07_scene2_tablet_bad_choice.webp',
+                    goodImg: 'images/sharing/08_scene2_tablet_good_choice.webp'
+                },
+                {
+                    question: 'נשארה עוגייה אחת. גם אורי וגם נועם רוצים אותה. מה יעשה אורי?',
+                    speakQ:   'נשארה עוגייה אחת. גם אורי וגם נועם רוצים אותה. מה יעשה אורי?',
+                    feedback: 'מצוין! אורי חולק את העוגייה עם נועם, ושניהם אוכלים ביחד!',
+                    badImg:  'images/sharing/10_scene3_cookie_bad_choice.webp',
+                    goodImg: 'images/sharing/11_scene3_cookie_good_choice.webp'
+                },
+                {
+                    question: 'אורי רוצה לרדת בגלשן, אבל ילדים אחרים מחכים בתור. מה יעשה אורי?',
+                    speakQ:   'אורי רוצה לרדת בגלשן, אבל ילדים אחרים מחכים בתור. מה יעשה אורי?',
+                    feedback: 'יופי! אורי מחכה בסבלנות בתור. כשמגיע תורו הוא יורד בגלשן!',
+                    badImg:  'images/sharing/13_scene4_playground_bad_choice.webp',
+                    goodImg: 'images/sharing/14_scene4_playground_good_choice.webp'
+                },
             ];
             get('active-game-title').textContent = 'לחלוק ולהצליח 🤝';
 
-            function speakQuestion(text) {
+            // Resolve female Hebrew voice once (voices may load async)
+            var _sharingVoice = null;
+            function getSharingVoice() {
+                if (_sharingVoice) return _sharingVoice;
+                var voices = speechSynthesis.getVoices();
+                _sharingVoice = voices.find(function(v){ return v.lang.startsWith('he') && /female|woman|alva|carmit|tessa|hadar/i.test(v.name); })
+                             || voices.find(function(v){ return v.lang.startsWith('he'); })
+                             || null;
+                return _sharingVoice;
+            }
+            if (speechSynthesis.onvoiceschanged !== undefined) {
+                speechSynthesis.onvoiceschanged = getSharingVoice;
+            }
+            getSharingVoice(); // try immediately in case already loaded
+
+            function sharingSpeak(text, onEnd) {
                 try {
-                    if (!window.speechSynthesis) return;
+                    if (!window.speechSynthesis) { if (onEnd) setTimeout(onEnd, 100); return; }
                     speechSynthesis.cancel();
                     var u = new SpeechSynthesisUtterance(text);
                     u.lang = 'he-IL'; u.rate = 0.88; u.pitch = 1.1;
+                    var v = getSharingVoice(); if (v) u.voice = v;
+                    if (onEnd) {
+                        u.onend = onEnd;
+                        // fallback in case onend never fires
+                        var fb = setTimeout(onEnd, text.length * 80 + 1500);
+                        u.onend = function(){ clearTimeout(fb); onEnd(); };
+                    }
                     speechSynthesis.speak(u);
-                } catch(e) {}
+                } catch(e) { if (onEnd) setTimeout(onEnd, 500); }
             }
 
             function showScene(idx) {
                 if (idx >= SCENES.length) return;
                 var scene = SCENES[idx];
-                // randomise left/right so child can't memorise position
                 var goodOnRight = (Math.random() > 0.5);
                 var leftImg  = goodOnRight ? scene.badImg  : scene.goodImg;
                 var rightImg = goodOnRight ? scene.goodImg : scene.badImg;
-                var leftGood = !goodOnRight;
-                var rightGood = goodOnRight;
 
                 var ws = get('game-workspace');
                 ws.innerHTML =
                     '<div class="sharing-scene">' +
-                    '<img class="sharing-situation" src="' + scene.situation + '" alt="">' +
-                    '<p class="sharing-question" id="sh-q">' + scene.question + '</p>' +
+                    '<p class="sharing-question" id="sh-q">' + scene.question + ' 🔊</p>' +
                     '<div class="sharing-img-choices" id="sh-choices">' +
                     '<button class="sharing-img-btn" id="sh-left"><img src="' + leftImg + '" alt=""></button>' +
                     '<button class="sharing-img-btn" id="sh-right"><img src="' + rightImg + '" alt=""></button>' +
                     '</div></div>';
 
-                speakQuestion(scene.question);
-                // tap question to repeat
-                get('sh-q').onclick = function(){ speakQuestion(scene.question); };
+                sharingSpeak(scene.speakQ);
+                get('sh-q').onclick = function(){ sharingSpeak(scene.speakQ); };
 
                 function onChoice(isCorrect, clickedBtn) {
                     if (isProcessing) return;
+                    isProcessing = true;
                     get('sh-choices').querySelectorAll('button').forEach(function(b){ b.disabled = true; });
                     if (isCorrect) {
                         clickedBtn.classList.add('correct-flash');
-                        handleAnswer(true, null, function(){ showScene(currentStep); }, null);
+                        sharingSpeak(scene.feedback, function(){
+                            isProcessing = false;
+                            handleAnswer(true, null, function(){ showScene(currentStep); }, null);
+                        });
                     } else {
+                        isProcessing = false;
                         clickedBtn.classList.add('wrong-flash');
                         handleAnswer(false, clickedBtn, null, function(){
                             clickedBtn.classList.remove('wrong-flash', 'dimmed');
@@ -1800,8 +1845,8 @@
                         });
                     }
                 }
-                get('sh-left').onclick  = function(){ onChoice(leftGood,  get('sh-left')); };
-                get('sh-right').onclick = function(){ onChoice(rightGood, get('sh-right')); };
+                get('sh-left').onclick  = function(){ onChoice(goodOnRight ? false : true,  get('sh-left')); };
+                get('sh-right').onclick = function(){ onChoice(goodOnRight ? true : false, get('sh-right')); };
             }
             showScene(0);
         }
