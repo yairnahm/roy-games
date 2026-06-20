@@ -36,6 +36,9 @@
         body.bg-faces { background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%); }
         body.bg-mgamish { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
         body.bg-emparts { background: linear-gradient(135deg, #f9d423 0%, #ff4e50 100%); }
+        body.bg-firstletter { background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%); }
+        .fl-letter-btn { width: clamp(70px,18vmin,110px); height: clamp(70px,18vmin,110px); background: #fff; border: 5px solid #2196F3; border-radius: 20px; cursor: pointer; box-shadow: 0 6px 12px rgba(0,0,0,0.15); transition: 0.2s; font-size: clamp(28px,7vw,52px); font-weight: 900; color: #2196F3; display: flex; align-items: center; justify-content: center; touch-action: manipulation; outline: none; font-family: 'Rubik', sans-serif; }
+        .fl-letter-btn:hover { transform: scale(1.06); box-shadow: 0 8px 18px rgba(0,0,0,0.2); }
 
         /* ---- emotion-parts game ---- */
         #emp-face-wrap { flex-shrink: 0; }
@@ -366,8 +369,8 @@
         </div>
     </div>
 
-    <div id="hub-screen" class="hidden">
-        <h1 style="margin-top: 5vh;" id="hub-header">המרכז של רועי</h1>
+    <div id="category-screen" class="hidden">
+        <h1 style="margin-top: 3vh;" id="hub-header">המרכז של רועי</h1>
         <div id="star-wallet-container" style="display:flex; justify-content:center; align-items:center; gap:clamp(10px,3vw,25px); margin-bottom:1.5vmin;">
             <!-- Wallet / Purse shape -->
             <div id="star-wallet-purse" style="position:relative; width:clamp(70px,16vw,110px); height:clamp(55px,13vw,90px);">
@@ -418,32 +421,43 @@
                 </svg>
             </div>
         </div>
-        <h3>בחר משחק להתחיל</h3>
+        <h3>באיזו קטגוריה נרצה לשחק?</h3>
         <div class="hub-container">
-            <div class="hub-card" style="position:relative;" onclick="openDifficultyScreen('memory', '🧠', 'משחק הזיכרון')"><span class="star-badge" data-game="memory" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🧠</div><div class="hub-title">זיכרון</div></div>
-            <div class="hub-card" style="position:relative;" onclick="openDifficultyScreen('tracing', '✏️', 'השלם את הצורה')"><div class="hub-icon">✏️</div><div class="hub-title">ציור</div></div>
-            <div class="hub-card" style="position:relative;" onclick="openDifficultyScreen('counting', '🔢', 'ספור את הצורות')"><span class="star-badge" data-game="counting" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">✨</span><div class="hub-icon">🔢</div><div class="hub-title">ספירה</div></div>
-            <div class="hub-card" style="position:relative;" onclick="openDifficultyScreen('sequence', '🔄', 'מה הסדר הנכון?')"><span class="star-badge" data-game="sequence" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🔄</div><div class="hub-title">סדר נכון</div></div>
-            <div class="hub-card" style="position:relative;" onclick="openDifficultyScreen('fly', '🪰', 'זבוב בפה')"><div class="hub-icon">🪰</div><div class="hub-title">זבוב בפה</div></div>
-            <div class="hub-card" style="position:relative;" onclick="openDifficultyScreen('cop', '🚓', 'שוטר וגנב')"><div class="hub-icon">🚓</div><div class="hub-title">שוטר וגנב</div></div>
-            <div class="hub-card" style="position:relative;" onclick="openDifficultyScreen('diff', '🔎', 'זהה את השונה')"><span class="star-badge" data-game="diff" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🔎</div><div class="hub-title">השונה</div></div>
-            <div class="hub-card" style="position:relative;" onclick="openDifficultyScreen('oddone', '🍎', 'יוצא דופן')"><span class="star-badge" data-game="oddone" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">✨</span><div class="hub-icon">🍎</div><div class="hub-title">יוצא דופן</div></div>
-            <div class="hub-card" style="position:relative;" onclick="openMissingLangScreen()"><span class="star-badge" data-game="missing" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🔤</div><div class="hub-title">איזו אות חסרה?</div></div>
-            <div class="hub-card" style="position:relative;" onclick="openDifficultyScreen('tools', '🔨', 'מה הכלי המתאים?')"><div class="hub-icon">🔨</div><div class="hub-title">כלים</div></div>
-            <div class="hub-card" style="position:relative;" onclick="openDifficultyScreen('context', '🧩', 'מה שייך לכאן?')"><span class="star-badge" data-game="context" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">✨</span><div class="hub-icon">🧩</div><div class="hub-title">הקשרים</div></div>
-            
-            <div class="hub-card" style="position:relative;" onclick="openDifficultyScreen('vparts', '🚜', 'איזה חלק חסר?')"><div class="hub-icon">🚜</div><div class="hub-title">חלקי רכבים</div></div>
-            
-            <div class="hub-card" style="position:relative;" onclick="openDifficultyScreen('bigger', '⚖️', 'מה יותר גדול?')"><div class="hub-icon">⚖️</div><div class="hub-title">יותר גדול</div></div>
-            <div class="hub-card" style="position:relative;" onclick="openDifficultyScreen('emotion', '🎭', 'איך הם מרגישים?')"><div class="hub-icon">🎭</div><div class="hub-title">רגשות</div></div>
+            <div class="hub-card" onclick="openCategory('lang','שפה ואותיות')"><div class="hub-icon">🔤</div><div class="hub-title">שפה ואותיות</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">2 משחקים</div></div>
+            <div class="hub-card" onclick="openCategory('think','חשיבה וזיכרון')"><div class="hub-icon">🧠</div><div class="hub-title">חשיבה וזיכרון</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">4 משחקים</div></div>
+            <div class="hub-card" onclick="openCategory('emotion','רגשות ואנשים')"><div class="hub-icon">😊</div><div class="hub-title">רגשות ואנשים</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">3 משחקים</div></div>
+            <div class="hub-card" onclick="openCategory('numbers','מספרים וסדר')"><div class="hub-icon">🔢</div><div class="hub-title">מספרים וסדר</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">3 משחקים</div></div>
+            <div class="hub-card" onclick="openCategory('world','עולם סביבנו')"><div class="hub-icon">🌍</div><div class="hub-title">עולם סביבנו</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">4 משחקים</div></div>
+            <div class="hub-card" onclick="openCategory('create','יצירה וחידות')"><div class="hub-icon">🎨</div><div class="hub-title">יצירה וחידות</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">4 משחקים</div></div>
+            <div class="hub-card" onclick="openCategory('action','משחקי פעולה')"><div class="hub-icon">🎮</div><div class="hub-title">משחקי פעולה</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">2 משחקים</div></div>
+        </div>
+    </div>
 
-            <div class="hub-card" style="position:relative;" onclick="openDifficultyScreen('habitat', '🏠', 'מי גר כאן?')"><div class="hub-icon">🏠</div><div class="hub-title">מי גר כאן?</div></div>
-            <div class="hub-card" style="position:relative;" onclick="openDifficultyScreen('shadow', '👤', 'של מי הצללית?')"><div class="hub-icon">👤</div><div class="hub-title">צלליות</div></div>
-            <div class="hub-card" style="position:relative;" onclick="openDifficultyScreen('halfhalf', '✂️', 'השלם את החצי')"><span class="star-badge" data-game="halfhalf" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">✨</span><div class="hub-icon">✂️</div><div class="hub-title">השלם חצי</div></div>
-            <div class="hub-card" style="position:relative;" onclick="openDifficultyScreen('chrono', '⏳', 'מהתחלה לסוף')"><span class="star-badge" data-game="chrono" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">⏳</div><div class="hub-title">רצף כרונולוגי</div></div>
-            <div id="faces-hub-card" class="hub-card hidden" style="position:relative;" onclick="openFacesLangScreen()"><div class="hub-icon">📸</div><div class="hub-title">מי זה?</div></div>
-            <div class="hub-card" style="position:relative;" onclick="openDifficultyScreen('emparts','👁️','פנים ורגשות')"><div class="hub-icon">👁️</div><div class="hub-title">פנים ורגשות</div></div>
-            <div class="hub-card" style="position:relative;" onclick="openMgGame()"><div class="hub-icon">🤸</div><div class="hub-title">מר גמיש</div></div>
+    <div id="hub-screen" class="hidden">
+        <div class="top-bar" style="align-self:stretch;max-width:900px;margin:0 auto 1vmin;width:100%;"><button class="exit-btn" onclick="backToCategories()">➜ חזור</button><h2 id="cat-title" style="margin:0;font-size:clamp(16px,4vmin,26px);"></h2><div style="width:60px;"></div></div>
+        <div class="hub-container">
+            <div class="hub-card" data-cat="think" style="position:relative;" onclick="openDifficultyScreen('memory', '🧠', 'משחק הזיכרון')"><span class="star-badge" data-game="memory" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🧠</div><div class="hub-title">זיכרון</div></div>
+            <div class="hub-card" data-cat="create" style="position:relative;" onclick="openDifficultyScreen('tracing', '✏️', 'השלם את הצורה')"><div class="hub-icon">✏️</div><div class="hub-title">ציור</div></div>
+            <div class="hub-card" data-cat="numbers" style="position:relative;" onclick="openDifficultyScreen('counting', '🔢', 'ספור את הצורות')"><span class="star-badge" data-game="counting" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">✨</span><div class="hub-icon">🔢</div><div class="hub-title">ספירה</div></div>
+            <div class="hub-card" data-cat="numbers" style="position:relative;" onclick="openDifficultyScreen('sequence', '🔄', 'מה הסדר הנכון?')"><span class="star-badge" data-game="sequence" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🔄</div><div class="hub-title">סדר נכון</div></div>
+            <div class="hub-card" data-cat="action" style="position:relative;" onclick="openDifficultyScreen('fly', '🪰', 'זבוב בפה')"><div class="hub-icon">🪰</div><div class="hub-title">זבוב בפה</div></div>
+            <div class="hub-card" data-cat="action" style="position:relative;" onclick="openDifficultyScreen('cop', '🚓', 'שוטר וגנב')"><div class="hub-icon">🚓</div><div class="hub-title">שוטר וגנב</div></div>
+            <div class="hub-card" data-cat="think" style="position:relative;" onclick="openDifficultyScreen('diff', '🔎', 'זהה את השונה')"><span class="star-badge" data-game="diff" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🔎</div><div class="hub-title">השונה</div></div>
+            <div class="hub-card" data-cat="think" style="position:relative;" onclick="openDifficultyScreen('oddone', '🍎', 'יוצא דופן')"><span class="star-badge" data-game="oddone" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">✨</span><div class="hub-icon">🍎</div><div class="hub-title">יוצא דופן</div></div>
+            <div class="hub-card" data-cat="lang" style="position:relative;" onclick="openMissingLangScreen()"><span class="star-badge" data-game="missing" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🔤</div><div class="hub-title">איזו אות חסרה?</div></div>
+            <div class="hub-card" data-cat="world" style="position:relative;" onclick="openDifficultyScreen('tools', '🔨', 'מה הכלי המתאים?')"><div class="hub-icon">🔨</div><div class="hub-title">כלים</div></div>
+            <div class="hub-card" data-cat="world" style="position:relative;" onclick="openDifficultyScreen('context', '🧩', 'מה שייך לכאן?')"><span class="star-badge" data-game="context" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">✨</span><div class="hub-icon">🧩</div><div class="hub-title">הקשרים</div></div>
+            <div class="hub-card" data-cat="world" style="position:relative;" onclick="openDifficultyScreen('vparts', '🚜', 'איזה חלק חסר?')"><div class="hub-icon">🚜</div><div class="hub-title">חלקי רכבים</div></div>
+            <div class="hub-card" data-cat="think" style="position:relative;" onclick="openDifficultyScreen('bigger', '⚖️', 'מה יותר גדול?')"><div class="hub-icon">⚖️</div><div class="hub-title">יותר גדול</div></div>
+            <div class="hub-card" data-cat="emotion" style="position:relative;" onclick="openDifficultyScreen('emotion', '🎭', 'איך הם מרגישים?')"><div class="hub-icon">🎭</div><div class="hub-title">רגשות</div></div>
+            <div class="hub-card" data-cat="world" style="position:relative;" onclick="openDifficultyScreen('habitat', '🏠', 'מי גר כאן?')"><div class="hub-icon">🏠</div><div class="hub-title">מי גר כאן?</div></div>
+            <div class="hub-card" data-cat="create" style="position:relative;" onclick="openDifficultyScreen('shadow', '👤', 'של מי הצללית?')"><div class="hub-icon">👤</div><div class="hub-title">צלליות</div></div>
+            <div class="hub-card" data-cat="create" style="position:relative;" onclick="openDifficultyScreen('halfhalf', '✂️', 'השלם את החצי')"><span class="star-badge" data-game="halfhalf" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">✨</span><div class="hub-icon">✂️</div><div class="hub-title">השלם חצי</div></div>
+            <div class="hub-card" data-cat="numbers" style="position:relative;" onclick="openDifficultyScreen('chrono', '⏳', 'מהתחלה לסוף')"><span class="star-badge" data-game="chrono" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">⏳</div><div class="hub-title">רצף כרונולוגי</div></div>
+            <div id="faces-hub-card" class="hub-card hidden" data-cat="emotion" style="position:relative;" onclick="openFacesLangScreen()"><div class="hub-icon">📸</div><div class="hub-title">מי זה?</div></div>
+            <div class="hub-card" data-cat="emotion" style="position:relative;" onclick="openDifficultyScreen('emparts','👁️','פנים ורגשות')"><div class="hub-icon">👁️</div><div class="hub-title">פנים ורגשות</div></div>
+            <div class="hub-card" data-cat="create" style="position:relative;" onclick="openMgGame()"><div class="hub-icon">🤸</div><div class="hub-title">מר גמיש</div></div>
+            <div class="hub-card" data-cat="lang" onclick="openFirstLetterLangScreen()"><div class="hub-icon">🔡</div><div class="hub-title">באיזו אות מתחיל?</div></div>
         </div>
     </div>
 
@@ -477,6 +491,15 @@
         <h2 style="margin:4px 0 8px;font-size:clamp(18px,4vmin,30px);flex-shrink:0;">אלה הם! 🌟</h2>
         <div id="faces-summary-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:clamp(6px,2vmin,14px);width:100%;max-width:580px;margin:0 auto;flex:1;overflow:hidden;"></div>
         <button class="action-btn" onclick="showFacesLevelComplete()" style="flex-shrink:0;margin-top:1vmin;">המשך ▶</button>
+    </div>
+
+    <div id="firstletter-lang-screen" class="hidden" style="display:flex; flex-direction:column; align-items:center;">
+        <div class="top-bar" style="align-self:stretch;"><button class="exit-btn" onclick="backToHub()">➜ חזור</button><div style="width: 60px;"></div></div>
+        <h1 style="margin-top: 10vh;">באיזו אות מתחיל? 🔡</h1>
+        <div class="grid-container" style="gap:5vmin; margin-top:5vmin;">
+            <div class="grid-card" onclick="startFirstLetterGame('he')" style="width:clamp(120px, 25vw, 200px); border-color:#2196F3;"><div style="font-size:clamp(40px, 8vw, 80px); font-weight:bold; color:#2196F3;">אבג</div><h2>עברית</h2></div>
+            <div class="grid-card" onclick="startFirstLetterGame('en')" style="width:clamp(120px, 25vw, 200px); border-color:#F44336;"><div style="font-size:clamp(40px, 8vw, 80px); font-weight:bold; color:#F44336;">ABC</div><h2>English</h2></div>
+        </div>
     </div>
 
     <div id="missing-lang-screen" class="hidden" style="display:flex; flex-direction:column; align-items:center;">
@@ -516,7 +539,7 @@
     <div id="feedback-layer" class="hidden feedback-icon"></div>
 
     <script>
-        const bgIcons = { 'memory': ['🧠','💭','💡'], 'tracing': ['✏️','🎨','📐'], 'counting': ['🔢','🧮','➕'], 'sequence': ['🔄','✨','🎯'], 'fly': ['🪰','💨'], 'cop': ['🚓','🚨'], 'diff': ['🔎','👀'], 'oddone': ['🍎','🐶','🚗'], 'missing': ['A','B','C'], 'tools': ['🔨','🔧','🔩'], 'context': ['🧩','🖼️','🎨'], 'vparts': ['🚗','✈️','🚂','⛵','🚁'], 'habitat': ['🏠','🌳','🌊'], 'shadow': ['👤','🌑','👀'], 'halfhalf': ['✂️','🎨','🧩'], 'chrono': ['⏳','📅','🔄'], 'bigger': ['⚖️','🐘','🐭','🔢'], 'emotion': ['😄','😢','😡','😱'], 'faces': ['📸','❤️','👨‍👩‍👧‍👦','🤳'], 'mgamish': ['🤸','💪','🌟','🤸‍♂️'] };
+        const bgIcons = { 'memory': ['🧠','💭','💡'], 'tracing': ['✏️','🎨','📐'], 'counting': ['🔢','🧮','➕'], 'sequence': ['🔄','✨','🎯'], 'fly': ['🪰','💨'], 'cop': ['🚓','🚨'], 'diff': ['🔎','👀'], 'oddone': ['🍎','🐶','🚗'], 'missing': ['A','B','C'], 'tools': ['🔨','🔧','🔩'], 'context': ['🧩','🖼️','🎨'], 'vparts': ['🚗','✈️','🚂','⛵','🚁'], 'habitat': ['🏠','🌳','🌊'], 'shadow': ['👤','🌑','👀'], 'halfhalf': ['✂️','🎨','🧩'], 'chrono': ['⏳','📅','🔄'], 'bigger': ['⚖️','🐘','🐭','🔢'], 'emotion': ['😄','😢','😡','😱'], 'faces': ['📸','❤️','👨‍👩‍👧‍👦','🤳'], 'mgamish': ['🤸','💪','🌟','🤸‍♂️'], 'firstletter': ['🔡','🔤','📖','✏️'] };
         function setAppBackground(theme) {
             D.body.className = 'bg-' + theme; let bg = get('bg-animations'); bg.innerHTML = '';
             if(theme !== 'hub' && bgIcons[theme]) {
@@ -640,12 +663,22 @@
                 } catch(e){ console.error('Intro audio error:', e); }
             }
             else { get('hub-header').textContent = 'מרכז המשחקים'; get('win-header').textContent = 'כל הכבוד! 🏆'; }
-            playClickSound(); hideAllScreens(); setAppBackground('hub'); show('hub-screen');
+            playClickSound(); hideAllScreens(); setAppBackground('hub'); show('category-screen');
             updateWalletDisplay();
         }
 
-        function hideAllScreens() { ['start-screen', 'gender-screen', 'hub-screen', 'unified-diff-screen', 'active-game-container', 'level-complete-overlay', 'missing-lang-screen', 'faces-lang-screen', 'faces-mode-screen', 'faces-summary-screen'].forEach(hide); }
+        function hideAllScreens() { ['start-screen', 'gender-screen', 'category-screen', 'hub-screen', 'unified-diff-screen', 'active-game-container', 'level-complete-overlay', 'missing-lang-screen', 'firstletter-lang-screen', 'faces-lang-screen', 'faces-mode-screen', 'faces-summary-screen'].forEach(hide); }
         function backToHub() { playClickSound(); hideAllScreens(); setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); }
+        function backToCategories() { playClickSound(); hideAllScreens(); setAppBackground('hub'); show('category-screen'); updateWalletDisplay(); }
+        function openCategory(catId, catName) {
+            playClickSound(); hideAllScreens();
+            get('cat-title').textContent = catName;
+            document.querySelectorAll('#hub-screen [data-cat]').forEach(function(card) {
+                if (card.dataset.cat === catId) { card.style.removeProperty('display'); }
+                else { card.style.display = 'none'; }
+            });
+            setAppBackground('hub'); show('hub-screen');
+        }
         
         function openDifficultyScreen(gameId, icon, title) {
             playClickSound(); hideAllScreens(); setAppBackground(gameId); currentGameMode = gameId;
@@ -699,10 +732,11 @@
                 else if(currentGameMode === 'emparts') initEmPartsGame();
                 else if(currentGameMode === 'faces') initFacesGame();
                 else if(currentGameMode === 'mgamish') initMgGame();
+                else if(currentGameMode === 'firstletter') initFirstLetterGame();
             }, 50);
         }
 
-        function quitActiveGame() { playClickSound(); hideAllScreens(); if(currentGameMode === 'emotion' || currentGameMode === 'emparts' || currentGameMode === 'missing' || currentGameMode === 'mgamish') { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); } else if(currentGameMode === 'faces') { show('faces-mode-screen'); } else { show('unified-diff-screen'); } }
+        function quitActiveGame() { playClickSound(); hideAllScreens(); if(currentGameMode === 'emotion' || currentGameMode === 'emparts' || currentGameMode === 'missing' || currentGameMode === 'mgamish' || currentGameMode === 'firstletter') { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); } else if(currentGameMode === 'faces') { show('faces-mode-screen'); } else { show('unified-diff-screen'); } }
         function updateProgressUI() { for(let i=0;i<4;i++) { let d = get(`active-progress-container-dot-${i}`); if(d){ if(i < currentStep) d.classList.add('fill'); else d.classList.remove('fill'); } } }
 
         function handleAnswer(isCorrect, btn, successCallback, failCallback, isScribble = false) {
@@ -750,7 +784,7 @@
         function closeLevelComplete() {
             playClickSound(); hideAllScreens();
             if(currentGameMode==='missing') { show('missing-lang-screen'); }
-            else if(currentGameMode==='emotion' || currentGameMode==='emparts' || currentGameMode==='mgamish') { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); }
+            else if(currentGameMode==='emotion' || currentGameMode==='emparts' || currentGameMode==='mgamish' || currentGameMode==='firstletter') { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); }
             else if(currentGameMode==='faces') { show('faces-mode-screen'); }
             else {
                 try {
@@ -1453,6 +1487,118 @@
                             handleAnswer(isCorrect, btn, loadEmPartsRound, null);
                         }, 850);
                     }, 530);
+                };
+                opts.appendChild(btn);
+            });
+        }
+
+        // ==========================================
+        // משחק באיזו אות מתחיל
+        // ==========================================
+        var flLang = 'he';
+        var flRounds = [];
+        var FL_HE_WORDS = [
+            {emoji:'🐶',word:'כֶּלֶב',letter:'כ',sound:'כַ'},
+            {emoji:'🍎',word:'תַּפּוּחַ',letter:'ת',sound:'תַ'},
+            {emoji:'🏠',word:'בַּיִת',letter:'ב',sound:'בַ'},
+            {emoji:'🐴',word:'סוּס',letter:'ס',sound:'סַ'},
+            {emoji:'🐦',word:'צִפּוֹר',letter:'צ',sound:'צַ'},
+            {emoji:'🐟',word:'דָּג',letter:'ד',sound:'דַ'},
+            {emoji:'🐘',word:'פִּיל',letter:'פ',sound:'פַ'},
+            {emoji:'☀️',word:'שֶׁמֶשׁ',letter:'ש',sound:'שַׁ'},
+            {emoji:'❤️',word:'לֵב',letter:'ל',sound:'לַ'},
+            {emoji:'🚗',word:'מְכוֹנִית',letter:'מ',sound:'מַ'},
+            {emoji:'🐍',word:'נָחָשׁ',letter:'נ',sound:'נַ'},
+            {emoji:'🚂',word:'רַכֶּבֶת',letter:'ר',sound:'רַ'},
+            {emoji:'🥕',word:'גֶּזֶר',letter:'ג',sound:'גַ'},
+            {emoji:'🌸',word:'פֶּרַח',letter:'פ',sound:'פַ'},
+            {emoji:'⭐',word:'כּוֹכָב',letter:'כ',sound:'כַ'},
+            {emoji:'🍌',word:'בָּנָנָה',letter:'ב',sound:'בַ'},
+            {emoji:'⚽',word:'כַּדּוּר',letter:'כ',sound:'כַ'},
+            {emoji:'🐱',word:'חָתוּל',letter:'ח',sound:'חַ'},
+            {emoji:'🚪',word:'דֶּלֶת',letter:'ד',sound:'דַ'},
+            {emoji:'💻',word:'מַחְשֵׁב',letter:'מ',sound:'מַ'},
+            {emoji:'⏰',word:'שָׁעוֹן',letter:'ש',sound:'שַׁ'},
+            {emoji:'📱',word:'טֶלֶפוֹן',letter:'ט',sound:'טַ'}
+        ];
+        var FL_EN_WORDS = [
+            {emoji:'🏠',word:'BAIT',meaning:'בית',letter:'B'},
+            {emoji:'🚪',word:'DELET',meaning:'דלת',letter:'D'},
+            {emoji:'🐶',word:'KELEV',meaning:'כלב',letter:'K'},
+            {emoji:'❤️',word:'LEV',meaning:'לב',letter:'L'},
+            {emoji:'🚗',word:'MEKHONIT',meaning:'מכונית',letter:'M'},
+            {emoji:'🐍',word:'NAKHASH',meaning:'נחש',letter:'N'},
+            {emoji:'🐘',word:'PIL',meaning:'פיל',letter:'P'},
+            {emoji:'🚂',word:'RAKEVET',meaning:'רכבת',letter:'R'},
+            {emoji:'🐴',word:'SUS',meaning:'סוס',letter:'S'},
+            {emoji:'🍎',word:'TAPUAKH',meaning:'תפוח',letter:'T'},
+            {emoji:'🌸',word:'PERAKH',meaning:'פרח',letter:'P'},
+            {emoji:'🍋',word:'LIMON',meaning:'לימון',letter:'L'},
+            {emoji:'🍌',word:'BANANA',meaning:'בננה',letter:'B'},
+            {emoji:'⚽',word:'KADUR',meaning:'כדור',letter:'K'},
+            {emoji:'🐟',word:'DAG',meaning:'דג',letter:'D'},
+            {emoji:'🕯️',word:'NER',meaning:'נר',letter:'N'},
+            {emoji:'💻',word:'MAKHSHEV',meaning:'מחשב',letter:'M'},
+            {emoji:'🍊',word:'TAPUZ',meaning:'תפוז',letter:'T'},
+            {emoji:'☕',word:'KOS',meaning:'כוס',letter:'K'},
+            {emoji:'⭐',word:'KOKHAV',meaning:'כוכב',letter:'K'}
+        ];
+        var FL_HE_POOL = ['ב','ג','ד','ח','ט','כ','ל','מ','נ','ס','פ','צ','ק','ר','ש','ת'];
+        var FL_EN_POOL = ['B','D','F','K','L','M','N','P','R','S','T','Z','V'];
+
+        function speakLetter(text, lang) {
+            try {
+                if (!window.speechSynthesis) return;
+                speechSynthesis.cancel();
+                var u = new SpeechSynthesisUtterance(text);
+                u.lang = lang === 'he' ? 'he-IL' : 'en-US';
+                u.rate = 0.8;
+                speechSynthesis.speak(u);
+            } catch(e) {}
+        }
+        function openFirstLetterLangScreen() { playClickSound(); hideAllScreens(); show('firstletter-lang-screen'); }
+        function startFirstLetterGame(lang) {
+            flLang = lang; playClickSound(); hideAllScreens();
+            currentGameMode = 'firstletter'; setAppBackground('firstletter'); startGameEngine(1);
+        }
+        function initFirstLetterGame() {
+            get('active-game-title').textContent = 'באיזו אות מתחיל? 🔡';
+            var pool = flLang === 'he' ? FL_HE_WORDS : FL_EN_WORDS;
+            flRounds = shuffle(pool.slice()).slice(0, 5);
+            get('game-workspace').innerHTML =
+                '<div id="fl-content" style="display:flex;flex-direction:column;align-items:center;gap:clamp(12px,3vmin,22px);width:100%;max-width:620px;">' +
+                    '<div id="fl-emoji" style="font-size:clamp(70px,18vmin,130px);line-height:1;filter:drop-shadow(0 6px 10px rgba(0,0,0,0.2));animation:popIn 0.4s;"></div>' +
+                    '<div id="fl-word" style="font-size:clamp(22px,5vmin,38px);font-weight:900;color:#fff;text-shadow:0 2px 5px rgba(0,0,0,0.3);text-align:center;direction:' + (flLang==='he'?'rtl':'ltr') + ';"></div>' +
+                    '<div id="fl-meaning" style="font-size:clamp(14px,3vmin,22px);color:rgba(255,255,255,0.85);font-weight:700;display:none;"></div>' +
+                    '<div id="fl-opts" style="display:flex;flex-direction:row;justify-content:center;gap:clamp(10px,3vmin,18px);flex-wrap:wrap;margin-top:4px;"></div>' +
+                '</div>';
+            loadFirstLetterRound();
+        }
+        function loadFirstLetterRound() {
+            var round = flRounds[currentStep];
+            if (!round) return;
+            var emojiEl = get('fl-emoji');
+            emojiEl.textContent = round.emoji;
+            emojiEl.style.animation = 'none'; void emojiEl.offsetWidth; emojiEl.style.animation = 'popIn 0.4s';
+            get('fl-word').textContent = round.word;
+            var meaningEl = get('fl-meaning');
+            if (flLang === 'en' && round.meaning) { meaningEl.textContent = '(' + round.meaning + ')'; meaningEl.style.display = 'block'; }
+            else { meaningEl.style.display = 'none'; }
+            var correctLetter = round.letter;
+            var pool = flLang === 'he' ? FL_HE_POOL : FL_EN_POOL;
+            var wrongPool = shuffle(pool.filter(function(l){ return l !== correctLetter; }));
+            var choices = shuffle([correctLetter, wrongPool[0], wrongPool[1], wrongPool[2]]);
+            var opts = get('fl-opts');
+            opts.innerHTML = '';
+            choices.forEach(function(letter) {
+                var isCorrect = (letter === correctLetter);
+                var btn = D.createElement('button');
+                btn.className = 'fl-letter-btn';
+                btn.textContent = letter;
+                btn.onclick = function() {
+                    if (isProcessing) return;
+                    if (isCorrect) { speakLetter(flLang === 'he' ? round.sound : letter, flLang); }
+                    handleAnswer(isCorrect, btn, loadFirstLetterRound, null);
                 };
                 opts.appendChild(btn);
             });
