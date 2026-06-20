@@ -187,7 +187,8 @@
         .sharing-question { font-size:clamp(12px,2.4vmin,16px); font-weight:700; color:#333; margin:0; line-height:1.35; text-align:center; max-width:90vw; background:rgba(255,255,255,0.88); padding:1.2vmin 2.5vmin; border-radius:12px; cursor:pointer; }
         .sharing-img-choices { display:flex; gap:3vmin; justify-content:center; width:100%; }
         .sharing-img-btn { width:min(44vw,290px); height:min(32vw,210px); border:5px solid rgba(255,255,255,0.85); border-radius:20px; overflow:hidden; cursor:pointer; padding:0; background:#fff; box-shadow:0 8px 22px rgba(0,0,0,0.2); transition:transform 0.15s,box-shadow 0.15s,border-color 0.2s; touch-action:manipulation; outline:none; animation:popIn 0.35s; flex-shrink:0; }
-        .sharing-img-btn img { width:100%; height:100%; object-fit:cover; object-position:center top; pointer-events:none; display:block; }
+        .sharing-img-btn { background-size:160%; background-position:center 15%; background-repeat:no-repeat; }
+        .sharing-img-btn img { display:none; }
         .sharing-img-btn:hover { transform:scale(1.04); box-shadow:0 12px 28px rgba(0,0,0,0.28); }
         .sharing-img-btn:active { transform:scale(0.96); }
         .sharing-img-btn:disabled { opacity:0.4; cursor:not-allowed; transform:none; }
@@ -1775,35 +1776,29 @@
             ];
             get('active-game-title').textContent = 'לחלוק ולהצליח 🤝';
 
-            // Resolve female Hebrew voice once (voices may load async)
-            var _sharingVoice = null;
-            function getSharingVoice() {
-                if (_sharingVoice) return _sharingVoice;
-                var voices = speechSynthesis.getVoices();
-                _sharingVoice = voices.find(function(v){ return v.lang.startsWith('he') && /female|woman|alva|carmit|tessa|hadar|hila|michal|idit|anat/i.test(v.name); })
-                             || voices.find(function(v){ return v.lang.startsWith('he'); })
-                             || null;
-                return _sharingVoice;
-            }
-            if (speechSynthesis.onvoiceschanged !== undefined) {
-                speechSynthesis.onvoiceschanged = getSharingVoice;
-            }
-            getSharingVoice(); // try immediately in case already loaded
-
             function sharingSpeak(text, onEnd) {
                 try {
                     if (!window.speechSynthesis) { if (onEnd) setTimeout(onEnd, 100); return; }
                     speechSynthesis.cancel();
-                    var u = new SpeechSynthesisUtterance(text);
-                    u.lang = 'he-IL'; u.rate = 0.88; u.pitch = 1.1;
-                    var v = getSharingVoice(); if (v) u.voice = v;
-                    if (onEnd) {
-                        u.onend = onEnd;
-                        // fallback in case onend never fires
-                        var fb = setTimeout(onEnd, text.length * 80 + 1500);
-                        u.onend = function(){ clearTimeout(fb); onEnd(); };
+                    function doSpeak() {
+                        var voices = speechSynthesis.getVoices();
+                        var u = new SpeechSynthesisUtterance(text);
+                        u.lang = 'he-IL'; u.rate = 0.88; u.pitch = 1.15;
+                        var v = voices.find(function(v){ return v.lang.startsWith('he') && /hila|michal|idit|anat|carmit|alva|female|woman/i.test(v.name); })
+                             || voices.find(function(v){ return v.lang.startsWith('he'); });
+                        if (v) u.voice = v;
+                        if (onEnd) {
+                            var fb = setTimeout(onEnd, Math.max(text.length * 90, 1200) + 800);
+                            u.onend = function(){ clearTimeout(fb); onEnd(); };
+                        }
+                        speechSynthesis.speak(u);
                     }
-                    speechSynthesis.speak(u);
+                    if (speechSynthesis.getVoices().length === 0) {
+                        speechSynthesis.onvoiceschanged = function(){ speechSynthesis.onvoiceschanged = null; doSpeak(); };
+                        setTimeout(doSpeak, 400); // fallback if event never fires
+                    } else {
+                        doSpeak();
+                    }
                 } catch(e) { if (onEnd) setTimeout(onEnd, 500); }
             }
 
@@ -1819,8 +1814,8 @@
                     '<div class="sharing-scene">' +
                     '<p class="sharing-question" id="sh-q">' + scene.question + ' 🔊</p>' +
                     '<div class="sharing-img-choices" id="sh-choices">' +
-                    '<button class="sharing-img-btn" id="sh-left"><img src="' + leftImg + '" alt=""></button>' +
-                    '<button class="sharing-img-btn" id="sh-right"><img src="' + rightImg + '" alt=""></button>' +
+                    '<button class="sharing-img-btn" id="sh-left" style="background-image:url(\'' + leftImg + '\')"></button>' +
+                    '<button class="sharing-img-btn" id="sh-right" style="background-image:url(\'' + rightImg + '\')"></button>' +
                     '</div></div>';
 
                 sharingSpeak(scene.speakQ);
