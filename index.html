@@ -1747,59 +1747,48 @@
             const SCENES = [
                 {
                     question: 'אורי ונועם רוצים לשחק עם המשאית האדומה, אבל יש רק אחת. מה יעשה אורי?',
-                    speakQ:   'אורי ונועם רוצים לשחק עם המשאית האדומה, אבל יש רק אחת. מה יעשה אורי?',
-                    feedback: 'נכון מאוד! אורי ונועם משחקים יחד עם המשאית, כל אחד בתורו!',
+                    qAudio:  'sharing/q1.mp3',
+                    fbAudio: 'sharing/fb1.mp3',
                     badImg:  'images/sharing/04_scene1_truck_bad_choice.webp',
                     goodImg: 'images/sharing/05_scene1_truck_good_choice.webp'
                 },
                 {
                     question: 'אורי משחק בטאבלט. נועם רוצה גם לשחק. מה יעשה אורי?',
-                    speakQ:   'אורי משחק ב tablet. נועם רוצה גם לשחק. מה יעשה אורי?',
-                    feedback: 'כל הכבוד! אורי ונועם משחקים ב tablet בתורות. כך חברים אמיתיים עושים!',
+                    qAudio:  'sharing/q2.mp3',
+                    fbAudio: 'sharing/fb2.mp3',
                     badImg:  'images/sharing/07_scene2_tablet_bad_choice.webp',
                     goodImg: 'images/sharing/08_scene2_tablet_good_choice.webp'
                 },
                 {
                     question: 'נשארה עוגייה אחת. גם אורי וגם נועם רוצים אותה. מה יעשה אורי?',
-                    speakQ:   'נשארה עוגייה אחת. גם אורי וגם נועם רוצים אותה. מה יעשה אורי?',
-                    feedback: 'מצוין! אורי חולק את העוגייה עם נועם, ושניהם אוכלים ביחד!',
+                    qAudio:  'sharing/q3.mp3',
+                    fbAudio: 'sharing/fb3.mp3',
                     badImg:  'images/sharing/10_scene3_cookie_bad_choice.webp',
                     goodImg: 'images/sharing/11_scene3_cookie_good_choice.webp'
                 },
                 {
                     question: 'אורי רוצה לרדת בגלשן, אבל ילדים אחרים מחכים בתור. מה יעשה אורי?',
-                    speakQ:   'אורי רוצה לרדת בגלשן, אבל ילדים אחרים מחכים בתור. מה יעשה אורי?',
-                    feedback: 'יופי! אורי מחכה בסבלנות בתור. כשמגיע תורו הוא יורד בגלשן!',
+                    qAudio:  'sharing/q4.mp3',
+                    fbAudio: 'sharing/fb4.mp3',
                     badImg:  'images/sharing/13_scene4_playground_bad_choice.webp',
                     goodImg: 'images/sharing/14_scene4_playground_good_choice.webp'
                 },
             ];
             get('active-game-title').textContent = 'לחלוק ולהצליח 🤝';
 
-            function sharingSpeak(text, onEnd) {
+            function playAudioWithCallback(filename, onEnd) {
                 try {
-                    if (!window.speechSynthesis) { if (onEnd) setTimeout(onEnd, 100); return; }
-                    speechSynthesis.cancel();
-                    function doSpeak() {
-                        var voices = speechSynthesis.getVoices();
-                        var u = new SpeechSynthesisUtterance(text);
-                        u.lang = 'he-IL'; u.rate = 0.88; u.pitch = 1.15;
-                        var v = voices.find(function(v){ return v.lang.startsWith('he') && /hila|michal|idit|anat|carmit|alva|female|woman/i.test(v.name); })
-                             || voices.find(function(v){ return v.lang.startsWith('he'); });
-                        if (v) u.voice = v;
-                        if (onEnd) {
-                            var fb = setTimeout(onEnd, Math.max(text.length * 90, 1200) + 800);
-                            u.onend = function(){ clearTimeout(fb); onEnd(); };
-                        }
-                        speechSynthesis.speak(u);
+                    if (_currentAudio) { _currentAudio.pause(); _currentAudio.currentTime = 0; }
+                    var a = new Audio('./audio/' + filename);
+                    _currentAudio = a;
+                    if (onEnd) {
+                        var done = false;
+                        var fb = setTimeout(function(){ if(!done){ done=true; onEnd(); } }, 8000);
+                        a.onended = function(){ if(!done){ done=true; clearTimeout(fb); onEnd(); } };
+                        a.onerror  = function(){ if(!done){ done=true; clearTimeout(fb); onEnd(); } };
                     }
-                    if (speechSynthesis.getVoices().length === 0) {
-                        speechSynthesis.onvoiceschanged = function(){ speechSynthesis.onvoiceschanged = null; doSpeak(); };
-                        setTimeout(doSpeak, 400); // fallback if event never fires
-                    } else {
-                        doSpeak();
-                    }
-                } catch(e) { if (onEnd) setTimeout(onEnd, 500); }
+                    a.play().catch(function(){ if(onEnd) onEnd(); });
+                } catch(e) { if(onEnd) setTimeout(onEnd, 300); }
             }
 
             function showScene(idx) {
@@ -1818,8 +1807,8 @@
                     '<button class="sharing-img-btn" id="sh-right" style="background-image:url(\'' + rightImg + '\')"></button>' +
                     '</div></div>';
 
-                sharingSpeak(scene.speakQ);
-                get('sh-q').onclick = function(){ sharingSpeak(scene.speakQ); };
+                playAudioWithCallback(scene.qAudio);
+                get('sh-q').onclick = function(){ playAudioWithCallback(scene.qAudio); };
 
                 function onChoice(isCorrect, clickedBtn) {
                     if (isProcessing) return;
@@ -1827,7 +1816,7 @@
                     get('sh-choices').querySelectorAll('button').forEach(function(b){ b.disabled = true; });
                     if (isCorrect) {
                         clickedBtn.classList.add('correct-flash');
-                        sharingSpeak(scene.feedback, function(){
+                        playAudioWithCallback(scene.fbAudio, function(){
                             isProcessing = false;
                             handleAnswer(true, null, function(){ showScene(currentStep); }, null);
                         });
