@@ -183,18 +183,17 @@
         #star-wallet-display { animation: starPulse 3s ease-in-out infinite; }
 
         /* ── משחק לחלוק ולהצליח ── */
-        .sharing-scene { display:flex; flex-direction:column; align-items:center; gap:2vmin; padding:0 2vmin; max-width:600px; margin:0 auto; width:100%; }
-        .sharing-img { width:min(90vw,400px); height:min(55vw,260px); object-fit:cover; border-radius:20px; box-shadow:0 8px 28px rgba(0,0,0,0.18); border:4px solid #fff; transition:opacity 0.3s ease; }
-        .sharing-question { font-size:clamp(16px,3.5vmin,22px); font-weight:700; color:#333; margin:0; line-height:1.45; text-align:center; max-width:480px; background:rgba(255,255,255,0.85); padding:2vmin 3vmin; border-radius:16px; }
-        .sharing-choices { display:flex; gap:3vmin; justify-content:center; flex-wrap:wrap; margin-top:1vmin; }
-        .sharing-btn { font-family:'Rubik',sans-serif; font-size:clamp(14px,3vmin,18px); font-weight:900; padding:2.5vmin 4vmin; border:none; border-radius:50px; cursor:pointer; min-width:clamp(120px,34vw,190px); box-shadow:0 6px 18px rgba(0,0,0,0.18); transition:transform 0.15s,opacity 0.2s; touch-action:manipulation; line-height:1.3; }
-        .sharing-btn:active { transform:scale(0.96); }
-        .sharing-btn:disabled { opacity:0.4; cursor:not-allowed; transform:none; }
-        .sharing-wrong { background:#f44336; color:#fff; }
-        .sharing-right { background:#4CAF50; color:#fff; }
-        .sharing-feedback { font-size:clamp(14px,3vmin,18px); font-weight:700; padding:1.5vmin 3vmin; border-radius:14px; text-align:center; max-width:420px; animation:popIn 0.3s ease-out; }
-        .sharing-good { background:#e8f5e9; color:#2e7d32; border:2.5px solid #a5d6a7; }
-        .sharing-bad  { background:#ffebee; color:#c62828; border:2.5px solid #ef9a9a; }
+        .sharing-scene { display:flex; flex-direction:column; align-items:center; gap:2vmin; padding:0 2vmin; max-width:640px; margin:0 auto; width:100%; }
+        .sharing-situation { width:min(88vw,380px); height:min(50vw,230px); object-fit:cover; border-radius:20px; box-shadow:0 8px 28px rgba(0,0,0,0.18); border:4px solid #fff; flex-shrink:0; }
+        .sharing-question { font-size:clamp(15px,3.2vmin,20px); font-weight:700; color:#333; margin:0; line-height:1.4; text-align:center; max-width:520px; background:rgba(255,255,255,0.88); padding:1.8vmin 3vmin; border-radius:16px; cursor:pointer; }
+        .sharing-img-choices { display:flex; gap:4vmin; justify-content:center; margin-top:1vmin; }
+        .sharing-img-btn { width:clamp(130px,38vw,210px); height:clamp(100px,28vw,165px); border:5px solid rgba(255,255,255,0.85); border-radius:18px; overflow:hidden; cursor:pointer; padding:0; background:#fff; box-shadow:0 6px 18px rgba(0,0,0,0.2); transition:transform 0.15s,box-shadow 0.15s,border-color 0.2s; touch-action:manipulation; outline:none; animation:popIn 0.35s; }
+        .sharing-img-btn img { width:100%; height:100%; object-fit:cover; pointer-events:none; display:block; }
+        .sharing-img-btn:hover { transform:scale(1.04); box-shadow:0 10px 24px rgba(0,0,0,0.28); }
+        .sharing-img-btn:active { transform:scale(0.96); }
+        .sharing-img-btn:disabled { opacity:0.4; cursor:not-allowed; transform:none; }
+        .sharing-img-btn.correct-flash { border-color:#4CAF50; box-shadow:0 0 0 4px #4CAF50; }
+        .sharing-img-btn.wrong-flash { border-color:#f44336; animation:shake 0.4s; }
     </style>
 </head>
 <body class="bg-hub">
@@ -1746,45 +1745,63 @@
         // ── לחלוק ולהצליח ──
         function initSharingGame() {
             const SCENES = [
-                { question:'רועי ונועם רוצים לשחק עם המשאית האדומה, אבל יש רק אחת. מה יעשה רועי?', situation:'images/sharing/03_scene1_truck_basic.webp', badImg:'images/sharing/04_scene1_truck_bad_choice.webp', goodImg:'images/sharing/05_scene1_truck_good_choice.webp', wrongBtn:'😤 לקחת את המשאית לבד', rightBtn:'🤝 לשתף עם נועם', badText:'😢 כשלא משתפים — חברים עצובים...', goodText:'🌟 כשמחלקים — כולם שמחים!' },
-                { question:'רועי משחק בטאבלט. נועם רוצה גם לשחק. מה יעשה רועי?', situation:'images/sharing/06_scene2_tablet_basic.webp', badImg:'images/sharing/07_scene2_tablet_bad_choice.webp', goodImg:'images/sharing/08_scene2_tablet_good_choice.webp', wrongBtn:'😤 להגיד לנועם "לא!"', rightBtn:'🔄 לשחק בתורות', badText:'😢 להגיד "לא" — זה לא יפה...', goodText:'🌟 תור תור — ידידות אמת!' },
-                { question:'נשארה עוגייה אחת. גם רועי וגם נועם רוצים אותה. מה יעשה רועי?', situation:'images/sharing/09_scene3_cookie_basic.webp', badImg:'images/sharing/10_scene3_cookie_bad_choice.webp', goodImg:'images/sharing/11_scene3_cookie_good_choice.webp', wrongBtn:'😤 לאכול את כל העוגייה', rightBtn:'🍪 לחלק לשניים', badText:'😢 לקחת הכל — נועם עצוב...', goodText:'🌟 לחצות ולשתף — שניהם שמחים!' },
-                { question:'רועי רוצה לרדת בגלשן, אבל ילדים אחרים מחכים בתור. מה יעשה רועי?', situation:'images/sharing/12_scene4_playground_basic.webp', badImg:'images/sharing/13_scene4_playground_bad_choice.webp', goodImg:'images/sharing/14_scene4_playground_good_choice.webp', wrongBtn:'😤 לקפוץ לפני כולם', rightBtn:'⏳ לחכות בתור', badText:'😢 לדחוף — זה פוגע בחברים...', goodText:'🌟 לחכות בתור — כולם שווים!' },
+                { question:'אורי ונועם רוצים לשחק עם המשאית האדומה, אבל יש רק אחת. מה יעשה אורי?', situation:'images/sharing/03_scene1_truck_basic.webp', badImg:'images/sharing/04_scene1_truck_bad_choice.webp', goodImg:'images/sharing/05_scene1_truck_good_choice.webp' },
+                { question:'אורי משחק בטאבלט. נועם רוצה גם לשחק. מה יעשה אורי?', situation:'images/sharing/06_scene2_tablet_basic.webp', badImg:'images/sharing/07_scene2_tablet_bad_choice.webp', goodImg:'images/sharing/08_scene2_tablet_good_choice.webp' },
+                { question:'נשארה עוגייה אחת. גם אורי וגם נועם רוצים אותה. מה יעשה אורי?', situation:'images/sharing/09_scene3_cookie_basic.webp', badImg:'images/sharing/10_scene3_cookie_bad_choice.webp', goodImg:'images/sharing/11_scene3_cookie_good_choice.webp' },
+                { question:'אורי רוצה לרדת בגלשן, אבל ילדים אחרים מחכים בתור. מה יעשה אורי?', situation:'images/sharing/12_scene4_playground_basic.webp', badImg:'images/sharing/13_scene4_playground_bad_choice.webp', goodImg:'images/sharing/14_scene4_playground_good_choice.webp' },
             ];
             get('active-game-title').textContent = 'לחלוק ולהצליח 🤝';
+
+            function speakQuestion(text) {
+                try {
+                    if (!window.speechSynthesis) return;
+                    speechSynthesis.cancel();
+                    var u = new SpeechSynthesisUtterance(text);
+                    u.lang = 'he-IL'; u.rate = 0.88; u.pitch = 1.1;
+                    speechSynthesis.speak(u);
+                } catch(e) {}
+            }
 
             function showScene(idx) {
                 if (idx >= SCENES.length) return;
                 var scene = SCENES[idx];
+                // randomise left/right so child can't memorise position
+                var goodOnRight = (Math.random() > 0.5);
+                var leftImg  = goodOnRight ? scene.badImg  : scene.goodImg;
+                var rightImg = goodOnRight ? scene.goodImg : scene.badImg;
+                var leftGood = !goodOnRight;
+                var rightGood = goodOnRight;
+
                 var ws = get('game-workspace');
-                ws.innerHTML = '<div class="sharing-scene">' +
-                    '<img id="sh-img" class="sharing-img" src="' + scene.situation + '" alt="">' +
-                    '<p class="sharing-question">' + scene.question + '</p>' +
-                    '<div id="sh-fb" class="sharing-feedback" style="display:none"></div>' +
-                    '<div class="sharing-choices" id="sh-choices">' +
-                    '<button class="sharing-btn sharing-wrong" id="sh-wrong">' + scene.wrongBtn + '</button>' +
-                    '<button class="sharing-btn sharing-right" id="sh-right">' + scene.rightBtn + '</button>' +
+                ws.innerHTML =
+                    '<div class="sharing-scene">' +
+                    '<img class="sharing-situation" src="' + scene.situation + '" alt="">' +
+                    '<p class="sharing-question" id="sh-q">' + scene.question + '</p>' +
+                    '<div class="sharing-img-choices" id="sh-choices">' +
+                    '<button class="sharing-img-btn" id="sh-left"><img src="' + leftImg + '" alt=""></button>' +
+                    '<button class="sharing-img-btn" id="sh-right"><img src="' + rightImg + '" alt=""></button>' +
                     '</div></div>';
 
-                function onChoice(isCorrect) {
+                speakQuestion(scene.question);
+                // tap question to repeat
+                get('sh-q').onclick = function(){ speakQuestion(scene.question); };
+
+                function onChoice(isCorrect, clickedBtn) {
                     if (isProcessing) return;
-                    var img = get('sh-img'), fb = get('sh-fb'), choices = get('sh-choices');
-                    choices.querySelectorAll('button').forEach(function(b){ b.disabled = true; });
+                    get('sh-choices').querySelectorAll('button').forEach(function(b){ b.disabled = true; });
                     if (isCorrect) {
-                        img.src = scene.goodImg;
-                        fb.textContent = scene.goodText; fb.className = 'sharing-feedback sharing-good'; fb.style.display = '';
+                        clickedBtn.classList.add('correct-flash');
                         handleAnswer(true, null, function(){ showScene(currentStep); }, null);
                     } else {
-                        img.src = scene.badImg;
-                        fb.textContent = scene.badText; fb.className = 'sharing-feedback sharing-bad'; fb.style.display = '';
-                        handleAnswer(false, null, null, function(){
-                            img.src = scene.situation; fb.style.display = 'none';
-                            choices.querySelectorAll('button').forEach(function(b){ b.disabled = false; b.classList.remove('dimmed'); });
+                        clickedBtn.classList.add('wrong-flash');
+                        handleAnswer(false, clickedBtn, null, function(){
+                            clickedBtn.classList.remove('wrong-flash', 'dimmed');
+                            get('sh-choices').querySelectorAll('button').forEach(function(b){ b.disabled = false; });
                         });
                     }
                 }
-                get('sh-wrong').onclick = function(){ onChoice(false); };
-                get('sh-right').onclick = function(){ onChoice(true); };
+                get('sh-left').onclick  = function(){ onChoice(leftGood,  get('sh-left')); };
+                get('sh-right').onclick = function(){ onChoice(rightGood, get('sh-right')); };
             }
             showScene(0);
         }
