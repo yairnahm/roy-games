@@ -185,6 +185,7 @@
         /* ── משחק לחלוק ולהצליח ── */
         .sharing-scene { display:flex; flex-direction:column; align-items:center; gap:1.5vmin; padding:0 1vmin; max-width:700px; margin:0 auto; width:100%; }
         .sharing-question { font-size:clamp(12px,2.4vmin,16px); font-weight:700; color:#333; margin:0; line-height:1.35; text-align:center; max-width:90vw; background:rgba(255,255,255,0.88); padding:1.2vmin 2.5vmin; border-radius:12px; cursor:pointer; }
+        .sharing-situation { width:min(88vw,580px); height:min(30vw,200px); border-radius:20px; overflow:hidden; object-fit:cover; object-position:top center; box-shadow:0 6px 18px rgba(0,0,0,0.18); display:block; flex-shrink:0; }
         .sharing-img-choices { display:flex; gap:3vmin; justify-content:center; width:100%; }
         .sharing-img-btn { width:min(44vw,290px); height:min(32vw,210px); border:5px solid rgba(255,255,255,0.85); border-radius:20px; overflow:hidden; cursor:pointer; padding:0; background:#fff; box-shadow:0 8px 22px rgba(0,0,0,0.2); transition:transform 0.15s,box-shadow 0.15s,border-color 0.2s; touch-action:manipulation; outline:none; animation:popIn 0.35s; flex-shrink:0; }
         .sharing-img-btn { background-size:175% auto; background-position:center 50%; background-repeat:no-repeat; }
@@ -1746,32 +1747,36 @@
         function initSharingGame() {
             const SCENES = [
                 {
-                    question: 'אורי ונועם רוצים לשחק עם המשאית האדומה, אבל יש רק אחת. מה יעשה אורי?',
-                    qAudio:  'sharing/q1.mp3',
-                    fbAudio: 'sharing/fb1.mp3',
-                    badImg:  'images/sharing/04_scene1_truck_bad_choice.webp',
-                    goodImg: 'images/sharing/05_scene1_truck_good_choice.webp'
+                    question:  'אורי ונועם רוצים לשחק עם המשאית האדומה, אבל יש רק אחת. מה יעשה אורי?',
+                    qAudio:    'sharing/q1.mp3',
+                    fbAudio:   'sharing/fb1.mp3',
+                    situation: 'images/sharing/03_scene1_truck_basic.webp',
+                    badImg:    'images/sharing/04_scene1_truck_bad_choice.webp',
+                    goodImg:   'images/sharing/05_scene1_truck_good_choice.webp'
                 },
                 {
-                    question: 'אורי משחק בטאבלט. נועם רוצה גם לשחק. מה יעשה אורי?',
-                    qAudio:  'sharing/q2.mp3',
-                    fbAudio: 'sharing/fb2.mp3',
-                    badImg:  'images/sharing/07_scene2_tablet_bad_choice.webp',
-                    goodImg: 'images/sharing/08_scene2_tablet_good_choice.webp'
+                    question:  'אורי משחק בטאבלט. נועם רוצה גם לשחק. מה יעשה אורי?',
+                    qAudio:    'sharing/q2.mp3',
+                    fbAudio:   'sharing/fb2.mp3',
+                    situation: 'images/sharing/06_scene2_tablet_basic.webp',
+                    badImg:    'images/sharing/07_scene2_tablet_bad_choice.webp',
+                    goodImg:   'images/sharing/08_scene2_tablet_good_choice.webp'
                 },
                 {
-                    question: 'נשארה עוגייה אחת. גם אורי וגם נועם רוצים אותה. מה יעשה אורי?',
-                    qAudio:  'sharing/q3.mp3',
-                    fbAudio: 'sharing/fb3.mp3',
-                    badImg:  'images/sharing/10_scene3_cookie_bad_choice.webp',
-                    goodImg: 'images/sharing/11_scene3_cookie_good_choice.webp'
+                    question:  'נשארה עוגייה אחת. גם אורי וגם נועם רוצים אותה. מה יעשה אורי?',
+                    qAudio:    'sharing/q3.mp3',
+                    fbAudio:   'sharing/fb3.mp3',
+                    situation: 'images/sharing/09_scene3_cookie_basic.webp',
+                    badImg:    'images/sharing/10_scene3_cookie_bad_choice.webp',
+                    goodImg:   'images/sharing/11_scene3_cookie_good_choice.webp'
                 },
                 {
-                    question: 'אורי רוצה לרדת בגלשן, אבל ילדים אחרים מחכים בתור. מה יעשה אורי?',
-                    qAudio:  'sharing/q4.mp3',
-                    fbAudio: 'sharing/fb4.mp3',
-                    badImg:  'images/sharing/13_scene4_playground_bad_choice.webp',
-                    goodImg: 'images/sharing/14_scene4_playground_good_choice.webp'
+                    question:  'אורי רוצה לרדת בגלשן, אבל ילדים אחרים מחכים בתור. מה יעשה אורי?',
+                    qAudio:    'sharing/q4.mp3',
+                    fbAudio:   'sharing/fb4.mp3',
+                    situation: 'images/sharing/12_scene4_playground_basic.webp',
+                    badImg:    'images/sharing/13_scene4_playground_bad_choice.webp',
+                    goodImg:   'images/sharing/14_scene4_playground_good_choice.webp'
                 },
             ];
             get('active-game-title').textContent = 'לחלוק ולהצליח 🤝';
@@ -1802,6 +1807,7 @@
                 ws.innerHTML =
                     '<div class="sharing-scene">' +
                     '<p class="sharing-question" id="sh-q">' + scene.question + ' 🔊</p>' +
+                    '<img class="sharing-situation" src="' + scene.situation + '" alt="">' +
                     '<div class="sharing-img-choices" id="sh-choices">' +
                     '<button class="sharing-img-btn" id="sh-left" style="background-image:url(\'' + leftImg + '\')"></button>' +
                     '<button class="sharing-img-btn" id="sh-right" style="background-image:url(\'' + rightImg + '\')"></button>' +
