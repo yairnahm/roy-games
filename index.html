@@ -1616,7 +1616,10 @@
             var imgEl = get('fl-img');
             imgEl.style.animation = '';
             imgEl.src = 'images/firstletter/' + round.img + '.jpg';
-            setTimeout(function(){ speakLetter(round.word, flLang); }, 400);
+            setTimeout(function(){
+                if (flLang === 'he') playAudio('firstletter/he/word-' + round.img + '.mp3');
+                else speakLetter(round.word, flLang);
+            }, 400);
             var correctLetter = round.letter;
             var pool = flLang === 'he' ? FL_HE_POOL : FL_EN_POOL;
             var wrongPool = shuffle(pool.filter(function(l){ return l !== correctLetter; }));
@@ -1630,7 +1633,12 @@
                 btn.textContent = letter;
                 btn.onclick = function() {
                     if (isProcessing) return;
-                    if (isCorrect) { setTimeout(function(){ speakLetter(flLang === 'he' ? round.sound : letter, flLang); }, 1000); }
+                    if (isCorrect) {
+                        setTimeout(function(){
+                            if (flLang === 'he') playAudio('firstletter/he/sound-' + round.img + '.mp3');
+                            else speakLetter(letter, flLang);
+                        }, 1000);
+                    }
                     handleAnswer(isCorrect, btn, loadFirstLetterRound, null);
                 };
                 opts.appendChild(btn);
