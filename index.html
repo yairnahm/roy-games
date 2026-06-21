@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -120,7 +120,14 @@
         /* סדר נכון / מהתחלה לסוף */
         .seq-target-area { display: flex; flex-direction: row; justify-content: center; align-items: center; gap: clamp(10px, 2vw, 20px); background: white; padding: 20px; border-radius: 20px; margin: 20px auto; max-width: 600px; width: 100%; box-shadow: 0 8px 15px rgba(0,0,0,0.1); transition: 0.5s; min-height: 120px; direction: ltr; }
         .seq-target-item { font-size: clamp(40px, 10vw, 80px); }
-        .chrono-empty { border-bottom: 5px dashed #ccc; width: clamp(40px, 10vw, 80px); height: clamp(40px, 10vw, 80px); display: flex; justify-content: center; align-items: center; font-size: clamp(40px, 10vw, 80px); }
+        .chrono-empty { border: 4px dashed #ccc; border-radius: 20px; width: clamp(65px, 14vmin, 110px); height: clamp(65px, 14vmin, 110px); display: flex; justify-content: center; align-items: center; overflow: hidden; background: rgba(0,0,0,0.03); transition: all 0.2s ease; }
+        .chrono-empty img { width: 100%; height: 100%; object-fit: cover; }
+        
+        /* Chrono Game Specific Responsive Large Image Sizes */
+        #c-targ { max-width: 950px; min-height: clamp(160px, 32vmin, 300px); padding: 3vmin; }
+        #c-targ .chrono-empty { width: clamp(100px, 24vmin, 250px); height: clamp(100px, 24vmin, 250px); border-radius: 28px; border-width: 6px; }
+        #c-opts { max-width: 1000px; }
+        #c-opts .option-btn { width: clamp(110px, 27vmin, 270px); height: clamp(110px, 27vmin, 270px); border-radius: 28px; border-width: 8px; }
         
         .sequence-option-btn { width: 100%; max-width: 500px; background: white; border: 5px solid #2196F3; border-radius: 20px; padding: 10px; display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important; justify-content: space-evenly !important; align-items: center !important; cursor: pointer; box-shadow: 0 6px 12px rgba(0,0,0,0.15); transition: 0.2s; outline: none; margin: 0 auto; font-size: clamp(30px, 7vw, 55px); direction: ltr; }
         .seq-opt-item { font-size: clamp(35px, 8vw, 65px) !important; pointer-events: none; flex-shrink: 0; display: inline-block !important; }
@@ -217,6 +224,8 @@
         let isAppReady = false;
         let isDrawing = false; 
         let currentGameMode = '', currentDifficulty = 1, currentStep = 0, mistakesInLevel = 0, isProcessing = false, gameErrorTimeout = null;
+        let activeGameRounds = 4;
+        let sharingOrder = [];
         let userGender = 'boy';
         let globalSuccessCount = 0;
 
@@ -728,8 +737,10 @@
             get('active-game-title').style.display = '';
             get('active-progress-container').style.display = '';
 
+            activeGameRounds = (currentGameMode === 'sharing') ? 10 : 4;
+
             let pContainer = get('active-progress-container'); pContainer.innerHTML='';
-            for(let i=0;i<4;i++) { let d=D.createElement('div'); d.className='progress-dot'; d.id=`active-progress-container-dot-${i}`; pContainer.appendChild(d); }
+            for(let i=0;i<activeGameRounds;i++) { let d=D.createElement('div'); d.className='progress-dot'; d.id=`active-progress-container-dot-${i}`; pContainer.appendChild(d); }
             updateProgressUI(); get('game-workspace').innerHTML = '';
             
             setTimeout(() => {
@@ -759,14 +770,14 @@
         }
 
         function quitActiveGame() { playClickSound(); hideAllScreens(); if(currentGameMode === 'emotion' || currentGameMode === 'emparts' || currentGameMode === 'missing' || currentGameMode === 'mgamish' || currentGameMode === 'firstletter' || currentGameMode === 'sharing') { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); } else if(currentGameMode === 'faces') { show('faces-mode-screen'); } else { show('unified-diff-screen'); } }
-        function updateProgressUI() { for(let i=0;i<4;i++) { let d = get(`active-progress-container-dot-${i}`); if(d){ if(i < currentStep) d.classList.add('fill'); else d.classList.remove('fill'); } } }
+        function updateProgressUI() { for(let i=0;i<activeGameRounds;i++) { let d = get(`active-progress-container-dot-${i}`); if(d){ if(i < currentStep) d.classList.add('fill'); else d.classList.remove('fill'); } } }
 
         function handleAnswer(isCorrect, btn, successCallback, failCallback, isScribble = false) {
             if(isProcessing) return; 
             clearTimeout(gameErrorTimeout); hide('feedback-layer');
             try {
                 if(isCorrect) {
-                    isProcessing = true; let isFinal = (currentStep >= 3);
+                    isProcessing = true; let isFinal = (currentStep >= (activeGameRounds - 1));
                     playSuccessSound(); speakSuccess(isFinal); 
                     try { if(typeof confetti === 'function') confetti({particleCount: 150, origin:{y:0.6}, zIndex:1000}); } catch(e){}
                     showKisses();
@@ -786,7 +797,7 @@
                     setTimeout(() => {
                         try {
                             hide('feedback-layer'); currentStep++; updateProgressUI(); isProcessing = false;
-                            if(currentStep > 3) {
+                            if(currentStep > (activeGameRounds - 1)) {
                                 let se = 4; if (mistakesInLevel === 1) se = 3; else if (mistakesInLevel === 2) se = 2; else if (mistakesInLevel > 2) se = 1;
                                 for(let i=1; i<=4; i++) { let st = get(`star-${i}`); if(st) st.classList.remove('earned'); if(i<=se) setTimeout(()=>{ if(st) st.classList.add('earned'); playClickSound(); }, i*300); }
                                 awardStar(currentGameMode, currentDifficulty);
@@ -1118,10 +1129,43 @@
         // ==========================================
         // 15. מהתחלה לסוף (Chronological)
         // ==========================================
-        const chronoData = [ ['🌱','🌿','🌳'], ['🥚','🐣','🐔'], ['🐛','🪹','🦋'], ['👶','👦','👨'], ['🌅','☀️','🌇'], ['☁️','🌧️','🌈'] ]; let cOrder = []; let cSelected = [];
+        const chronoData = [
+            [
+                { emoji: '🌱', img: 'images/chrono/plant_1_sprout.png', desc: 'נבט' },
+                { emoji: '🌿', img: 'images/chrono/plant_2_growing.png', desc: 'שתיל' },
+                { emoji: '🌳', img: 'images/chrono/plant_3_tree.png', desc: 'עץ' }
+            ],
+            [
+                { emoji: '🥚', img: 'images/chrono/chicken_1_egg.png', desc: 'ביצה' },
+                { emoji: '🐣', img: 'images/chrono/chicken_2_hatching.png', desc: 'אפרוח בוקע' },
+                { emoji: '🐔', img: 'images/chrono/chicken_3_hen.png', desc: 'תרנגולת' }
+            ],
+            [
+                { emoji: '🐛', img: 'images/chrono/butterfly_1_caterpillar.png', desc: 'זחל' },
+                { emoji: '🪹', img: 'images/chrono/butterfly_2_chrysalis.png', desc: 'גולם' },
+                { emoji: '🦋', img: 'images/chrono/butterfly_3_butterfly.png', desc: 'פרפר' }
+            ],
+            [
+                { emoji: '👶', img: 'images/chrono/human_1_baby.png', desc: 'תינוק' },
+                { emoji: '👦', img: 'images/chrono/human_2_boy.png', desc: 'ילד' },
+                { emoji: '👨', img: 'images/chrono/human_3_man.png', desc: 'איש' }
+            ],
+            [
+                { emoji: '🌅', img: 'images/chrono/sun_1_sunrise.png', desc: 'זריחה' },
+                { emoji: '☀️', img: 'images/chrono/sun_2_noon.png', desc: 'צהריים' },
+                { emoji: '🌇', img: 'images/chrono/sun_3_sunset.png', desc: 'שקיעה' }
+            ],
+            [
+                { emoji: '☁️', img: 'images/chrono/weather_1_cloud.svg', desc: 'ענן' },
+                { emoji: '🌧️', img: 'images/chrono/weather_2_rain.svg', desc: 'גשם' },
+                { emoji: '🌈', img: 'images/chrono/weather_3_rainbow.svg', desc: 'קשת' }
+            ]
+        ];
+        let cOrder = [];
+        let cSelected = [];
         function initChronoGame() { get('active-game-title').textContent='סדרו מהתחלה לסוף ⏳'; get('game-workspace').innerHTML=`<div class="seq-target-area" id="c-targ"></div><div id="c-opts" class="opts-row"></div>`; cOrder=shuffle(createRange(chronoData.length)).slice(0,4); loadChronoRound(); }
-        function loadChronoRound() { cSelected=[]; let p=chronoData[cOrder[currentStep]]; let tArea=get('c-targ'); tArea.innerHTML=''; for(let i=0;i<3;i++){ let d=D.createElement('div'); d.className='chrono-empty'; d.id='c-slot-'+i; tArea.appendChild(d); } let oArea=get('c-opts'); oArea.innerHTML=''; shuffle(p.slice()).forEach((o,i)=>{ let b=D.createElement('button'); b.className='option-btn'; b.style.fontSize='clamp(50px,12vw,90px)'; b.textContent=o; b.onclick=(e)=>{ if(isProcessing || b.classList.contains('hidden')) return; playClickSound(); b.classList.add('hidden'); cSelected.push({val:o, btn:b}); let slot=get('c-slot-'+(cSelected.length-1)); slot.textContent=o; slot.style.border='none'; slot.style.animation='popIn 0.3s forwards'; if(cSelected.length===3){ checkChronoAnswer(); } }; oArea.appendChild(b); }); }
-        function checkChronoAnswer() { let p=chronoData[cOrder[currentStep]]; let correct = cSelected.map(x=>x.val).join('') === p.join(''); if(correct){ handleAnswer(true, null, loadChronoRound, null); }else{ handleAnswer(false, null, null, ()=>{ cSelected.forEach(x=>{ x.btn.classList.remove('hidden'); }); loadChronoRound(); }, false); } }
+        function loadChronoRound() { cSelected=[]; let p=chronoData[cOrder[currentStep]]; let tArea=get('c-targ'); tArea.innerHTML=''; for(let i=0;i<3;i++){ let d=D.createElement('div'); d.className='chrono-empty'; d.id='c-slot-'+i; tArea.appendChild(d); } let oArea=get('c-opts'); oArea.innerHTML=''; shuffle(p.slice()).forEach((o,i)=>{ let b=D.createElement('button'); b.className='option-btn'; b.style.padding='0'; b.innerHTML=`<img src="${o.img}" alt="${o.desc}" style="width:100%; height:100%; object-fit:cover;" />`; b.onclick=(e)=>{ if(isProcessing || b.classList.contains('hidden')) return; playClickSound(); b.classList.add('hidden'); cSelected.push({val:o, btn:b}); let slot=get('c-slot-'+(cSelected.length-1)); slot.innerHTML=`<img src="${o.img}" alt="${o.desc}" style="width:100%; height:100%; object-fit:cover;" />`; slot.style.border='none'; slot.style.background='white'; slot.style.animation='popIn 0.3s forwards'; if(cSelected.length===3){ checkChronoAnswer(); } }; oArea.appendChild(b); }); }
+        function checkChronoAnswer() { let p=chronoData[cOrder[currentStep]]; let correct = cSelected.every((x, idx) => x.val === p[idx]); if(correct){ handleAnswer(true, null, loadChronoRound, null); }else{ handleAnswer(false, null, null, ()=>{ cSelected.forEach(x=>{ x.btn.classList.remove('hidden'); }); loadChronoRound(); }, false); } }
 
         // ==========================================
         // 16. מה יותר גדול?
@@ -1799,6 +1843,16 @@
                     goodImg:   'images/sharing/14_scene4_playground_good_choice.webp'
                 },
                 {
+                    question:  'אורי ונועם רוצים לבנות מגדל, אבל יש רק קופסת קוביות אחת. מה יעשה אורי?',
+                    qAudio:    'sharing/q5.mp3',
+                    fbAudio:   'sharing/fb5.mp3',
+                    speakQ:    'אורי ונועם רוצים לבנות מגדל, אבל יש רק קופסת קוביות אחת. מה יעשה אורי?',
+                    speakFb:   'כל הכבוד! אורי משחק בקוביות יחד עם נועם, ושניהם בונים מגדל גדול יחד!',
+                    situation: 'images/sharing/15_scene5_blocks_basic.webp',
+                    badImg:    'images/sharing/16_scene5_blocks_bad_choice.webp',
+                    goodImg:   'images/sharing/17_scene5_blocks_good_choice.webp'
+                },
+                {
                     question:  'אורי ונועם רוצים לצייר, אבל יש קופסה אחת עם צבעים. מה יעשה אורי?',
                     qAudio:    'sharing/q6.mp3',
                     fbAudio:   'sharing/fb6.mp3',
@@ -1847,9 +1901,10 @@
                     situation: 'images/sharing/30_scene10_rug_basic.webp',
                     badImg:    'images/sharing/31_scene10_rug_bad_choice.webp',
                     goodImg:   'images/sharing/32_scene10_rug_good_choice.webp'
-                },
+                }
             ];
             get('active-game-title').textContent = 'לחלוק ולהצליח 🤝';
+            sharingOrder = shuffle(createRange(SCENES.length));
 
             function playAudioWithCallback(filename, onEnd, speakText) {
                 try {
@@ -1893,7 +1948,7 @@
 
             function showScene(idx) {
                 if (idx >= SCENES.length) return;
-                var scene = SCENES[idx];
+                var scene = SCENES[sharingOrder[idx]];
                 var goodOnRight = (Math.random() > 0.5);
                 var leftImg  = goodOnRight ? scene.badImg  : scene.goodImg;
                 var rightImg = goodOnRight ? scene.goodImg : scene.badImg;
