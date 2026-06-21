@@ -1602,13 +1602,9 @@
             if (!round) return;
             var imgWrap = get('fl-img-wrap');
             var imgEl = get('fl-img');
-            imgWrap.style.opacity = '0';
-            imgEl.onload = function() {
-                imgWrap.style.opacity = '1';
-                imgWrap.style.animation = 'none'; void imgWrap.offsetWidth; imgWrap.style.animation = 'popIn 0.4s';
-                speakLetter(round.word, flLang);
-            };
             imgEl.src = 'images/firstletter/' + round.img + '.jpg';
+            imgWrap.style.animation = 'none'; void imgWrap.offsetWidth; imgWrap.style.animation = 'popIn 0.4s forwards';
+            setTimeout(function(){ speakLetter(round.word, flLang); }, 400);
             var correctLetter = round.letter;
             var pool = flLang === 'he' ? FL_HE_POOL : FL_EN_POOL;
             var wrongPool = shuffle(pool.filter(function(l){ return l !== correctLetter; }));
@@ -1786,6 +1782,8 @@
                     question:  'אורי ונועם רוצים לצייר, אבל יש קופסה אחת עם צבעים. מה יעשה אורי?',
                     qAudio:    'sharing/q6.mp3',
                     fbAudio:   'sharing/fb6.mp3',
+                    speakQ:    'אורי ונועם רוצים לצייר, אבל יש קופסה אחת עם צבעים. מה יעשה אורי?',
+                    speakFb:   'כל הכבוד! אורי מחלק את הצבעים עם נועם, ושניהם מציירים יחד!',
                     situation: 'images/sharing/18_scene6_colors_basic.webp',
                     badImg:    'images/sharing/19_scene6_colors_bad_choice.webp',
                     goodImg:   'images/sharing/20_scene6_colors_good_choice.webp'
@@ -1794,6 +1792,8 @@
                     question:  'אורי מחזיק כדור. נועם רוצה לשחק יחד. מה יעשה אורי?',
                     qAudio:    'sharing/q7.mp3',
                     fbAudio:   'sharing/fb7.mp3',
+                    speakQ:    'אורי מחזיק כדור. נועם רוצה לשחק יחד. מה יעשה אורי?',
+                    speakFb:   'נכון מאוד! אורי מוסר את הכדור לנועם. כל אחד מקבל תור!',
                     situation: 'images/sharing/21_scene7_ball_basic.webp',
                     badImg:    'images/sharing/22_scene7_ball_bad_choice.webp',
                     goodImg:   'images/sharing/23_scene7_ball_good_choice.webp'
@@ -1802,6 +1802,8 @@
                     question:  'לאורי יש מכונית, לנועם יש כדור. נועם רוצה לנסות את המכונית. מה יעשה אורי?',
                     qAudio:    'sharing/q8.mp3',
                     fbAudio:   'sharing/fb8.mp3',
+                    speakQ:    'לאורי יש מכונית, לנועם יש כדור. נועם רוצה לנסות את המכונית. מה יעשה אורי?',
+                    speakFb:   'מצוין! אורי ונועם מחליפים צעצועים לזמן קצר. שניהם מנסים משהו חדש!',
                     situation: 'images/sharing/24_scene8_trade_basic.webp',
                     badImg:    'images/sharing/25_scene8_trade_bad_choice.webp',
                     goodImg:   'images/sharing/26_scene8_trade_good_choice.webp'
@@ -1810,6 +1812,8 @@
                     question:  'אמא קוראת סיפור לאורי. נועם גם רוצה לשמוע. מה יעשה אורי?',
                     qAudio:    'sharing/q9.mp3',
                     fbAudio:   'sharing/fb9.mp3',
+                    speakQ:    'אמא קוראת סיפור לאורי. נועם גם רוצה לשמוע. מה יעשה אורי?',
+                    speakFb:   'יופי! אורי מפנה מקום לנועם ליד אמא. כולם נהנים מהסיפור יחד!',
                     situation: 'images/sharing/27_scene9_attention_basic.webp',
                     badImg:    'images/sharing/28_scene9_attention_bad_choice.webp',
                     goodImg:   'images/sharing/29_scene9_attention_good_choice.webp'
@@ -1818,6 +1822,8 @@
                     question:  'יש שטיח אחד בחדר. אורי יושב עליו. נועם גם רוצה לשבת. מה יעשה אורי?',
                     qAudio:    'sharing/q10.mp3',
                     fbAudio:   'sharing/fb10.mp3',
+                    speakQ:    'יש שטיח אחד בחדר. אורי יושב עליו. נועם גם רוצה לשבת. מה יעשה אורי?',
+                    speakFb:   'מעולה! אורי משאיר מקום על השטיח לנועם, ושניהם יושבים יחד!',
                     situation: 'images/sharing/30_scene10_rug_basic.webp',
                     badImg:    'images/sharing/31_scene10_rug_bad_choice.webp',
                     goodImg:   'images/sharing/32_scene10_rug_good_choice.webp'
@@ -1825,18 +1831,43 @@
             ];
             get('active-game-title').textContent = 'לחלוק ולהצליח 🤝';
 
-            function playAudioWithCallback(filename, onEnd) {
+            function playAudioWithCallback(filename, onEnd, speakText) {
                 try {
                     if (_currentAudio) { _currentAudio.pause(); _currentAudio.currentTime = 0; }
                     var a = new Audio('./audio/' + filename);
                     _currentAudio = a;
-                    if (onEnd) {
-                        var done = false;
-                        var fb = setTimeout(function(){ if(!done){ done=true; onEnd(); } }, 8000);
-                        a.onended = function(){ if(!done){ done=true; clearTimeout(fb); onEnd(); } };
-                        a.onerror  = function(){ if(!done){ done=true; clearTimeout(fb); onEnd(); } };
+                    var settled = false;
+                    function useTts() {
+                        if (settled) return;
+                        settled = true;
+                        if (!speakText || !window.speechSynthesis) { if (onEnd) setTimeout(onEnd, 300); return; }
+                        speechSynthesis.cancel();
+                        function doSpeak() {
+                            var voices = speechSynthesis.getVoices();
+                            var u = new SpeechSynthesisUtterance(speakText);
+                            u.lang = 'he-IL'; u.rate = 0.88; u.pitch = 1.15;
+                            var v = voices.find(function(vv){ return vv.lang.startsWith('he') && /hila|michal|idit|anat|carmit/i.test(vv.name); })
+                                 || voices.find(function(vv){ return vv.lang.startsWith('he'); });
+                            if (v) u.voice = v;
+                            if (onEnd) {
+                                var fb2 = setTimeout(onEnd, Math.max(speakText.length * 90, 1200) + 800);
+                                u.onend = function(){ clearTimeout(fb2); onEnd(); };
+                            }
+                            speechSynthesis.speak(u);
+                        }
+                        if (speechSynthesis.getVoices().length === 0) {
+                            speechSynthesis.onvoiceschanged = function(){ speechSynthesis.onvoiceschanged = null; doSpeak(); };
+                            setTimeout(doSpeak, 400);
+                        } else { doSpeak(); }
                     }
-                    a.play().catch(function(){ if(onEnd) onEnd(); });
+                    if (onEnd) {
+                        var fb = setTimeout(function(){ if(!settled){ settled=true; onEnd(); } }, 8000);
+                        a.onended = function(){ if(!settled){ settled=true; clearTimeout(fb); onEnd(); } };
+                        a.onerror  = function(){ clearTimeout(fb); useTts(); };
+                    } else {
+                        a.onerror = function(){ useTts(); };
+                    }
+                    a.play().catch(function(){ useTts(); });
                 } catch(e) { if(onEnd) setTimeout(onEnd, 300); }
             }
 
@@ -1857,8 +1888,8 @@
                     '<button class="sharing-img-btn" id="sh-right" style="background-image:url(\'' + rightImg + '\')"></button>' +
                     '</div></div>';
 
-                playAudioWithCallback(scene.qAudio);
-                get('sh-q').onclick = function(){ playAudioWithCallback(scene.qAudio); };
+                playAudioWithCallback(scene.qAudio, null, scene.speakQ);
+                get('sh-q').onclick = function(){ playAudioWithCallback(scene.qAudio, null, scene.speakQ); };
 
                 function onChoice(isCorrect, clickedBtn) {
                     if (isProcessing) return;
@@ -1869,7 +1900,7 @@
                         playAudioWithCallback(scene.fbAudio, function(){
                             isProcessing = false;
                             handleAnswer(true, null, function(){ showScene(currentStep); }, null);
-                        });
+                        }, scene.speakFb);
                     } else {
                         isProcessing = false;
                         clickedBtn.classList.add('wrong-flash');
