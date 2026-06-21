@@ -7,6 +7,7 @@
     <meta http-equiv="Expires" content="0" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>המרכז של רועי - פרימיום</title>
+    <link rel="manifest" href="manifest.webmanifest">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;700;900&display=swap');
@@ -206,6 +207,117 @@
         .sharing-img-btn:disabled { opacity:0.4; cursor:not-allowed; transform:none; }
         .sharing-img-btn.correct-flash { border-color:#4CAF50; box-shadow:0 0 0 6px #4CAF50; }
         .sharing-img-btn.wrong-flash { border-color:#f44336; animation:shake 0.4s; }
+
+        /* ── Tracing Indicators ── */
+        .start-indicator {
+            position: absolute;
+            pointer-events: none;
+            width: clamp(24px, 5vw, 36px);
+            height: clamp(24px, 5vw, 36px);
+            border-radius: 50%;
+            background: #4CAF50;
+            border: 3px solid #fff;
+            box-shadow: 0 0 12px #4CAF50, 0 4px 8px rgba(0,0,0,0.3);
+            z-index: 12;
+            transform: translate(-50%, -50%);
+            animation: start-pulse 1.2s infinite ease-in-out;
+        }
+        @keyframes start-pulse {
+            0% { transform: translate(-50%, -50%) scale(0.85); box-shadow: 0 0 8px #4CAF50, 0 4px 8px rgba(0,0,0,0.3); }
+            50% { transform: translate(-50%, -50%) scale(1.2); box-shadow: 0 0 20px #4CAF50, 0 4px 8px rgba(0,0,0,0.3); }
+            100% { transform: translate(-50%, -50%) scale(0.85); box-shadow: 0 0 8px #4CAF50, 0 4px 8px rgba(0,0,0,0.3); }
+        }
+        .path-arrow {
+            position: absolute;
+            pointer-events: none;
+            z-index: 9;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+            animation: arrow-pulse 1.5s infinite ease-in-out;
+        }
+        @keyframes arrow-pulse {
+            0% { opacity: 0.5; transform: translate(-50%, -50%) rotate(var(--rot)) scale(0.9); }
+            50% { opacity: 1; transform: translate(-50%, -50%) rotate(var(--rot)) scale(1.2); }
+            100% { opacity: 0.5; transform: translate(-50%, -50%) rotate(var(--rot)) scale(0.9); }
+        }
+
+        /* ── Landscape / Low Viewport Height Adjustments ── */
+        @media (max-height: 520px) {
+            #active-game-container {
+                padding: 1vmin;
+            }
+            .top-bar {
+                margin-bottom: 1vmin;
+                padding: 1vmin 2vmin;
+            }
+            #active-game-title {
+                margin-top: 1vmin;
+                margin-bottom: 1vmin;
+                font-size: clamp(14px, 4vh, 22px);
+            }
+            .opts-row {
+                margin-top: 1vmin;
+                padding: 1vmin;
+            }
+            .seq-target-area {
+                margin: 1vmin auto;
+                padding: 10px;
+                min-height: 80px;
+            }
+            /* Chrono adjustments */
+            #c-targ {
+                min-height: clamp(80px, 15vh, 180px);
+                padding: 1vmin;
+            }
+            #c-targ .chrono-empty {
+                width: clamp(50px, 15vh, 120px);
+                height: clamp(50px, 15vh, 120px);
+                border-radius: 12px;
+            }
+            #c-opts .option-btn {
+                width: clamp(55px, 17vh, 130px);
+                height: clamp(55px, 17vh, 130px);
+                border-radius: 12px;
+            }
+            #c-opts .option-wrapper div {
+                font-size: clamp(10px, 2.5vh, 14px) !important;
+                margin-top: 4px !important;
+                padding: 2px 8px !important;
+                border-radius: 8px !important;
+            }
+            /* Memory adjustments */
+            .image-container {
+                margin: 1.5vmin 0;
+                gap: 1.5vmin;
+            }
+            .image-box {
+                width: clamp(50px, 15vh, 120px);
+                height: clamp(50px, 15vh, 120px);
+                border-radius: 12px;
+            }
+            .option-btn {
+                width: clamp(50px, 15vh, 120px);
+                height: clamp(50px, 15vh, 120px);
+                border-radius: 12px;
+            }
+            /* Drawing Canvas adjustments */
+            .canvas-container {
+                max-width: clamp(150px, 45vh, 250px) !important;
+            }
+            #tracing-layout {
+                gap: 10px;
+            }
+            #minimap-area {
+                max-width: clamp(60px, 20vh, 100px);
+                padding: 5px;
+            }
+            #path-canvas-wrapper.canvas-container {
+                max-width: clamp(300px, 90vh, 500px) !important;
+            }
+            /* Diff grid adjustments */
+            #diff-grid {
+                max-width: clamp(160px, 45vh, 320px);
+            }
+        }
     </style>
 </head>
 <body class="bg-hub">
@@ -238,8 +350,17 @@
         // Games that give a half star (two halves = 1 full):
         const halfStarGames = ['context','oddone','halfhalf','counting'];
         let starWallet = { full: 0, halves: 0 };
-        // Track which game+level combos already awarded stars (to avoid double-awarding on replay)
         let awardedStars = {};
+        try {
+            if (localStorage.getItem('starWallet')) {
+                starWallet = JSON.parse(localStorage.getItem('starWallet'));
+            }
+            if (localStorage.getItem('awardedStars')) {
+                awardedStars = JSON.parse(localStorage.getItem('awardedStars'));
+            }
+        } catch(e) {
+            console.error('Failed to load stars from localStorage:', e);
+        }
 
         function getStarType(gameMode) {
             if (fullStarGames.indexOf(gameMode) > -1) return 'full';
@@ -267,6 +388,10 @@
                 if (level === 1) { starWallet.halves++; }
                 else { starWallet.full++; }
             }
+            try {
+                localStorage.setItem('starWallet', JSON.stringify(starWallet));
+                localStorage.setItem('awardedStars', JSON.stringify(awardedStars));
+            } catch(e) {}
             updateWalletDisplay();
         }
         function updateWalletDisplay() {
@@ -740,7 +865,7 @@
             get('active-game-title').style.display = '';
             get('active-progress-container').style.display = '';
 
-            activeGameRounds = (currentGameMode === 'sharing') ? 10 : 4;
+            activeGameRounds = (currentGameMode === 'sharing') ? 10 : ((currentGameMode === 'memory') ? (level === 1 ? 3 : (level === 2 ? 4 : 5)) : 4);
 
             let pContainer = get('active-progress-container'); pContainer.innerHTML='';
             for(let i=0;i<activeGameRounds;i++) { let d=D.createElement('div'); d.className='progress-dot'; d.id=`active-progress-container-dot-${i}`; pContainer.appendChild(d); }
@@ -846,8 +971,89 @@
         // 1. Memory
         let memItems = []; let memOrder = []; let memHide = -1;
         function initMemoryGame() { get('active-game-title').textContent = 'הסתכלו טוב... 👀'; get('game-workspace').innerHTML = `<div class="image-container" id="mem-targ"></div><button class="action-btn" id="mem-btn">המשך ➜</button><div class="opts-row hidden" id="mem-opts"></div>`; get('mem-btn').onclick=doMemQuestion; loadMemoryRound(); }
-        function loadMemoryRound() { let catKeys = Object.keys(sharedData.categories); memItems = shuffle(sharedData.categories[catKeys[rand(0, catKeys.length-1)]]).slice(0,4); memOrder = shuffle([0, 1, 2, 3]); let tArea=get('mem-targ'); tArea.innerHTML=''; memItems.forEach(item=>{ let w=D.createElement('div'); w.className='image-box'; w.style.display='flex'; w.style.alignItems='center'; w.style.justifyContent='center'; w.style.fontSize='clamp(50px,12vw,90px)'; w.textContent=item; tArea.appendChild(w); }); get('active-game-title').textContent='הסתכלו טוב... 👀'; show('mem-btn'); hide('mem-opts'); }
-        function doMemQuestion() { playClickSound(); get('active-game-title').textContent='איזו תמונה חסרה? ❓'; hide('mem-btn'); show('mem-opts'); memHide=memOrder[currentStep]; let tArea=get('mem-targ'); tArea.innerHTML=''; shuffle([0,1,2,3]).forEach(pos=>{ let w=D.createElement('div'); w.className='image-box'; w.style.display='flex'; w.style.alignItems='center'; w.style.justifyContent='center'; w.style.fontSize='clamp(50px,12vw,90px)'; if(pos===memHide) { w.classList.add('missing-box'); w.id='mem-miss'; w.textContent='❓'; } else { w.textContent=memItems[pos]; } tArea.appendChild(w); }); let allOther = []; for(let k in sharedData.categories){ let arr=sharedData.categories[k]; for(let i=0;i<arr.length;i++)allOther.push(arr[i]); } let unused = allOther.filter(f => memItems.indexOf(f)===-1); let opts = shuffle([memItems[memHide]].concat(shuffle(unused).slice(0,3))); let oArea=get('mem-opts'); oArea.innerHTML=''; opts.forEach((o,i)=>{ let w=D.createElement('div'); w.className='option-wrapper'; let b=D.createElement('button'); b.className='option-btn'; b.style.fontSize='clamp(50px,12vw,90px)'; b.textContent=o; b.onclick=(ev)=>{ev.preventDefault(); if(isProcessing)return; let isCor = (o === memItems[memHide]); if(isCor) { let m=get('mem-miss'); m.innerHTML=''; m.textContent=o; m.className='image-box'; m.style.display='flex'; m.style.alignItems='center'; m.style.justifyContent='center'; m.style.fontSize='clamp(50px,12vw,90px)'; } handleAnswer(isCor, b, loadMemoryRound, null); }; let n=D.createElement('div'); n.className='option-number'; n.textContent=i+1; w.appendChild(b); w.appendChild(n); oArea.appendChild(w); }); }
+        function loadMemoryRound() {
+            let catKeys = Object.keys(sharedData.categories);
+            let memCount = currentDifficulty === 1 ? 3 : (currentDifficulty === 2 ? 4 : 5);
+            memItems = shuffle(sharedData.categories[catKeys[rand(0, catKeys.length-1)]]).slice(0, memCount);
+            memOrder = shuffle(createRange(memCount));
+            let tArea=get('mem-targ'); tArea.innerHTML='';
+            memItems.forEach(item=>{
+                let w=D.createElement('div');
+                w.className='image-box';
+                w.style.display='flex';
+                w.style.alignItems='center';
+                w.style.justifyContent='center';
+                w.style.fontSize='clamp(50px,12vw,90px)';
+                w.textContent=item;
+                tArea.appendChild(w);
+            });
+            get('active-game-title').textContent='הסתכלו טוב... 👀';
+            show('mem-btn');
+            hide('mem-opts');
+        }
+        function doMemQuestion() {
+            playClickSound();
+            get('active-game-title').textContent='איזו תמונה חסרה? ❓';
+            hide('mem-btn');
+            show('mem-opts');
+            memHide=memOrder[currentStep];
+            let tArea=get('mem-targ'); tArea.innerHTML='';
+            let memCount = currentDifficulty === 1 ? 3 : (currentDifficulty === 2 ? 4 : 5);
+            shuffle(createRange(memCount)).forEach(pos=>{
+                let w=D.createElement('div');
+                w.className='image-box';
+                w.style.display='flex';
+                w.style.alignItems='center';
+                w.style.justifyContent='center';
+                w.style.fontSize='clamp(50px,12vw,90px)';
+                if(pos===memHide) {
+                    w.classList.add('missing-box');
+                    w.id='mem-miss';
+                    w.textContent='❓';
+                } else {
+                    w.textContent=memItems[pos];
+                }
+                tArea.appendChild(w);
+            });
+            let allOther = [];
+            for(let k in sharedData.categories){
+                let arr=sharedData.categories[k];
+                for(let i=0;i<arr.length;i++)allOther.push(arr[i]);
+            }
+            let unused = allOther.filter(f => memItems.indexOf(f)===-1);
+            let opts = shuffle([memItems[memHide]].concat(shuffle(unused).slice(0,3)));
+            let oArea=get('mem-opts'); oArea.innerHTML='';
+            opts.forEach((o,i)=>{
+                let w=D.createElement('div');
+                w.className='option-wrapper';
+                let b=D.createElement('button');
+                b.className='option-btn';
+                b.style.fontSize='clamp(50px,12vw,90px)';
+                b.textContent=o;
+                b.onclick=(ev)=>{
+                    ev.preventDefault();
+                    if(isProcessing)return;
+                    let isCor = (o === memItems[memHide]);
+                    if(isCor) {
+                        let m=get('mem-miss');
+                        m.innerHTML='';
+                        m.textContent=o;
+                        m.className='image-box';
+                        m.style.display='flex';
+                        m.style.alignItems='center';
+                        m.style.justifyContent='center';
+                        m.style.fontSize='clamp(50px,12vw,90px)';
+                    }
+                    handleAnswer(isCor, b, loadMemoryRound, null);
+                };
+                let n=D.createElement('div');
+                n.className='option-number';
+                n.textContent=i+1;
+                w.appendChild(b);
+                w.appendChild(n);
+                oArea.appendChild(w);
+            });
+        }
 
         // 2. Tracing
         let tCanvas, tCtx, tpCanvas, tpCtx, tPath=[], tGaps=[], tDist=0, tStrokes=[], tLast=null, tPerimeter=0;
@@ -948,7 +1154,18 @@
             let aIcon = pathType==='fly' ? `<div style="font-size:clamp(60px, 12vw, 90px); animation:flap 0.15s infinite alternate; filter:drop-shadow(0 5px 5px rgba(0,0,0,0.2));">🪰</div>` : `<div style="font-size:clamp(60px, 12vw, 90px); filter:drop-shadow(0 5px 5px rgba(0,0,0,0.2)); position:relative;">🚓<div id="p-siren" class="siren-light"></div></div>`;
             get('game-workspace').innerHTML = `<div id="path-canvas-wrapper" class="canvas-container" style="aspect-ratio:2/1;"><canvas id="pathCanvas" class="drawing-canvas"></canvas><div id="p-target" class="path-character">${tIcon}</div><div id="p-actor" class="path-character">${aIcon}</div></div>`;
             pCanvas = get('pathCanvas'); pCtx = pCanvas.getContext('2d');
-            pCanvas.onpointerdown=(e)=>{if(isProcessing)return; if(e.cancelable)e.preventDefault();isDrawing=true;clearTimeout(gameErrorTimeout);hide('feedback-layer');let p=getPpos(e);pLast=p;pStrokes.push({pts:[p],len:0});pCtx.lineCap='round';pCtx.lineJoin='round';};
+            pCanvas.onpointerdown=(e)=>{
+                if(isProcessing)return;
+                if(e.cancelable)e.preventDefault();
+                isDrawing=true;
+                clearTimeout(gameErrorTimeout);
+                hide('feedback-layer');
+                let wrapper = get('path-canvas-wrapper');
+                if(wrapper) {
+                    wrapper.querySelectorAll('.start-indicator, .path-arrow').forEach(el => el.style.display = 'none');
+                }
+                let p=getPpos(e);pLast=p;pStrokes.push({pts:[p],len:0});pCtx.lineCap='round';pCtx.lineJoin='round';
+            };
             pCanvas.onpointermove=(e)=>{if(!isDrawing)return;if(e.cancelable)e.preventDefault();let curr=getPpos(e);let s=pStrokes[pStrokes.length-1];s.pts.push(curr);if(pLast){let d=Math.hypot(curr.x-pLast.x,curr.y-pLast.y);s.len+=d;let stps=Math.max(1,Math.floor(d/5));for(let i=0;i<=stps;i++){let cx=pLast.x+(curr.x-pLast.x)*(i/stps);let cy=pLast.y+(curr.y-pLast.y)*(i/stps);pPath.forEach(pt=>{if(!pt.h&&Math.hypot(pt.x-cx,pt.y-cy)<40)pt.h=true;});}}pCtx.shadowBlur=10;pCtx.shadowColor='#FF9800';pCtx.beginPath();pCtx.moveTo(pLast.x,pLast.y);pCtx.lineTo(curr.x,curr.y);pCtx.strokeStyle='#FF9800';pCtx.lineWidth=18;pCtx.stroke();pLast=curr;};
             pCanvas.onpointerup=pCanvas.onpointercancel=pCanvas.onpointerout=endPDraw;
             setTimeout(loadPathRound, 50);
@@ -963,6 +1180,45 @@
             tEl.style.left=tx+'%'; tEl.style.top=ey+'%'; aEl.style.left=ax+'%'; aEl.style.top=sy+'%';
             pDist=0; for(let i=1;i<pPath.length;i++)pDist+=Math.hypot(pPath[i].x-pPath[i-1].x, pPath[i].y-pPath[i-1].y); pLen=pPath.length;
             drawPathBaseShape();
+
+            let wrapper = get('path-canvas-wrapper');
+            if (wrapper) {
+                wrapper.querySelectorAll('.start-indicator, .path-arrow').forEach(el => el.remove());
+                
+                let startInd = D.createElement('div');
+                startInd.className = 'start-indicator';
+                startInd.style.left = (pPath[0].x / 8) + '%';
+                startInd.style.top = (pPath[0].y / 4) + '%';
+                wrapper.appendChild(startInd);
+                
+                let percentages = [0.25, 0.50, 0.75];
+                percentages.forEach(pct => {
+                    let idx = Math.floor(pLen * pct);
+                    if (idx >= pLen - 1) idx = pLen - 2;
+                    let p = pPath[idx];
+                    let nextP = pPath[idx + 1];
+                    let angle = Math.atan2(nextP.y - p.y, nextP.x - p.x) * 180 / Math.PI;
+                    
+                    let arrow = D.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                    arrow.setAttribute('class', 'path-arrow');
+                    arrow.setAttribute('width', '24');
+                    arrow.setAttribute('height', '24');
+                    arrow.setAttribute('viewBox', '0 0 24 24');
+                    arrow.style.setProperty('--rot', angle + 'deg');
+                    arrow.style.left = (p.x / 8) + '%';
+                    arrow.style.top = (p.y / 4) + '%';
+                    
+                    let poly = D.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+                    poly.setAttribute('points', '8,5 18,12 8,19');
+                    poly.setAttribute('fill', '#4CAF50');
+                    poly.setAttribute('stroke', '#fff');
+                    poly.setAttribute('stroke-width', '2');
+                    poly.setAttribute('stroke-linejoin', 'round');
+                    
+                    arrow.appendChild(poly);
+                    wrapper.appendChild(arrow);
+                });
+            }
         }
         function drawPathBaseShape() {
             pCtx.beginPath(); pCtx.moveTo(pPath[0].x, pPath[0].y); for(let i=1;i<pLen;i++) pCtx.lineTo(pPath[i].x, pPath[i].y); pCtx.strokeStyle='rgba(150,150,150,0.8)'; pCtx.setLineDash([15,25]); pCtx.lineWidth=14; pCtx.lineCap='round'; pCtx.lineJoin='round'; pCtx.stroke(); pCtx.setLineDash([]);
@@ -1110,10 +1366,64 @@
         // ==========================================
         // 12. מי גר כאן? (Habitat)
         // ==========================================
-        const habData = [ {q:'🐝', a:'🍯'}, {q:'🐶', a:'🏠'}, {q:'🐦', a:'🪹'}, {q:'🐠', a:'🌊'}, {q:'🕷️', a:'🕸️'}, {q:'🐴', a:'🛖'}, {q:'👑', a:'🏰'}, {q:'🐸', a:'🪷'}, {q:'🦇', a:'🦇⛺'}, {q:'🐒', a:'🌴'} ];
+        const habData = [
+            { qImg: 'images/habitat/bee.png', aImg: 'images/habitat/beehive.png', qDesc: 'דבורה', aDesc: 'כוורת' },
+            { qImg: 'images/habitat/dog.png', aImg: 'images/habitat/doghouse.png', qDesc: 'כלב', aDesc: 'מלונה' },
+            { qImg: 'images/habitat/bird.png', aImg: 'images/habitat/nest.png', qDesc: 'ציפור', aDesc: 'קן ציפור' },
+            { qImg: 'images/habitat/fish.png', aImg: 'images/habitat/ocean.png', qDesc: 'דג', aDesc: 'ים' },
+            { qImg: 'images/habitat/spider.png', aImg: 'images/habitat/spiderweb.png', qDesc: 'עכביש', aDesc: 'קורי עכביש' },
+            { qImg: 'images/habitat/horse.png', aImg: 'images/habitat/stable.png', qDesc: 'סוס', aDesc: 'אורווה' },
+            { qImg: 'images/habitat/king.png', aImg: 'images/habitat/castle.png', qDesc: 'מלך', aDesc: 'ארמון' },
+            { qImg: 'images/habitat/frog.png', aImg: 'images/habitat/lilypad.png', qDesc: 'צפרדע', aDesc: 'שושנת מים' },
+            { qImg: 'images/habitat/bat.png', aImg: 'images/habitat/cave.png', qDesc: 'עטלף', aDesc: 'מערה' },
+            { qImg: 'images/habitat/monkey.png', aImg: 'images/habitat/palmtree.png', qDesc: 'קוף', aDesc: 'עץ דקל' }
+        ];
         let habOrder = [];
         function initHabitatGame() { get('active-game-title').textContent='מי גר כאן? 🏠'; get('game-workspace').innerHTML=`<div id="tool-target-area" class="large-target"></div><div id="tool-options-area" class="opts-row"></div>`; habOrder=shuffle(createRange(habData.length)).slice(0,4); loadHabitatRound(); }
-        function loadHabitatRound() { let p = habData[habOrder[currentStep]]; get('tool-target-area').textContent = p.q; let others = []; for(let i=0;i<habData.length;i++){ if(habData[i]!==p) others.push(habData[i].a); } let opts = shuffle([p.a].concat(shuffle(others).slice(0,3))); let oArea = get('tool-options-area'); oArea.innerHTML=''; opts.forEach((t,i)=>{ let w=D.createElement('div'); w.className='option-wrapper'; let b=D.createElement('button'); b.className='action-btn option-btn'; b.style.fontSize='clamp(40px,10vw,70px)'; b.textContent=t; b.onclick=(e)=>{if(isProcessing)return; handleAnswer(t===p.a, b, loadHabitatRound, null);}; let n=D.createElement('div'); n.className='option-number'; n.textContent=i+1; w.appendChild(b); w.appendChild(n); oArea.appendChild(w); }); }
+        function loadHabitatRound() {
+            let p = habData[habOrder[currentStep]];
+            let targetArea = get('tool-target-area');
+            targetArea.style.padding = '0';
+            targetArea.style.width = 'clamp(150px, 40vmin, 250px)';
+            targetArea.style.height = 'clamp(150px, 40vmin, 250px)';
+            targetArea.style.display = 'flex';
+            targetArea.style.justifyContent = 'center';
+            targetArea.style.alignItems = 'center';
+            targetArea.style.overflow = 'hidden';
+            targetArea.style.cursor = 'pointer';
+            targetArea.innerHTML = `<img src="${p.qImg}" alt="${p.qDesc}" style="width:100%; height:100%; object-fit:cover;">`;
+            targetArea.onclick = () => { speakLetter(p.qDesc, 'he'); };
+            
+            // Speak the target question animal name in Hebrew when it loads
+            speakLetter(p.qDesc, 'he');
+
+            let others = [];
+            for(let i=0;i<habData.length;i++){
+                if(habData[i]!==p) others.push(habData[i]);
+            }
+            let opts = shuffle([p].concat(shuffle(others).slice(0,3)));
+            let oArea = get('tool-options-area');
+            oArea.innerHTML='';
+            opts.forEach((opt,i)=>{
+                let w=D.createElement('div');
+                w.className='option-wrapper';
+                let b=D.createElement('button');
+                b.className='action-btn option-btn';
+                b.style.padding='0';
+                b.innerHTML = `<img src="${opt.aImg}" alt="${opt.aDesc}" style="width:100%; height:100%; object-fit:cover;">`;
+                b.onclick=(e)=>{
+                    if(isProcessing)return;
+                    speakLetter(opt.aDesc, 'he');
+                    handleAnswer(opt===p, b, loadHabitatRound, null);
+                };
+                let n=D.createElement('div');
+                n.className='option-number';
+                n.textContent=i+1;
+                w.appendChild(b);
+                w.appendChild(n);
+                oArea.appendChild(w);
+            });
+        }
 
         // ==========================================
         // 13. משחק הצלליות (Shadow)
@@ -2035,6 +2345,17 @@
                 playMgHappySound();
                 handleAnswer(true, null, loadMgRound, null);
             }
+        }
+
+        // Register Service Worker for PWA offline support
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('./sw.js').then(function(reg) {
+                    console.log('ServiceWorker registration successful with scope: ', reg.scope);
+                }, function(err) {
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+            });
         }
 
     </script>
