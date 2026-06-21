@@ -187,7 +187,7 @@
         #active-game-container:has(#sh-choices) #active-game-title { font-size:clamp(12px,2vh,18px); margin-bottom:1px !important; }
         .sharing-scene { display:flex; flex-direction:column; align-items:center; gap:8px; padding:0 1vmin 6px; max-width:700px; margin:0 auto; width:100%; flex:1 1 0; min-height:0; }
         .sharing-question { font-size:clamp(10px,1.6vh,14px); font-weight:700; color:#333; margin:0; line-height:1.3; text-align:center; max-width:90vw; background:rgba(255,255,255,0.88); padding:4px 1.8vmin; border-radius:10px; cursor:pointer; flex-shrink:0; }
-        .sharing-situation { width:min(86vw,540px); flex:1 1 0; min-height:0; border-radius:14px; overflow:hidden; object-fit:cover; object-position:center 30%; box-shadow:0 4px 14px rgba(0,0,0,0.18); display:block; }
+        .sharing-situation { width:min(86vw,540px); flex:1 1 0; min-height:0; border-radius:14px; overflow:hidden; background-size:cover; background-position:center 30%; background-repeat:no-repeat; box-shadow:0 4px 14px rgba(0,0,0,0.18); }
         .sharing-img-choices { display:flex; gap:2vmin; justify-content:center; width:100%; flex:2 1 0; min-height:0; }
         .sharing-img-btn { flex:1 1 0; min-width:0; max-width:265px; min-height:0; border:4px solid rgba(255,255,255,0.85); border-radius:16px; overflow:hidden; cursor:pointer; padding:0; background:#fff; box-shadow:0 5px 16px rgba(0,0,0,0.2); transition:transform 0.15s,box-shadow 0.15s,border-color 0.2s; touch-action:manipulation; outline:none; animation:popIn 0.35s; }
         .sharing-img-btn { background-size:175% auto; background-position:center 50%; background-repeat:no-repeat; }
@@ -1778,6 +1778,46 @@
                     badImg:    'images/sharing/13_scene4_playground_bad_choice.webp',
                     goodImg:   'images/sharing/14_scene4_playground_good_choice.webp'
                 },
+                {
+                    question:  'אורי ונועם רוצים לצייר, אבל יש קופסה אחת עם צבעים. מה יעשה אורי?',
+                    qAudio:    'sharing/q6.mp3',
+                    fbAudio:   'sharing/fb6.mp3',
+                    situation: 'images/sharing/18_scene6_colors_basic.webp',
+                    badImg:    'images/sharing/19_scene6_colors_bad_choice.webp',
+                    goodImg:   'images/sharing/20_scene6_colors_good_choice.webp'
+                },
+                {
+                    question:  'אורי מחזיק כדור. נועם רוצה לשחק יחד. מה יעשה אורי?',
+                    qAudio:    'sharing/q7.mp3',
+                    fbAudio:   'sharing/fb7.mp3',
+                    situation: 'images/sharing/21_scene7_ball_basic.webp',
+                    badImg:    'images/sharing/22_scene7_ball_bad_choice.webp',
+                    goodImg:   'images/sharing/23_scene7_ball_good_choice.webp'
+                },
+                {
+                    question:  'לאורי יש מכונית, לנועם יש כדור. נועם רוצה לנסות את המכונית. מה יעשה אורי?',
+                    qAudio:    'sharing/q8.mp3',
+                    fbAudio:   'sharing/fb8.mp3',
+                    situation: 'images/sharing/24_scene8_trade_basic.webp',
+                    badImg:    'images/sharing/25_scene8_trade_bad_choice.webp',
+                    goodImg:   'images/sharing/26_scene8_trade_good_choice.webp'
+                },
+                {
+                    question:  'אמא קוראת סיפור לאורי. נועם גם רוצה לשמוע. מה יעשה אורי?',
+                    qAudio:    'sharing/q9.mp3',
+                    fbAudio:   'sharing/fb9.mp3',
+                    situation: 'images/sharing/27_scene9_attention_basic.webp',
+                    badImg:    'images/sharing/28_scene9_attention_bad_choice.webp',
+                    goodImg:   'images/sharing/29_scene9_attention_good_choice.webp'
+                },
+                {
+                    question:  'יש שטיח אחד בחדר. אורי יושב עליו. נועם גם רוצה לשבת. מה יעשה אורי?',
+                    qAudio:    'sharing/q10.mp3',
+                    fbAudio:   'sharing/fb10.mp3',
+                    situation: 'images/sharing/30_scene10_rug_basic.webp',
+                    badImg:    'images/sharing/31_scene10_rug_bad_choice.webp',
+                    goodImg:   'images/sharing/32_scene10_rug_good_choice.webp'
+                },
             ];
             get('active-game-title').textContent = 'לחלוק ולהצליח 🤝';
 
@@ -1807,7 +1847,7 @@
                 ws.innerHTML =
                     '<div class="sharing-scene">' +
                     '<p class="sharing-question" id="sh-q">' + scene.question + ' 🔊</p>' +
-                    '<img class="sharing-situation" src="' + scene.situation + '" alt="">' +
+                    '<div class="sharing-situation" style="background-image:url(\'' + scene.situation + '\')"></div>' +
                     '<div class="sharing-img-choices" id="sh-choices">' +
                     '<button class="sharing-img-btn" id="sh-left" style="background-image:url(\'' + leftImg + '\')"></button>' +
                     '<button class="sharing-img-btn" id="sh-right" style="background-image:url(\'' + rightImg + '\')"></button>' +
