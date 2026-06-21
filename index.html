@@ -187,10 +187,10 @@
         #active-game-container:has(#sh-choices) #active-game-title { font-size:clamp(12px,2vh,18px); margin-bottom:1px !important; }
         .sharing-scene { display:flex; flex-direction:column; align-items:center; gap:8px; padding:0 1vmin 6px; max-width:700px; margin:0 auto; width:100%; flex:1 1 0; min-height:0; }
         .sharing-question { font-size:clamp(10px,1.6vh,14px); font-weight:700; color:#333; margin:0; line-height:1.3; text-align:center; max-width:90vw; background:rgba(255,255,255,0.88); padding:4px 1.8vmin; border-radius:10px; cursor:pointer; flex-shrink:0; }
-        .sharing-situation { width:min(86vw,540px); flex:1 1 0; min-height:0; border-radius:14px; overflow:hidden; background-size:cover; background-position:center 30%; background-repeat:no-repeat; box-shadow:0 4px 14px rgba(0,0,0,0.18); }
-        .sharing-img-choices { display:flex; gap:2vmin; justify-content:center; width:100%; flex:2 1 0; min-height:0; }
-        .sharing-img-btn { flex:1 1 0; min-width:0; max-width:265px; min-height:0; border:4px solid rgba(255,255,255,0.85); border-radius:16px; overflow:hidden; cursor:pointer; padding:0; background:#fff; box-shadow:0 5px 16px rgba(0,0,0,0.2); transition:transform 0.15s,box-shadow 0.15s,border-color 0.2s; touch-action:manipulation; outline:none; animation:popIn 0.35s; }
-        .sharing-img-btn { background-size:175% auto; background-position:center 50%; background-repeat:no-repeat; }
+        .sharing-situation { width:min(86vw,540px); flex:1 1 0; min-height:0; max-height:240px; border-radius:14px; overflow:hidden; background-size:250% auto; background-position:center 58%; background-repeat:no-repeat; box-shadow:0 4px 14px rgba(0,0,0,0.18); }
+        .sharing-img-choices { display:flex; gap:2vmin; justify-content:center; width:100%; flex-shrink:0; }
+        .sharing-img-btn { flex:1 1 0; max-width:min(43vw,250px); aspect-ratio:4/3; border:4px solid rgba(255,255,255,0.85); border-radius:16px; overflow:hidden; cursor:pointer; padding:0; background:#fff; box-shadow:0 5px 16px rgba(0,0,0,0.2); transition:transform 0.15s,box-shadow 0.15s,border-color 0.2s; touch-action:manipulation; outline:none; animation:popIn 0.35s; }
+        .sharing-img-btn { background-size:250% auto; background-position:center 58%; background-repeat:no-repeat; }
         .sharing-img-btn img { display:none; }
         .sharing-img-btn:hover { transform:scale(1.04); box-shadow:0 12px 28px rgba(0,0,0,0.28); }
         .sharing-img-btn:active { transform:scale(0.96); }
@@ -1602,9 +1602,13 @@
             if (!round) return;
             var imgWrap = get('fl-img-wrap');
             var imgEl = get('fl-img');
-            imgEl.src = 'images/firstletter/' + round.img + '.png';
-            imgWrap.style.animation = 'none'; void imgWrap.offsetWidth; imgWrap.style.animation = 'popIn 0.4s';
-            setTimeout(function(){ speakLetter(round.word, flLang); }, 400);
+            imgWrap.style.opacity = '0';
+            imgEl.onload = function() {
+                imgWrap.style.opacity = '1';
+                imgWrap.style.animation = 'none'; void imgWrap.offsetWidth; imgWrap.style.animation = 'popIn 0.4s';
+                speakLetter(round.word, flLang);
+            };
+            imgEl.src = 'images/firstletter/' + round.img + '.jpg';
             var correctLetter = round.letter;
             var pool = flLang === 'he' ? FL_HE_POOL : FL_EN_POOL;
             var wrongPool = shuffle(pool.filter(function(l){ return l !== correctLetter; }));
