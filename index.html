@@ -42,8 +42,257 @@
         body.bg-emparts { background: linear-gradient(135deg, #f9d423 0%, #ff4e50 100%); }
         body.bg-firstletter { background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%); }
         body.bg-sharing { background: linear-gradient(135deg, #fbc2eb 0%, #ffb6c1 100%); }
+        body.bg-numwar { background: linear-gradient(135deg, #feedf7 0%, #aecdfa 100%); }
         .fl-letter-btn { width: clamp(70px,18vmin,110px); height: clamp(70px,18vmin,110px); background: #fff; border: 5px solid #2196F3; border-radius: 20px; cursor: pointer; box-shadow: 0 6px 12px rgba(0,0,0,0.15); transition: 0.2s; font-size: clamp(28px,7vw,52px); font-weight: 900; color: #2196F3; display: flex; align-items: center; justify-content: center; touch-action: manipulation; outline: none; font-family: 'Rubik', sans-serif; }
         .fl-letter-btn:hover { transform: scale(1.06); box-shadow: 0 8px 18px rgba(0,0,0,0.2); }
+
+        /* ---- Numbers War Game ---- */
+        .numwar-layout {
+            display: flex;
+            flex-direction: row;
+            align-items: stretch;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 950px;
+            margin: 0 auto;
+            gap: 2vmin;
+            direction: rtl;
+            flex: 1 1 0;
+            min-height: 0;
+        }
+        .numwar-side {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 20px;
+            padding: 1.5vmin;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            border: 3px solid rgba(255, 255, 255, 0.5);
+            min-width: 0;
+        }
+        .numwar-avatar {
+            width: clamp(70px, 12vmin, 110px);
+            height: clamp(70px, 12vmin, 110px);
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #fff;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            margin-bottom: 1vmin;
+        }
+        .numwar-name {
+            font-size: clamp(16px, 3.5vw, 24px);
+            font-weight: 900;
+            color: #333;
+            margin-bottom: 1vmin;
+        }
+        .numwar-cards-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1vmin;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            margin-top: auto;
+            margin-bottom: auto;
+        }
+        .numwar-card {
+            width: clamp(55px, 10vmin, 80px);
+            height: clamp(80px, 15vmin, 120px);
+            background: #fff;
+            border: 3px solid #2196F3;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(22px, 4.5vw, 36px);
+            font-weight: 900;
+            color: #2196F3;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+            user-select: none;
+            position: relative;
+            touch-action: manipulation;
+        }
+        .numwar-card.aba-card {
+            border-color: #FF5722;
+            color: #FF5722;
+            background: #fff;
+        }
+        .numwar-card.aba-card.back {
+            background: linear-gradient(135deg, #FF5722 0%, #FF9800 100%);
+            border-color: #fff;
+            color: transparent;
+        }
+        .numwar-card.aba-card.back::after {
+            content: "⚡";
+            font-size: clamp(24px, 5vw, 40px);
+            color: rgba(255, 255, 255, 0.8);
+        }
+        .numwar-card.roy-card:hover:not(.disabled) {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.18);
+        }
+        .numwar-card.disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+        .numwar-arena {
+            flex: 1.2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.45);
+            border-radius: 20px;
+            padding: 2vmin;
+            box-shadow: inset 0 4px 10px rgba(0,0,0,0.05);
+            border: 3px dashed rgba(255, 255, 255, 0.8);
+            position: relative;
+            min-height: 280px;
+        }
+        .numwar-arena-title {
+            font-size: clamp(14px, 3vw, 20px);
+            font-weight: 900;
+            color: #666;
+            margin-bottom: 2vmin;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 0.5vh 2vw;
+            border-radius: 12px;
+        }
+        .numwar-battle-zone {
+            display: flex;
+            gap: 3vmin;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            flex: 1;
+            position: relative;
+        }
+        .numwar-arena-card-slot {
+            width: clamp(65px, 12vmin, 95px);
+            height: clamp(95px, 18vmin, 140px);
+            border: 3px dashed rgba(0, 0, 0, 0.15);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: rgba(0, 0, 0, 0.02);
+        }
+        .numwar-arena-card-slot::before {
+            content: attr(data-label);
+            font-size: clamp(12px, 2.5vw, 16px);
+            font-weight: 700;
+            color: rgba(0,0,0,0.3);
+            position: absolute;
+        }
+        .numwar-card.battle-active {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            top: 0;
+            left: 0;
+            animation: cardSpawn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 10;
+        }
+        @keyframes cardSpawn {
+            0% { transform: scale(0.5) translateY(100px); opacity: 0; }
+            100% { transform: scale(1) translateY(0); opacity: 1; }
+        }
+        .numwar-card.winner-glow {
+            box-shadow: 0 0 25px #4CAF50 !important;
+            border-color: #4CAF50 !important;
+            animation: winPulse 0.8s infinite alternate;
+        }
+        @keyframes winPulse {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.08); }
+        }
+        .numwar-scoreboard {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            width: 100%;
+            max-width: 950px;
+            margin: 0 auto 1.5vmin;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 1vmin 3vmin;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            direction: rtl;
+            border: 2px solid rgba(255,255,255,0.8);
+        }
+        .numwar-score-item {
+            font-size: clamp(16px, 3.5vw, 24px);
+            font-weight: 900;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 1vw;
+        }
+        .numwar-score-val {
+            background: #e3f2fd;
+            padding: 0.5vh 2vw;
+            border-radius: 10px;
+            color: #1976D2;
+            font-weight: 900;
+        }
+        .numwar-score-item.aba .numwar-score-val {
+            background: #ffebee;
+            color: #d32f2f;
+        }
+        @media (max-width: 600px) {
+            .numwar-layout {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .numwar-side {
+                flex-direction: row;
+                gap: 2vw;
+                padding: 1vh 2vw;
+            }
+            .numwar-avatar {
+                width: 60px;
+                height: 60px;
+                margin-bottom: 0;
+            }
+            .numwar-name {
+                font-size: 16px;
+                margin-bottom: 0;
+                min-width: 50px;
+                text-align: right;
+            }
+            .numwar-cards-container {
+                flex-direction: row;
+                justify-content: flex-start;
+                margin-top: 0;
+                margin-bottom: 0;
+                flex: 1;
+                overflow-x: auto;
+                padding: 5px 0;
+            }
+            .numwar-card {
+                width: 50px;
+                height: 70px;
+                font-size: 18px;
+                flex-shrink: 0;
+            }
+            .numwar-arena {
+                min-height: 180px;
+                padding: 1.5vh;
+                flex: 1.5;
+            }
+            .numwar-arena-card-slot {
+                width: 65px;
+                height: 95px;
+            }
+        }
 
         /* ---- emotion-parts game ---- */
         #emp-face-wrap { flex-shrink: 0; }
@@ -655,6 +904,7 @@
             <div class="hub-card" data-cat="create" style="position:relative;" onclick="openDifficultyScreen('shadow', '👤', 'של מי הצללית?')"><div class="hub-icon">👤</div><div class="hub-title">צלליות</div></div>
             <div class="hub-card" data-cat="create" style="position:relative;" onclick="openDifficultyScreen('halfhalf', '✂️', 'השלם את החצי')"><span class="star-badge" data-game="halfhalf" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">✨</span><div class="hub-icon">✂️</div><div class="hub-title">השלם חצי</div></div>
             <div class="hub-card" data-cat="numbers" style="position:relative;" onclick="openDifficultyScreen('chrono', '⏳', 'מהתחלה לסוף')"><span class="star-badge" data-game="chrono" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">⏳</div><div class="hub-title">רצף כרונולוגי</div></div>
+            <div class="hub-card" data-cat="numbers" style="position:relative;" onclick="openDifficultyScreen('numwar', '⚔️', 'מלחמת המספרים')"><span class="star-badge" data-game="numwar" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">⚔️</div><div class="hub-title">מלחמת המספרים</div></div>
             <div id="faces-hub-card" class="hub-card hidden" data-cat="emotion" style="position:relative;" onclick="openFacesLangScreen()"><div class="hub-icon">📸</div><div class="hub-title">מי זה?</div></div>
             <div class="hub-card" data-cat="emotion" style="position:relative;" onclick="openDifficultyScreen('emparts','👁️','פנים ורגשות')"><div class="hub-icon">👁️</div><div class="hub-title">פנים ורגשות</div></div>
             <div class="hub-card" data-cat="emotion" style="position:relative;" onclick="openDifficultyScreen('sharing','🤝','לחלוק ולהצליח')"><span class="star-badge" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🤝</div><div class="hub-title">לחלוק ולהצליח</div></div>
@@ -741,7 +991,7 @@
     <div id="feedback-layer" class="hidden feedback-icon"></div>
 
     <script>
-        const bgIcons = { 'sharing': ['🤝','❤️','🌟','🎁'], 'memory': ['🧠','💭','💡'], 'tracing': ['✏️','🎨','📐'], 'counting': ['🔢','🧮','➕'], 'sequence': ['🔄','✨','🎯'], 'fly': ['🪰','💨'], 'cop': ['🚓','🚨'], 'diff': ['🔎','👀'], 'oddone': ['🍎','🐶','🚗'], 'missing': ['A','B','C'], 'tools': ['🔨','🔧','🔩'], 'context': ['🧩','🖼️','🎨'], 'vparts': ['🚗','✈️','🚂','⛵','🚁'], 'habitat': ['🏠','🌳','🌊'], 'shadow': ['👤','🌑','👀'], 'halfhalf': ['✂️','🎨','🧩'], 'chrono': ['⏳','📅','🔄'], 'bigger': ['⚖️','🐘','🐭','🔢'], 'emotion': ['😄','😢','😡','😱'], 'faces': ['📸','❤️','👨‍👩‍👧‍👦','🤳'], 'mgamish': ['🤸','💪','🌟','🤸‍♂️'], 'firstletter': ['🔡','🔤','📖','✏️'] };
+        const bgIcons = { 'sharing': ['🤝','❤️','🌟','🎁'], 'memory': ['🧠','💭','💡'], 'tracing': ['✏️','🎨','📐'], 'counting': ['🔢','🧮','➕'], 'sequence': ['🔄','✨','🎯'], 'fly': ['🪰','💨'], 'cop': ['🚓','🚨'], 'diff': ['🔎','👀'], 'oddone': ['🍎','🐶','🚗'], 'missing': ['A','B','C'], 'tools': ['🔨','🔧','🔩'], 'context': ['🧩','🖼️','🎨'], 'vparts': ['🚗','✈️','🚂','⛵','🚁'], 'habitat': ['🏠','🌳','🌊'], 'shadow': ['👤','🌑','👀'], 'halfhalf': ['✂️','🎨','🧩'], 'chrono': ['⏳','📅','🔄'], 'bigger': ['⚖️','🐘','🐭','🔢'], 'emotion': ['😄','😢','😡','😱'], 'faces': ['📸','❤️','👨‍👩‍👧‍👦','🤳'], 'mgamish': ['🤸','💪','🌟','🤸‍♂️'], 'firstletter': ['🔡','🔤','📖','✏️'], 'numwar': ['⚔️','🃏','🔢','⭐'] };
         function setAppBackground(theme) {
             D.body.className = 'bg-' + theme; let bg = get('bg-animations'); bg.innerHTML = '';
             if(theme !== 'hub' && bgIcons[theme]) {
@@ -913,7 +1163,7 @@
             get('active-game-title').style.display = '';
             get('active-progress-container').style.display = '';
 
-            activeGameRounds = (currentGameMode === 'sharing') ? 10 : ((currentGameMode === 'memory') ? (level === 1 ? 3 : (level === 2 ? 4 : 5)) : 4);
+            activeGameRounds = (currentGameMode === 'sharing') ? 10 : (currentGameMode === 'numwar' ? 5 : ((currentGameMode === 'memory') ? (level === 1 ? 3 : (level === 2 ? 4 : 5)) : 4));
 
             let pContainer = get('active-progress-container'); pContainer.innerHTML='';
             for(let i=0;i<activeGameRounds;i++) { let d=D.createElement('div'); d.className='progress-dot'; d.id=`active-progress-container-dot-${i}`; pContainer.appendChild(d); }
@@ -942,6 +1192,7 @@
                 else if(currentGameMode === 'mgamish') initMgGame();
                 else if(currentGameMode === 'firstletter') initFirstLetterGame();
                 else if(currentGameMode === 'sharing') initSharingGame();
+                else if(currentGameMode === 'numwar') initNumwarGame();
             }, 50);
         }
 
@@ -2545,6 +2796,250 @@
                 get('sh-right').onclick = function(){ onChoice(goodOnRight ? true : false, get('sh-right')); };
             }
             showScene(0);
+        }
+
+        // ── מלחמת המספרים ──
+        function initNumwarGame() {
+            get('active-game-title').textContent = 'מלחמת המספרים ⚔️';
+            
+            let royScore = 0;
+            let abaScore = 0;
+            let royHand = [];
+            let abaHand = [];
+            let royPlayed = [false, false, false, false, false];
+            let abaPlayed = [false, false, false, false, false];
+
+            function getRandomNumber(lvl) {
+                if (lvl === 1) return rand(1, 10);
+                if (lvl === 2) return rand(10, 99);
+                return rand(100, 999);
+            }
+
+            // Generate 5 distinct numbers for Roy
+            while (royHand.length < 5) {
+                let n = getRandomNumber(currentDifficulty);
+                if (royHand.indexOf(n) === -1) royHand.push(n);
+            }
+            royHand.sort((a,b) => a - b);
+
+            // Generate 5 distinct numbers for Aba
+            while (abaHand.length < 5) {
+                let n = getRandomNumber(currentDifficulty);
+                if (abaHand.indexOf(n) === -1) abaHand.push(n);
+            }
+            abaHand.sort((a,b) => a - b);
+
+            function updateScoreboard() {
+                var sb = get('numwar-score');
+                if (sb) {
+                    sb.innerHTML = `
+                        <div class="numwar-score-item roy">
+                            <span>רועי:</span>
+                            <span class="numwar-score-val" id="score-roy">${royScore}</span>
+                        </div>
+                        <div class="numwar-score-item aba">
+                            <span>אבא יאיר:</span>
+                            <span class="numwar-score-val" id="score-aba">${abaScore}</span>
+                        </div>
+                    `;
+                }
+            }
+
+            function drawLayout() {
+                var ws = get('game-workspace');
+                ws.innerHTML = `
+                    <div class="numwar-scoreboard" id="numwar-score"></div>
+                    <div class="numwar-layout">
+                        <!-- Aba Side (Left) -->
+                        <div class="numwar-side">
+                            <img class="numwar-avatar" src="images/aba_sunglasses.jpg" alt="אבא יאיר">
+                            <div class="numwar-name">אבא יאיר</div>
+                            <div class="numwar-cards-container" id="aba-cards"></div>
+                        </div>
+
+                        <!-- Arena (Center) -->
+                        <div class="numwar-arena">
+                            <div class="numwar-arena-title" id="arena-status">בחרו כרטיס למלחמה!</div>
+                            <div class="numwar-battle-zone">
+                                <div class="numwar-arena-card-slot" data-label="אבא" id="arena-aba-slot"></div>
+                                <div class="numwar-arena-card-slot" data-label="רועי" id="arena-roy-slot"></div>
+                            </div>
+                        </div>
+
+                        <!-- Roy Side (Right) -->
+                        <div class="numwar-side">
+                            <img class="numwar-avatar" src="images/roy_sunglasses.jpg" alt="רועי">
+                            <div class="numwar-name">רועי</div>
+                            <div class="numwar-cards-container" id="roy-cards"></div>
+                        </div>
+                    </div>
+                `;
+                
+                updateScoreboard();
+                renderHands();
+            }
+
+            function renderHands() {
+                // Render Roy's hand
+                var royContainer = get('roy-cards');
+                if (royContainer) {
+                    royContainer.innerHTML = '';
+                    royHand.forEach((val, idx) => {
+                        var card = D.createElement('div');
+                        card.className = 'numwar-card roy-card';
+                        if (royPlayed[idx]) {
+                            card.classList.add('disabled');
+                        } else {
+                            card.onclick = function() {
+                                if (isProcessing || royPlayed[idx]) return;
+                                playRoyCard(idx);
+                            };
+                        }
+                        card.textContent = val;
+                        royContainer.appendChild(card);
+                    });
+                }
+
+                // Render Aba's hand
+                var abaContainer = get('aba-cards');
+                if (abaContainer) {
+                    abaContainer.innerHTML = '';
+                    abaHand.forEach((val, idx) => {
+                        var card = D.createElement('div');
+                        card.className = 'numwar-card aba-card';
+                        if (abaPlayed[idx]) {
+                            card.classList.add('disabled');
+                        } else {
+                            card.classList.add('back'); // face-down
+                        }
+                        abaContainer.appendChild(card);
+                    });
+                }
+            }
+
+            function playRoyCard(idx) {
+                isProcessing = true;
+                royPlayed[idx] = true;
+                renderHands();
+
+                // Slide Roy's card to arena
+                var roySlot = get('arena-roy-slot');
+                if (roySlot) roySlot.innerHTML = `<div class="numwar-card roy-card battle-active">${royHand[idx]}</div>`;
+                
+                get('arena-status').textContent = 'תור אבא יאיר...';
+                playClickSound();
+                
+                // Speak Roy's number
+                speakLetter(royHand[idx].toString(), 'he');
+
+                // Wait, then Aba plays
+                setTimeout(playAbaCard, 1000);
+            }
+
+            function playAbaCard() {
+                // Aba chooses a remaining unplayed card
+                var unplayed = [];
+                abaPlayed.forEach((played, idx) => {
+                    if (!played) unplayed.push(idx);
+                });
+
+                if (unplayed.length === 0) return;
+                var randomIdx = unplayed[rand(0, unplayed.length - 1)];
+                abaPlayed[randomIdx] = true;
+                renderHands();
+
+                // Show Aba's card in arena (flipped/hidden first, then flipped open)
+                var abaSlot = get('arena-aba-slot');
+                if (abaSlot) abaSlot.innerHTML = `<div class="numwar-card aba-card back battle-active" id="aba-battle-card">${abaHand[randomIdx]}</div>`;
+                
+                get('arena-status').textContent = 'אבא יאיר משחק!';
+                playClickSound();
+
+                setTimeout(() => {
+                    var card = get('aba-battle-card');
+                    if (card) {
+                        card.classList.remove('back'); // Flip face-up
+                        // Speak Aba's number
+                        speakLetter(abaHand[randomIdx].toString(), 'he');
+                    }
+                    
+                    // Compare after a short delay
+                    setTimeout(() => {
+                        compareCards(royHand[royPlayed.lastIndexOf(true)], abaHand[randomIdx], royPlayed.lastIndexOf(true), randomIdx);
+                    }, 1200);
+                }, 400);
+            }
+
+            function compareCards(royVal, abaVal, royIdx, abaIdx) {
+                var royCardEl = get('arena-roy-slot').querySelector('.numwar-card');
+                var abaCardEl = get('arena-aba-slot').querySelector('.numwar-card');
+                
+                if (royVal > abaVal) {
+                    royScore++;
+                    if (royCardEl) royCardEl.classList.add('winner-glow');
+                    get('arena-status').textContent = 'רועי מנצח בסיבוב!';
+                    playSuccessSound();
+                } else if (abaVal > royVal) {
+                    abaScore++;
+                    if (abaCardEl) abaCardEl.classList.add('winner-glow');
+                    get('arena-status').textContent = 'אבא יאיר מנצח בסיבוב!';
+                    playErrorSound();
+                } else {
+                    // Tie
+                    if (royCardEl) royCardEl.classList.add('winner-glow');
+                    if (abaCardEl) abaCardEl.classList.add('winner-glow');
+                    get('arena-status').textContent = 'תיקו בסיבוב!';
+                    playClickSound();
+                }
+
+                updateScoreboard();
+
+                setTimeout(() => {
+                    // Clear battle slots
+                    var rSlot = get('arena-roy-slot');
+                    var aSlot = get('arena-aba-slot');
+                    if (rSlot) rSlot.innerHTML = '';
+                    if (aSlot) aSlot.innerHTML = '';
+                    
+                    currentStep++;
+                    updateProgressUI();
+                    
+                    if (currentStep >= 5) {
+                        // End of match
+                        var finalMsg = '';
+                        if (royScore > abaScore) {
+                            finalMsg = 'כל הכבוד! ניצחת את אבא!';
+                            get('arena-status').textContent = finalMsg;
+                            try { if(typeof confetti === 'function') confetti({particleCount: 150, origin:{y:0.6}, zIndex:1000}); } catch(e){}
+                            showKisses();
+                        } else if (abaScore > royScore) {
+                            finalMsg = 'אבא ניצח הפעם! כל הכבוד על המשחק!';
+                            get('arena-status').textContent = finalMsg;
+                        } else {
+                            finalMsg = 'תיקו! כל הכבוד על המשחק!';
+                            get('arena-status').textContent = finalMsg;
+                        }
+                        
+                        speakLetter(finalMsg, 'he');
+
+                        setTimeout(() => {
+                            isProcessing = false;
+                            // Set mistakesInLevel to abaScore to determine stars
+                            mistakesInLevel = abaScore;
+                            
+                            // Call standard handleAnswer to reward stars and show complete overlay.
+                            // Set currentStep to 4 so handleAnswer updates it to 5 and triggers game end.
+                            currentStep = 4;
+                            handleAnswer(true, null, null, null);
+                        }, 2500);
+                    } else {
+                        get('arena-status').textContent = 'בחרו כרטיס למלחמה!';
+                        isProcessing = false;
+                    }
+                }, 2200);
+            }
+
+            drawLayout();
         }
 
         function handleMgChoice(side, puz) {
