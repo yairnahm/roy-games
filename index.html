@@ -333,6 +333,34 @@
         function get(id) { return D.getElementById(id); }
         function hide(id) { get(id).classList.add('hidden'); }
         function show(id) { get(id).classList.remove('hidden'); }
+        function renderMediaHTML(id, className, srcPath, extraStyle) {
+            var isVideo = srcPath && (srcPath.endsWith('.mp4') || srcPath.endsWith('.webm') || srcPath.endsWith('.mov'));
+            var idAttr = id ? ' id="' + id + '"' : '';
+            var classAttr = className ? ' class="' + className + '"' : '';
+            var styleAttr = extraStyle ? ' style="' + extraStyle + '"' : '';
+            if (isVideo) {
+                return '<video' + idAttr + classAttr + styleAttr + ' src="' + srcPath + '" autoplay loop muted playsinline></video>';
+            } else {
+                return '<img' + idAttr + classAttr + styleAttr + ' src="' + srcPath + '" alt="">';
+            }
+        }
+        function createMediaElement(srcPath, cssText) {
+            var isVideo = srcPath && (srcPath.endsWith('.mp4') || srcPath.endsWith('.webm') || srcPath.endsWith('.mov'));
+            var el;
+            if (isVideo) {
+                el = D.createElement('video');
+                el.src = srcPath;
+                el.autoplay = true;
+                el.loop = true;
+                el.muted = true;
+                el.playsInline = true;
+            } else {
+                el = D.createElement('img');
+                el.src = srcPath;
+            }
+            if (cssText) el.style.cssText = cssText;
+            return el;
+        }
         function shuffle(arr) { let a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
         function rand(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
 
@@ -1719,7 +1747,9 @@
                 card.style.cssText = 'background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,0.15);border:4px solid #4CAF50;cursor:pointer;transition:transform 0.15s;';
                 card.onpointerdown = () => { playAudio(facesLang + '/' + p.file.replace('.jpg','') + '.mp3'); };
                 var fpos = FACE_POSITIONS[p.file] || '50% 15%';
-                card.innerHTML = `<img src="${FACES_BASE + encodeURIComponent(p.file)}" style="width:100%;aspect-ratio:1/1;max-height:clamp(80px,22vmin,170px);object-fit:cover;object-position:${fpos};background:#f0f0f0;display:block;"><div style="padding:4px 6px;font-size:clamp(14px,3.2vmin,22px);font-weight:900;text-align:center;color:#333;direction:${facesLang==='he'?'rtl':'ltr'};">${name}</div>`;
+                let mediaPath = FACES_BASE + encodeURIComponent(p.file);
+                let mediaHTML = renderMediaHTML('', '', mediaPath, `width:100%;aspect-ratio:1/1;max-height:clamp(80px,22vmin,170px);object-fit:cover;object-position:${fpos};background:#f0f0f0;display:block;`);
+                card.innerHTML = mediaHTML + `<div style="padding:4px 6px;font-size:clamp(14px,3.2vmin,22px);font-weight:900;text-align:center;color:#333;direction:${facesLang==='he'?'rtl':'ltr'};">${name}</div>`;
                 grid.appendChild(card);
             });
         }
@@ -1773,12 +1803,11 @@
             if (facesMode === 'reverse') {
                 // show photo, pick name
                 let wrap = get('faces-photo-wrap'); wrap.innerHTML = '';
-                let img = D.createElement('img');
-                img.src = FACES_BASE + encodeURIComponent(correct.file);
-                img.style.cssText = 'width:100%;height:100%;object-fit:cover;object-position:top center;display:block;';
-                img.onerror = function() { wrap.innerHTML = '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:70px;">🖼️</div>'; };
-                wrap.appendChild(img);
-                applySmartCrop(img);
+                let mediaPath = FACES_BASE + encodeURIComponent(correct.file);
+                let mediaEl = createMediaElement(mediaPath, 'width:100%;height:100%;object-fit:cover;object-position:top center;display:block;');
+                mediaEl.onerror = function() { wrap.innerHTML = '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:70px;">🖼️</div>'; };
+                wrap.appendChild(mediaEl);
+                applySmartCrop(mediaEl);
                 let opts = shuffle([correct].concat(shuffle(wrongPool).slice(0, 3)));
                 let grid = get('faces-name-grid'); grid.innerHTML = '';
                 opts.forEach((o) => {
@@ -1800,12 +1829,11 @@
                     let b = D.createElement('button');
                     b.style.cssText = 'width:100%;border:5px solid #4CAF50;border-radius:20px;cursor:pointer;padding:0;overflow:hidden;box-shadow:0 6px 14px rgba(0,0,0,0.18);transition:0.2s;touch-action:manipulation;outline:none;background:#f0f0f0;display:flex;flex-direction:column;';
                     let imgWrap = D.createElement('div'); imgWrap.style.cssText = 'width:100%;aspect-ratio:1/1;overflow:hidden;flex-shrink:0;max-height:clamp(100px,30vmin,220px);';
-                    let img = D.createElement('img');
-                    img.src = FACES_BASE + encodeURIComponent(o.file);
-                    img.style.cssText = 'width:100%;height:100%;object-fit:cover;object-position:top center;display:block;pointer-events:none;background:#f0f0f0;';
-                    img.onerror = function() { this.style.display='none'; imgWrap.innerHTML += '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:clamp(40px,10vw,70px);pointer-events:none;">🖼️</div>'; };
-                    imgWrap.appendChild(img);
-                    applySmartCrop(img);
+                    let mediaPath = FACES_BASE + encodeURIComponent(o.file);
+                    let mediaEl = createMediaElement(mediaPath, 'width:100%;height:100%;object-fit:cover;object-position:top center;display:block;pointer-events:none;background:#f0f0f0;');
+                    mediaEl.onerror = function() { this.style.display='none'; imgWrap.innerHTML += '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:clamp(40px,10vw,70px);pointer-events:none;">🖼️</div>'; };
+                    imgWrap.appendChild(mediaEl);
+                    applySmartCrop(mediaEl);
                     let nameBar = D.createElement('div');
                     nameBar.style.cssText = 'background:rgba(25,25,55,0.82);padding:3px 4px 5px;text-align:center;pointer-events:none;width:100%;';
                     nameBar.innerHTML = `<div style="font-size:clamp(13px,3.5vmin,22px);font-weight:800;color:#fff;direction:${facesLang==='he'?'rtl':'ltr'};line-height:1.3;text-shadow:0 1px 3px rgba(0,0,0,0.6);padding:0 4px;">${oName}</div>`;
@@ -2133,9 +2161,7 @@
         function initMgGame() {
             get('active-game-title').textContent = 'מר גמיש 🤸';
             get('game-workspace').innerHTML = `
-                <div id="mg-top-wrap" style="width:clamp(110px,26vmin,180px);border-radius:18px;overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,0.2);border:4px solid #fff;background:#f0f0f0;margin:0 auto 10px;flex-shrink:0;">
-                    <img id="mg-top-img" style="width:100%;aspect-ratio:1/1;object-fit:contain;display:block;">
-                </div>
+                <div id="mg-top-wrap" style="width:clamp(110px,26vmin,180px);border-radius:18px;overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,0.2);border:4px solid #fff;background:#f0f0f0;margin:0 auto 10px;flex-shrink:0;"></div>
                 <div style="font-size:clamp(13px,2.8vmin,18px);font-weight:700;color:#1a5c3a;margin-bottom:8px;text-shadow:0 1px 3px rgba(255,255,255,0.8);">גרור את מר גמיש לכיוון הנכון!</div>
                 <div id="mg-arena" style="position:relative;width:100%;flex:1;min-height:clamp(170px,38vmin,260px);user-select:none;touch-action:none;">
                     <!-- מסלול -->
@@ -2143,13 +2169,9 @@
                     <div style="position:absolute;top:50%;left:30%;transform:translate(-50%,-60%);font-size:clamp(20px,5vmin,34px);opacity:0.55;pointer-events:none;">◄</div>
                     <div style="position:absolute;top:50%;left:70%;transform:translate(-50%,-60%);font-size:clamp(20px,5vmin,34px);opacity:0.55;pointer-events:none;">►</div>
                     <!-- בחירה שמאל -->
-                    <div id="mg-zone-left" style="position:absolute;left:0;top:50%;transform:translateY(-50%);width:28%;border-radius:18px;overflow:hidden;border:5px solid #2196F3;background:#fff;box-shadow:0 6px 16px rgba(0,0,0,0.2);transition:transform 0.15s,box-shadow 0.15s;">
-                        <img id="mg-img-left" style="width:100%;aspect-ratio:1/1;object-fit:contain;display:block;background:#f5f5f5;">
-                    </div>
+                    <div id="mg-zone-left" style="position:absolute;left:0;top:50%;transform:translateY(-50%);width:28%;border-radius:18px;overflow:hidden;border:5px solid #2196F3;background:#fff;box-shadow:0 6px 16px rgba(0,0,0,0.2);transition:transform 0.15s,box-shadow 0.15s;"></div>
                     <!-- בחירה ימין -->
-                    <div id="mg-zone-right" style="position:absolute;right:0;top:50%;transform:translateY(-50%);width:28%;border-radius:18px;overflow:hidden;border:5px solid #2196F3;background:#fff;box-shadow:0 6px 16px rgba(0,0,0,0.2);transition:transform 0.15s,box-shadow 0.15s;">
-                        <img id="mg-img-right" style="width:100%;aspect-ratio:1/1;object-fit:contain;display:block;background:#f5f5f5;">
-                    </div>
+                    <div id="mg-zone-right" style="position:absolute;right:0;top:50%;transform:translateY(-50%);width:28%;border-radius:18px;overflow:hidden;border:5px solid #2196F3;background:#fff;box-shadow:0 6px 16px rgba(0,0,0,0.2);transition:transform 0.15s,box-shadow 0.15s;"></div>
                     <!-- מר גמיש - ניתן לגרירה -->
                     <img id="mg-char-drag" src="${MG_BASE}char.jpg"
                         style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
@@ -2166,9 +2188,9 @@
 
         function loadMgRound() {
             let puz = mgPuzzles[mgOrder[currentStep]];
-            get('mg-top-img').src   = MG_BASE + puz.top;
-            get('mg-img-left').src  = MG_BASE + puz.left;
-            get('mg-img-right').src = MG_BASE + puz.right;
+            get('mg-top-wrap').innerHTML = renderMediaHTML('mg-top-img', '', MG_BASE + puz.top, 'width:100%;aspect-ratio:1/1;object-fit:contain;display:block;');
+            get('mg-zone-left').innerHTML = renderMediaHTML('mg-img-left', '', MG_BASE + puz.left, 'width:100%;aspect-ratio:1/1;object-fit:contain;display:block;background:#f5f5f5;');
+            get('mg-zone-right').innerHTML = renderMediaHTML('mg-img-right', '', MG_BASE + puz.right, 'width:100%;aspect-ratio:1/1;object-fit:contain;display:block;background:#f5f5f5;');
             // reset zones
             let lz = get('mg-zone-left'); let rz = get('mg-zone-right');
             if(lz) { lz.style.transform='translateY(-50%) scale(1)'; lz.style.boxShadow='0 6px 16px rgba(0,0,0,0.2)'; lz.style.borderColor='#2196F3'; }
@@ -2401,17 +2423,6 @@
                 } catch(e) { safeOnEnd(); }
             }
 
-            function renderMediaHTML(id, className, srcPath) {
-                var isVideo = srcPath && (srcPath.endsWith('.mp4') || srcPath.endsWith('.webm') || srcPath.endsWith('.mov'));
-                var idAttr = id ? ' id="' + id + '"' : '';
-                var classAttr = className ? ' class="' + className + '"' : '';
-                if (isVideo) {
-                    return '<video' + idAttr + classAttr + ' src="' + srcPath + '" autoplay loop muted playsinline></video>';
-                } else {
-                    return '<img' + idAttr + classAttr + ' src="' + srcPath + '" alt="">';
-                }
-            }
-
             function showScene(idx) {
                 if (idx >= SCENES.length) return;
                 var scene = SCENES[sharingOrder[idx]];
@@ -2480,7 +2491,7 @@
                 let src = puz.success ? (MG_BASE + puz.success) : (MG_BASE + 'char.jpg');
                 let fl = get('feedback-layer');
                 fl.style.background = 'rgba(0,0,0,0.88)';
-                fl.innerHTML = `<img src="${src}" style="max-width:88vw;max-height:78vh;border-radius:24px;object-fit:contain;box-shadow:0 8px 32px rgba(0,0,0,0.5);animation:popIn 0.4s ease-out;">`;
+                fl.innerHTML = renderMediaHTML('', '', src, 'max-width:88vw;max-height:78vh;border-radius:24px;object-fit:contain;box-shadow:0 8px 32px rgba(0,0,0,0.5);animation:popIn 0.4s ease-out;');
                 show('feedback-layer');
                 gameErrorTimeout = setTimeout(() => {
                     fl.style.background = '';
