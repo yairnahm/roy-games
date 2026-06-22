@@ -141,6 +141,68 @@
             transform: none !important;
             box-shadow: none !important;
         }
+
+        /* Pendulum / Turn Indicator styling */
+        .numwar-pendulum-wrap {
+            position: relative;
+            width: 100px;
+            height: 50px;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: center;
+        }
+        .numwar-pendulum-arm {
+            position: absolute;
+            top: 0;
+            width: 4px;
+            height: 30px;
+            background: #666;
+            transform-origin: top center;
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: rotate(0deg);
+            z-index: 5;
+        }
+        .numwar-pendulum-weight {
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: clamp(16px, 3vh, 22px);
+            background: #fff;
+            border: 3px solid #666;
+            border-radius: 50%;
+            width: clamp(26px, 5vh, 34px);
+            height: clamp(26px, 5vh, 34px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.18);
+            transition: border-color 0.4s, box-shadow 0.4s;
+        }
+        .numwar-pendulum-arm.to-roy {
+            transform: rotate(50deg);
+        }
+        .numwar-pendulum-arm.to-roy .numwar-pendulum-weight {
+            border-color: #2196F3;
+            box-shadow: 0 0 12px rgba(33, 150, 243, 0.8);
+            animation: pulse-roy 0.8s infinite alternate ease-in-out;
+        }
+        .numwar-pendulum-arm.to-aba {
+            transform: rotate(-50deg);
+        }
+        .numwar-pendulum-arm.to-aba .numwar-pendulum-weight {
+            border-color: #FF5722;
+            box-shadow: 0 0 12px rgba(255, 87, 34, 0.8);
+            animation: pulse-aba 0.8s infinite alternate ease-in-out;
+        }
+        @keyframes pulse-roy {
+            0% { transform: translateX(-50%) scale(1); }
+            100% { transform: translateX(-50%) scale(1.18); }
+        }
+        @keyframes pulse-aba {
+            0% { transform: translateX(-50%) scale(1); }
+            100% { transform: translateX(-50%) scale(1.18); }
+        }
         .numwar-arena {
             flex: 1.2;
             display: flex;
@@ -2871,17 +2933,10 @@
             let abaPlayed = [false, false, false, false, false];
 
             function getRandomNumber(lvl) {
-                if (lvl === 1) return rand(1, 10);
-                if (lvl === 2) return rand(10, 99);
-                return rand(100, 999);
+                if (lvl === 1) return rand(1, 15);
+                if (lvl === 2) return rand(10, 45);
+                return rand(50, 90);
             }
-
-            // Generate 5 distinct numbers for Roy
-            while (royHand.length < 5) {
-                let n = getRandomNumber(currentDifficulty);
-                if (royHand.indexOf(n) === -1) royHand.push(n);
-            }
-            royHand.sort((a,b) => a - b);
 
             // Generate 5 distinct numbers for Aba
             while (abaHand.length < 5) {
@@ -2889,6 +2944,23 @@
                 if (abaHand.indexOf(n) === -1) abaHand.push(n);
             }
             abaHand.sort((a,b) => a - b);
+
+            // Generate 5 cards for Roy that are slightly larger on average (Roy wins 4/5 rounds)
+            let offsets = shuffle([1, 2, 3, -1, 2]);
+            if (currentDifficulty === 2) {
+                offsets = shuffle([2, 4, 5, -2, 3]);
+            } else if (currentDifficulty === 3) {
+                offsets = shuffle([3, 5, 6, -3, 4]);
+            }
+
+            abaHand.forEach((abaVal, idx) => {
+                let offset = offsets[idx];
+                let royVal = abaVal + offset;
+                if (royVal < 1) royVal = 1;
+                if (royVal > 100) royVal = 100;
+                royHand.push(royVal);
+            });
+            royHand.sort((a,b) => a - b);
 
             function updateScoreboard() {
                 var sb = get('numwar-score');
@@ -2920,7 +2992,12 @@
 
                         <!-- Arena (Center) -->
                         <div class="numwar-arena">
-                            <div class="numwar-arena-title" id="arena-status">בחרו כרטיס למלחמה!</div>
+                            <div class="numwar-pendulum-wrap">
+                                <div class="numwar-pendulum-arm to-roy" id="numwar-pendulum">
+                                    <div class="numwar-pendulum-weight">⚖️</div>
+                                </div>
+                            </div>
+                            <div class="numwar-arena-title" id="arena-status">תור רועי לשחק! 🌟</div>
                             <div class="numwar-battle-zone">
                                 <div class="numwar-arena-card-slot" data-label="אבא" id="arena-aba-slot"></div>
                                 <div class="numwar-arena-card-slot" data-label="רועי" id="arena-roy-slot"></div>
@@ -2961,7 +3038,7 @@
                     });
                 }
 
-                // Render Aba's hand
+                // Render Aba's hand (fully exposed/visible)
                 var abaContainer = get('aba-cards');
                 if (abaContainer) {
                     abaContainer.innerHTML = '';
@@ -2970,9 +3047,8 @@
                         card.className = 'numwar-card aba-card';
                         if (abaPlayed[idx]) {
                             card.classList.add('disabled');
-                        } else {
-                            card.classList.add('back'); // face-down
                         }
+                        card.textContent = val;
                         abaContainer.appendChild(card);
                     });
                 }
@@ -2987,14 +3063,18 @@
                 var roySlot = get('arena-roy-slot');
                 if (roySlot) roySlot.innerHTML = `<div class="numwar-card roy-card battle-active">${royHand[idx]}</div>`;
                 
-                get('arena-status').textContent = 'תור אבא יאיר...';
+                // Swing pendulum to Aba
+                var pend = get('numwar-pendulum');
+                if (pend) pend.className = 'numwar-pendulum-arm to-aba';
+                get('arena-status').textContent = 'תור אבא יאיר... ⏳';
+                
                 playClickSound();
                 
                 // Speak Roy's number
                 speakLetter(royHand[idx].toString(), 'he');
 
                 // Wait, then Aba plays
-                setTimeout(playAbaCard, 1000);
+                setTimeout(playAbaCard, 1500);
             }
 
             function playAbaCard() {
@@ -3009,26 +3089,20 @@
                 abaPlayed[randomIdx] = true;
                 renderHands();
 
-                // Show Aba's card in arena (flipped/hidden first, then flipped open)
+                // Slide Aba's card to arena
                 var abaSlot = get('arena-aba-slot');
-                if (abaSlot) abaSlot.innerHTML = `<div class="numwar-card aba-card back battle-active" id="aba-battle-card">${abaHand[randomIdx]}</div>`;
+                if (abaSlot) abaSlot.innerHTML = `<div class="numwar-card aba-card battle-active" id="aba-battle-card">${abaHand[randomIdx]}</div>`;
                 
                 get('arena-status').textContent = 'אבא יאיר משחק!';
                 playClickSound();
 
+                // Speak Aba's number
+                speakLetter(abaHand[randomIdx].toString(), 'he');
+                
+                // Compare after a short delay
                 setTimeout(() => {
-                    var card = get('aba-battle-card');
-                    if (card) {
-                        card.classList.remove('back'); // Flip face-up
-                        // Speak Aba's number
-                        speakLetter(abaHand[randomIdx].toString(), 'he');
-                    }
-                    
-                    // Compare after a short delay
-                    setTimeout(() => {
-                        compareCards(royHand[royPlayed.lastIndexOf(true)], abaHand[randomIdx], royPlayed.lastIndexOf(true), randomIdx);
-                    }, 1200);
-                }, 400);
+                    compareCards(royHand[royPlayed.lastIndexOf(true)], abaHand[randomIdx], royPlayed.lastIndexOf(true), randomIdx);
+                }, 1500);
             }
 
             function compareCards(royVal, abaVal, royIdx, abaIdx) {
@@ -3046,7 +3120,6 @@
                     get('arena-status').textContent = 'אבא יאיר מנצח בסיבוב!';
                     playErrorSound();
                 } else {
-                    // Tie
                     if (royCardEl) royCardEl.classList.add('winner-glow');
                     if (abaCardEl) abaCardEl.classList.add('winner-glow');
                     get('arena-status').textContent = 'תיקו בסיבוב!';
@@ -3056,7 +3129,6 @@
                 updateScoreboard();
 
                 setTimeout(() => {
-                    // Clear battle slots
                     var rSlot = get('arena-roy-slot');
                     var aSlot = get('arena-aba-slot');
                     if (rSlot) rSlot.innerHTML = '';
@@ -3085,16 +3157,15 @@
 
                         setTimeout(() => {
                             isProcessing = false;
-                            // Set mistakesInLevel to abaScore to determine stars
                             mistakesInLevel = abaScore;
-                            
-                            // Call standard handleAnswer to reward stars and show complete overlay.
-                            // Set currentStep to 4 so handleAnswer updates it to 5 and triggers game end.
                             currentStep = 4;
                             handleAnswer(true, null, null, null);
                         }, 2500);
                     } else {
-                        get('arena-status').textContent = 'בחרו כרטיס למלחמה!';
+                        // Swing pendulum back to Roy
+                        var pend = get('numwar-pendulum');
+                        if (pend) pend.className = 'numwar-pendulum-arm to-roy';
+                        get('arena-status').textContent = 'תור רועי לשחק! 🌟';
                         isProcessing = false;
                     }
                 }, 2200);
