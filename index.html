@@ -3098,8 +3098,141 @@
             });
             get('active-game-title').textContent = 'לחלוק ולהצליח 🤝';
             sharingOrder = shuffle(createRange(SCENES.length));
-
-
+        }
+            // Preload all scene images before starting the sharing game
+            function preloadImages(scenes) {
+                const promises = [];
+                scenes.forEach(scene => {
+                    const imgs = [scene.situation, scene.badImg, scene.goodImg];
+                    imgs.forEach(src => {
+                        if (!src) return;
+                        // Skip if src is a video URL
+                        if (src.match(/\.mp4$/i)) return;
+                        const img = new Image();
+                        const p = new Promise((resolve, reject) => {
+                            img.onload = resolve;
+                            img.onerror = resolve; // resolve even on error to avoid blocking
+                        });
+                        img.src = src;
+                        promises.push(p);
+                    });
+                });
+                return Promise.all(promises);
+            }
+            // Start preloading then launch the game
+            preloadImages(SCENES).then(() => {
+                showScene(0);
+            });
+            const SCENES = [
+                {
+                    question:  'אורי ונועם\u200D רוצים לשחק עם המשאית האדומה, אבל יש רק אחת. מה יעשה אורי?',
+                    qAudio:    'sharing/q1.mp3',
+                    fbAudio:   'sharing/fb1.mp3',
+                    speakQ:    'אורי ונועם\u200D רוצים לשחק עם המשאית האדומה, אבל יש רק אחת. מה יעשה אורי?',
+                    speakFb:   'כל הכבוד! אורי משחק במשאית יחד עם נועם\u200D, ושניהם נהנים!',
+                    situation: 'images/sharing_scenes/01_mashait/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/01_mashait/bechira_raa.webp',
+                    goodImg:   'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
+                },
+                {
+                    question:  'אורי משחק בטאבלט. נועם רוצה גם לשחק. מה יעשה אורי?',
+                    qAudio:    'sharing/q2.mp3',
+                    fbAudio:   'sharing/fb2.mp3',
+                    speakQ:    'אורי משחק בטאבלט. נועם רוצה גם לשחק. מה יעשה אורי?',
+                    speakFb:   'כל הכבוד! אורי מציע לנועם לעשות תורות בטאבלט, ושניהם נהנים!',
+                    situation: 'images/sharing_scenes/02_tablet/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/02_tablet/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/02_tablet/bechira_tova.webp'
+                },
+                {
+                    question:  'נשארה עוגייה אחת. גם אורי וגם נועם רוצים אותה. מה יעשה אורי?',
+                    qAudio:    'sharing/q3.mp3',
+                    fbAudio:   'sharing/fb3.mp3',
+                    speakQ:    'נשארה עוגייה אחת. גם אורי וגם נועם רוצים אותה. מה יעשה אורי?',
+                    speakFb:   'כל הכבוד! אורי חוצה את העוגייה לשניים וחולק אותה עם נועם!',
+                    situation: 'images/sharing_scenes/03_ugiya/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/03_ugiya/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/03_ugiya/bechira_tova.webp'
+                },
+                {
+                    question:  'אורי רוצה לרדת בגלשן, אבל ילדים אחרים מחכים בתור. מה יעשה אורי?',
+                    qAudio:    'sharing/q4.mp3',
+                    fbAudio:   'sharing/fb4.mp3',
+                    speakQ:    'אורי רוצה לרדת בגלשן, אבל ילדים אחרים מחכים בתור. מה יעשה אורי?',
+                    speakFb:   'כל הכבוד! אורי מחכה בסבלנות בתור שלו לגלשן!',
+                    situation: 'images/sharing_scenes/04_galshan/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/04_galshan/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/04_galshan/bechira_tova.webp'
+                },
+                {
+                    question:  'אורי ונועם רוצים לבנות מגדל, אבל יש רק קופסת קוביות אחת. מה יעשה אורי?',
+                    qAudio:    'sharing/q5.mp3',
+                    fbAudio:   'sharing/fb5.mp3',
+                    speakQ:    'אורי ונועם רוצים לבנות מגדל, אבל יש רק קופסת קוביות אחת. מה יעשה אורי?',
+                    speakFb:   'כל הכבוד! אורי משחק בקוביות יחד עם נועם, ושניהם בונים מגדל גדול יחד!',
+                    situation: 'images/sharing_scenes/05_kubiyot/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/05_kubiyot/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/05_kubiyot/bechira_tova.webp'
+                },
+                {
+                    question:  'אורי ונועם רוצים לצייר, אבל יש קופסה אחת עם צבעים. מה יעשה אורי?',
+                    qAudio:    'sharing/q6.mp3',
+                    fbAudio:   'sharing/fb6.mp3',
+                    speakQ:    'אורי ונועם רוצים לצייר, אבל יש קופסה אחת עם צבעים. מה יעשה אורי?',
+                    speakFb:   'כל הכבוד! אורי מחלק את הצבעים עם נועם, ושניהם מציירים יחד!',
+                    situation: 'images/sharing_scenes/06_tzvaim/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/06_tzvaim/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/06_tzvaim/bechira_tova.webp'
+                },
+                {
+                    question:  'אורי מחזיק כדור. נועם רוצה לשחק יחד. מה יעשה אורי?',
+                    qAudio:    'sharing/q7.mp3',
+                    fbAudio:   'sharing/fb7.mp3',
+                    speakQ:    'אורי מחזיק כדור. נועם רוצה לשחק יחד. מה יעשה אורי?',
+                    speakFb:   'נכון מאוד! אורי מוסר את הכדור לנועם. כל אחד מקבל תור!',
+                    situation: 'images/sharing_scenes/07_kadur/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/07_kadur/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/07_kadur/bechira_tova.webp'
+                },
+                {
+                    question:  'לאורי יש מכונית, לנועם יש כדור. נועם רוצה לנסות את המכונית. מה יעשה אורי?',
+                    qAudio:    'sharing/q8.mp3',
+                    fbAudio:   'sharing/fb8.mp3',
+                    speakQ:    'לאורי יש מכונית, לנועם יש כדור. נועם רוצה לנסות את המכונית. מה יעשה אורי?',
+                    speakFb:   'מצוין! אורי ונועם מחליפים צעצועים לזמן קצר. שניהם מנסים משהו חדש!',
+                    situation: 'images/sharing_scenes/08_hachlafat_tzatzuim/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/08_hachlafat_tzatzuim/bechira_raa.png',
+                    goodImg:   'images/sharing_scenes/08_hachlafat_tzatzuim/bechira_tova.webp'
+                },
+                {
+                    question:  'אמא קוראת סיפור לאורי. נועם גם רוצה לשמוע. מה יעשה אורי?',
+                    qAudio:    'sharing/q9.mp3',
+                    fbAudio:   'sharing/fb9.mp3',
+                    speakQ:    'אמא קוראת סיפור לאורי. נועם גם רוצה לשמוע. מה יעשה אורי?',
+                    speakFb:   'יופי! אורי מפנה מקום לנועם ליד אמא. כולם נהנים מהסיפור יחד!',
+                    situation: 'images/sharing_scenes/09_sipur_ima/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/09_sipur_ima/bechira_raa.png',
+                    goodImg:   'images/sharing_scenes/09_sipur_ima/bechira_tova.png'
+                },
+                {
+                    question:  'יש שטיח אחד בחדר. אורי יושב עליו. נועם גם רוצה לשבת. מה יעשה אורי?',
+                    qAudio:    'sharing/q10.mp3',
+                    fbAudio:   'sharing/fb10.mp3',
+                    speakQ:    'יש שטיח אחד בחדר. אורי יושב עליו. נועם גם רוצה לשבת. מה יעשה אורי?',
+                    speakFb:   'כן! אורי משאיר מקום על השטיח לנועם, ושניהם יושבים יחד!',
+                    situation: 'images/sharing_scenes/10_shatiach/matzav_bsisi.png',
+                    badImg:    'images/sharing_scenes/10_shatiach/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/10_shatiach/bechira_tova.webp'
+                }
+            ];
+            get('active-game-title').textContent = 'לחלוק ולהצליח 🤝';
+            sharingOrder = shuffle(createRange(SCENES.length));
+            // Preload all images then start
+            var _preloadPromises = SCENES.map(function(sc) {
+                return [sc.situation, sc.badImg, sc.goodImg].filter(function(s){ return s && !s.match(/\.mp4$/i); }).map(function(src){
+                    var img = new Image(); img.src = src; return img;
+                });
+            });
 
             function playAudioWithCallback(filename, onEnd, speakText) {
                 try {
@@ -3205,7 +3338,7 @@
                 get('sh-left').onclick  = function(){ onChoice(goodOnRight ? false : true,  get('sh-left')); };
                 get('sh-right').onclick = function(){ onChoice(goodOnRight ? true : false, get('sh-right')); };
             }
-            // showScene is now called after preloading in initSharingGame
+            showScene(0);
         }
 
         // ── מלחמת המספרים ──
