@@ -2931,6 +2931,7 @@
             let abaHand = [];
             let royPlayed = [false, false, false, false, false];
             let abaPlayed = [false, false, false, false, false];
+            let currentTurn = 'roy'; // Roy starts
 
             function getRandomNumber(lvl) {
                 if (lvl === 1) return rand(1, 15);
@@ -2965,14 +2966,15 @@
             function updateScoreboard() {
                 var sb = get('numwar-score');
                 if (sb) {
+                    // First child renders on the right (Aba), second child renders on the left (Roy) in RTL
                     sb.innerHTML = `
-                        <div class="numwar-score-item roy">
-                            <span>רועי:</span>
-                            <span class="numwar-score-val" id="score-roy">${royScore}</span>
-                        </div>
                         <div class="numwar-score-item aba">
                             <span>אבא יאיר:</span>
                             <span class="numwar-score-val" id="score-aba">${abaScore}</span>
+                        </div>
+                        <div class="numwar-score-item roy">
+                            <span>רועי:</span>
+                            <span class="numwar-score-val" id="score-roy">${royScore}</span>
                         </div>
                     `;
                 }
@@ -2983,7 +2985,7 @@
                 ws.innerHTML = `
                     <div class="numwar-scoreboard" id="numwar-score"></div>
                     <div class="numwar-layout">
-                        <!-- Aba Side (Left) -->
+                        <!-- Aba Side (Renders on Right in RTL) -->
                         <div class="numwar-side">
                             <img class="numwar-avatar" src="images/aba_sunglasses.jpg" alt="אבא יאיר">
                             <div class="numwar-name">אבא יאיר</div>
@@ -3004,7 +3006,7 @@
                             </div>
                         </div>
 
-                        <!-- Roy Side (Right) -->
+                        <!-- Roy Side (Renders on Left in RTL) -->
                         <div class="numwar-side">
                             <img class="numwar-avatar" src="images/roy_sunglasses.jpg" alt="רועי">
                             <div class="numwar-name">רועי</div>
@@ -3027,11 +3029,12 @@
                         card.className = 'numwar-card roy-card';
                         if (royPlayed[idx]) {
                             card.classList.add('disabled');
-                        } else {
+                        } else if (currentTurn === 'roy' && !isProcessing) {
                             card.onclick = function() {
-                                if (isProcessing || royPlayed[idx]) return;
                                 playRoyCard(idx);
                             };
+                        } else {
+                            card.classList.add('disabled');
                         }
                         card.textContent = val;
                         royContainer.appendChild(card);
@@ -3047,6 +3050,12 @@
                         card.className = 'numwar-card aba-card';
                         if (abaPlayed[idx]) {
                             card.classList.add('disabled');
+                        } else if (currentTurn === 'aba' && !isProcessing) {
+                            card.onclick = function() {
+                                playAbaCard(idx);
+                            };
+                        } else {
+                            card.classList.add('disabled');
                         }
                         card.textContent = val;
                         abaContainer.appendChild(card);
@@ -3057,6 +3066,7 @@
             function playRoyCard(idx) {
                 isProcessing = true;
                 royPlayed[idx] = true;
+                currentTurn = 'aba'; // Switch turn to Aba
                 renderHands();
 
                 // Slide Roy's card to arena
@@ -3066,42 +3076,36 @@
                 // Swing pendulum to Aba
                 var pend = get('numwar-pendulum');
                 if (pend) pend.className = 'numwar-pendulum-arm to-aba';
-                get('arena-status').textContent = 'תור אבא יאיר... ⏳';
+                get('arena-status').textContent = 'תור אבא יאיר לבחור קלף! ⏳';
                 
                 playClickSound();
                 
                 // Speak Roy's number
                 speakLetter(royHand[idx].toString(), 'he');
 
-                // Wait, then Aba plays
-                setTimeout(playAbaCard, 1500);
+                // Enable Aba turn interaction
+                isProcessing = false;
+                renderHands();
             }
 
-            function playAbaCard() {
-                // Aba chooses a remaining unplayed card
-                var unplayed = [];
-                abaPlayed.forEach((played, idx) => {
-                    if (!played) unplayed.push(idx);
-                });
-
-                if (unplayed.length === 0) return;
-                var randomIdx = unplayed[rand(0, unplayed.length - 1)];
-                abaPlayed[randomIdx] = true;
+            function playAbaCard(idx) {
+                isProcessing = true;
+                abaPlayed[idx] = true;
                 renderHands();
 
                 // Slide Aba's card to arena
                 var abaSlot = get('arena-aba-slot');
-                if (abaSlot) abaSlot.innerHTML = `<div class="numwar-card aba-card battle-active" id="aba-battle-card">${abaHand[randomIdx]}</div>`;
+                if (abaSlot) abaSlot.innerHTML = `<div class="numwar-card aba-card battle-active" id="aba-battle-card">${abaHand[idx]}</div>`;
                 
-                get('arena-status').textContent = 'אבא יאיר משחק!';
+                get('arena-status').textContent = 'מחשבים תוצאה...';
                 playClickSound();
 
                 // Speak Aba's number
-                speakLetter(abaHand[randomIdx].toString(), 'he');
+                speakLetter(abaHand[idx].toString(), 'he');
                 
                 // Compare after a short delay
                 setTimeout(() => {
-                    compareCards(royHand[royPlayed.lastIndexOf(true)], abaHand[randomIdx], royPlayed.lastIndexOf(true), randomIdx);
+                    compareCards(royHand[royPlayed.lastIndexOf(true)], abaHand[idx], royPlayed.lastIndexOf(true), idx);
                 }, 1500);
             }
 
@@ -3163,10 +3167,12 @@
                         }, 2500);
                     } else {
                         // Swing pendulum back to Roy
+                        currentTurn = 'roy';
                         var pend = get('numwar-pendulum');
                         if (pend) pend.className = 'numwar-pendulum-arm to-roy';
                         get('arena-status').textContent = 'תור רועי לשחק! 🌟';
                         isProcessing = false;
+                        renderHands();
                     }
                 }, 2200);
             }
