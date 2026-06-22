@@ -43,6 +43,9 @@
         body.bg-firstletter { background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%); }
         body.bg-sharing { background: linear-gradient(135deg, #fbc2eb 0%, #ffb6c1 100%); }
         body.bg-numwar { background: linear-gradient(135deg, #feedf7 0%, #aecdfa 100%); }
+        body.bg-towertalk { background: linear-gradient(135deg, #fff5cc 0%, #ffdf80 100%); }
+        body.bg-cooppuzzle { background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); }
+        body.bg-tidyup { background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); }
         .fl-letter-btn { width: clamp(70px,18vmin,110px); height: clamp(70px,18vmin,110px); background: #fff; border: 5px solid #2196F3; border-radius: 20px; cursor: pointer; box-shadow: 0 6px 12px rgba(0,0,0,0.15); transition: 0.2s; font-size: clamp(28px,7vw,52px); font-weight: 900; color: #2196F3; display: flex; align-items: center; justify-content: center; touch-action: manipulation; outline: none; font-family: 'Rubik', sans-serif; }
         .fl-letter-btn:hover { transform: scale(1.06); box-shadow: 0 8px 18px rgba(0,0,0,0.2); }
 
@@ -353,6 +356,236 @@
             .numwar-arena-card-slot {
                 width: 65px;
                 height: 95px;
+            }
+        }
+
+        /* ---- Cooperative Games Styling (Tower, Puzzle, Tidy-up) ---- */
+        #active-game-container:has(.numwar-tower-container),
+        #active-game-container:has(.coop-puzzle-layout),
+        #active-game-container:has(.coop-tidy-layout) {
+            height: 100svh;
+        }
+
+        /* 1. Block Tower Styling */
+        .numwar-tower-container {
+            width: min(88vw, 360px);
+            height: clamp(200px, 38vh, 320px);
+            background: rgba(255,255,255,0.45);
+            border-radius: 20px;
+            border: 4px dashed rgba(255,255,255,0.85);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column-reverse;
+            align-items: center;
+            padding-bottom: 12px;
+            margin: 0 auto;
+            box-shadow: inset 0 4px 10px rgba(0,0,0,0.05);
+        }
+        .numwar-block-platform {
+            width: 75%;
+            height: clamp(12px, 2vh, 16px);
+            background: linear-gradient(to right, #8d6e63, #5d4037);
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            z-index: 2;
+        }
+        .numwar-block-stacked {
+            width: min(100px, 25vw);
+            height: clamp(30px, 5vh, 40px);
+            border-radius: 8px;
+            border: 3px solid #fff;
+            box-shadow: inset 0 -4px 0 rgba(0,0,0,0.18), 0 4px 8px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(14px, 3vh, 18px);
+            font-weight: 900;
+            color: #fff;
+            position: absolute;
+            animation: blockDrop 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            z-index: 3;
+            direction: rtl;
+        }
+        @keyframes blockDrop {
+            0% { transform: translateY(-400px); opacity: 0; }
+            80% { transform: translateY(0); opacity: 1; }
+            92% { transform: translateY(-8px); }
+            100% { transform: translateY(0); }
+        }
+
+        /* 2. Jigsaw Puzzle Styling */
+        .coop-puzzle-layout {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 950px;
+            margin: 0 auto;
+            gap: 2vmin;
+            direction: rtl;
+            flex: 1 0 auto;
+        }
+        .coop-puzzle-grid {
+            display: grid;
+            grid-template-columns: repeat(2, clamp(80px, 16vh, 120px));
+            grid-template-rows: repeat(2, clamp(80px, 16vh, 120px));
+            gap: 3px;
+            background: rgba(255,255,255,0.4);
+            border: 4px solid #fff;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            overflow: hidden;
+            padding: 4px;
+            margin: 0 auto;
+        }
+        .coop-puzzle-slot {
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.3);
+            border: 2px dashed rgba(0,0,0,0.15);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(14px, 3vh, 20px);
+            color: rgba(0,0,0,0.22);
+            position: relative;
+        }
+        .coop-puzzle-piece {
+            width: clamp(75px, 15vh, 110px);
+            height: clamp(75px, 15vh, 110px);
+            border-radius: 12px;
+            border: 3px solid #2196F3;
+            box-shadow: 0 5px 12px rgba(0,0,0,0.16);
+            cursor: pointer;
+            background-size: calc(2 * clamp(80px, 16vh, 120px)) calc(2 * clamp(80px, 16vh, 120px));
+            background-repeat: no-repeat;
+            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+            touch-action: manipulation;
+        }
+        .coop-puzzle-piece.aba-piece {
+            border-color: #FF5722;
+        }
+        .coop-puzzle-piece:hover:not(.disabled) {
+            transform: scale(1.06) translateY(-4px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.22);
+        }
+        .coop-puzzle-piece.selected {
+            border-color: #4CAF50 !important;
+            box-shadow: 0 0 16px #4CAF50;
+            transform: scale(1.08);
+        }
+        .coop-puzzle-piece.disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+        .coop-puzzle-piece.in-slot {
+            width: 100%;
+            height: 100%;
+            border-radius: 6px;
+            border: none;
+            box-shadow: none;
+            cursor: default;
+            animation: snapIn 0.35s ease-out forwards;
+        }
+
+        /* 3. Tidy-Up Sorting Styling */
+        .coop-tidy-layout {
+            display: flex;
+            justify-content: space-between;
+            align-items: stretch;
+            width: 100%;
+            max-width: 950px;
+            margin: 0 auto;
+            gap: 2vmin;
+            direction: rtl;
+            flex: 1 0 auto;
+        }
+        .coop-tidy-basket {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            background: rgba(255,255,255,0.75);
+            border: 4px solid #2196F3;
+            border-radius: 24px;
+            padding: 1.5vmin;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            min-height: clamp(180px, 35vh, 280px);
+            transition: transform 0.2s, background-color 0.2s;
+        }
+        .coop-tidy-basket.aba-basket {
+            border-color: #FF5722;
+        }
+        .coop-tidy-basket.hovered {
+            transform: scale(1.03);
+            background: rgba(255,255,255,0.9);
+            box-shadow: 0 12px 28px rgba(0,0,0,0.15);
+        }
+        .coop-tidy-basket-title {
+            font-size: clamp(14px, 3vh, 18px);
+            font-weight: 900;
+            margin-top: 1vmin;
+            color: #333;
+        }
+        .coop-tidy-basket-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            justify-content: center;
+            margin-top: 1.5vmin;
+            width: 100%;
+        }
+        .coop-tidy-item {
+            width: clamp(45px, 10vmin, 70px);
+            height: clamp(45px, 10vmin, 70px);
+            background: #fff;
+            border: 3px solid #9C27B0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(24px, 5vw, 36px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.12);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            touch-action: manipulation;
+            user-select: none;
+        }
+        .coop-tidy-item:hover:not(.disabled) {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.18);
+        }
+        .coop-tidy-item.disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        @media (max-width: 600px) {
+            .coop-puzzle-layout, .coop-tidy-layout {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .coop-puzzle-grid {
+                width: 168px;
+                height: 168px;
+                grid-template-columns: repeat(2, 80px);
+                grid-template-rows: repeat(2, 80px);
+            }
+            .coop-puzzle-piece {
+                width: 72px;
+                height: 72px;
+                background-size: 160px 160px;
+            }
+            .coop-tidy-basket {
+                min-height: 130px;
+                padding: 5px;
             }
         }
 
@@ -1014,6 +1247,9 @@
             <div id="faces-hub-card" class="hub-card hidden" data-cat="emotion" style="position:relative;" onclick="openFacesLangScreen()"><div class="hub-icon">📸</div><div class="hub-title">מי זה?</div></div>
             <div class="hub-card" data-cat="emotion" style="position:relative;" onclick="openDifficultyScreen('emparts','👁️','פנים ורגשות')"><div class="hub-icon">👁️</div><div class="hub-title">פנים ורגשות</div></div>
             <div class="hub-card" data-cat="emotion" style="position:relative;" onclick="openDifficultyScreen('sharing','🤝','לחלוק ולהצליח')"><span class="star-badge" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🤝</div><div class="hub-title">לחלוק ולהצליח</div></div>
+            <div class="hub-card" data-cat="emotion" style="position:relative;" onclick="openDifficultyScreen('towertalk', '🧱', 'מגדל קוביות')"><span class="star-badge" data-game="towertalk" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🧱</div><div class="hub-title">מגדל קוביות</div></div>
+            <div class="hub-card" data-cat="emotion" style="position:relative;" onclick="openDifficultyScreen('cooppuzzle', '🧩', 'פאזל משותף')"><span class="star-badge" data-game="cooppuzzle" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🧩</div><div class="hub-title">פאזל משותף</div></div>
+            <div class="hub-card" data-cat="emotion" style="position:relative;" onclick="openDifficultyScreen('tidyup', '🧼', 'סדר בחדר')"><span class="star-badge" data-game="tidyup" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🧼</div><div class="hub-title">סדר בחדר</div></div>
             <div class="hub-card" data-cat="create" style="position:relative;" onclick="openMgGame()"><div class="hub-icon">🤸</div><div class="hub-title">מר גמיש</div></div>
             <div class="hub-card" data-cat="lang" onclick="openFirstLetterLangScreen()"><div class="hub-icon">🔡</div><div class="hub-title">באיזו אות מתחיל?</div></div>
         </div>
@@ -1097,7 +1333,7 @@
     <div id="feedback-layer" class="hidden feedback-icon"></div>
 
     <script>
-        const bgIcons = { 'sharing': ['🤝','❤️','🌟','🎁'], 'memory': ['🧠','💭','💡'], 'tracing': ['✏️','🎨','📐'], 'counting': ['🔢','🧮','➕'], 'sequence': ['🔄','✨','🎯'], 'fly': ['🪰','💨'], 'cop': ['🚓','🚨'], 'diff': ['🔎','👀'], 'oddone': ['🍎','🐶','🚗'], 'missing': ['A','B','C'], 'tools': ['🔨','🔧','🔩'], 'context': ['🧩','🖼️','🎨'], 'vparts': ['🚗','✈️','🚂','⛵','🚁'], 'habitat': ['🏠','🌳','🌊'], 'shadow': ['👤','🌑','👀'], 'halfhalf': ['✂️','🎨','🧩'], 'chrono': ['⏳','📅','🔄'], 'bigger': ['⚖️','🐘','🐭','🔢'], 'emotion': ['😄','😢','😡','😱'], 'faces': ['📸','❤️','👨‍👩‍👧‍👦','🤳'], 'mgamish': ['🤸','💪','🌟','🤸‍♂️'], 'firstletter': ['🔡','🔤','📖','✏️'], 'numwar': ['⚔️','🃏','🔢','⭐'] };
+        const bgIcons = { 'sharing': ['🤝','❤️','🌟','🎁'], 'memory': ['🧠','💭','💡'], 'tracing': ['✏️','🎨','📐'], 'counting': ['🔢','🧮','➕'], 'sequence': ['🔄','✨','🎯'], 'fly': ['🪰','💨'], 'cop': ['🚓','🚨'], 'diff': ['🔎','👀'], 'oddone': ['🍎','🐶','🚗'], 'missing': ['A','B','C'], 'tools': ['🔨','🔧','🔩'], 'context': ['🧩','🖼️','🎨'], 'vparts': ['🚗','✈️','🚂','⛵','🚁'], 'habitat': ['🏠','🌳','🌊'], 'shadow': ['👤','🌑','👀'], 'halfhalf': ['✂️','🎨','🧩'], 'chrono': ['⏳','📅','🔄'], 'bigger': ['⚖️','🐘','🐭','🔢'], 'emotion': ['😄','😢','😡','😱'], 'faces': ['📸','❤️','👨‍👩‍👧‍👦','🤳'], 'mgamish': ['🤸','💪','🌟','🤸‍♂️'], 'firstletter': ['🔡','🔤','📖','✏️'], 'numwar': ['⚔️','🃏','🔢','⭐'], 'towertalk': ['🧱','🏗️','🏢'], 'cooppuzzle': ['🧩','🖼️','🎨','📸'], 'tidyup': ['🧼','🧸','🧺','🧹'] };
         function setAppBackground(theme) {
             D.body.className = 'bg-' + theme; let bg = get('bg-animations'); bg.innerHTML = '';
             if(theme !== 'hub' && bgIcons[theme]) {
@@ -1240,15 +1476,7 @@
         
         function openDifficultyScreen(gameId, icon, title) {
             playClickSound(); hideAllScreens(); setAppBackground(gameId); currentGameMode = gameId;
-            if(gameId === 'emotion') {
-                startGameEngine(1); // עוקף את מסך הרמות למשחק רגשות
-                return;
-            }
-            if(gameId === 'emparts') {
-                startGameEngine(1); // עוקף את מסך הרמות
-                return;
-            }
-            if(gameId === 'sharing') {
+            if(gameId === 'emotion' || gameId === 'emparts' || gameId === 'sharing' || gameId === 'towertalk' || gameId === 'cooppuzzle' || gameId === 'tidyup') {
                 startGameEngine(1); // עוקף את מסך הרמות
                 return;
             }
@@ -1264,10 +1492,10 @@
         function startGameEngine(level) {
             playClickSound(); currentDifficulty = level; currentStep = 0; mistakesInLevel = 0; isProcessing = false; isDrawing = false;
             hideAllScreens();
-            // Force 100svh height for sharing and numwar modes, clear for others
+            // Force 100svh height for cooperative sharing and turn-taking modes, clear for others
             var agc = get('active-game-container');
             if (agc) {
-                if (currentGameMode === 'sharing' || currentGameMode === 'numwar') {
+                if (currentGameMode === 'sharing' || currentGameMode === 'numwar' || currentGameMode === 'towertalk' || currentGameMode === 'cooppuzzle' || currentGameMode === 'tidyup') {
                     agc.style.height = '100svh';
                 } else {
                     agc.style.height = '';
@@ -1279,7 +1507,12 @@
             get('active-game-title').style.display = '';
             get('active-progress-container').style.display = '';
 
-            activeGameRounds = (currentGameMode === 'sharing') ? 10 : (currentGameMode === 'numwar' ? 5 : ((currentGameMode === 'memory') ? (level === 1 ? 3 : (level === 2 ? 4 : 5)) : 4));
+            activeGameRounds = (currentGameMode === 'sharing') ? 10 : 
+                               (currentGameMode === 'numwar' ? 5 : 
+                               (currentGameMode === 'towertalk' ? 5 : 
+                               (currentGameMode === 'cooppuzzle' ? 4 : 
+                               (currentGameMode === 'tidyup' ? 6 : 
+                               ((currentGameMode === 'memory') ? (level === 1 ? 3 : (level === 2 ? 4 : 5)) : 4)))));
 
             let pContainer = get('active-progress-container'); pContainer.innerHTML='';
             for(let i=0;i<activeGameRounds;i++) { let d=D.createElement('div'); d.className='progress-dot'; d.id=`active-progress-container-dot-${i}`; pContainer.appendChild(d); }
@@ -1309,6 +1542,9 @@
                 else if(currentGameMode === 'firstletter') initFirstLetterGame();
                 else if(currentGameMode === 'sharing') initSharingGame();
                 else if(currentGameMode === 'numwar') initNumwarGame();
+                else if(currentGameMode === 'towertalk') initTowerGame();
+                else if(currentGameMode === 'cooppuzzle') initCoopPuzzleGame();
+                else if(currentGameMode === 'tidyup') initTidyupGame();
             }, 50);
         }
 
@@ -1316,7 +1552,7 @@
             playClickSound(); hideAllScreens();
             var agc = get('active-game-container');
             if (agc) agc.style.height = '';
-            if(currentGameMode === 'emotion' || currentGameMode === 'emparts' || currentGameMode === 'missing' || currentGameMode === 'mgamish' || currentGameMode === 'firstletter' || currentGameMode === 'sharing') { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); } else if(currentGameMode === 'faces') { show('faces-mode-screen'); } else { show('unified-diff-screen'); }
+            if(currentGameMode === 'emotion' || currentGameMode === 'emparts' || currentGameMode === 'missing' || currentGameMode === 'mgamish' || currentGameMode === 'firstletter' || currentGameMode === 'sharing' || currentGameMode === 'numwar' || currentGameMode === 'towertalk' || currentGameMode === 'cooppuzzle' || currentGameMode === 'tidyup') { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); } else if(currentGameMode === 'faces') { show('faces-mode-screen'); } else { show('unified-diff-screen'); }
         }
         function updateProgressUI() { for(let i=0;i<activeGameRounds;i++) { let d = get(`active-progress-container-dot-${i}`); if(d){ if(i < currentStep) d.classList.add('fill'); else d.classList.remove('fill'); } } }
 
@@ -1367,7 +1603,7 @@
             var agc = get('active-game-container');
             if (agc) agc.style.height = '';
             if(currentGameMode==='missing') { show('missing-lang-screen'); }
-            else if(currentGameMode==='emotion' || currentGameMode==='emparts' || currentGameMode==='mgamish' || currentGameMode==='firstletter' || currentGameMode==='sharing') { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); }
+            else if(currentGameMode==='emotion' || currentGameMode==='emparts' || currentGameMode==='mgamish' || currentGameMode==='firstletter' || currentGameMode==='sharing' || currentGameMode==='numwar' || currentGameMode==='towertalk' || currentGameMode==='cooppuzzle' || currentGameMode==='tidyup') { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); }
             else if(currentGameMode==='faces') { show('faces-mode-screen'); }
             else {
                 try {
@@ -3175,6 +3411,628 @@
                         renderHands();
                     }
                 }, 2200);
+            }
+
+            drawLayout();
+        }
+
+        // ── מגדל קוביות משותף ──
+        function initTowerGame() {
+            get('active-game-title').textContent = 'מגדל קוביות משותף 🧱';
+            
+            let royScore = 0;
+            let abaScore = 0;
+            let currentTurn = 'roy'; // Roy starts
+            let stackedBlocks = [];
+
+            // Roy has blocks 1, 3, 5
+            // Aba has blocks 2, 4
+            let royBlocks = [
+                { id: 1, color: '#ef5350', border: '#d32f2f', label: 'קובייה 1', text: 'קובייה ראשונה' },
+                { id: 3, color: '#66bb6a', border: '#388e3c', label: 'קובייה 3', text: 'קובייה שלישית' },
+                { id: 5, color: '#42a5f5', border: '#1976d2', label: 'קובייה 5', text: 'קובייה חמישית' }
+            ];
+            let abaBlocks = [
+                { id: 2, color: '#ffa726', border: '#f57c00', label: 'קובייה 2', text: 'קובייה שנייה' },
+                { id: 4, color: '#ab47bc', border: '#7b1fa2', label: 'קובייה 4', text: 'קובייה רביעית' }
+            ];
+
+            let royPlayed = [false, false, false];
+            let abaPlayed = [false, false];
+
+            function updateScoreboard() {
+                var sb = get('towertalk-score');
+                if (sb) {
+                    sb.innerHTML = `
+                        <div class="numwar-score-item aba">
+                            <span>אבא יאיר:</span>
+                            <span class="numwar-score-val" id="score-aba">${abaScore}</span>
+                        </div>
+                        <div class="numwar-score-val" style="background:#e8f5e9;color:#2e7d32;font-weight:900;">גובה: ${stackedBlocks.length}/5</div>
+                        <div class="numwar-score-item roy">
+                            <span>רועי:</span>
+                            <span class="numwar-score-val" id="score-roy">${royScore}</span>
+                        </div>
+                    `;
+                }
+            }
+
+            function drawLayout() {
+                var ws = get('game-workspace');
+                ws.innerHTML = `
+                    <div class="numwar-scoreboard" id="towertalk-score"></div>
+                    <div class="numwar-layout">
+                        <!-- Aba Side (Renders on Right in RTL) -->
+                        <div class="numwar-side">
+                            <img class="numwar-avatar" src="images/aba_sunglasses.jpg" alt="אבא יאיר">
+                            <div class="numwar-name">אבא יאיר</div>
+                            <div class="numwar-cards-container" id="aba-blocks"></div>
+                        </div>
+
+                        <!-- Arena (Center) -->
+                        <div class="numwar-arena">
+                            <div class="numwar-pendulum-wrap">
+                                <div class="numwar-pendulum-arm to-roy" id="numwar-pendulum">
+                                    <div class="numwar-pendulum-weight">⚖️</div>
+                                </div>
+                            </div>
+                            <div class="numwar-arena-title" id="arena-status">תור רועי לשים קובייה! 🧱</div>
+                            
+                            <div class="numwar-tower-container" id="tower-container">
+                                <div class="numwar-block-platform"></div>
+                            </div>
+                        </div>
+
+                        <!-- Roy Side (Renders on Left in RTL) -->
+                        <div class="numwar-side">
+                            <img class="numwar-avatar" src="images/roy_sunglasses.jpg" alt="רועי">
+                            <div class="numwar-name">רועי</div>
+                            <div class="numwar-cards-container" id="roy-blocks"></div>
+                        </div>
+                    </div>
+                `;
+                
+                updateScoreboard();
+                renderHands();
+            }
+
+            function renderHands() {
+                // Render Roy's hand
+                var royContainer = get('roy-blocks');
+                if (royContainer) {
+                    royContainer.innerHTML = '';
+                    royBlocks.forEach((block, idx) => {
+                        var card = D.createElement('div');
+                        card.className = 'numwar-card';
+                        card.style.background = block.color;
+                        card.style.borderColor = block.border;
+                        card.style.color = '#fff';
+                        card.style.fontSize = 'clamp(14px, 2.5vw, 18px)';
+                        card.style.textShadow = '0 1px 3px rgba(0,0,0,0.3)';
+                        card.textContent = block.label;
+
+                        if (royPlayed[idx]) {
+                            card.classList.add('disabled');
+                            card.style.background = '#ccc';
+                            card.style.borderColor = '#aaa';
+                        } else if (currentTurn === 'roy' && !isProcessing) {
+                            card.onclick = function() {
+                                placeBlock('roy', idx);
+                            };
+                        } else {
+                            card.classList.add('disabled');
+                        }
+                        royContainer.appendChild(card);
+                    });
+                }
+
+                // Render Aba's hand
+                var abaContainer = get('aba-blocks');
+                if (abaContainer) {
+                    abaContainer.innerHTML = '';
+                    abaBlocks.forEach((block, idx) => {
+                        var card = D.createElement('div');
+                        card.className = 'numwar-card';
+                        card.style.background = block.color;
+                        card.style.borderColor = block.border;
+                        card.style.color = '#fff';
+                        card.style.fontSize = 'clamp(14px, 2.5vw, 18px)';
+                        card.style.textShadow = '0 1px 3px rgba(0,0,0,0.3)';
+                        card.textContent = block.label;
+
+                        if (abaPlayed[idx]) {
+                            card.classList.add('disabled');
+                            card.style.background = '#ccc';
+                            card.style.borderColor = '#aaa';
+                        } else if (currentTurn === 'aba' && !isProcessing) {
+                            card.onclick = function() {
+                                placeBlock('aba', idx);
+                            };
+                        } else {
+                            card.classList.add('disabled');
+                        }
+                        abaContainer.appendChild(card);
+                    });
+                }
+            }
+
+            function placeBlock(player, idx) {
+                isProcessing = true;
+                playClickSound();
+
+                let block = player === 'roy' ? royBlocks[idx] : abaBlocks[idx];
+                if (player === 'roy') {
+                    royPlayed[idx] = true;
+                    royScore++;
+                } else {
+                    abaPlayed[idx] = true;
+                    abaScore++;
+                }
+
+                renderHands();
+
+                // Append block element to tower container
+                var container = get('tower-container');
+                var el = D.createElement('div');
+                el.className = 'numwar-block-stacked';
+                el.style.background = block.color;
+                el.style.borderColor = block.border;
+                
+                let stackedCount = stackedBlocks.length;
+                el.style.bottom = `calc(12px + ${stackedCount} * clamp(30px, 5vh, 40px))`;
+                el.textContent = block.label;
+                
+                container.appendChild(el);
+                stackedBlocks.push(block);
+
+                updateScoreboard();
+
+                // Speak the block order name
+                speakLetter(block.text, 'he');
+
+                setTimeout(() => {
+                    currentStep++;
+                    updateProgressUI();
+
+                    if (stackedBlocks.length >= 5) {
+                        // Success completion
+                        let victoryMsg = 'בנינו מגדל מדהים ביחד! כל הכבוד! 🧱🎉';
+                        get('arena-status').textContent = victoryMsg;
+                        try { if(typeof confetti === 'function') confetti({particleCount: 150, origin:{y:0.6}, zIndex:1000}); } catch(e){}
+                        showKisses();
+                        speakLetter(victoryMsg, 'he');
+
+                        setTimeout(() => {
+                            isProcessing = false;
+                            currentStep = 4; // match completion target
+                            handleAnswer(true, null, null, null);
+                        }, 2500);
+                    } else {
+                        // Switch turn
+                        currentTurn = player === 'roy' ? 'aba' : 'roy';
+                        var pend = get('numwar-pendulum');
+                        if (pend) pend.className = 'numwar-pendulum-arm to-' + currentTurn;
+                        
+                        let nameStr = currentTurn === 'roy' ? 'רועי' : 'אבא יאיר';
+                        get('arena-status').textContent = `תור ${nameStr} לשים קובייה! ⏳`;
+                        
+                        isProcessing = false;
+                        renderHands();
+                    }
+                }, 1600);
+            }
+
+            drawLayout();
+        }
+
+        // ── פאזל משותף ──
+        function initCoopPuzzleGame() {
+            get('active-game-title').textContent = 'פאזל משותף 🧩';
+            
+            let royScore = 0;
+            let abaScore = 0;
+            let currentTurn = 'roy'; // Roy starts
+            let selectedPieceIndex = null;
+            let placedPieces = [false, false, false, false];
+
+            // Slices configuration:
+            // 0: Top-Left, 1: Top-Right, 2: Bottom-Left, 3: Bottom-Right
+            let puzzlePieces = [
+                { index: 0, label: 'חלק 1', bgPos: '0% 0%', player: 'roy' },
+                { index: 1, label: 'חלק 2', bgPos: '100% 0%', player: 'aba' },
+                { index: 2, label: 'חלק 3', bgPos: '0% 100%', player: 'aba' },
+                { index: 3, label: 'חלק 4', bgPos: '100% 100%', player: 'roy' }
+            ];
+
+            let royPlayed = { 0: false, 3: false };
+            let abaPlayed = { 1: false, 2: false };
+
+            function updateScoreboard() {
+                var sb = get('puzzle-score');
+                if (sb) {
+                    sb.innerHTML = `
+                        <div class="numwar-score-item aba">
+                            <span>אבא יאיר:</span>
+                            <span class="numwar-score-val" id="score-aba">${abaScore}</span>
+                        </div>
+                        <div class="numwar-score-val" style="background:#e3f2fd;color:#0d47a1;font-weight:900;">הושלם: ${currentStep}/4</div>
+                        <div class="numwar-score-item roy">
+                            <span>רועי:</span>
+                            <span class="numwar-score-val" id="score-roy">${royScore}</span>
+                        </div>
+                    `;
+                }
+            }
+
+            function drawLayout() {
+                var ws = get('game-workspace');
+                ws.innerHTML = `
+                    <div class="numwar-scoreboard" id="puzzle-score"></div>
+                    <div class="numwar-layout">
+                        <!-- Aba Side (Renders on Right in RTL) -->
+                        <div class="numwar-side">
+                            <img class="numwar-avatar" src="images/aba_sunglasses.jpg" alt="אבא יאיר">
+                            <div class="numwar-name">אבא יאיר</div>
+                            <div class="numwar-cards-container" id="aba-pieces"></div>
+                        </div>
+
+                        <!-- Arena (Center) -->
+                        <div class="numwar-arena">
+                            <div class="numwar-pendulum-wrap">
+                                <div class="numwar-pendulum-arm to-roy" id="numwar-pendulum">
+                                    <div class="numwar-pendulum-weight">⚖️</div>
+                                </div>
+                            </div>
+                            <div class="numwar-arena-title" id="arena-status">רועי, בחר חלק פאזל ולחץ על המקום הנכון! 🧩</div>
+                            
+                            <div class="coop-puzzle-grid" id="puzzle-grid" style="direction: ltr;">
+                                <div class="coop-puzzle-slot" data-index="0">1</div>
+                                <div class="coop-puzzle-slot" data-index="1">2</div>
+                                <div class="coop-puzzle-slot" data-index="2">3</div>
+                                <div class="coop-puzzle-slot" data-index="3">4</div>
+                            </div>
+                        </div>
+
+                        <!-- Roy Side (Renders on Left in RTL) -->
+                        <div class="numwar-side">
+                            <img class="numwar-avatar" src="images/roy_sunglasses.jpg" alt="רועי">
+                            <div class="numwar-name">רועי</div>
+                            <div class="numwar-cards-container" id="roy-pieces"></div>
+                        </div>
+                    </div>
+                `;
+                
+                // Add click events to slots
+                var slots = ws.querySelectorAll('.coop-puzzle-slot');
+                slots.forEach(slot => {
+                    slot.onclick = function() {
+                        var slotIdx = parseInt(slot.dataset.index);
+                        onSlotClicked(slotIdx, slot);
+                    };
+                });
+
+                updateScoreboard();
+                renderHands();
+            }
+
+            function renderHands() {
+                // Render Roy's pieces (0, 3)
+                var royContainer = get('roy-pieces');
+                if (royContainer) {
+                    royContainer.innerHTML = '';
+                    [0, 3].forEach(idx => {
+                        var piece = puzzlePieces[idx];
+                        var el = D.createElement('div');
+                        el.className = 'coop-puzzle-piece';
+                        el.style.backgroundImage = "url('images/roy-aba-yair.jpg')";
+                        el.style.backgroundSize = "200% 200%";
+                        el.style.backgroundPosition = piece.bgPos;
+
+                        if (royPlayed[idx]) {
+                            el.classList.add('disabled');
+                        } else if (currentTurn === 'roy' && !isProcessing) {
+                            if (selectedPieceIndex === idx) el.classList.add('selected');
+                            el.onclick = function() {
+                                selectPiece(idx);
+                            };
+                        } else {
+                            el.classList.add('disabled');
+                        }
+                        royContainer.appendChild(el);
+                    });
+                }
+
+                // Render Aba's pieces (1, 2)
+                var abaContainer = get('aba-pieces');
+                if (abaContainer) {
+                    abaContainer.innerHTML = '';
+                    [1, 2].forEach(idx => {
+                        var piece = puzzlePieces[idx];
+                        var el = D.createElement('div');
+                        el.className = 'coop-puzzle-piece aba-piece';
+                        el.style.backgroundImage = "url('images/roy-aba-yair.jpg')";
+                        el.style.backgroundSize = "200% 200%";
+                        el.style.backgroundPosition = piece.bgPos;
+
+                        if (abaPlayed[idx]) {
+                            el.classList.add('disabled');
+                        } else if (currentTurn === 'aba' && !isProcessing) {
+                            if (selectedPieceIndex === idx) el.classList.add('selected');
+                            el.onclick = function() {
+                                selectPiece(idx);
+                            };
+                        } else {
+                            el.classList.add('disabled');
+                        }
+                        abaContainer.appendChild(el);
+                    });
+                }
+            }
+
+            function selectPiece(idx) {
+                if (isProcessing) return;
+                playClickSound();
+                selectedPieceIndex = idx;
+                renderHands();
+            }
+
+            function onSlotClicked(slotIdx, slotEl) {
+                if (selectedPieceIndex === null || isProcessing) return;
+
+                if (slotIdx === selectedPieceIndex) {
+                    // Correct placement!
+                    isProcessing = true;
+                    playSuccessSound();
+
+                    placedPieces[slotIdx] = true;
+                    if (currentTurn === 'roy') {
+                        royPlayed[slotIdx] = true;
+                        royScore++;
+                    } else {
+                        abaPlayed[slotIdx] = true;
+                        abaScore++;
+                    }
+
+                    // Render snapped piece inside the slot
+                    slotEl.innerHTML = '';
+                    var pieceEl = D.createElement('div');
+                    pieceEl.className = 'coop-puzzle-piece in-slot';
+                    pieceEl.style.backgroundImage = "url('images/roy-aba-yair.jpg')";
+                    pieceEl.style.backgroundSize = "200% 200%";
+                    pieceEl.style.backgroundPosition = puzzlePieces[slotIdx].bgPos;
+                    slotEl.appendChild(pieceEl);
+
+                    selectedPieceIndex = null;
+                    updateScoreboard();
+
+                    let textMsg = currentTurn === 'roy' ? 'כל הכבוד רועי!' : 'כל הכבוד אבא!';
+                    speakLetter(textMsg, 'he');
+
+                    setTimeout(() => {
+                        currentStep++;
+                        updateProgressUI();
+
+                        if (currentStep >= 4) {
+                            // Puzzle completed!
+                            let victoryMsg = 'איזה יופי! הרכבנו את הפאזל יחד! 🧩🎉';
+                            get('arena-status').textContent = victoryMsg;
+                            try { if(typeof confetti === 'function') confetti({particleCount: 150, origin:{y:0.6}, zIndex:1000}); } catch(e){}
+                            showKisses();
+                            speakLetter(victoryMsg, 'he');
+
+                            setTimeout(() => {
+                                isProcessing = false;
+                                currentStep = 3; // completion target
+                                handleAnswer(true, null, null, null);
+                            }, 2500);
+                        } else {
+                            // Switch turn
+                            currentTurn = currentTurn === 'roy' ? 'aba' : 'roy';
+                            var pend = get('numwar-pendulum');
+                            if (pend) pend.className = 'numwar-pendulum-arm to-' + currentTurn;
+
+                            let nameStr = currentTurn === 'roy' ? 'רועי' : 'אבא יאיר';
+                            get('arena-status').textContent = `תור ${nameStr} לבחור חלק פאזל! ⏳`;
+
+                            isProcessing = false;
+                            renderHands();
+                        }
+                    }, 1600);
+                } else {
+                    // Wrong slot
+                    playErrorSound();
+                    let errStr = 'לא שם, בוא ננסה מקום אחר!';
+                    speakLetter(errStr, 'he');
+                }
+            }
+
+            drawLayout();
+        }
+
+        // ── סדר בחדר ביחד ──
+        function initTidyupGame() {
+            get('active-game-title').textContent = 'סדר בחדר ביחד 🧼';
+            
+            let royScore = 0;
+            let abaScore = 0;
+            let currentTurn = 'roy'; // Roy starts
+
+            // Items list: 3 toys (Roy), 3 animal/fruit (Aba)
+            let itemsPool = [
+                { emoji: '🚗', nameHe: 'מכונית', category: 'roy' },
+                { emoji: '🧸', nameHe: 'דובי', category: 'roy' },
+                { emoji: '⚽', nameHe: 'כדור', category: 'roy' },
+                { emoji: '🍎', nameHe: 'תפוח', category: 'aba' },
+                { emoji: '🐶', nameHe: 'כלב', category: 'aba' },
+                { emoji: '🐱', nameHe: 'חתול', category: 'aba' }
+            ];
+            
+            // Shuffle pool
+            itemsPool = shuffle(itemsPool.slice());
+
+            function updateScoreboard() {
+                var sb = get('tidy-score');
+                if (sb) {
+                    sb.innerHTML = `
+                        <div class="numwar-score-item aba">
+                            <span>אבא יאיר:</span>
+                            <span class="numwar-score-val" id="score-aba">${abaScore}</span>
+                        </div>
+                        <div class="numwar-score-val" style="background:#e8f5e9;color:#2e7d32;font-weight:900;">לסדר: ${itemsPool.length} פריטים</div>
+                        <div class="numwar-score-item roy">
+                            <span>רועי:</span>
+                            <span class="numwar-score-val" id="score-roy">${royScore}</span>
+                        </div>
+                    `;
+                }
+            }
+
+            function drawLayout() {
+                var ws = get('game-workspace');
+                ws.innerHTML = `
+                    <div class="numwar-scoreboard" id="tidy-score"></div>
+                    <div class="numwar-layout">
+                        <!-- Aba Side / Basket (Renders on Right in RTL) -->
+                        <div class="numwar-side" id="aba-basket-side" style="padding: 2vmin; border: 4px solid #FF5722; background: rgba(255, 87, 34, 0.05);">
+                            <img class="numwar-avatar" src="images/aba_sunglasses.jpg" alt="אבא יאיר">
+                            <div class="numwar-name">הסל של אבא יאיר</div>
+                            <div style="font-size:clamp(12px, 2.5vw, 15px); color:#FF5722; font-weight:bold; margin-bottom:1vmin;">🍎 חיות ופירות 🐶</div>
+                            <div class="coop-tidy-basket-items" id="aba-basket-items"></div>
+                        </div>
+
+                        <!-- Arena / Scattered Items (Center) -->
+                        <div class="numwar-arena" style="flex: 1.4;">
+                            <div class="numwar-pendulum-wrap">
+                                <div class="numwar-pendulum-arm to-roy" id="numwar-pendulum">
+                                    <div class="numwar-pendulum-weight">⚖️</div>
+                                </div>
+                            </div>
+                            <div class="numwar-arena-title" id="arena-status">רועי, בחר צעצוע או חפץ לסדר בחדר! 🧼</div>
+                            
+                            <!-- Middle items container -->
+                            <div id="tidy-items-container" style="display:flex; flex-wrap:wrap; gap:clamp(12px, 3.5vmin, 24px); justify-content:center; align-items:center; width:100%; margin-top:2vmin;"></div>
+                        </div>
+
+                        <!-- Roy Side / Basket (Renders on Left in RTL) -->
+                        <div class="numwar-side" id="roy-basket-side" style="padding: 2vmin; border: 4px solid #2196F3; background: rgba(33, 150, 243, 0.05);">
+                            <img class="numwar-avatar" src="images/roy_sunglasses.jpg" alt="רועי">
+                            <div class="numwar-name">הסל של רועי</div>
+                            <div style="font-size:clamp(12px, 2.5vw, 15px); color:#2196F3; font-weight:bold; margin-bottom:1vmin;">🚗 צעצועים וחפצים 🧸</div>
+                            <div class="coop-tidy-basket-items" id="roy-basket-items"></div>
+                        </div>
+                    </div>
+                `;
+
+                updateScoreboard();
+                renderItems();
+            }
+
+            function renderItems() {
+                var container = get('tidy-items-container');
+                if (!container) return;
+                container.innerHTML = '';
+
+                itemsPool.forEach((item, idx) => {
+                    var el = D.createElement('div');
+                    el.className = 'coop-tidy-item';
+                    el.textContent = item.emoji;
+                    
+                    if (!isProcessing) {
+                        el.onclick = function() {
+                            tidyItemClicked(idx, item);
+                        };
+                    } else {
+                        el.classList.add('disabled');
+                    }
+                    container.appendChild(el);
+                });
+            }
+
+            function tidyItemClicked(idx, item) {
+                if (isProcessing) return;
+
+                if (item.category === currentTurn) {
+                    // Correct classification!
+                    isProcessing = true;
+                    playSuccessSound();
+
+                    // Move to basket
+                    if (currentTurn === 'roy') {
+                        royScore++;
+                        var basket = get('roy-basket-items');
+                        if (basket) {
+                            let bi = D.createElement('div');
+                            bi.className = 'coop-tidy-item';
+                            bi.style.width = 'clamp(35px, 7vmin, 50px)';
+                            bi.style.height = 'clamp(35px, 7vmin, 50px)';
+                            bi.style.fontSize = 'clamp(18px, 4vw, 26px)';
+                            bi.style.cursor = 'default';
+                            bi.textContent = item.emoji;
+                            basket.appendChild(bi);
+                        }
+                    } else {
+                        abaScore++;
+                        var basket = get('aba-basket-items');
+                        if (basket) {
+                            let bi = D.createElement('div');
+                            bi.className = 'coop-tidy-item';
+                            bi.style.width = 'clamp(35px, 7vmin, 50px)';
+                            bi.style.height = 'clamp(35px, 7vmin, 50px)';
+                            bi.style.fontSize = 'clamp(18px, 4vw, 26px)';
+                            bi.style.cursor = 'default';
+                            bi.style.borderColor = '#FF5722';
+                            bi.textContent = item.emoji;
+                            basket.appendChild(bi);
+                        }
+                    }
+
+                    // Remove from pool
+                    itemsPool.splice(idx, 1);
+                    renderItems();
+                    updateScoreboard();
+
+                    // Speak item name
+                    speakLetter(item.nameHe, 'he');
+
+                    setTimeout(() => {
+                        currentStep++;
+                        updateProgressUI();
+
+                        if (itemsPool.length === 0) {
+                            // Completed!
+                            let victoryMsg = 'כל הכבוד! סידרנו את כל החדר ביחד! 🧼🎉';
+                            get('arena-status').textContent = victoryMsg;
+                            try { if(typeof confetti === 'function') confetti({particleCount: 150, origin:{y:0.6}, zIndex:1000}); } catch(e){}
+                            showKisses();
+                            speakLetter(victoryMsg, 'he');
+
+                            setTimeout(() => {
+                                isProcessing = false;
+                                currentStep = 5; // completion target
+                                handleAnswer(true, null, null, null);
+                            }, 2500);
+                        } else {
+                            // Switch turn
+                            currentTurn = currentTurn === 'roy' ? 'aba' : 'roy';
+                            var pend = get('numwar-pendulum');
+                            if (pend) pend.className = 'numwar-pendulum-arm to-' + currentTurn;
+
+                            let nameStr = currentTurn === 'roy' ? 'רועי' : 'אבא יאיר';
+                            let categoryStr = currentTurn === 'roy' ? 'צעצועים וחפצים 🧸' : 'חיות ופירות 🍎';
+                            get('arena-status').textContent = `תור ${nameStr} לבחור ${categoryStr}! ⏳`;
+
+                            isProcessing = false;
+                            renderItems();
+                        }
+                    }, 1600);
+                } else {
+                    // Wrong basket
+                    playErrorSound();
+                    let errStr = currentTurn === 'roy' 
+                        ? 'זה מתאים לסל של אבא יאיר! רועי מסדר צעצועים וחפצים!' 
+                        : 'זה מתאים לסל של רועי! אבא יאיר מסדר פירות וחיות!';
+                    speakLetter(errStr, 'he');
+                }
             }
 
             drawLayout();
