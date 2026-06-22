@@ -103,7 +103,7 @@
         .image-container { display: flex; justify-content: center; gap: 2.5vmin; margin: 3vmin 0; flex-wrap: wrap; }
         .image-box { width: clamp(70px, 18vmin, 150px); height: clamp(70px, 18vmin, 150px); object-fit: cover; border-radius: 20px; box-shadow: 0 6px 15px rgba(0,0,0,0.15); border: 4px solid #fff; animation: popIn 0.5s; transition: 0.3s; background-color: #f8f9fa;}
         .missing-box { background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%) !important; color: #adb5bd; border: 4px dashed #ced4da; display: flex; align-items: center; justify-content: center; font-size: clamp(40px, 10vmin, 80px); }
-        .option-btn { width: clamp(65px, 16vmin, 130px); height: clamp(65px, 16vmin, 130px); background: #fff; border: 5px solid #4CAF50; border-radius: 20px; cursor: pointer; padding: 0; overflow: hidden; box-shadow: 0 6px 12px rgba(0,0,0,0.15); transition: 0.2s; animation: popIn 0.5s; touch-action: manipulation; outline: none; display: flex; justify-content: center; align-items: center; font-size: clamp(40px, 10vw, 70px);}
+        .option-btn { width: clamp(85px, 20vmin, 160px); height: clamp(85px, 20vmin, 160px); background: #fff; border: 5px solid #4CAF50; border-radius: 20px; cursor: pointer; padding: 0; overflow: hidden; box-shadow: 0 6px 12px rgba(0,0,0,0.15); transition: 0.2s; animation: popIn 0.5s; touch-action: manipulation; outline: none; display: flex; justify-content: center; align-items: center; font-size: clamp(40px, 10vw, 70px);}
         .option-btn * { pointer-events: none; }
         .dimmed { opacity: 0.4; filter: grayscale(100%); pointer-events: none; border-color: #adb5bd; transform: scale(0.95); }
  
@@ -131,9 +131,9 @@
         
         /* Chrono Game Specific Responsive Large Image Sizes */
         #c-targ { max-width: 950px; min-height: clamp(160px, 32vmin, 300px); padding: 3vmin; }
-        #c-targ .chrono-empty { width: clamp(70px, 20vh, 200px); height: clamp(70px, 20vh, 200px); border-radius: 20px; border-width: 4px; }
+        #c-targ .chrono-empty { width: clamp(100px, 25vh, 240px); height: clamp(100px, 25vh, 240px); border-radius: 20px; border-width: 4px; }
         #c-opts { max-width: 1000px; }
-        #c-opts .option-btn { width: clamp(80px, 22vh, 220px); height: clamp(80px, 22vh, 220px); border-radius: 20px; border-width: 5px; }
+        #c-opts .option-btn { width: clamp(110px, 26vh, 260px); height: clamp(110px, 26vh, 260px); border-radius: 20px; border-width: 5px; }
         
         .sequence-option-btn { width: 100%; max-width: 500px; background: white; border: 5px solid #2196F3; border-radius: 20px; padding: 10px; display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important; justify-content: space-evenly !important; align-items: center !important; cursor: pointer; box-shadow: 0 6px 12px rgba(0,0,0,0.15); transition: 0.2s; outline: none; margin: 0 auto; font-size: clamp(30px, 7vw, 55px); direction: ltr; }
         .seq-opt-item { font-size: clamp(35px, 8vw, 65px) !important; pointer-events: none; flex-shrink: 0; display: inline-block !important; }
@@ -159,7 +159,7 @@
 
         /* כלים והקשרים */
         .large-target { background: rgba(255, 255, 255, 0.8); border-radius: 30px; padding: 4vmin; display: inline-block; margin: 2vmin auto; box-shadow: 0 8px 20px rgba(0,0,0,0.15); font-size: clamp(60px, 15vw, 120px); border: 5px solid #fff; }
-        #context-scene { position: relative; width: 100%; max-width: 700px; height: 250px; border-radius: 20px; border: 5px solid #fff; box-shadow: 0 10px 20px rgba(0,0,0,0.2); overflow: hidden; display: flex; justify-content: center; align-items: center; font-size: clamp(80px, 20vw, 150px); }
+        #context-scene { position: relative; width: 100%; max-width: 700px; height: clamp(250px, 35vh, 400px); border-radius: 20px; border: 5px solid #fff; box-shadow: 0 10px 20px rgba(0,0,0,0.2); overflow: hidden; display: flex; justify-content: center; align-items: center; font-size: clamp(80px, 20vw, 150px); }
         #context-drop-zone { position: absolute; width: 15%; aspect-ratio: 1/1; min-width: 80px; min-height: 80px; border: 5px dashed white; border-radius: 50%; background: rgba(255,255,255,0.4); transform: translate(-50%, -50%); display: flex; justify-content: center; align-items: center; box-shadow: 0 0 15px rgba(0,0,0,0.3); transition: 0.3s; z-index: 5; font-size: clamp(50px, 12vw, 80px); }
 
         /* חלקי רכבים (VParts) */
@@ -271,13 +271,13 @@
                 padding: 1vmin;
             }
             #c-targ .chrono-empty {
-                width: clamp(50px, 15vh, 120px);
-                height: clamp(50px, 15vh, 120px);
+                width: clamp(80px, 22vh, 150px);
+                height: clamp(80px, 22vh, 150px);
                 border-radius: 12px;
             }
             #c-opts .option-btn {
-                width: clamp(55px, 17vh, 130px);
-                height: clamp(55px, 17vh, 130px);
+                width: clamp(85px, 24vh, 160px);
+                height: clamp(85px, 24vh, 160px);
                 border-radius: 12px;
             }
             #c-opts .option-wrapper div {
@@ -297,8 +297,8 @@
                 border-radius: 12px;
             }
             .option-btn {
-                width: clamp(50px, 15vh, 120px);
-                height: clamp(50px, 15vh, 120px);
+                width: clamp(75px, 20vh, 140px);
+                height: clamp(75px, 20vh, 140px);
                 border-radius: 12px;
             }
             /* Drawing Canvas adjustments */
@@ -430,11 +430,24 @@
             let info = getTotalDisplay();
             let visual = '';
             let count = Math.min(info.full, 10);
-            for (let i = 0; i < count; i++) visual += '⭐';
-            if (info.hasHalf) visual += '✨';
+            for (let i = 0; i < count; i++) visual += '🪙';
+            if (info.hasHalf) visual += '🪙';
             if (info.full === 0 && !info.hasHalf) visual = '—';
             let numDisplay = info.full + (info.hasHalf ? '.5' : '');
-            el.innerHTML = '<div style="font-size:clamp(18px,3.5vw,28px);">' + visual + '</div><div style="font-size:clamp(16px,3vw,24px); font-weight:900; color:#f5a623; text-shadow:0 2px 4px rgba(0,0,0,0.2);">' + numDisplay + ' ⭐</div>';
+            el.innerHTML = '<div style="font-size:clamp(18px,3.5vw,28px);">' + visual + '</div><div style="font-size:clamp(16px,3vw,24px); font-weight:900; color:#ffd700; text-shadow:0 2px 4px rgba(0,0,0,0.2);">' + numDisplay + ' זהב 🪙</div>';
+            
+            // Update Max-Stock bag image based on progress
+            let totalStars = info.full + (info.hasHalf ? 0.5 : 0);
+            let bagImg = get('max-stock-bag-img');
+            if (bagImg) {
+                if (totalStars === 0) {
+                    bagImg.src = 'images/max_stock_bag.png';
+                } else if (totalStars < 6) {
+                    bagImg.src = 'images/max_stock_bag_half.png';
+                } else {
+                    bagImg.src = 'images/max_stock_bag_full.png';
+                }
+            }
             // Update bucket coins
             let bc = get('bucket-coins');
             if (!bc) return;
@@ -577,26 +590,9 @@
     <div id="category-screen" class="hidden">
         <h1 style="margin-top: 3vh;" id="hub-header">המרכז של רועי</h1>
         <div id="star-wallet-container" style="display:flex; justify-content:center; align-items:center; gap:clamp(10px,3vw,25px); margin-bottom:1.5vmin;">
-            <!-- Wallet / Purse shape -->
-            <div id="star-wallet-purse" style="position:relative; width:clamp(70px,16vw,110px); height:clamp(55px,13vw,90px);">
-                <svg viewBox="0 0 110 90" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                        <linearGradient id="walletGrad" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stop-color="#c0873b"/>
-                            <stop offset="50%" stop-color="#8B5E3C"/>
-                            <stop offset="100%" stop-color="#6B3F1F"/>
-                        </linearGradient>
-                    </defs>
-                    <!-- Wallet body -->
-                    <rect x="5" y="22" width="100" height="60" rx="12" fill="url(#walletGrad)" stroke="#5a3311" stroke-width="2"/>
-                    <!-- Flap -->
-                    <path d="M5,42 Q5,18 30,15 L80,15 Q105,18 105,42" fill="#a0714a" stroke="#5a3311" stroke-width="2"/>
-                    <!-- Clasp -->
-                    <circle cx="55" cy="42" r="8" fill="#ffd166" stroke="#c5981a" stroke-width="2"/>
-                    <circle cx="55" cy="42" r="4" fill="#ffe599"/>
-                    <!-- Stitch lines -->
-                    <line x1="12" y1="70" x2="98" y2="70" stroke="#5a3311" stroke-width="1" stroke-dasharray="4,3" opacity="0.5"/>
-                </svg>
+            <!-- Wallet / Purse shape (Max-Stock bag) -->
+            <div id="star-wallet-purse" style="position:relative; width:clamp(70px,16vw,110px); height:clamp(70px,16vw,110px); display:flex; align-items:center; justify-content:center;">
+                <img id="max-stock-bag-img" src="images/max_stock_bag.png" style="width:100%; height:100%; object-fit:contain; filter:drop-shadow(0 4px 8px rgba(0,0,0,0.15));" />
             </div>
             <!-- Star count display -->
             <div id="star-wallet-display" style="background:rgba(255,255,255,0.9); border:4px solid #ffd166; border-radius:20px; padding:1vmin 3vmin; box-shadow:0 6px 20px rgba(255,209,102,0.4); display:flex; flex-direction:column; align-items:center; gap:0.3vmin; min-width:clamp(60px,14vw,100px);">
@@ -1506,14 +1502,18 @@
                 b.innerHTML = `<img src="${o.img}" alt="${o.desc}" style="width:100%; height:100%; object-fit:cover; border-radius:12px;" />`;
                 b.onclick=(e)=>{
                     if(isProcessing)return;
-                    speakLetter(o.desc, 'he');
                     if(o.q===c.c.q){
+                        isProcessing = true;
                         dz.style.border='none';
                         dz.style.background='white';
                         dz.innerHTML = `<img src="${o.img}" alt="${o.desc}" style="width:100%; height:100%; object-fit:cover; border-radius:50%;" />`;
                         dz.style.animation='popIn 0.5s forwards';
-                        handleAnswer(true, null, loadContextRound, null);
+                        speakLetter(o.desc, 'he', function(){
+                            isProcessing = false;
+                            handleAnswer(true, null, loadContextRound, null);
+                        });
                     } else {
+                        speakLetter(o.desc, 'he');
                         handleAnswer(false, b, null, null);
                     }
                 };
@@ -1610,8 +1610,16 @@
                 b.innerHTML = `<img src="${opt.aImg}" alt="${opt.aDesc}" style="width:100%; height:100%; object-fit:cover;">`;
                 b.onclick=(e)=>{
                     if(isProcessing)return;
-                    speakLetter(opt.aDesc, 'he');
-                    handleAnswer(opt===p, b, loadHabitatRound, null);
+                    if(opt===p){
+                        isProcessing = true;
+                        speakLetter(opt.aDesc, 'he', function(){
+                            isProcessing = false;
+                            handleAnswer(true, b, loadHabitatRound, null);
+                        });
+                    } else {
+                        speakLetter(opt.aDesc, 'he');
+                        handleAnswer(false, b, null, null);
+                    }
                 };
                 let n=D.createElement('div');
                 n.className='option-number';
@@ -2122,18 +2130,30 @@
         var FL_HE_POOL = ['ב','ג','ד','ח','ט','כ','ל','מ','נ','ס','פ','צ','ק','ר','ש','ת'];
         var FL_EN_POOL = ['A','B','C','D','E','F','G','H','L','M','N','O','P','R','S','T','V'];
 
-        function speakLetter(text, lang) {
+        function speakLetter(text, lang, onEnd) {
             try {
-                if (!window.speechSynthesis) return;
+                if (!window.speechSynthesis) { if (onEnd) onEnd(); return; }
                 speechSynthesis.cancel();
                 var u = new SpeechSynthesisUtterance(text);
                 u.lang = lang === 'he' ? 'he-IL' : 'en-US';
                 u.rate = 0.8;
+                if (onEnd) {
+                    var completed = false;
+                    var safeOnEnd = function() {
+                        if (completed) return;
+                        completed = true;
+                        onEnd();
+                    };
+                    u.onend = safeOnEnd;
+                    u.onerror = safeOnEnd;
+                    // fallback safety timer
+                    setTimeout(safeOnEnd, Math.max(text.length * 150, 1000) + 500);
+                }
                 function doSpeak() {
                     var voices = speechSynthesis.getVoices();
                     if (lang === 'he') {
-                        var v = voices.find(function(vv){ return vv.lang.startsWith('he') && /hila|michal|idit|anat|carmit/i.test(vv.name); })
-                             || voices.find(function(vv){ return vv.lang.startsWith('he') && vv.name.toLowerCase().includes('female'); })
+                        var v = voices.find(function(vv){ return vv.lang.startsWith('he') && /hila|michal|idit|anat|carmit|yael|heami|hef|female|google|עברית/i.test(vv.name); })
+                             || voices.find(function(vv){ return vv.lang.startsWith('he') && !/david|asaf|hem/i.test(vv.name); })
                              || voices.find(function(vv){ return vv.lang.startsWith('he'); });
                         if (v) u.voice = v;
                     }
@@ -2143,7 +2163,7 @@
                     speechSynthesis.onvoiceschanged = function(){ speechSynthesis.onvoiceschanged = null; doSpeak(); };
                     setTimeout(doSpeak, 300);
                 } else { doSpeak(); }
-            } catch(e) {}
+            } catch(e) { if (onEnd) onEnd(); }
         }
         function openFirstLetterLangScreen() { playClickSound(); hideAllScreens(); show('firstletter-lang-screen'); }
         function startFirstLetterGame(lang) {
@@ -2187,12 +2207,15 @@
                 btn.onclick = function() {
                     if (isProcessing) return;
                     if (isCorrect) {
-                        setTimeout(function(){
-                            if (flLang === 'he') speakLetter(round.sound, 'he');
-                            else speakLetter(letter, flLang);
-                        }, 1000);
+                        isProcessing = true;
+                        var soundText = flLang === 'he' ? round.sound : letter;
+                        speakLetter(soundText, flLang, function(){
+                            isProcessing = false;
+                            handleAnswer(true, btn, loadFirstLetterRound, null);
+                        });
+                    } else {
+                        handleAnswer(false, btn, null, null);
                     }
-                    handleAnswer(isCorrect, btn, loadFirstLetterRound, null);
                 };
                 opts.appendChild(btn);
             });
@@ -2438,7 +2461,8 @@
                             var voices = speechSynthesis.getVoices();
                             var u = new SpeechSynthesisUtterance(speakText);
                             u.lang = 'he-IL'; u.rate = 0.88; u.pitch = 1.15;
-                            var v = voices.find(function(vv){ return vv.lang.startsWith('he') && /hila|michal|idit|anat|carmit/i.test(vv.name); })
+                            var v = voices.find(function(vv){ return vv.lang.startsWith('he') && /hila|michal|idit|anat|carmit|yael|heami|hef|female|google|עברית/i.test(vv.name); })
+                                 || voices.find(function(vv){ return vv.lang.startsWith('he') && !/david|asaf|hem/i.test(vv.name); })
                                  || voices.find(function(vv){ return vv.lang.startsWith('he'); });
                             if (v) u.voice = v;
                             if (onEnd) {
