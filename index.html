@@ -1201,7 +1201,17 @@
 
         function startGameEngine(level) {
             playClickSound(); currentDifficulty = level; currentStep = 0; mistakesInLevel = 0; isProcessing = false; isDrawing = false;
-            hideAllScreens(); show('active-game-container');
+            hideAllScreens();
+            // Force 100svh height for sharing and numwar modes, clear for others
+            var agc = get('active-game-container');
+            if (agc) {
+                if (currentGameMode === 'sharing' || currentGameMode === 'numwar') {
+                    agc.style.height = '100svh';
+                } else {
+                    agc.style.height = '';
+                }
+            }
+            show('active-game-container');
             // restore chrome that faces game hides
             get('active-top-bar').style.display = '';
             get('active-game-title').style.display = '';
@@ -1240,7 +1250,12 @@
             }, 50);
         }
 
-        function quitActiveGame() { playClickSound(); hideAllScreens(); if(currentGameMode === 'emotion' || currentGameMode === 'emparts' || currentGameMode === 'missing' || currentGameMode === 'mgamish' || currentGameMode === 'firstletter' || currentGameMode === 'sharing') { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); } else if(currentGameMode === 'faces') { show('faces-mode-screen'); } else { show('unified-diff-screen'); } }
+        function quitActiveGame() {
+            playClickSound(); hideAllScreens();
+            var agc = get('active-game-container');
+            if (agc) agc.style.height = '';
+            if(currentGameMode === 'emotion' || currentGameMode === 'emparts' || currentGameMode === 'missing' || currentGameMode === 'mgamish' || currentGameMode === 'firstletter' || currentGameMode === 'sharing') { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); } else if(currentGameMode === 'faces') { show('faces-mode-screen'); } else { show('unified-diff-screen'); }
+        }
         function updateProgressUI() { for(let i=0;i<activeGameRounds;i++) { let d = get(`active-progress-container-dot-${i}`); if(d){ if(i < currentStep) d.classList.add('fill'); else d.classList.remove('fill'); } } }
 
         function handleAnswer(isCorrect, btn, successCallback, failCallback, isScribble = false) {
@@ -1287,6 +1302,8 @@
 
         function closeLevelComplete() {
             playClickSound(); hideAllScreens();
+            var agc = get('active-game-container');
+            if (agc) agc.style.height = '';
             if(currentGameMode==='missing') { show('missing-lang-screen'); }
             else if(currentGameMode==='emotion' || currentGameMode==='emparts' || currentGameMode==='mgamish' || currentGameMode==='firstletter' || currentGameMode==='sharing') { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); }
             else if(currentGameMode==='faces') { show('faces-mode-screen'); }
