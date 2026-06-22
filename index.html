@@ -475,25 +475,47 @@
             try {
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
                 const now = ctx.currentTime;
-                // noise burst — הצליל "גּ" של הבליעה
-                const bufLen = Math.floor(ctx.sampleRate * 0.07);
-                const buf = ctx.createBuffer(1, bufLen, ctx.sampleRate);
-                const d = buf.getChannelData(0);
-                for (let i = 0; i < bufLen; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / bufLen);
-                const ns = ctx.createBufferSource(); ns.buffer = buf;
-                const filt = ctx.createBiquadFilter(); filt.type = 'bandpass'; filt.frequency.value = 380; filt.Q.value = 4;
-                const ng = ctx.createGain(); ng.gain.value = 0.55;
-                ns.connect(filt); filt.connect(ng); ng.connect(ctx.destination); ns.start(now);
-                // גלישה יורדת — הגרון
+
+                function playCrunch(time) {
+                    const bufLen = Math.floor(ctx.sampleRate * 0.08);
+                    const buf = ctx.createBuffer(1, bufLen, ctx.sampleRate);
+                    const d = buf.getChannelData(0);
+                    for (let i = 0; i < bufLen; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / bufLen);
+                    const ns = ctx.createBufferSource(); ns.buffer = buf;
+                    const filt = ctx.createBiquadFilter(); filt.type = 'bandpass'; filt.frequency.value = 1100; filt.Q.value = 3;
+                    const ng = ctx.createGain();
+                    ng.gain.setValueAtTime(0.35, time);
+                    ng.gain.exponentialRampToValueAtTime(0.01, time + 0.08);
+                    ns.connect(filt); filt.connect(ng); ng.connect(ctx.destination);
+                    ns.start(time);
+                }
+
+                // 3 crunches (chewing)
+                playCrunch(now);
+                playCrunch(now + 0.15);
+                playCrunch(now + 0.30);
+
+                // Swallow Gulp sound at now + 0.45
+                const gulpTime = now + 0.45;
+                const gulpBufLen = Math.floor(ctx.sampleRate * 0.07);
+                const gulpBuf = ctx.createBuffer(1, gulpBufLen, ctx.sampleRate);
+                const gulpD = gulpBuf.getChannelData(0);
+                for (let i = 0; i < gulpBufLen; i++) gulpD[i] = (Math.random() * 2 - 1) * (1 - i / gulpBufLen);
+                const gulpNs = ctx.createBufferSource(); gulpNs.buffer = gulpBuf;
+                const gulpFilt = ctx.createBiquadFilter(); gulpFilt.type = 'bandpass'; gulpFilt.frequency.value = 380; gulpFilt.Q.value = 4;
+                const gulpNg = ctx.createGain(); gulpNg.gain.value = 0.55;
+                gulpNs.connect(gulpFilt); gulpFilt.connect(gulpNg); gulpNg.connect(ctx.destination);
+                gulpNs.start(gulpTime);
+
                 const osc = ctx.createOscillator(); osc.type = 'sine';
-                osc.frequency.setValueAtTime(420, now + 0.05);
-                osc.frequency.exponentialRampToValueAtTime(55, now + 0.35);
+                osc.frequency.setValueAtTime(420, gulpTime + 0.05);
+                osc.frequency.exponentialRampToValueAtTime(55, gulpTime + 0.35);
                 const g = ctx.createGain();
-                g.gain.setValueAtTime(0, now + 0.05);
-                g.gain.linearRampToValueAtTime(0.45, now + 0.09);
-                g.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+                g.gain.setValueAtTime(0, gulpTime + 0.05);
+                g.gain.linearRampToValueAtTime(0.45, gulpTime + 0.09);
+                g.gain.exponentialRampToValueAtTime(0.01, gulpTime + 0.35);
                 osc.connect(g); g.connect(ctx.destination);
-                osc.start(now + 0.05); osc.stop(now + 0.4);
+                osc.start(gulpTime + 0.05); osc.stop(gulpTime + 0.35);
             } catch(e) {}
         }
 
@@ -1266,7 +1288,24 @@
                 let f=0; let s=Math.max(1,Math.floor(pLen/40)); 
                 function anim(){ 
                     if(f>=pLen){ 
-                        if(pathType==='fly'){ playGulpSound(); aEl.style.transition='transform 0.15s, opacity 0.15s'; aEl.style.transform='scale(0.1)'; aEl.style.opacity='0'; let tEl2=get('p-target'); if(tEl2){tEl2.style.transition='transform 0.2s'; tEl2.style.transform='translate(-50%,-50%) scale(1.25)'; setTimeout(()=>{tEl2.style.transform='translate(-50%,-50%) scale(1)';},200);} }
+                        if(pathType==='fly'){ 
+                            playGulpSound(); 
+                            aEl.style.transition='transform 0.15s, opacity 0.15s'; 
+                            aEl.style.transform='scale(0.1)'; 
+                            aEl.style.opacity='0'; 
+                            let tEl2=get('p-target'); 
+                            if(tEl2){
+                                tEl2.style.transition='transform 0.2s'; 
+                                tEl2.style.transform='translate(-50%,-50%) scale(1.25)'; 
+                                setTimeout(()=>{tEl2.style.transform='translate(-50%,-50%) scale(1)';},200);
+                            }
+                            setTimeout(function(){
+                                if(sEl)sEl.classList.remove('siren-active'); 
+                                isProcessing = false;
+                                handleAnswer(true, null, loadPathRound, null);
+                            }, 900);
+                            return;
+                        }
                         if(sEl)sEl.classList.remove('siren-active'); 
                         isProcessing = false;
                         handleAnswer(true, null, loadPathRound, null); return; 
