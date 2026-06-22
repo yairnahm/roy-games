@@ -201,7 +201,7 @@
         .sharing-situation-img { width:min(86vw,540px); flex:1 1 0; min-height:0; max-height:260px; border-radius:14px; object-fit:contain; box-shadow:0 4px 14px rgba(0,0,0,0.18); display:block; background:#f0f0f0; }
         .sharing-img-choices { display:flex; gap:2vmin; justify-content:center; width:100%; flex-shrink:0; }
         .sharing-img-btn { flex:1 1 0; max-width:min(43vw,250px); aspect-ratio:4/3; border:4px solid rgba(255,255,255,0.85); border-radius:16px; overflow:hidden; cursor:pointer; padding:0; background:#fff; box-shadow:0 5px 16px rgba(0,0,0,0.2); transition:transform 0.15s,box-shadow 0.15s,border-color 0.2s; touch-action:manipulation; outline:none; animation:popIn 0.35s; }
-        .sharing-img-btn img { display:block; width:100%; height:100%; object-fit:cover; pointer-events:none; }
+        .sharing-img-btn img, .sharing-img-btn video { display:block; width:100%; height:100%; object-fit:cover; pointer-events:none; }
         .sharing-img-btn:hover { transform:scale(1.04); box-shadow:0 12px 28px rgba(0,0,0,0.28); }
         .sharing-img-btn:active { transform:scale(0.96); }
         .sharing-img-btn:disabled { opacity:0.4; cursor:not-allowed; transform:none; }
@@ -2401,6 +2401,17 @@
                 } catch(e) { safeOnEnd(); }
             }
 
+            function renderMediaHTML(id, className, srcPath) {
+                var isVideo = srcPath && (srcPath.endsWith('.mp4') || srcPath.endsWith('.webm') || srcPath.endsWith('.mov'));
+                var idAttr = id ? ' id="' + id + '"' : '';
+                var classAttr = className ? ' class="' + className + '"' : '';
+                if (isVideo) {
+                    return '<video' + idAttr + classAttr + ' src="' + srcPath + '" autoplay loop muted playsinline></video>';
+                } else {
+                    return '<img' + idAttr + classAttr + ' src="' + srcPath + '" alt="">';
+                }
+            }
+
             function showScene(idx) {
                 if (idx >= SCENES.length) return;
                 var scene = SCENES[sharingOrder[idx]];
@@ -2412,10 +2423,10 @@
                 ws.innerHTML =
                     '<div class="sharing-scene">' +
                     '<p class="sharing-question" id="sh-q">' + scene.question + ' 🔊</p>' +
-                    '<img id="sh-situation" class="sharing-situation-img" src="' + scene.situation + '" alt="">' +
+                    renderMediaHTML('sh-situation', 'sharing-situation-img', scene.situation) +
                     '<div class="sharing-img-choices" id="sh-choices">' +
-                    '<button class="sharing-img-btn" id="sh-left"><img src="' + leftImg + '" alt=""></button>' +
-                    '<button class="sharing-img-btn" id="sh-right"><img src="' + rightImg + '" alt=""></button>' +
+                    '<button class="sharing-img-btn" id="sh-left">' + renderMediaHTML('', '', leftImg) + '</button>' +
+                    '<button class="sharing-img-btn" id="sh-right">' + renderMediaHTML('', '', rightImg) + '</button>' +
                     '</div></div>';
 
                 playAudioWithCallback(scene.qAudio, null, scene.speakQ);
@@ -2427,6 +2438,11 @@
                     get('sh-choices').querySelectorAll('button').forEach(function(b){ b.disabled = true; });
                     if (isCorrect) {
                         clickedBtn.classList.add('correct-flash');
+                        var sitEl = get('sh-situation');
+                        if (sitEl) {
+                            var newMedia = renderMediaHTML('sh-situation', 'sharing-situation-img', scene.goodImg);
+                            sitEl.outerHTML = newMedia;
+                        }
                         playAudioWithCallback(scene.fbAudio, function(){
                             isProcessing = false;
                             handleAnswer(true, null, function(){ showScene(currentStep); }, null);
@@ -2434,8 +2450,18 @@
                     } else {
                         isProcessing = false;
                         clickedBtn.classList.add('wrong-flash');
+                        var sitEl = get('sh-situation');
+                        if (sitEl) {
+                            var newMedia = renderMediaHTML('sh-situation', 'sharing-situation-img', scene.badImg);
+                            sitEl.outerHTML = newMedia;
+                        }
                         handleAnswer(false, clickedBtn, null, function(){
                             clickedBtn.classList.remove('wrong-flash', 'dimmed');
+                            var sitEl2 = get('sh-situation');
+                            if (sitEl2) {
+                                var basicMedia = renderMediaHTML('sh-situation', 'sharing-situation-img', scene.situation);
+                                sitEl2.outerHTML = basicMedia;
+                            }
                             get('sh-choices').querySelectorAll('button').forEach(function(b){ b.disabled = false; });
                         });
                     }
