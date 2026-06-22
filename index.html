@@ -47,6 +47,7 @@
         .fl-letter-btn:hover { transform: scale(1.06); box-shadow: 0 8px 18px rgba(0,0,0,0.2); }
 
         /* ---- Numbers War Game ---- */
+        #active-game-container:has(.numwar-layout) { height: 100svh; }
         .numwar-layout {
             display: flex;
             flex-direction: row;
@@ -57,8 +58,7 @@
             margin: 0 auto;
             gap: 2vmin;
             direction: rtl;
-            flex: 1 1 0;
-            min-height: 0;
+            flex: 1 0 auto;
         }
         .numwar-side {
             flex: 1;
@@ -567,6 +567,50 @@
             /* Diff grid adjustments */
             #diff-grid {
                 max-width: clamp(160px, 45vh, 320px);
+            }
+            /* Numbers War adjustments */
+            .numwar-avatar {
+                width: clamp(40px, 8vh, 60px);
+                height: clamp(40px, 8vh, 60px);
+                margin-bottom: 2px;
+            }
+            .numwar-name {
+                font-size: clamp(12px, 2.5vh, 15px);
+                margin-bottom: 2px;
+            }
+            .numwar-arena {
+                min-height: 170px;
+                padding: 5px;
+            }
+            .numwar-arena-title {
+                font-size: clamp(11px, 2.5vh, 14px);
+                margin-bottom: 5px;
+                padding: 2px 8px;
+            }
+            .numwar-arena-card-slot {
+                width: clamp(45px, 9vh, 65px);
+                height: clamp(65px, 13vh, 95px);
+            }
+            .numwar-card {
+                width: clamp(40px, 8vh, 55px);
+                height: clamp(60px, 12vh, 85px);
+                font-size: clamp(16px, 3vh, 22px);
+                border-width: 2px;
+                border-radius: 8px;
+            }
+            .numwar-card.aba-card.back::after {
+                font-size: clamp(18px, 3vh, 26px);
+            }
+            .numwar-scoreboard {
+                margin-bottom: 5px;
+                padding: 4px 15px;
+            }
+            .numwar-score-item {
+                font-size: clamp(12px, 2.5vh, 16px);
+            }
+            .numwar-side {
+                padding: 5px;
+                border-radius: 12px;
             }
         }
     </style>
