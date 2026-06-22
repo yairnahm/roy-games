@@ -1157,6 +1157,31 @@
                 _currentAudio.play().catch(function(){});
             } catch(e) {}
         }
+        function playCoopAudio(filename, speakText, callback) {
+            try {
+                if (_currentAudio) { _currentAudio.pause(); _currentAudio.currentTime = 0; }
+                var a = new Audio('./audio/' + filename);
+                _currentAudio = a;
+                var finished = false;
+                var safeCallback = function() {
+                    if (finished) return;
+                    finished = true;
+                    if (callback) callback();
+                };
+                a.onended = safeCallback;
+                a.onerror = function() {
+                    speakLetter(speakText, 'he', safeCallback);
+                };
+                a.play().then(function() {
+                    // Safety backup: in case onended doesn't fire (e.g. mobile Safari bugs)
+                    setTimeout(safeCallback, (a.duration || 5) * 1000 + 500);
+                }).catch(function() {
+                    speakLetter(speakText, 'he', safeCallback);
+                });
+            } catch(e) {
+                speakLetter(speakText, 'he', callback);
+            }
+        }
     </script>
 
     <div id="start-screen" style="display:flex; flex-direction:column; align-items:center;">
@@ -3317,7 +3342,7 @@
                 playClickSound();
                 
                 // Speak Roy's number
-                speakLetter(royHand[idx].toString(), 'he');
+                playCoopAudio('numbers/num_' + royHand[idx] + '.mp3', royHand[idx].toString());
 
                 // Enable Aba turn interaction
                 isProcessing = false;
@@ -3337,7 +3362,7 @@
                 playClickSound();
 
                 // Speak Aba's number
-                speakLetter(abaHand[idx].toString(), 'he');
+                playCoopAudio('numbers/num_' + abaHand[idx] + '.mp3', abaHand[idx].toString());
                 
                 // Compare after a short delay
                 setTimeout(() => {
@@ -3393,7 +3418,12 @@
                             get('arena-status').textContent = finalMsg;
                         }
                         
-                        speakLetter(finalMsg, 'he');
+                        let fileMap = {
+                            'כל הכבוד! ניצחת את אבא!': 'coop/numwar_roy_win.mp3',
+                            'אבא ניצח הפעם! כל הכבוד על המשחק!': 'coop/numwar_aba_win.mp3',
+                            'תיקו! כל הכבוד על המשחק!': 'coop/numwar_tie.mp3'
+                        };
+                        playCoopAudio(fileMap[finalMsg] || 'coop/numwar_roy_win.mp3', finalMsg);
 
                         setTimeout(() => {
                             isProcessing = false;
@@ -3588,7 +3618,7 @@
                 updateScoreboard();
 
                 // Speak the block order name
-                speakLetter(block.text, 'he');
+                playCoopAudio('coop/towertalk_block' + block.id + '.mp3', block.text);
 
                 setTimeout(() => {
                     currentStep++;
@@ -3600,7 +3630,7 @@
                         get('arena-status').textContent = victoryMsg;
                         try { if(typeof confetti === 'function') confetti({particleCount: 150, origin:{y:0.6}, zIndex:1000}); } catch(e){}
                         showKisses();
-                        speakLetter(victoryMsg, 'he');
+                        playCoopAudio('coop/towertalk_victory.mp3', victoryMsg);
 
                         setTimeout(() => {
                             isProcessing = false;
@@ -3806,7 +3836,8 @@
                     updateScoreboard();
 
                     let textMsg = currentTurn === 'roy' ? 'כל הכבוד רועי!' : 'כל הכבוד אבא!';
-                    speakLetter(textMsg, 'he');
+                    let filename = currentTurn === 'roy' ? 'coop/coop_roy_win.mp3' : 'coop/coop_aba_win.mp3';
+                    playCoopAudio(filename, textMsg);
 
                     setTimeout(() => {
                         currentStep++;
@@ -3818,7 +3849,7 @@
                             get('arena-status').textContent = victoryMsg;
                             try { if(typeof confetti === 'function') confetti({particleCount: 150, origin:{y:0.6}, zIndex:1000}); } catch(e){}
                             showKisses();
-                            speakLetter(victoryMsg, 'he');
+                            playCoopAudio('coop/coop_puzzle_victory.mp3', victoryMsg);
 
                             setTimeout(() => {
                                 isProcessing = false;
@@ -3842,7 +3873,7 @@
                     // Wrong slot
                     playErrorSound();
                     let errStr = 'לא שם, בוא ננסה מקום אחר!';
-                    speakLetter(errStr, 'he');
+                    playCoopAudio('coop/coop_puzzle_err.mp3', errStr);
                 }
             }
 
@@ -3859,12 +3890,12 @@
 
             // Items list: 3 toys (Roy), 3 animal/fruit (Aba)
             let itemsPool = [
-                { emoji: '🚗', nameHe: 'מכונית', category: 'roy' },
-                { emoji: '🧸', nameHe: 'דובי', category: 'roy' },
-                { emoji: '⚽', nameHe: 'כדור', category: 'roy' },
-                { emoji: '🍎', nameHe: 'תפוח', category: 'aba' },
-                { emoji: '🐶', nameHe: 'כלב', category: 'aba' },
-                { emoji: '🐱', nameHe: 'חתול', category: 'aba' }
+                { image: 'images/tidy_car.png', nameHe: 'מכונית', category: 'roy' },
+                { image: 'images/tidy_bear.png', nameHe: 'דובי', category: 'roy' },
+                { image: 'images/tidy_ball.png', nameHe: 'כדור', category: 'roy' },
+                { image: 'images/tidy_apple.png', nameHe: 'תפוח', category: 'aba' },
+                { image: 'images/tidy_dog.png', nameHe: 'כלב', category: 'aba' },
+                { image: 'images/tidy_cat.png', nameHe: 'חתול', category: 'aba' }
             ];
             
             // Shuffle pool
@@ -3935,7 +3966,9 @@
                 itemsPool.forEach((item, idx) => {
                     var el = D.createElement('div');
                     el.className = 'coop-tidy-item';
-                    el.textContent = item.emoji;
+                    el.style.width = 'clamp(75px, 14vmin, 115px)';
+                    el.style.height = 'clamp(75px, 14vmin, 115px)';
+                    el.innerHTML = `<img src="${item.image}" style="width:85%; height:85%; object-fit:contain;" />`;
                     
                     if (!isProcessing) {
                         el.onclick = function() {
@@ -3965,9 +3998,8 @@
                             bi.className = 'coop-tidy-item';
                             bi.style.width = 'clamp(35px, 7vmin, 50px)';
                             bi.style.height = 'clamp(35px, 7vmin, 50px)';
-                            bi.style.fontSize = 'clamp(18px, 4vw, 26px)';
                             bi.style.cursor = 'default';
-                            bi.textContent = item.emoji;
+                            bi.innerHTML = `<img src="${item.image}" style="width:80%; height:80%; object-fit:contain;" />`;
                             basket.appendChild(bi);
                         }
                     } else {
@@ -3978,10 +4010,9 @@
                             bi.className = 'coop-tidy-item';
                             bi.style.width = 'clamp(35px, 7vmin, 50px)';
                             bi.style.height = 'clamp(35px, 7vmin, 50px)';
-                            bi.style.fontSize = 'clamp(18px, 4vw, 26px)';
                             bi.style.cursor = 'default';
                             bi.style.borderColor = '#FF5722';
-                            bi.textContent = item.emoji;
+                            bi.innerHTML = `<img src="${item.image}" style="width:80%; height:80%; object-fit:contain;" />`;
                             basket.appendChild(bi);
                         }
                     }
@@ -3992,7 +4023,15 @@
                     updateScoreboard();
 
                     // Speak item name
-                    speakLetter(item.nameHe, 'he');
+                    let fileMap = {
+                        'images/tidy_car.png': 'tidy_car.mp3',
+                        'images/tidy_bear.png': 'tidy_bear.mp3',
+                        'images/tidy_ball.png': 'tidy_ball.mp3',
+                        'images/tidy_apple.png': 'tidy_apple.mp3',
+                        'images/tidy_dog.png': 'tidy_dog.mp3',
+                        'images/tidy_cat.png': 'tidy_cat.mp3'
+                    };
+                    playCoopAudio('coop/' + fileMap[item.image], item.nameHe);
 
                     setTimeout(() => {
                         currentStep++;
@@ -4004,7 +4043,7 @@
                             get('arena-status').textContent = victoryMsg;
                             try { if(typeof confetti === 'function') confetti({particleCount: 150, origin:{y:0.6}, zIndex:1000}); } catch(e){}
                             showKisses();
-                            speakLetter(victoryMsg, 'he');
+                            playCoopAudio('coop/tidy_victory.mp3', victoryMsg);
 
                             setTimeout(() => {
                                 isProcessing = false;
@@ -4031,7 +4070,8 @@
                     let errStr = currentTurn === 'roy' 
                         ? 'זה מתאים לסל של אבא יאיר! רועי מסדר צעצועים וחפצים!' 
                         : 'זה מתאים לסל של רועי! אבא יאיר מסדר פירות וחיות!';
-                    speakLetter(errStr, 'he');
+                    let filename = currentTurn === 'roy' ? 'coop/tidy_err_roy.mp3' : 'coop/tidy_err_aba.mp3';
+                    playCoopAudio(filename, errStr);
                 }
             }
 
