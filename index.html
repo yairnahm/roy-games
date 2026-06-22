@@ -1314,20 +1314,148 @@
         // 10. מה שייך לכאן?
         // ==========================================
         const ctxGames = [ 
-            {bg:'☁️☀️✈️', bgC:'linear-gradient(to bottom, #87CEEB, #E0F7FA)', t:{top:'30%',left:'50%'},c:{q:'🦅',i:'🦅'},w:[{q:'🐟',i:'🐟'},{q:'🐘',i:'🐘'},{q:'🚗',i:'🚗'}]}, 
-            {bg:'🌊🐠🐡', bgC:'linear-gradient(to bottom, #0288D1, #B3E5FC)', t:{top:'60%',left:'40%'},c:{q:'🦈',i:'🦈'},w:[{q:'🐘',i:'🐘'},{q:'🚗',i:'🚗'},{q:'🦅',i:'🦅'}]}, 
-            {bg:'🌳🌿', bgC:'linear-gradient(to bottom, #81C784, #DCEDC8)', t:{top:'40%',left:'60%'},c:{q:'🍎',i:'🍎'},w:[{q:'🐟',i:'🐟'},{q:'🐘',i:'🐘'},{q:'🚗',i:'🚗'}]}, 
-            {bg:'🛣️🚦', bgC:'linear-gradient(to bottom, #B0BEC5, #ECEFF1)', t:{top:'50%',left:'50%'},c:{q:'🚗',i:'🚗'},w:[{q:'🖥️',i:'🖥️'},{q:'⛵',i:'⛵'},{q:'🌳',i:'🌳'}]},
-            {bg:'🌌🌙', bgC:'linear-gradient(to bottom, #311B92, #1A237E)', t:{top:'30%',left:'70%'},c:{q:'🚀',i:'🚀'},w:[{q:'🐟',i:'🐟'},{q:'🚲',i:'🚲'},{q:'🌳',i:'🌳'}]},
-            {bg:'🛏️💤', bgC:'linear-gradient(to bottom, #D1C4E9, #F3E5F5)', t:{top:'50%',left:'50%'},c:{q:'🧸',i:'🧸'},w:[{q:'🚗',i:'🚗'},{q:'🌳',i:'🌳'},{q:'🦅',i:'🦅'}]},
-            {bg:'🍽️🥛', bgC:'linear-gradient(to bottom, #FFCC80, #F1F8E9)', t:{top:'50%',left:'50%'},c:{q:'🍕',i:'🍕'},w:[{q:'👞',i:'👞'},{q:'🔨',i:'🔨'},{q:'🚗',i:'🚗'}]},
-            {bg:'🚜🌾', bgC:'linear-gradient(to bottom, #FFD54F, #FFF8E1)', t:{top:'60%',left:'30%'},c:{q:'🐄',i:'🐄'},w:[{q:'✈️',i:'✈️'},{q:'🦈',i:'🦈'},{q:'🪑',i:'🪑'}]},
-            {bg:'🛁🚽', bgC:'linear-gradient(to bottom, #B2EBF2, #E1F5FE)', t:{top:'60%',left:'40%'},c:{q:'🪥',i:'🪥'},w:[{q:'🚗',i:'🚗'},{q:'🍎',i:'🍎'},{q:'🐶',i:'🐶'}]},
-            {bg:'🗄️✏️', bgC:'linear-gradient(to bottom, #FFAB91, #EFEBE9)', t:{top:'50%',left:'50%'},c:{q:'📏',i:'📏'},w:[{q:'🚗',i:'🚗'},{q:'🐘',i:'🐘'},{q:'🍕',i:'🍕'}]}
+            {
+                bgImg: 'images/context/sky_bg.png',
+                t: { top: '30%', left: '50%' },
+                c: { q: 'bird', img: 'images/firstletter/bird.jpg', desc: 'ציפור' },
+                w: [
+                    { q: 'fish', img: 'images/firstletter/fish.jpg', desc: 'דג' },
+                    { q: 'elephant', img: 'images/firstletter/elephant.jpg', desc: 'פיל' },
+                    { q: 'clock', img: 'images/firstletter/clock.jpg', desc: 'שעון' }
+                ]
+            },
+            {
+                bgImg: 'images/context/sea_bg.png',
+                t: { top: '60%', left: '40%' },
+                c: { q: 'fish', img: 'images/firstletter/fish.jpg', desc: 'דג' },
+                w: [
+                    { q: 'elephant', img: 'images/firstletter/elephant.jpg', desc: 'פיל' },
+                    { q: 'car', img: 'images/firstletter/car.jpg', desc: 'מכונית' },
+                    { q: 'bird', img: 'images/firstletter/bird.jpg', desc: 'ציפור' }
+                ]
+            },
+            {
+                bgImg: 'images/context/forest_bg.png',
+                t: { top: '40%', left: '60%' },
+                c: { q: 'apple', img: 'images/firstletter/apple.jpg', desc: 'תפוח' },
+                w: [
+                    { q: 'train', img: 'images/firstletter/train.jpg', desc: 'רכבת' },
+                    { q: 'computer', img: 'images/firstletter/computer.jpg', desc: 'מחשב' },
+                    { q: 'clock', img: 'images/firstletter/clock.jpg', desc: 'שעון' }
+                ]
+            },
+            {
+                bgImg: 'images/context/road_bg.png',
+                t: { top: '50%', left: '50%' },
+                c: { q: 'car', img: 'images/firstletter/car.jpg', desc: 'מכונית' },
+                w: [
+                    { q: 'flower', img: 'images/firstletter/flower.jpg', desc: 'פרח' },
+                    { q: 'dog', img: 'images/firstletter/dog.jpg', desc: 'כלב' },
+                    { q: 'cat', img: 'images/firstletter/cat.jpg', desc: 'חתול' }
+                ]
+            },
+            {
+                bgImg: 'images/context/space_bg.png',
+                t: { top: '30%', left: '70%' },
+                c: { q: 'star', img: 'images/firstletter/star.jpg', desc: 'כוכב' },
+                w: [
+                    { q: 'fish', img: 'images/firstletter/fish.jpg', desc: 'דג' },
+                    { q: 'house', img: 'images/firstletter/house.jpg', desc: 'בית' },
+                    { q: 'carrot', img: 'images/firstletter/carrot.jpg', desc: 'גזר' }
+                ]
+            },
+            {
+                bgImg: 'images/context/bedroom_bg.png',
+                t: { top: '50%', left: '50%' },
+                c: { q: 'cat', img: 'images/firstletter/cat.jpg', desc: 'חתול' },
+                w: [
+                    { q: 'car', img: 'images/firstletter/car.jpg', desc: 'מכונית' },
+                    { q: 'train', img: 'images/firstletter/train.jpg', desc: 'רכבת' },
+                    { q: 'elephant', img: 'images/firstletter/elephant.jpg', desc: 'פיל' }
+                ]
+            },
+            {
+                bgImg: 'images/context/kitchen_bg.png',
+                t: { top: '50%', left: '50%' },
+                c: { q: 'cup', img: 'images/firstletter/cup.jpg', desc: 'כוס' },
+                w: [
+                    { q: 'door', img: 'images/firstletter/door.jpg', desc: 'דלת' },
+                    { q: 'car', img: 'images/firstletter/car.jpg', desc: 'מכונית' },
+                    { q: 'elephant', img: 'images/firstletter/elephant.jpg', desc: 'פיל' }
+                ]
+            },
+            {
+                bgImg: 'images/context/farm_bg.png',
+                t: { top: '60%', left: '30%' },
+                c: { q: 'horse', img: 'images/firstletter/horse.jpg', desc: 'סוס' },
+                w: [
+                    { q: 'computer', img: 'images/firstletter/computer.jpg', desc: 'מחשב' },
+                    { q: 'train', img: 'images/firstletter/train.jpg', desc: 'רכבת' },
+                    { q: 'phone', img: 'images/firstletter/phone.jpg', desc: 'טלפון' }
+                ]
+            },
+            {
+                bgImg: 'images/context/bathroom_bg.png',
+                t: { top: '60%', left: '40%' },
+                c: { q: 'toothbrush', img: 'images/context/toothbrush.png', desc: 'מברשת שיניים' },
+                w: [
+                    { q: 'car', img: 'images/firstletter/car.jpg', desc: 'מכונית' },
+                    { q: 'apple', img: 'images/firstletter/apple.jpg', desc: 'תפוח' },
+                    { q: 'dog', img: 'images/firstletter/dog.jpg', desc: 'כלב' }
+                ]
+            },
+            {
+                bgImg: 'images/context/classroom_bg.png',
+                t: { top: '50%', left: '50%' },
+                c: { q: 'ruler', img: 'images/context/ruler.png', desc: 'סרגל' },
+                w: [
+                    { q: 'car', img: 'images/firstletter/car.jpg', desc: 'מכונית' },
+                    { q: 'elephant', img: 'images/firstletter/elephant.jpg', desc: 'פיל' },
+                    { q: 'apple', img: 'images/firstletter/apple.jpg', desc: 'תפוח' }
+                ]
+            }
         ];
         let ctxOrder = [];
-        function initContextGame() { get('active-game-title').textContent='מה שייך לתמונה? 🧩'; get('game-workspace').innerHTML=`<div style="position:relative; width:100%; max-width:700px; height:250px; border-radius:20px; border:5px solid #fff; box-shadow:0 10px 20px rgba(0,0,0,0.2); overflow:hidden; display:flex; justify-content:center; align-items:center; font-size:clamp(80px, 20vw, 150px);" id="context-scene"><div id="context-drop-zone" style="position:absolute; width:15%; aspect-ratio:1/1; min-width:80px; min-height:80px; border:5px dashed white; border-radius:50%; background:rgba(255,255,255,0.4); transform:translate(-50%,-50%); display:flex; justify-content:center; align-items:center; box-shadow:0 0 15px rgba(0,0,0,0.3); transition:0.3s; z-index:5; font-size:clamp(50px, 12vw, 80px);"></div></div><div class="opts-row" id="context-options"></div>`; ctxOrder = shuffle(createRange(ctxGames.length)).slice(0,4); loadContextRound(); }
-        function loadContextRound() { let c = ctxGames[ctxOrder[currentStep]]; let s = get('context-scene'); s.style.background = c.bgC; s.innerHTML = c.bg + `<div id="context-drop-zone" style="top:${c.t.top}; left:${c.t.left};"></div>`; let dz = get('context-drop-zone'); let opts = shuffle([c.c].concat(c.w)); let oArea = get('context-options'); oArea.innerHTML=''; opts.forEach((o,i)=>{ let w=D.createElement('div'); w.className='option-wrapper'; let b=D.createElement('button'); b.className='option-btn'; b.style.fontSize='clamp(50px,12vw,90px)'; b.textContent=o.i; b.onclick=(e)=>{if(isProcessing)return; if(o.q===c.c.q){ dz.style.border='none'; dz.textContent=o.i; dz.style.animation='popIn 0.5s forwards'; handleAnswer(true, null, loadContextRound, null); } else handleAnswer(false, b, null, null); }; let n=D.createElement('div'); n.className='option-number'; n.textContent=i+1; w.appendChild(b); w.appendChild(n); oArea.appendChild(w); }); }
+        function initContextGame() { get('active-game-title').textContent='מה שייך לתמונה? 🧩'; get('game-workspace').innerHTML=`<div style="position:relative; width:100%; max-width:700px; height:250px; border-radius:20px; border:5px solid #fff; box-shadow:0 10px 20px rgba(0,0,0,0.2); overflow:hidden; display:flex; justify-content:center; align-items:center;" id="context-scene"></div><div class="opts-row" id="context-options"></div>`; ctxOrder = shuffle(createRange(ctxGames.length)).slice(0,4); loadContextRound(); }
+        function loadContextRound() {
+            let c = ctxGames[ctxOrder[currentStep]];
+            let s = get('context-scene');
+            s.style.backgroundImage = `url('${c.bgImg}')`;
+            s.style.backgroundSize = 'cover';
+            s.style.backgroundPosition = 'center';
+            s.innerHTML = `<div id="context-drop-zone" style="top:${c.t.top}; left:${c.t.left};"></div>`;
+            let dz = get('context-drop-zone');
+            let opts = shuffle([c.c].concat(c.w));
+            let oArea = get('context-options');
+            oArea.innerHTML='';
+            opts.forEach((o,i)=>{
+                let w=D.createElement('div');
+                w.className='option-wrapper';
+                let b=D.createElement('button');
+                b.className='option-btn';
+                b.style.padding='0';
+                b.innerHTML = `<img src="${o.img}" alt="${o.desc}" style="width:100%; height:100%; object-fit:cover; border-radius:12px;" />`;
+                b.onclick=(e)=>{
+                    if(isProcessing)return;
+                    speakLetter(o.desc, 'he');
+                    if(o.q===c.c.q){
+                        dz.style.border='none';
+                        dz.style.background='white';
+                        dz.innerHTML = `<img src="${o.img}" alt="${o.desc}" style="width:100%; height:100%; object-fit:cover; border-radius:50%;" />`;
+                        dz.style.animation='popIn 0.5s forwards';
+                        handleAnswer(true, null, loadContextRound, null);
+                    } else {
+                        handleAnswer(false, b, null, null);
+                    }
+                };
+                let n=D.createElement('div');
+                n.className='option-number';
+                n.textContent=i+1;
+                w.appendChild(b);
+                w.appendChild(n);
+                oArea.appendChild(w);
+            });
+        }
 
         // ==========================================
         // 11. איזה חלק חסר? 
