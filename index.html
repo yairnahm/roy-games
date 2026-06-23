@@ -450,8 +450,8 @@
         }
         .coop-puzzle-grid {
             display: grid;
-            grid-template-columns: repeat(2, clamp(80px, 16vh, 120px));
-            grid-template-rows: repeat(2, clamp(80px, 16vh, 120px));
+            grid-template-columns: repeat(2, clamp(120px, 24vh, 180px));
+            grid-template-rows: repeat(2, clamp(120px, 24vh, 180px));
             gap: 3px;
             background: rgba(255,255,255,0.4);
             border: 4px solid #fff;
@@ -475,13 +475,13 @@
             position: relative;
         }
         .coop-puzzle-piece {
-            width: clamp(75px, 15vh, 110px);
-            height: clamp(75px, 15vh, 110px);
+            width: clamp(112px, 22.5vh, 165px);
+            height: clamp(112px, 22.5vh, 165px);
             border-radius: 12px;
             border: 3px solid #2196F3;
             box-shadow: 0 5px 12px rgba(0,0,0,0.16);
             cursor: pointer;
-            background-size: calc(2 * clamp(80px, 16vh, 120px)) calc(2 * clamp(80px, 16vh, 120px));
+            background-size: calc(2 * clamp(120px, 24vh, 180px)) calc(2 * clamp(120px, 24vh, 180px));
             background-repeat: no-repeat;
             transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
             touch-action: manipulation;
@@ -595,15 +595,16 @@
                 align-items: stretch;
             }
             .coop-puzzle-grid {
-                width: 168px;
-                height: 168px;
-                grid-template-columns: repeat(2, 80px);
-                grid-template-rows: repeat(2, 80px);
+                width: auto;
+                height: auto;
+                max-width: 250px;
+                grid-template-columns: repeat(2, 110px);
+                grid-template-rows: repeat(2, 110px);
             }
             .coop-puzzle-piece {
-                width: 72px;
-                height: 72px;
-                background-size: 160px 160px;
+                width: 102px;
+                height: 102px;
+                background-size: 220px 220px;
             }
             .coop-tidy-basket {
                 min-height: 130px;
@@ -4476,19 +4477,140 @@
             let royScore = 0;
             let abaScore = 0;
             let currentTurn = 'roy'; // Roy starts
+            let itemsPool = [];
+            let royBasketTitle = '';
+            let abaBasketTitle = '';
+            let selectedCategories = [];
 
-            // Items list: 3 toys (Roy), 3 animal/fruit (Aba)
-            let itemsPool = [
-                { image: 'images/tidy_car.png', nameHe: 'מכונית', category: 'roy' },
-                { image: 'images/tidy_bear.png', nameHe: 'דובי', category: 'roy' },
-                { image: 'images/tidy_ball.png', nameHe: 'כדור', category: 'roy' },
-                { image: 'images/tidy_apple.png', nameHe: 'תפוח', category: 'aba' },
-                { image: 'images/tidy_dog.png', nameHe: 'כלב', category: 'aba' },
-                { image: 'images/tidy_cat.png', nameHe: 'חתול', category: 'aba' }
-            ];
-            
-            // Shuffle pool
-            itemsPool = shuffle(itemsPool.slice());
+            function showCategorySelection() {
+                var ws = get('game-workspace');
+                ws.innerHTML = `
+                    <div style="display:flex; flex-direction:column; align-items:center; gap:20px; width:100%; max-width:620px; margin:40px auto; padding:25px; background:rgba(255,255,255,0.9); border-radius:24px; box-shadow:0 8px 32px rgba(0,0,0,0.15); border:3px solid #fff; direction:rtl;">
+                        <h2 style="font-size:clamp(20px, 4vw, 28px); font-weight:900; color:#333; text-align:center; margin:0; line-height:1.4;">אילו דברים רועי יסדר היום? 🧼<br><span style="font-size:0.75em; color:#666; font-weight:normal;">(בחר בדיוק 2 סוגים)</span></h2>
+                        <div style="display:flex; flex-direction:row; gap:16px; justify-content:center; flex-wrap:wrap; width:100%; margin-top:10px;">
+                            
+                            <div class="tidy-opt-card" data-val="toys" style="cursor:pointer; flex:1; min-width:140px; max-width:170px; padding:18px; border:4px solid #b0bec5; border-radius:20px; background:#fff; text-align:center; box-shadow:0 4px 10px rgba(0,0,0,0.08); transition:all 0.25s;">
+                                <div style="font-size:clamp(40px, 8vw, 55px); margin-bottom:8px;">🧸</div>
+                                <div style="font-size:clamp(16px, 3vw, 19px); font-weight:bold; color:#1976d2;">צעצועים וחפצים</div>
+                                <div style="font-size:12px; color:#78909c; margin-top:4px;">מכונית, דובי, כדור</div>
+                            </div>
+
+                            <div class="tidy-opt-card" data-val="animals" style="cursor:pointer; flex:1; min-width:140px; max-width:170px; padding:18px; border:4px solid #b0bec5; border-radius:20px; background:#fff; text-align:center; box-shadow:0 4px 10px rgba(0,0,0,0.08); transition:all 0.25s;">
+                                <div style="font-size:clamp(40px, 8vw, 55px); margin-bottom:8px;">🐶</div>
+                                <div style="font-size:clamp(16px, 3vw, 19px); font-weight:bold; color:#388e3c;">חיות מתוקות</div>
+                                <div style="font-size:12px; color:#78909c; margin-top:4px;">כלב, חתול</div>
+                            </div>
+
+                            <div class="tidy-opt-card" data-val="fruits" style="cursor:pointer; flex:1; min-width:140px; max-width:170px; padding:18px; border:4px solid #b0bec5; border-radius:20px; background:#fff; text-align:center; box-shadow:0 4px 10px rgba(0,0,0,0.08); transition:all 0.25s;">
+                                <div style="font-size:clamp(40px, 8vw, 55px); margin-bottom:8px;">🍎</div>
+                                <div style="font-size:clamp(16px, 3vw, 19px); font-weight:bold; color:#f44336;">פירות טעימים</div>
+                                <div style="font-size:12px; color:#78909c; margin-top:4px;">תפוח</div>
+                            </div>
+
+                        </div>
+                        <button id="start-tidy-btn" class="sys-btn" style="background:#b0bec5; color:#fff; padding:12px 36px; font-size:clamp(16px, 3.5vw, 20px); border-radius:18px; border:none; cursor:not-allowed; font-weight:bold; transition:all 0.25s; margin-top:15px; box-shadow:0 4px 12px rgba(0,0,0,0.1);" disabled>בחר 2 סוגים כדי להתחיל</button>
+                    </div>
+                `;
+
+                D.querySelectorAll('.tidy-opt-card').forEach(el => {
+                    var val = el.dataset.val;
+                    
+                    el.onclick = function() {
+                        if (selectedCategories.includes(val)) {
+                            selectedCategories = selectedCategories.filter(x => x !== val);
+                        } else {
+                            if (selectedCategories.length === 2) {
+                                selectedCategories.shift();
+                            }
+                            selectedCategories.push(val);
+                        }
+                        updateSelectionUI();
+                    };
+                    
+                    el.onmouseover = () => { el.style.transform = 'scale(1.05)'; };
+                    el.onmouseout = () => { el.style.transform = selectedCategories.includes(val) ? 'scale(1.05)' : 'scale(1)'; };
+                });
+
+                function updateSelectionUI() {
+                    D.querySelectorAll('.tidy-opt-card').forEach(el => {
+                        var val = el.dataset.val;
+                        var isSelected = selectedCategories.includes(val);
+                        if (isSelected) {
+                            el.style.borderColor = val === 'toys' ? '#2196f3' : (val === 'animals' ? '#4caf50' : '#f44336');
+                            el.style.background = val === 'toys' ? '#e3f2fd' : (val === 'animals' ? '#e8f5e9' : '#ffebee');
+                            el.style.borderWidth = '6px';
+                            el.style.transform = 'scale(1.05)';
+                            el.style.boxShadow = '0 6px 16px rgba(0,0,0,0.12)';
+                        } else {
+                            el.style.borderColor = '#b0bec5';
+                            el.style.background = '#fff';
+                            el.style.borderWidth = '4px';
+                            el.style.transform = 'scale(1)';
+                            el.style.boxShadow = '0 4px 10px rgba(0,0,0,0.08)';
+                        }
+                    });
+
+                    var btn = get('start-tidy-btn');
+                    if (btn) {
+                        if (selectedCategories.length === 2) {
+                            btn.disabled = false;
+                            btn.style.background = '#4CAF50';
+                            btn.style.cursor = 'pointer';
+                            btn.textContent = 'מתחילים לסדר! 🧼🚀';
+                        } else {
+                            btn.disabled = true;
+                            btn.style.background = '#b0bec5';
+                            btn.style.cursor = 'not-allowed';
+                            btn.textContent = 'בחר 2 סוגים כדי להתחיל';
+                        }
+                    }
+                }
+
+                get('start-tidy-btn').onclick = function() {
+                    if (selectedCategories.length !== 2) return;
+                    startTidyGame();
+                };
+            }
+
+            function startTidyGame() {
+                let allItems = [
+                    { image: 'images/tidy_car.png', nameHe: 'מכונית', type: 'toys' },
+                    { image: 'images/tidy_bear.png', nameHe: 'דובי', type: 'toys' },
+                    { image: 'images/tidy_ball.png', nameHe: 'כדור', type: 'toys' },
+                    { image: 'images/tidy_apple.png', nameHe: 'תפוח', type: 'fruits' },
+                    { image: 'images/tidy_dog.png', nameHe: 'כלב', type: 'animals' },
+                    { image: 'images/tidy_cat.png', nameHe: 'חתול', type: 'animals' }
+                ];
+
+                itemsPool = [];
+                allItems.forEach(item => {
+                    if (selectedCategories.includes(item.type)) {
+                        item.category = 'roy';
+                    } else {
+                        item.category = 'aba';
+                    }
+                    itemsPool.push(item);
+                });
+
+                itemsPool = shuffle(itemsPool.slice());
+
+                let catNames = {
+                    'toys': 'צעצועים וחפצים 🧸',
+                    'animals': 'חיות מתוקות 🐶',
+                    'fruits': 'פירות טעימים 🍎'
+                };
+
+                let royNames = selectedCategories.map(c => catNames[c].replace(/ 🧸| 🐶| 🍎/, ''));
+                royBasketTitle = royNames.join(' ו-') + ' ' + selectedCategories.map(c => catNames[c].split(' ').pop()).join('');
+                
+                let abaCat = ['toys', 'animals', 'fruits'].find(c => !selectedCategories.includes(c));
+                abaBasketTitle = catNames[abaCat];
+
+                drawLayout();
+
+                let speakText = `בואו נעשה סדר בחדר! רועי מסדר ${royNames.join(' ו-')}, ואבא יאיר מסדר ${abaBasketTitle.replace(/ 🧸| 🐶| 🍎/, '')}.`;
+                playCoopAudio('coop/tidy_instructions_dynamic.mp3', speakText);
+            }
 
             function updateScoreboard() {
                 var sb = get('tidy-score');
@@ -4516,7 +4638,7 @@
                         <div class="numwar-side" id="aba-basket-side" style="padding: 2vmin; border: 4px solid #FF5722; background: rgba(255, 87, 34, 0.05);">
                             <img class="numwar-avatar" src="images/aba_sunglasses.jpg" alt="אבא יאיר">
                             <div class="numwar-name">הסל של אבא יאיר</div>
-                            <div style="font-size:clamp(12px, 2.5vw, 15px); color:#FF5722; font-weight:bold; margin-bottom:1vmin;">🍎 חיות ופירות 🐶</div>
+                            <div style="font-size:clamp(12px, 2.5vw, 15px); color:#FF5722; font-weight:bold; margin-bottom:1vmin;">${abaBasketTitle}</div>
                             <div class="coop-tidy-basket-items" id="aba-basket-items"></div>
                         </div>
 
@@ -4527,7 +4649,7 @@
                                     <div class="numwar-pendulum-weight">⚖️</div>
                                 </div>
                             </div>
-                            <div class="numwar-arena-title" id="arena-status">רועי, בחר צעצוע או חפץ לסדר בחדר! 🧼</div>
+                            <div class="numwar-arena-title" id="arena-status">רועי, בחר פריט ששייך לקבוצה שלך! 🧼</div>
                             
                             <!-- Middle items container -->
                             <div id="tidy-items-container" style="display:flex; flex-wrap:wrap; gap:clamp(12px, 3.5vmin, 24px); justify-content:center; align-items:center; width:100%; margin-top:2vmin;"></div>
@@ -4537,7 +4659,7 @@
                         <div class="numwar-side" id="roy-basket-side" style="padding: 2vmin; border: 4px solid #2196F3; background: rgba(33, 150, 243, 0.05);">
                             <img class="numwar-avatar" src="images/roy_sunglasses.jpg" alt="רועי">
                             <div class="numwar-name">הסל של רועי</div>
-                            <div style="font-size:clamp(12px, 2.5vw, 15px); color:#2196F3; font-weight:bold; margin-bottom:1vmin;">🚗 צעצועים וחפצים 🧸</div>
+                            <div style="font-size:clamp(12px, 2.5vw, 15px); color:#2196F3; font-weight:bold; margin-bottom:1vmin;">${royBasketTitle}</div>
                             <div class="coop-tidy-basket-items" id="roy-basket-items"></div>
                         </div>
                     </div>
@@ -4574,11 +4696,9 @@
                 if (isProcessing) return;
 
                 if (item.category === currentTurn) {
-                    // Correct classification!
                     isProcessing = true;
                     playSuccessSound();
 
-                    // Find DOM element representing clicked item
                     var container = get('tidy-items-container');
                     var itemElements = container.querySelectorAll('.coop-tidy-item');
                     var clickedEl = itemElements[idx];
@@ -4587,7 +4707,6 @@
                         var targetBasket = currentTurn === 'roy' ? get('roy-basket-side') : get('aba-basket-side');
                         var basketRect = targetBasket.getBoundingClientRect();
                         
-                        // Create floating clone
                         var clone = D.createElement('div');
                         clone.className = 'coop-tidy-item';
                         clone.style.position = 'fixed';
@@ -4622,7 +4741,6 @@
                         setTimeout(() => {
                             if (clone.parentNode) clone.parentNode.removeChild(clone);
                             
-                            // Move to basket
                             if (currentTurn === 'roy') {
                                 royScore++;
                                 var basket = get('roy-basket-items');
@@ -4650,11 +4768,9 @@
                                 }
                             }
                             
-                            // Remove from pool
                             itemsPool.splice(idx, 1);
                             updateScoreboard();
                             
-                            // Speak item name
                             let fileMap = {
                                 'images/tidy_car.png': 'tidy_car.mp3',
                                 'images/tidy_bear.png': 'tidy_bear.mp3',
@@ -4670,7 +4786,6 @@
                                 updateProgressUI();
                                 
                                 if (itemsPool.length === 0) {
-                                    // Completed!
                                     let victoryMsg = 'כל הכבוד! סידרנו את כל החדר ביחד! 🧼🎉';
                                     get('arena-status').textContent = victoryMsg;
                                     try { if(typeof confetti === 'function') confetti({particleCount: 150, origin:{y:0.6}, zIndex:1000}); } catch(e){}
@@ -4679,17 +4794,28 @@
                                     
                                     setTimeout(() => {
                                         isProcessing = false;
-                                        currentStep = 6; // match completion target
+                                        currentStep = 6;
                                         handleAnswer(true, null, null, null);
                                     }, 2500);
                                 } else {
-                                    // Switch turn
-                                    currentTurn = currentTurn === 'roy' ? 'aba' : 'roy';
+                                    let hasRoyItems = itemsPool.some(it => it.category === 'roy');
+                                    let hasAbaItems = itemsPool.some(it => it.category === 'aba');
+                                    
+                                    if (currentTurn === 'roy') {
+                                        if (hasAbaItems) {
+                                            currentTurn = 'aba';
+                                        }
+                                    } else {
+                                        if (hasRoyItems) {
+                                            currentTurn = 'roy';
+                                        }
+                                    }
+                                    
                                     var pend = get('numwar-pendulum');
                                     if (pend) pend.className = 'numwar-pendulum-arm to-' + currentTurn;
                                     
                                     let nameStr = currentTurn === 'roy' ? 'רועי' : 'אבא יאיר';
-                                    let categoryStr = currentTurn === 'roy' ? 'צעצועים וחפצים 🧸' : 'חיות ופירות 🍎';
+                                    let categoryStr = currentTurn === 'roy' ? royBasketTitle : abaBasketTitle;
                                     get('arena-status').textContent = `תור ${nameStr} לבחור ${categoryStr}! ⏳`;
                                     
                                     isProcessing = false;
@@ -4699,18 +4825,16 @@
                         }, 1050);
                     }
                 } else {
-                    // Wrong basket
                     playErrorSound();
                     let errStr = currentTurn === 'roy' 
-                        ? 'זה מתאים לסל של אבא יאיר! רועי מסדר צעצועים וחפצים!' 
-                        : 'זה מתאים לסל של רועי! אבא יאיר מסדר פירות וחיות!';
-                    let filename = currentTurn === 'roy' ? 'coop/tidy_err_roy.mp3' : 'coop/tidy_err_aba.mp3';
-                    playCoopAudio(filename, errStr);
+                        ? `זה מתאים לסל של אבא יאיר! רועי מסדר ${royBasketTitle.replace(/ 🧸| 🐶| 🍎/, '')}!` 
+                        : `זה מתאים לסל של רועי! אבא יאיר מסדר ${abaBasketTitle.replace(/ 🧸| 🐶| 🍎/, '')}!`;
+                    playCoopAudio('coop/tidy_err_dynamic.mp3', errStr);
                 }
             }
-            
-            drawLayout();
-            playCoopAudio('coop/tidy_instructions.mp3', 'בואו נעשה סדר בחדר! רועי מסדר צעצועים וחפצים, ואבא יאיר מסדר פירות וחיות.');
+
+            showCategorySelection();
+        }
         }
 
         function handleMgChoice(side, puz) {
