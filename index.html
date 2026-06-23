@@ -12,23 +12,32 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;700;900&display=swap');
 
-        :root { --bg-primary: #e0c3fc; --text-main: #333; }
-
         * { box-sizing: border-box; }
 
         body { 
-            font-family: 'Rubik', sans-serif; min-height: 100vh; min-height: 100dvh; text-align: center; margin: 0; padding: 2vmin; 
+            font-family: 'Rubik', sans-serif; 
+            min-height: 100dvh; 
+            min-height: 100vh; 
+            text-align: center; margin: 0; padding: 2vmin; 
             user-select: none; overflow-x: hidden; display: flex; flex-direction: column; touch-action: manipulation; 
-            transition: background-color 0.8s ease; background-color: var(--bg-primary);
+            transition: background-color 0.8s ease; background-color: #e0c3fc;
         }
 
-        .skeleton { animation: pulse 1.5s infinite; background: #e0e0e0; border-radius: 8px; }
-        @keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
-
-        [data-tooltip] { position: relative; }
-        [data-tooltip]:hover::after { content: attr(data-tooltip); position: absolute; bottom: 100%; right: 50%; transform: translateX(50%); background: #333; color: #fff; padding: 5px 10px; border-radius: 4px; font-size: 12px; white-space: nowrap; z-index: 100; }
-
-        .level-badge { font-size: 0.8rem; background: rgba(255,255,255,0.5); padding: 2px 8px; border-radius: 10px; color: #555; }
+        #start-screen,
+        #gender-screen,
+        #category-screen,
+        #hub-screen,
+        #faces-lang-screen,
+        #faces-mode-screen,
+        #faces-summary-screen,
+        #firstletter-lang-screen,
+        #missing-lang-screen,
+        #unified-diff-screen,
+        #active-game-container {
+            flex: 1 0 auto;
+            display: flex;
+            flex-direction: column;
+        }
 
         body.bg-hub { background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%); }
         body.bg-memory { background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); }
@@ -56,6 +65,9 @@
         body.bg-towertalk { background: linear-gradient(135deg, #fff5cc 0%, #ffdf80 100%); }
         body.bg-cooppuzzle { background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); }
         body.bg-tidyup { background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); }
+        body.bg-patterns { background: linear-gradient(135deg, #fff5cc 0%, #ffdf80 100%); }
+        body.bg-origins { background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); }
+        body.bg-families { background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); }
         .fl-letter-btn { width: clamp(70px,18vmin,110px); height: clamp(70px,18vmin,110px); background: #fff; border: 5px solid #2196F3; border-radius: 20px; cursor: pointer; box-shadow: 0 6px 12px rgba(0,0,0,0.15); transition: 0.2s; font-size: clamp(28px,7vw,52px); font-weight: 900; color: #2196F3; display: flex; align-items: center; justify-content: center; touch-action: manipulation; outline: none; font-family: 'Rubik', sans-serif; }
         .fl-letter-btn:hover { transform: scale(1.06); box-shadow: 0 8px 18px rgba(0,0,0,0.2); }
 
@@ -555,7 +567,7 @@
             height: clamp(45px, 10vmin, 70px);
             background: #fff;
             border: 3px solid #9C27B0;
-            border-radius: 8px; /* square corners */
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -637,19 +649,7 @@
         #loader-text { font-size: clamp(14px, 3vw, 18px); margin-top: 10px; color: #fff; font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); }
 
         .top-bar { display: flex; justify-content: space-between; align-items: center; background: #ffffffcc; padding: 1.5vmin 3vmin; border-radius: 20px; margin-bottom: 2vmin; max-width: 800px; width: 100%; margin-left: auto; margin-right: auto; box-shadow: 0 4px 15px rgba(0,0,0,0.05); flex-shrink: 0; }
-        .exit-btn {
-            background: #ff4d4d;
-            color: white;
-            border: none;
-            padding: 1vmin 2.5vmin;
-            border-radius: 15px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: clamp(14px, 3vmin, 20px);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: 0.2s;
-            outline: none;
-        }
+        .exit-btn { background: #ff4d4d; color: white; border: none; padding: 1vmin 2.5vmin; border-radius: 15px; font-weight: bold; cursor: pointer; font-size: clamp(14px, 3vmin, 20px); box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: 0.2s; outline:none; }
         .progress-container { display: flex; flex-direction: row; gap: 2vmin; justify-content: center; align-items: center; }
         .progress-dot { width: clamp(15px, 3.5vmin, 25px); height: clamp(15px, 3.5vmin, 25px); background: #eee; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.2); transition: 0.4s; }
         .progress-dot.fill { background: #4CAF50; transform: scale(1.3); border-color: #C8E6C9; }
@@ -931,12 +931,7 @@
             }
         }
     /* ---- Added Enhancements ---- */
-    /* 1️⃣ Full‑height fallback */
-    @media (max-width: 600px) {
-        body { min-height: 100vh; }
-    }
-
-    /* 2️⃣ Skeleton shimmer for .image-box */
+    /* 1️⃣ Skeleton shimmer for .image-box */
     @keyframes shimmer {
         0% { background-position: -400px 0; }
         100% { background-position: 400px 0; }
@@ -954,19 +949,20 @@
         .image-box { animation: none; }
     }
 
-    /* 3️⃣ Tooltip for top‑bar icons */
+    /* 2️⃣ Tooltip for icons */
     .icon-tooltip {
         position: relative; display: inline-flex; align-items: center; cursor: pointer;
     }
     .icon-tooltip::after {
         content: attr(data-tip);
         position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%);
-        background: rgba(0,0,0,0.75); color: #fff; font-size: 12px; padding: 4px 8px; border-radius: 6px;
+        background: rgba(0,0,0,0.85); color: #fff; font-size: 12px; padding: 6px 10px; border-radius: 8px;
         opacity: 0; transition: opacity 0.2s; pointer-events: none; z-index: 100;
+        white-space: nowrap; box-shadow: 0 4px 10px rgba(0,0,0,0.15);
     }
     .icon-tooltip:hover::after, .icon-tooltip:focus::after { opacity: 1; }
 
-    /* 4️⃣ Recommended level highlight */
+    /* 3️⃣ Recommended level highlight */
     .level-card.level-recommended {
         border-color: #FF9800 !important;
         box-shadow: 0 0 0 3px #FF980055, 0 6px 15px rgba(0,0,0,0.15);
@@ -979,7 +975,7 @@
         background: #FF9800; color: white; font-size: 11px; font-weight: 900; padding: 2px 8px; border-radius: 10px;
     }
 
-    /* 5️⃣ Dark‑mode variables */
+    /* 4️⃣ Dark‑mode variables */
     @media (prefers-color-scheme: dark) {
         :root {
             --bg: #1e1e1e;
@@ -989,7 +985,6 @@
         body { background-color: var(--bg); color: var(--text); }
         .top-bar { background: rgba(30,30,30,0.85); }
     }
-
     </style>
 </head>
 <body class="bg-hub">
@@ -1285,19 +1280,19 @@
     </div>
 
     <div id="category-screen" class="hidden">
-        <h1 style="margin-top: 3vh;" id="hub-header">המרכז של רועי</h1>
+        <h1 style="margin-top: 3vh;" id="hub-header" aria-live="polite">המרכז של רועי</h1>
         <div id="star-wallet-container" style="display:flex; justify-content:center; align-items:center; gap:clamp(10px,3vw,25px); margin-bottom:1.5vmin;">
             <!-- Wallet / Purse shape (Max-Stock bag) -->
-            <div id="star-wallet-purse" style="position:relative; width:clamp(70px,16vw,110px); height:clamp(70px,16vw,110px); display:flex; align-items:center; justify-content:center;">
+            <div id="star-wallet-purse" class="icon-tooltip" data-tip="שקית הפרסים של מקס סטוק" style="position:relative; width:clamp(70px,16vw,110px); height:clamp(70px,16vw,110px); display:flex; align-items:center; justify-content:center;">
                 <img id="max-stock-bag-img" src="images/max_stock_bag.png" style="width:100%; height:100%; object-fit:contain; filter:drop-shadow(0 4px 8px rgba(0,0,0,0.15));" />
             </div>
             <!-- Star count display -->
-            <div id="star-wallet-display" style="background:rgba(255,255,255,0.9); border:4px solid #ffd166; border-radius:20px; padding:1vmin 3vmin; box-shadow:0 6px 20px rgba(255,209,102,0.4); display:flex; flex-direction:column; align-items:center; gap:0.3vmin; min-width:clamp(60px,14vw,100px);">
+            <div id="star-wallet-display" class="icon-tooltip" data-tip="הכוכבים שצברת" style="background:rgba(255,255,255,0.9); border:4px solid #ffd166; border-radius:20px; padding:1vmin 3vmin; box-shadow:0 6px 20px rgba(255,209,102,0.4); display:flex; flex-direction:column; align-items:center; gap:0.3vmin; min-width:clamp(60px,14vw,100px); position:relative;">
                 <div style="font-size:clamp(18px,3.5vw,28px);">—</div>
                 <div style="font-size:clamp(16px,3vw,24px); font-weight:900; color:#f5a623; text-shadow:0 2px 4px rgba(0,0,0,0.2);">0 ⭐</div>
             </div>
             <!-- Bucket with coins -->
-            <div id="star-wallet-bucket" style="position:relative; width:clamp(65px,15vw,100px); height:clamp(70px,16vw,110px);">
+            <div id="star-wallet-bucket" class="icon-tooltip" data-tip="דלי המטבעות שלך" style="position:relative; width:clamp(65px,15vw,100px); height:clamp(70px,16vw,110px);">
                 <svg id="bucket-svg" viewBox="0 0 100 110" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
                     <defs>
                         <linearGradient id="bucketGrad" x1="0" y1="0" x2="1" y2="1">
@@ -1322,10 +1317,10 @@
         <h3>באיזו קטגוריה נרצה לשחק?</h3>
         <div class="hub-container">
             <div class="hub-card" onclick="openCategory('lang','שפה ואותיות')"><div class="hub-icon">🔤</div><div class="hub-title">שפה ואותיות</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">2 משחקים</div></div>
-            <div class="hub-card" onclick="openCategory('think','חשיבה וזיכרון')"><div class="hub-icon">🧠</div><div class="hub-title">חשיבה וזיכרון</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">4 משחקים</div></div>
+            <div class="hub-card" onclick="openCategory('think','חשיבה וזיכרון')"><div class="hub-icon">🧠</div><div class="hub-title">חשיבה וזיכרון</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">5 משחקים</div></div>
             <div class="hub-card" onclick="openCategory('emotion','רגשות ואנשים')"><div class="hub-icon">😊</div><div class="hub-title">רגשות ואנשים</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">6 משחקים</div></div>
             <div class="hub-card" onclick="openCategory('numbers','מספרים וסדר')"><div class="hub-icon">🔢</div><div class="hub-title">מספרים וסדר</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">4 משחקים</div></div>
-            <div class="hub-card" onclick="openCategory('world','עולם סביבנו')"><div class="hub-icon">🌍</div><div class="hub-title">עולם סביבנו</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">4 משחקים</div></div>
+            <div class="hub-card" onclick="openCategory('world','עולם סביבנו')"><div class="hub-icon">🌍</div><div class="hub-title">עולם סביבנו</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">6 משחקים</div></div>
             <div class="hub-card" onclick="openCategory('create','יצירה וחידות')"><div class="hub-icon">🎨</div><div class="hub-title">יצירה וחידות</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">4 משחקים</div></div>
             <div class="hub-card" onclick="openCategory('action','משחקי פעולה')"><div class="hub-icon">🎮</div><div class="hub-title">משחקי פעולה</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">2 משחקים</div></div>
         </div>
@@ -1342,6 +1337,7 @@
             <div class="hub-card" data-cat="action" style="position:relative;" onclick="openDifficultyScreen('cop', '🚓', 'שוטר וגנב')"><div class="hub-icon">🚓</div><div class="hub-title">שוטר וגנב</div></div>
             <div class="hub-card" data-cat="think" style="position:relative;" onclick="openDifficultyScreen('diff', '🔎', 'זהה את השונה')"><span class="star-badge" data-game="diff" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🔎</div><div class="hub-title">השונה</div></div>
             <div class="hub-card" data-cat="think" style="position:relative;" onclick="openDifficultyScreen('oddone', '🍎', 'יוצא דופן')"><span class="star-badge" data-game="oddone" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">✨</span><div class="hub-icon">🍎</div><div class="hub-title">יוצא דופן</div></div>
+            <div class="hub-card" data-cat="think" style="position:relative;" onclick="openDifficultyScreen('patterns', '🔴', 'השלם את התבנית')"><span class="star-badge" data-game="patterns" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🔴</div><div class="hub-title">תבניות</div></div>
             <div class="hub-card" data-cat="lang" style="position:relative;" onclick="openMissingLangScreen()"><span class="star-badge" data-game="missing" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🔤</div><div class="hub-title">איזו אות חסרה?</div></div>
             <div class="hub-card" data-cat="world" style="position:relative;" onclick="openDifficultyScreen('tools', '🔨', 'מה הכלי המתאים?')"><div class="hub-icon">🔨</div><div class="hub-title">כלים</div></div>
             <div class="hub-card" data-cat="world" style="position:relative;" onclick="openDifficultyScreen('context', '🧩', 'מה שייך לכאן?')"><span class="star-badge" data-game="context" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">✨</span><div class="hub-icon">🧩</div><div class="hub-title">הקשרים</div></div>
@@ -1349,6 +1345,8 @@
             <div class="hub-card" data-cat="think" style="position:relative;" onclick="openDifficultyScreen('bigger', '⚖️', 'מה יותר גדול?')"><div class="hub-icon">⚖️</div><div class="hub-title">יותר גדול</div></div>
             <div class="hub-card" data-cat="emotion" style="position:relative;" onclick="openDifficultyScreen('emotion', '🎭', 'איך הם מרגישים?')"><div class="hub-icon">🎭</div><div class="hub-title">רגשות</div></div>
             <div class="hub-card" data-cat="world" style="position:relative;" onclick="openDifficultyScreen('habitat', '🏠', 'מי גר כאן?')"><div class="hub-icon">🏠</div><div class="hub-title">מי גר כאן?</div></div>
+            <div class="hub-card" data-cat="world" style="position:relative;" onclick="openDifficultyScreen('origins', '🥛', 'מאיפה זה מגיע?')"><span class="star-badge" data-game="origins" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🥛</div><div class="hub-title">מאיפה זה מגיע?</div></div>
+            <div class="hub-card" data-cat="world" style="position:relative;" onclick="openDifficultyScreen('families', '🐕', 'הורה וגור')"><span class="star-badge" data-game="families" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🐕</div><div class="hub-title">הורה וגור</div></div>
             <div class="hub-card" data-cat="create" style="position:relative;" onclick="openDifficultyScreen('shadow', '👤', 'של מי הצללית?')"><div class="hub-icon">👤</div><div class="hub-title">צלליות</div></div>
             <div class="hub-card" data-cat="create" style="position:relative;" onclick="openDifficultyScreen('halfhalf', '✂️', 'השלם את החצי')"><span class="star-badge" data-game="halfhalf" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">✨</span><div class="hub-icon">✂️</div><div class="hub-title">השלם חצי</div></div>
             <div class="hub-card" data-cat="numbers" style="position:relative;" onclick="openDifficultyScreen('chrono', '⏳', 'מהתחלה לסוף')"><span class="star-badge" data-game="chrono" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">⏳</div><div class="hub-title">רצף כרונולוגי</div></div>
@@ -1409,8 +1407,8 @@
         <div class="top-bar" style="align-self:stretch;"><button class="exit-btn" onclick="backToHub()">➜ חזור</button><div style="width: 60px;"></div></div>
         <h1 style="margin-top: 10vh;">באיזו שפה נשחק?</h1>
         <div class="grid-container" style="gap:5vmin; margin-top:5vmin;">
-            <div class="grid-card" onclick="startMissingGame('he')" style="width:clamp(120px, 25vw, 200px); border-color:#2196F3;"><div style="font-size:clamp(40px, 8vw, 80px);">🇮🇱</div><h2>עברית</h2></div>
-            <div class="grid-card" onclick="startMissingGame('en')" style="width:clamp(120px, 25vw, 200px); border-color:#F44336;"><div style="font-size:clamp(40px, 8vw, 80px);">🇬🇧</div><h2>English</h2></div>
+            <div class="grid-card" onclick="startMissingGame('he')" style="width:clamp(120px, 25vw, 200px); border-color:#2196F3;"><div style="font-size:clamp(40px, 8vw, 80px); font-weight:bold; color:#2196F3;">אבג</div><h2>עברית</h2></div>
+            <div class="grid-card" onclick="startMissingGame('en')" style="width:clamp(120px, 25vw, 200px); border-color:#F44336;"><div style="font-size:clamp(40px, 8vw, 80px); font-weight:bold; color:#F44336;">ABC</div><h2>English</h2></div>
         </div>
     </div>
 
@@ -1427,7 +1425,8 @@
     </div>
 
     <div id="active-game-container" class="hidden">
-        <div id="active-top-bar" class="top-bar"><button class="exit-btn" onclick="quitActiveGame()">➜ יציאה</button><h2 id="active-game-title" style="margin:0; font-size:clamp(14px,3vmin,22px);"></h2><div id="active-progress-container" class="progress-container"></div></div>
+        <div id="active-top-bar" class="top-bar"><button class="exit-btn" onclick="quitActiveGame()">➜ יציאה</button><div id="active-progress-container" class="progress-container"></div></div>
+        <h2 id="active-game-title" style="margin-bottom: 20px;"></h2>
         <div id="game-workspace"></div>
     </div>
 
@@ -1441,7 +1440,7 @@
     <div id="feedback-layer" class="hidden feedback-icon"></div>
 
     <script>
-        const bgIcons = { 'sharing': ['🤝','❤️','🌟','🎁'], 'memory': ['🧠','💭','💡'], 'tracing': ['✏️','🎨','📐'], 'counting': ['🔢','🧮','➕'], 'sequence': ['🔄','✨','🎯'], 'fly': ['🪰','💨'], 'cop': ['🚓','🚨'], 'diff': ['🔎','👀'], 'oddone': ['🍎','🐶','🚗'], 'missing': ['A','B','C'], 'tools': ['🔨','🔧','🔩'], 'context': ['🧩','🖼️','🎨'], 'vparts': ['🚗','✈️','🚂','⛵','🚁'], 'habitat': ['🏠','🌳','🌊'], 'shadow': ['👤','🌑','👀'], 'halfhalf': ['✂️','🎨','🧩'], 'chrono': ['⏳','📅','🔄'], 'bigger': ['⚖️','🐘','🐭','🔢'], 'emotion': ['😄','😢','😡','😱'], 'faces': ['📸','❤️','👨‍👩‍👧‍👦','🤳'], 'mgamish': ['🤸','💪','🌟','🤸‍♂️'], 'firstletter': ['🔡','🔤','📖','✏️'], 'numwar': ['⚔️','🃏','🔢','⭐'], 'towertalk': ['🧱','🏗️','🏢'], 'cooppuzzle': ['🧩','🖼️','🎨','📸'], 'tidyup': ['🧼','🧸','🧺','🧹'] };
+        const bgIcons = { 'sharing': ['🤝','❤️','🌟','🎁'], 'memory': ['🧠','💭','💡'], 'tracing': ['✏️','🎨','📐'], 'counting': ['🔢','🧮','➕'], 'sequence': ['🔄','✨','🎯'], 'fly': ['🪰','💨'], 'cop': ['🚓','🚨'], 'diff': ['🔎','👀'], 'oddone': ['🍎','🐶','🚗'], 'missing': ['A','B','C'], 'tools': ['🔨','🔧','🔩'], 'context': ['🧩','🖼️','🎨'], 'vparts': ['🚗','✈️','🚂','⛵','🚁'], 'habitat': ['🏠','🌳','🌊'], 'shadow': ['👤','🌑','👀'], 'halfhalf': ['✂️','🎨','🧩'], 'chrono': ['⏳','📅','🔄'], 'bigger': ['⚖️','🐘','🐭','🔢'], 'emotion': ['😄','😢','😡','😱'], 'faces': ['📸','❤️','👨‍👩‍👧‍👦','🤳'], 'mgamish': ['🤸','💪','🌟','🤸‍♂️'], 'firstletter': ['🔡','🔤','📖','✏️'], 'numwar': ['⚔️','🃏','🔢','⭐'], 'towertalk': ['🧱','🏗️','🏢'], 'cooppuzzle': ['🧩','🖼️','🎨','📸'], 'tidyup': ['🧼','🧸','🧺','🧹'], 'patterns': ['🔴','🔵','💛','🟩','🔺','🌟'], 'origins': ['🐄','🥛','🐑','🐔','🐝','🍞'], 'families': ['🐕','🐶','🐈','🐱','🐥','🦁'] };
         function setAppBackground(theme) {
             D.body.className = 'bg-' + theme; let bg = get('bg-animations'); bg.innerHTML = '';
             if(theme !== 'hub' && bgIcons[theme]) {
@@ -1592,6 +1591,14 @@
             let advGames = ['counting', 'oddone', 'diff', 'bigger'];
             get('lvl-4-btn').style.display = advGames.indexOf(gameId) > -1 ? 'flex' : 'none';
             get('lvl-5-btn').style.display = advGames.indexOf(gameId) > -1 ? 'flex' : 'none';
+
+            // Clear level-recommended first
+            document.querySelectorAll('.level-card').forEach(el => el.classList.remove('level-recommended'));
+            // Find and highlight recommended level
+            const recommendedLevel = [1,2,3,4,5].find(l => !(typeof awardedStars !== 'undefined' && awardedStars[gameId + '-' + l])) || 1;
+            const recBtn = document.querySelector(`.level-card[onclick="startGameEngine(${recommendedLevel})"]`);
+            if (recBtn) recBtn.classList.add('level-recommended');
+
             show('unified-diff-screen');
         }
 
@@ -1615,7 +1622,7 @@
             get('active-game-title').style.display = '';
             get('active-progress-container').style.display = '';
 
-            activeGameRounds = (currentGameMode === 'sharing') ? 5 : 
+            activeGameRounds = (currentGameMode === 'sharing') ? 10 : 
                                (currentGameMode === 'numwar' ? 5 : 
                                (currentGameMode === 'towertalk' ? 5 : 
                                (currentGameMode === 'cooppuzzle' ? 4 : 
@@ -1653,6 +1660,9 @@
                 else if(currentGameMode === 'towertalk') initTowerGame();
                 else if(currentGameMode === 'cooppuzzle') initCoopPuzzleGame();
                 else if(currentGameMode === 'tidyup') initTidyupGame();
+                else if(currentGameMode === 'patterns') initPatternsGame();
+                else if(currentGameMode === 'origins') initOriginsGame();
+                else if(currentGameMode === 'families') initFamiliesGame();
             }, 50);
         }
 
@@ -1660,7 +1670,7 @@
             playClickSound(); hideAllScreens();
             var agc = get('active-game-container');
             if (agc) agc.style.height = '';
-            if(currentGameMode === 'emotion' || currentGameMode === 'emparts' || currentGameMode === 'missing' || currentGameMode === 'mgamish' || currentGameMode === 'firstletter' || currentGameMode === 'sharing' || currentGameMode === 'numwar' || currentGameMode === 'towertalk' || currentGameMode === 'cooppuzzle' || currentGameMode === 'tidyup') { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); } else if(currentGameMode === 'faces') { show('faces-mode-screen'); } else { show('unified-diff-screen'); }
+            if(currentGameMode === 'emotion' || currentGameMode === 'emparts' || currentGameMode === 'missing' || currentGameMode === 'mgamish' || currentGameMode === 'firstletter' || currentGameMode === 'sharing' || currentGameMode === 'numwar' || currentGameMode === 'towertalk' || currentGameMode === 'cooppuzzle' || currentGameMode === 'tidyup' || currentGameMode === 'patterns' || currentGameMode === 'origins' || currentGameMode === 'families') { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); } else if(currentGameMode === 'faces') { show('faces-mode-screen'); } else { show('unified-diff-screen'); }
         }
         function updateProgressUI() { for(let i=0;i<activeGameRounds;i++) { let d = get(`active-progress-container-dot-${i}`); if(d){ if(i < currentStep) d.classList.add('fill'); else d.classList.remove('fill'); } } }
 
@@ -1681,7 +1691,7 @@
                         let cp = facesPool[facesOrder[currentStep]];
                         let cName = cp ? (cp[nf] || cp.nameHe) : '';
                         let cFile = cp ? cp.file : '';
-                        fl.innerHTML = `<span>🥳</span><img src="${FACES_BASE + encodeURIComponent(cFile)}" style="width:clamp(80px,18vmin,130px);height:clamp(80px,18vmin,130px);object-fit:cover;border-radius:50%;border:4px solid #fff;box-shadow:0 4px 14px rgba(0,0,0,0.3);margin:8px auto;display:block;"><div style="font-size:clamp(30px,7.5vmin,48px);font-weight:900;color:#fff;text-shadow:0 2px 6px rgba(0,0,0,0.35);direction:${facesLang==='he'?'rtl':'ltr'};margin-top:4px;">${cName}</div>`;
+                        fl.innerHTML = `<span>🥳</span><img src="${FACES_BASE + encodeURIComponent(cFile)}" style="width:clamp(80px,18vmin,130px);height:clamp(80px,18vmin,130px);object-fit:contain;background:#fafafa;border-radius:12px;border:4px solid #fff;box-shadow:0 4px 14px rgba(0,0,0,0.3);margin:8px auto;display:block;"><div style="font-size:clamp(30px,7.5vmin,48px);font-weight:900;color:#fff;text-shadow:0 2px 6px rgba(0,0,0,0.35);direction:${facesLang==='he'?'rtl':'ltr'};margin-top:4px;">${cName}</div>`;
                     } else {
                         fl.innerHTML = '<span>🥳</span>';
                     }
@@ -1711,7 +1721,7 @@
             var agc = get('active-game-container');
             if (agc) agc.style.height = '';
             if(currentGameMode==='missing') { show('missing-lang-screen'); }
-            else if(currentGameMode==='emotion' || currentGameMode==='emparts' || currentGameMode==='mgamish' || currentGameMode==='firstletter' || currentGameMode==='sharing' || currentGameMode==='numwar' || currentGameMode==='towertalk' || currentGameMode==='cooppuzzle' || currentGameMode==='tidyup') { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); }
+            else if(currentGameMode==='emotion' || currentGameMode==='emparts' || currentGameMode==='mgamish' || currentGameMode==='firstletter' || currentGameMode==='sharing' || currentGameMode==='numwar' || currentGameMode==='towertalk' || currentGameMode==='cooppuzzle' || currentGameMode==='tidyup' || currentGameMode==='patterns' || currentGameMode==='origins' || currentGameMode==='families') { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); }
             else if(currentGameMode==='faces') { show('faces-mode-screen'); }
             else {
                 try {
@@ -1719,7 +1729,7 @@
                     if(mistakesInLevel === 0 && currentDifficulty < 5 && nextLvlBtn && nextLvlBtn.style.display !== 'none') { 
                         currentDifficulty++; 
                         get('adaptive-msg').style.display = 'block'; 
-                        get('adaptive-msg').textContent = 'היית לא מעולה! עלינו רמה!'; 
+                        get('adaptive-msg').textContent = 'היית מעולה! עלינו רמה!'; 
                     }
                     else if(mistakesInLevel > 2 && currentDifficulty > 1) { 
                         currentDifficulty--; 
@@ -1736,12 +1746,7 @@
         
         // 1. Memory
         let memItems = []; let memOrder = []; let memHide = -1;
-        function initMemoryGame() {
-            get('active-game-title').textContent = 'הסתכלו טוב... 👀';
-            get('game-workspace').innerHTML = `<div class="image-container" id="mem-targ"></div><button class="action-btn" id="mem-btn">המשך ➜</button><div class="opts-row hidden" id="mem-opts"></div>`;
-            get('mem-btn').onclick = doMemQuestion;
-            loadMemoryRound();
-        }
+        function initMemoryGame() { get('active-game-title').textContent = 'הסתכלו טוב... 👀'; get('game-workspace').innerHTML = `<div class="image-container" id="mem-targ"></div><button class="action-btn" id="mem-btn">המשך ➜</button><div class="opts-row hidden" id="mem-opts"></div>`; get('mem-btn').onclick=doMemQuestion; loadMemoryRound(); }
         function loadMemoryRound() {
             let catKeys = Object.keys(sharedData.categories);
             let memCount = currentDifficulty === 1 ? 3 : (currentDifficulty === 2 ? 4 : 5);
@@ -1756,8 +1761,6 @@
                 w.style.justifyContent='center';
                 w.style.fontSize='clamp(50px,12vw,90px)';
                 w.textContent=item;
-                // Immediately mark as loaded (no actual image)
-                w.classList.add('loaded');
                 tArea.appendChild(w);
             });
             get('active-game-title').textContent='הסתכלו טוב... 👀';
@@ -2095,10 +2098,160 @@
         // ==========================================
         // 9. מה הכלי המתאים?
         // ==========================================
-        const tPairs = [ {o:'📍',t:'🔨',w:['🪚','🪛','🗝️','🖌️','✂️']}, {o:'🪵',t:'🪚',w:['🔨','🔧','🗝️','🖌️','✂️']}, {o:'🔩',t:'🪛',w:['✂️','🖌️','⛏️','🔑','🪚']}, {o:'⚙️',t:'🔧',w:['✂️','🖌️','⛏️','🪚','🔨']}, {o:'📄',t:'✂️',w:['🔨','🔧','⛏️','🪛','🪚']}, {o:'🎨',t:'🖌️',w:['🔨','🔧','🗝️','🪚','⛏️']}, {o:'🌱',t:'⛏️',w:['✂️','🖌️','🔑','🪛','🔨']}, {o:'🔒',t:'🗝️',w:['🪚','🪛','✂️','🖌️','⛏️']} ];
+        const tPairs = [
+            {
+                oImg: 'images/tools/pin.png', oDesc: 'סיכה ומסמר',
+                tImg: 'images/tools/hammer.png', tDesc: 'פטיש',
+                w: [
+                    { img: 'images/tools/saw.png', desc: 'מסור' },
+                    { img: 'images/tools/screwdriver.png', desc: 'מברג' },
+                    { img: 'images/tools/key.png', desc: 'מפתח' },
+                    { img: 'images/tools/paintbrush.png', desc: 'מכחול' },
+                    { img: 'images/tools/scissors.png', desc: 'מספריים' }
+                ]
+            },
+            {
+                oImg: 'images/tools/wood.png', oDesc: 'גזיר עץ',
+                tImg: 'images/tools/saw.png', tDesc: 'מסור',
+                w: [
+                    { img: 'images/tools/hammer.png', desc: 'פטיש' },
+                    { img: 'images/tools/wrench.png', desc: 'מפתח ברגים' },
+                    { img: 'images/tools/key.png', desc: 'מפתח' },
+                    { img: 'images/tools/paintbrush.png', desc: 'מכחול' },
+                    { img: 'images/tools/scissors.png', desc: 'מספריים' }
+                ]
+            },
+            {
+                oImg: 'images/tools/screw.png', oDesc: 'בורג',
+                tImg: 'images/tools/screwdriver.png', tDesc: 'מברג',
+                w: [
+                    { img: 'images/tools/scissors.png', desc: 'מספריים' },
+                    { img: 'images/tools/paintbrush.png', desc: 'מכחול' },
+                    { img: 'images/tools/shovel.png', desc: 'את חפירה' },
+                    { img: 'images/tools/key.png', desc: 'מפתח' },
+                    { img: 'images/tools/saw.png', desc: 'מסור' }
+                ]
+            },
+            {
+                oImg: 'images/tools/gear.png', oDesc: 'גלגל שיניים',
+                tImg: 'images/tools/wrench.png', tDesc: 'מפתח ברגים',
+                w: [
+                    { img: 'images/tools/scissors.png', desc: 'מספריים' },
+                    { img: 'images/tools/paintbrush.png', desc: 'מכחול' },
+                    { img: 'images/tools/shovel.png', desc: 'את חפירה' },
+                    { img: 'images/tools/saw.png', desc: 'מסור' },
+                    { img: 'images/tools/hammer.png', desc: 'פטיש' }
+                ]
+            },
+            {
+                oImg: 'images/tools/paper.png', oDesc: 'דף נייר',
+                tImg: 'images/tools/scissors.png', tDesc: 'מספריים',
+                w: [
+                    { img: 'images/tools/hammer.png', desc: 'פטיש' },
+                    { img: 'images/tools/wrench.png', desc: 'מפתח ברגים' },
+                    { img: 'images/tools/shovel.png', desc: 'את חפירה' },
+                    { img: 'images/tools/screwdriver.png', desc: 'מברג' },
+                    { img: 'images/tools/saw.png', desc: 'מסור' }
+                ]
+            },
+            {
+                oImg: 'images/tools/palette.png', oDesc: 'לוח צבעים',
+                tImg: 'images/tools/paintbrush.png', tDesc: 'מכחול',
+                w: [
+                    { img: 'images/tools/hammer.png', desc: 'פטיש' },
+                    { img: 'images/tools/wrench.png', desc: 'מפתח ברגים' },
+                    { img: 'images/tools/key.png', desc: 'מפתח' },
+                    { img: 'images/tools/saw.png', desc: 'מסור' },
+                    { img: 'images/tools/shovel.png', desc: 'את חפירה' }
+                ]
+            },
+            {
+                oImg: 'images/tools/garden.png', oDesc: 'אדמה ושתיל',
+                tImg: 'images/tools/shovel.png', tDesc: 'את חפירה',
+                w: [
+                    { img: 'images/tools/scissors.png', desc: 'מספריים' },
+                    { img: 'images/tools/paintbrush.png', desc: 'מכחול' },
+                    { img: 'images/tools/key.png', desc: 'מפתח' },
+                    { img: 'images/tools/screwdriver.png', desc: 'מברג' },
+                    { img: 'images/tools/hammer.png', desc: 'פטיש' }
+                ]
+            },
+            {
+                oImg: 'images/tools/lock.png', oDesc: 'מנעול',
+                tImg: 'images/tools/key.png', tDesc: 'מפתח',
+                w: [
+                    { img: 'images/tools/saw.png', desc: 'מסור' },
+                    { img: 'images/tools/screwdriver.png', desc: 'מברג' },
+                    { img: 'images/tools/scissors.png', desc: 'מספריים' },
+                    { img: 'images/tools/paintbrush.png', desc: 'מכחול' },
+                    { img: 'images/tools/shovel.png', desc: 'את חפירה' }
+                ]
+            }
+        ];
         let tOrderTools = [];
-        function initToolsGame() { get('active-game-title').textContent='מה הכלי המתאים לזה? 🔨'; get('game-workspace').innerHTML=`<div id="tool-target-area" class="large-target"></div><div id="tool-options-area" class="opts-row"></div>`; tOrderTools=shuffle(createRange(tPairs.length)).slice(0,4); loadToolsRound(); }
-        function loadToolsRound() { let p = tPairs[tOrderTools[currentStep]]; get('tool-target-area').textContent = p.o; let opts = shuffle([p.t].concat(shuffle(p.w).slice(0,3))); let oArea = get('tool-options-area'); oArea.innerHTML=''; opts.forEach((t,i)=>{ let w=D.createElement('div'); w.className='option-wrapper'; let b=D.createElement('button'); b.className='action-btn option-btn'; b.style.width='clamp(70px,18vmin,140px)'; b.style.height='clamp(70px,18vmin,140px)'; b.style.background='#fff'; b.style.border='5px solid #4CAF50'; b.style.borderRadius='20px'; b.style.color='#333'; b.style.padding='0'; b.style.display='flex'; b.style.justifyContent='center'; b.style.alignItems='center'; b.style.fontSize='clamp(40px,10vw,70px)'; b.textContent=t; b.onclick=(e)=>{if(isProcessing)return; handleAnswer(t===p.t, b, loadToolsRound, null);}; let n=D.createElement('div'); n.className='option-number'; n.textContent=i+1; w.appendChild(b); w.appendChild(n); oArea.appendChild(w); }); }
+        function initToolsGame() {
+            get('active-game-title').textContent='מה הכלי המתאים לזה? 🔨';
+            get('game-workspace').innerHTML=`<div id="tool-target-area" class="large-target"></div><div id="tool-options-area" class="opts-row"></div>`;
+            tOrderTools=shuffle(createRange(tPairs.length)).slice(0,4);
+            loadToolsRound();
+        }
+        function loadToolsRound() {
+            let p = tPairs[tOrderTools[currentStep]];
+            let targetArea = get('tool-target-area');
+            targetArea.style.padding = '0';
+            targetArea.style.background = '#fff';
+            targetArea.style.display = 'flex';
+            targetArea.style.justifyContent = 'center';
+            targetArea.style.alignItems = 'center';
+            targetArea.style.overflow = 'hidden';
+            targetArea.innerHTML = `<img src="${p.oImg}" alt="${p.oDesc}" style="width:85%; height:85%; object-fit:contain;" />`;
+            
+            speakLetter(p.oDesc, 'he');
+            targetArea.onclick = () => speakLetter(p.oDesc, 'he');
+
+            let correctOpt = { img: p.tImg, desc: p.tDesc, isCorrect: true };
+            let wrongOpts = shuffle(p.w).slice(0, 3).map(o => ({ img: o.img, desc: o.desc, isCorrect: false }));
+            let opts = shuffle([correctOpt].concat(wrongOpts));
+
+            let oArea = get('tool-options-area');
+            oArea.innerHTML='';
+            opts.forEach((opt,i)=>{
+                let w=D.createElement('div');
+                w.className='option-wrapper';
+                let b=D.createElement('button');
+                b.className='action-btn option-btn';
+                b.style.width='clamp(70px,18vmin,140px)';
+                b.style.height='clamp(70px,18vmin,140px)';
+                b.style.background='#fff';
+                b.style.border='5px solid #4CAF50';
+                b.style.borderRadius='20px';
+                b.style.padding='0';
+                b.style.display='flex';
+                b.style.justifyContent='center';
+                b.style.alignItems='center';
+                b.style.overflow='hidden';
+                b.innerHTML = `<img src="${opt.img}" alt="${opt.desc}" style="width:80%; height:80%; object-fit:contain;" />`;
+                b.onclick=(e)=>{
+                    if(isProcessing)return;
+                    if(opt.isCorrect){
+                        isProcessing = true;
+                        speakLetter(opt.desc, 'he', function(){
+                            isProcessing = false;
+                            handleAnswer(true, b, loadToolsRound, null);
+                        });
+                    } else {
+                        speakLetter(opt.desc, 'he');
+                        handleAnswer(false, b, null, null);
+                    }
+                };
+                let n=D.createElement('div');
+                n.className='option-number';
+                n.textContent=i+1;
+                w.appendChild(b);
+                w.appendChild(n);
+                oArea.appendChild(w);
+            });
+        }
 
         // ==========================================
         // 10. מה שייך לכאן?
@@ -2209,9 +2362,19 @@
         function initContextGame() {
             get('active-game-title').textContent='מה שייך לתמונה? 🧩';
             get('game-workspace').innerHTML=`<div style="position:relative; width:100%; max-width:700px; height:250px; border-radius:20px; border:5px solid #fff; box-shadow:0 10px 20px rgba(0,0,0,0.2); overflow:hidden; display:flex; justify-content:center; align-items:center;" id="context-scene"></div><div class="opts-row" id="context-options"></div>`;
-            // Pre‑load context images if needed (similar pattern can be added later)
             ctxOrder = shuffle(createRange(ctxGames.length)).slice(0,4);
-            loadContextRound();
+            const toLoad = ctxOrder.flatMap(idx => {
+                const c = ctxGames[idx];
+                return [c.bgImg, c.c.img].concat(c.w.map(o => o.img));
+            });
+            let loaded = 0;
+            toLoad.forEach(src => {
+                const img = new Image();
+                img.onload = img.onerror = () => {
+                    if (++loaded === toLoad.length) loadContextRound();
+                };
+                img.src = src;
+            });
         }
         function loadContextRound() {
             let c = ctxGames[ctxOrder[currentStep]];
@@ -2273,7 +2436,20 @@
             { img: 'https://images.unsplash.com/photo-1519003722824-194d4455a60c?w=800&q=80', cx: 30, cy: 60, cw: 20, ch: 20 }  
         ];
         let vpartsOrder = [];
-        function initVPartsGame() { get('active-game-title').textContent = 'איזה חלק חסר? 🚜'; get('game-workspace').innerHTML = `<div id="vp-target"></div><div id="vp-opts" class="opts-row"></div>`; vpartsOrder = shuffle(createRange(vpData.length)).slice(0, 4); loadVPartsRound(); }
+        function initVPartsGame() {
+            get('active-game-title').textContent = 'איזה חלק חסר? 🚜';
+            get('game-workspace').innerHTML = `<div id="vp-target"></div><div id="vp-opts" class="opts-row"></div>`;
+            vpartsOrder = shuffle(createRange(vpData.length)).slice(0, 4);
+            const toLoad = vpartsOrder.map(i => vpData[i].img);
+            let loaded = 0;
+            toLoad.forEach(src => {
+                const img = new Image();
+                img.onload = img.onerror = () => {
+                    if (++loaded === toLoad.length) loadVPartsRound();
+                };
+                img.src = src;
+            });
+        }
         function loadVPartsRound() {
             let p = vpData[vpartsOrder[currentStep]];
             get('vp-target').innerHTML = `<div style="position:relative; width:100%; height:100%;"><img src="${p.img}" style="width:100%; height:100%; object-fit:cover;"><div class="vp-patch" style="width:${p.cw}%; height:${p.ch}%; left:${p.cx - p.cw/2}%; top:${p.cy - p.ch/2}%;">❓</div></div>`;
@@ -2307,15 +2483,21 @@
             { qImg: 'images/habitat/monkey.png', aImg: 'images/habitat/palmtree.png', qDesc: 'קוף', aDesc: 'עץ דקל' }
         ];
         let habOrder = [];
+        function playHabitatAudio(imgSrc, text, callback) {
+            let key = imgSrc.split('/').pop().replace(/\.(png|jpg|jpeg|webp)/i, '');
+            playCoopAudio('habitat/' + key + '.mp3', text, callback);
+        }
         function initHabitatGame() {
             get('active-game-title').textContent='מי גר כאן? 🏠';
             get('game-workspace').innerHTML=`<div id="tool-target-area" class="large-target"></div><div id="tool-options-area" class="opts-row"></div>`;
-            // Pre‑load all images for the round
+            habOrder = shuffle(createRange(habData.length)).slice(0, 4);
             const toLoad = habOrder.flatMap(i => [habData[i].qImg, habData[i].aImg]);
             let loaded = 0;
             toLoad.forEach(src => {
                 const img = new Image();
-                img.onload = img.onerror = () => { if (++loaded === toLoad.length) loadHabitatRound(); };
+                img.onload = img.onerror = () => {
+                    if (++loaded === toLoad.length) loadHabitatRound();
+                };
                 img.src = src;
             });
         }
@@ -2331,10 +2513,10 @@
             targetArea.style.overflow = 'hidden';
             targetArea.style.cursor = 'pointer';
             targetArea.innerHTML = `<img src="${p.qImg}" alt="${p.qDesc}" style="width:100%; height:100%; object-fit:cover;">`;
-            targetArea.onclick = () => { speakLetter(p.qDesc, 'he'); };
+            targetArea.onclick = () => { playHabitatAudio(p.qImg, p.qDesc); };
             
             // Speak the target question animal name in Hebrew when it loads
-            speakLetter(p.qDesc, 'he');
+            playHabitatAudio(p.qImg, p.qDesc);
 
             let others = [];
             for(let i=0;i<habData.length;i++){
@@ -2348,19 +2530,18 @@
                 w.className='option-wrapper';
                 let b=D.createElement('button');
                 b.className='action-btn option-btn';
-                b.style.display='flex'; b.style.flexDirection='column'; b.style.alignItems='center'; b.style.gap='4px';
-                b.innerHTML = `<img src="${opt.aImg}" alt="${opt.aDesc}" style="width:100%; flex:1; object-fit:cover; border-radius:8px;">
-                    <span style="font-size:clamp(11px,2.5vmin,16px); font-weight:700; color:#333; padding:2px 0;">${opt.aDesc}</span>`;
+                b.style.padding='0';
+                b.innerHTML = `<img src="${opt.aImg}" alt="${opt.aDesc}" style="width:100%; height:100%; object-fit:cover;">`;
                 b.onclick=(e)=>{
                     if(isProcessing)return;
                     if(opt===p){
                         isProcessing = true;
-                        speakLetter(opt.aDesc, 'he', function(){
+                        playHabitatAudio(opt.aImg, opt.aDesc, function(){
                             isProcessing = false;
                             handleAnswer(true, b, loadHabitatRound, null);
                         });
                     } else {
-                        speakLetter(opt.aDesc, 'he');
+                        playHabitatAudio(opt.aImg, opt.aDesc);
                         handleAnswer(false, b, null, null);
                     }
                 };
@@ -2540,7 +2721,7 @@
                 card.onpointerdown = () => { playAudio(facesLang + '/' + p.file.replace('.jpg','') + '.mp3'); };
                 var fpos = FACE_POSITIONS[p.file] || '50% 15%';
                 let mediaPath = FACES_BASE + encodeURIComponent(p.file);
-                let mediaHTML = renderMediaHTML('', '', mediaPath, `width:100%;aspect-ratio:1/1;max-height:clamp(80px,22vmin,170px);object-fit:cover;object-position:${fpos};background:#f0f0f0;display:block;`);
+                let mediaHTML = renderMediaHTML('', '', mediaPath, `width:100%;aspect-ratio:1/1;max-height:clamp(80px,22vmin,170px);object-fit:contain;background:#f0f0f0;display:block;`);
                 card.innerHTML = mediaHTML + `<div style="padding:4px 6px;font-size:clamp(14px,3.2vmin,22px);font-weight:900;text-align:center;color:#333;direction:${facesLang==='he'?'rtl':'ltr'};">${name}</div>`;
                 grid.appendChild(card);
             });
@@ -2596,7 +2777,7 @@
                 // show photo, pick name
                 let wrap = get('faces-photo-wrap'); wrap.innerHTML = '';
                 let mediaPath = FACES_BASE + encodeURIComponent(correct.file);
-                let mediaEl = createMediaElement(mediaPath, 'width:100%;height:100%;object-fit:cover;object-position:top center;display:block;');
+                let mediaEl = createMediaElement(mediaPath, 'width:100%;height:100%;object-fit:contain;display:block;background:#f0f0f0;');
                 mediaEl.onerror = function() { wrap.innerHTML = '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:70px;">🖼️</div>'; };
                 wrap.appendChild(mediaEl);
                 applySmartCrop(mediaEl);
@@ -2622,7 +2803,7 @@
                     b.style.cssText = 'width:100%;border:5px solid #4CAF50;border-radius:20px;cursor:pointer;padding:0;overflow:hidden;box-shadow:0 6px 14px rgba(0,0,0,0.18);transition:0.2s;touch-action:manipulation;outline:none;background:#f0f0f0;display:flex;flex-direction:column;';
                     let imgWrap = D.createElement('div'); imgWrap.style.cssText = 'width:100%;aspect-ratio:1/1;overflow:hidden;flex-shrink:0;max-height:clamp(100px,30vmin,220px);';
                     let mediaPath = FACES_BASE + encodeURIComponent(o.file);
-                    let mediaEl = createMediaElement(mediaPath, 'width:100%;height:100%;object-fit:cover;object-position:top center;display:block;pointer-events:none;background:#f0f0f0;');
+                    let mediaEl = createMediaElement(mediaPath, 'width:100%;height:100%;object-fit:contain;display:block;pointer-events:none;background:#f0f0f0;');
                     mediaEl.onerror = function() { this.style.display='none'; imgWrap.innerHTML += '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:clamp(40px,10vw,70px);pointer-events:none;">🖼️</div>'; };
                     imgWrap.appendChild(mediaEl);
                     applySmartCrop(mediaEl);
@@ -2894,12 +3075,23 @@
                     // fallback safety timer
                     setTimeout(safeOnEnd, Math.max(text.length * 150, 1000) + 500);
                 }
+                var spoken = false;
                 function doSpeak() {
+                    if (spoken) return;
+                    spoken = true;
                     var voices = speechSynthesis.getVoices();
                     if (lang === 'he') {
-                        var v = voices.find(function(vv){ return vv.lang.startsWith('he') && /hila|michal|idit|anat|carmit|yael|heami|hef|female|google|עברית/i.test(vv.name); })
-                             || voices.find(function(vv){ return vv.lang.startsWith('he') && !/david|asaf|hem/i.test(vv.name); })
-                             || voices.find(function(vv){ return vv.lang.startsWith('he'); });
+                        var heVoices = voices.filter(function(vv) {
+                            return vv.lang.startsWith('he') || vv.lang.startsWith('iw');
+                        });
+                        var femaleHeVoices = heVoices.filter(function(vv) {
+                            var name = vv.name.toLowerCase();
+                            return !name.includes('david') && !name.includes('asaf') && !name.includes('male') && !name.includes('he-il-x-heg-local');
+                        });
+                        var v = femaleHeVoices.find(function(vv) {
+                            var name = vv.name.toLowerCase();
+                            return /hila|michal|idit|anat|carmit|yael|female|natural/i.test(name);
+                        }) || femaleHeVoices[0] || heVoices[0];
                         if (v) u.voice = v;
                     }
                     speechSynthesis.speak(u);
@@ -3080,14 +3272,13 @@
 
         // ── לחלוק ולהצליח ──
         function initSharingGame() {
-            // Define scenes first
             const SCENES = [
                 {
-                    question:  'אורי ונועם\u200D רוצים לשחק עם המשאית האדומה, אבל יש רק אחת. מה יעשה אורי?',
+                    question:  'אורי ונועם רוצים לשחק עם המשאית האדומה, אבל יש רק אחת. מה יעשה אורי?',
                     qAudio:    'sharing/q1.mp3',
                     fbAudio:   'sharing/fb1.mp3',
-                    speakQ:    'אורי ונועם\u200D רוצים לשחק עם המשאית האדומה, אבל יש רק אחת. מה יעשה אורי?',
-                    speakFb:   'כל הכבוד! אורי משחק במשאית יחד עם נועם\u200D, ושניהם נהנים!',
+                    speakQ:    'אורי ונועם רוצים לשחק עם המשאית האדומה, אבל יש רק אחת. מה יעשה אורי?',
+                    speakFb:   'כל הכבוד! אורי משחק במשאית יחד עם נועם, ושניהם נהנים!',
                     situation: 'images/sharing_scenes/01_mashait/matzav_bsisi.webp',
                     badImg:    'images/sharing_scenes/01_mashait/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/01_mashait/bechira_tova.webp'
@@ -3177,35 +3368,12 @@
                     qAudio:    'sharing/q10.mp3',
                     fbAudio:   'sharing/fb10.mp3',
                     speakQ:    'יש שטיח אחד בחדר. אורי יושב עליו. נועם גם רוצה לשבת. מה יעשה אורי?',
-                    speakFb:   'מעולה! אורי משאיר מקום על השטיח לנועם, ושניהם יושבים יחד!',
+                    speakFb:   'כך! אורי משאיר מקום על השטיח לנועם, ושניהם יושבים יחד!',
                     situation: 'images/sharing_scenes/10_shatiach/matzav_bsisi.png',
                     badImg:    'images/sharing_scenes/10_shatiach/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/10_shatiach/bechira_tova.webp'
                 }
             ];
-            // Preload all image assets (skip videos)
-            function preloadImages(scenes) {
-                const promises = [];
-                scenes.forEach(scene => {
-                    const imgs = [scene.situation, scene.badImg, scene.goodImg];
-                    imgs.forEach(src => {
-                        if (!src) return;
-                        if (src.match(/\.mp4$/i)) return;
-                        const img = new Image();
-                        const p = new Promise(resolve => {
-                            img.onload = resolve;
-                            img.onerror = resolve;
-                        });
-                        img.src = src;
-                        promises.push(p);
-                    });
-                });
-                return Promise.all(promises);
-            }
-            // Start preloading then launch first scene
-            preloadImages(SCENES).then(() => {
-                showScene(0);
-            });
             get('active-game-title').textContent = 'לחלוק ולהצליח 🤝';
             sharingOrder = shuffle(createRange(SCENES.length));
 
@@ -3221,18 +3389,29 @@
                         onEndCalled = true;
                         if (onEnd) onEnd();
                     };
+                    var spoken = false;
                     function useTts() {
                         if (settled) return;
                         settled = true;
                         if (!speakText || !window.speechSynthesis) { safeOnEnd(); return; }
                         speechSynthesis.cancel();
                         function doSpeak() {
+                            if (spoken) return;
+                            spoken = true;
                             var voices = speechSynthesis.getVoices();
                             var u = new SpeechSynthesisUtterance(speakText);
                             u.lang = 'he-IL'; u.rate = 0.88; u.pitch = 1.15;
-                            var v = voices.find(function(vv){ return vv.lang.startsWith('he') && /hila|michal|idit|anat|carmit|yael|heami|hef|female|google|עברית/i.test(vv.name); })
-                                 || voices.find(function(vv){ return vv.lang.startsWith('he') && !/david|asaf|hem/i.test(vv.name); })
-                                 || voices.find(function(vv){ return vv.lang.startsWith('he'); });
+                            var heVoices = voices.filter(function(vv) {
+                                return vv.lang.startsWith('he') || vv.lang.startsWith('iw');
+                            });
+                            var femaleHeVoices = heVoices.filter(function(vv) {
+                                var name = vv.name.toLowerCase();
+                                return !name.includes('david') && !name.includes('asaf') && !name.includes('male') && !name.includes('he-il-x-heg-local');
+                            });
+                            var v = femaleHeVoices.find(function(vv) {
+                                var name = vv.name.toLowerCase();
+                                return /hila|michal|idit|anat|carmit|yael|female|natural/i.test(name);
+                            }) || femaleHeVoices[0] || heVoices[0];
                             if (v) u.voice = v;
                             if (onEnd) {
                                 var fb2 = setTimeout(safeOnEnd, Math.max(speakText.length * 90, 1200) + 800);
@@ -3313,7 +3492,7 @@
                 get('sh-left').onclick  = function(){ onChoice(goodOnRight ? false : true,  get('sh-left')); };
                 get('sh-right').onclick = function(){ onChoice(goodOnRight ? true : false, get('sh-right')); };
             }
-            // showScene is now called after preloading in initSharingGame
+            showScene(0);
         }
 
         // ── מלחמת המספרים ──
@@ -3581,6 +3760,134 @@
         }
 
         // ── מגדל קוביות משותף ──
+        function getTowerSvg(structure, id) {
+            let svg = '';
+            if (structure === 'castle') {
+                if (id === 1) {
+                    svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 80">
+                        <rect x="5" y="5" width="150" height="70" rx="10" fill="#FFC107" stroke="#FFA000" stroke-width="4"/>
+                        <path d="M5 45h150M5 25h150M40 5v70M80 5v70M120 5v70" stroke="#FFA000" stroke-width="2" stroke-dasharray="4,4"/>
+                        <path d="M60 75 V 45 A 20 20 0 0 1 100 45 V 75 Z" fill="#8D6E63" stroke="#5D4037" stroke-width="3"/>
+                        <circle cx="68" cy="60" r="3" fill="#FFD54F"/>
+                        <circle cx="92" cy="60" r="3" fill="#FFD54F"/>
+                    </svg>`;
+                } else if (id === 2) {
+                    svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 80">
+                        <rect x="15" y="5" width="130" height="70" rx="8" fill="#FF9800" stroke="#F57C00" stroke-width="4"/>
+                        <path d="M15 40h130M50 5v70M110 5v70" stroke="#F57C00" stroke-width="2" stroke-dasharray="4,4"/>
+                        <rect x="40" y="20" width="12" height="40" rx="3" fill="#3E2723"/>
+                        <rect x="108" y="20" width="12" height="40" rx="3" fill="#3E2723"/>
+                    </svg>`;
+                } else if (id === 3) {
+                    svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 80">
+                        <rect x="20" y="5" width="120" height="70" rx="8" fill="#E91E63" stroke="#C2185B" stroke-width="4"/>
+                        <path d="M45 45 A 15 15 0 0 1 75 45 V 65 H 45 Z" fill="#FFF59D" stroke="#333" stroke-width="2"/>
+                        <path d="M85 45 A 15 15 0 0 1 115 45 V 65 H 85 Z" fill="#FFF59D" stroke="#333" stroke-width="2"/>
+                        <path d="M45 45 h30 M60 30 v35 M85 45 h30 M100 30 v35" stroke="#333" stroke-width="1.5"/>
+                    </svg>`;
+                } else if (id === 4) {
+                    svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 80">
+                        <rect x="25" y="25" width="110" height="50" rx="4" fill="#9C27B0" stroke="#7B1FA2" stroke-width="4"/>
+                        <rect x="25" y="5" width="20" height="20" fill="#9C27B0" stroke="#7B1FA2" stroke-width="4"/>
+                        <rect x="70" y="5" width="20" height="20" fill="#9C27B0" stroke="#7B1FA2" stroke-width="4"/>
+                        <rect x="115" y="5" width="20" height="20" fill="#9C27B0" stroke="#7B1FA2" stroke-width="4"/>
+                        <path d="M25 25 h110" stroke="#7B1FA2" stroke-width="4"/>
+                    </svg>`;
+                } else if (id === 5) {
+                    svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 80">
+                        <path d="M80 15 L 30 75 H 130 Z" fill="#2196F3" stroke="#1976D2" stroke-width="4"/>
+                        <line x1="80" y1="15" x2="80" y2="5" stroke="#333" stroke-width="3"/>
+                        <path d="M80 5 L 110 13 L 80 21 Z" fill="#F44336"/>
+                    </svg>`;
+                }
+            } else if (structure === 'building') {
+                if (id === 1) {
+                    svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 80">
+                        <rect x="5" y="5" width="150" height="70" rx="6" fill="#3F51B5" stroke="#303F9F" stroke-width="4"/>
+                        <rect x="50" y="35" width="60" height="40" fill="#80DEEA" stroke="#303F9F" stroke-width="2"/>
+                        <line x1="80" y1="35" x2="80" y2="75" stroke="#303F9F" stroke-width="2"/>
+                        <rect x="15" y="15" width="20" height="15" rx="2" fill="#E0F7FA"/>
+                        <rect x="125" y="15" width="20" height="15" rx="2" fill="#E0F7FA"/>
+                    </svg>`;
+                } else if (id === 2) {
+                    svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 80">
+                        <rect x="5" y="5" width="150" height="70" fill="#00BCD4" stroke="#0097A7" stroke-width="4"/>
+                        <rect x="20" y="15" width="25" height="20" rx="3" fill="#E0F7FA" stroke="#0097A7" stroke-width="2"/>
+                        <rect x="52" y="15" width="25" height="20" rx="3" fill="#E0F7FA" stroke="#0097A7" stroke-width="2"/>
+                        <rect x="84" y="15" width="25" height="20" rx="3" fill="#E0F7FA" stroke="#0097A7" stroke-width="2"/>
+                        <rect x="116" y="15" width="25" height="20" rx="3" fill="#E0F7FA" stroke="#0097A7" stroke-width="2"/>
+                        <rect x="20" y="45" width="25" height="20" rx="3" fill="#E0F7FA" stroke="#0097A7" stroke-width="2"/>
+                        <rect x="52" y="45" width="25" height="20" rx="3" fill="#E0F7FA" stroke="#0097A7" stroke-width="2"/>
+                        <rect x="84" y="45" width="25" height="20" rx="3" fill="#E0F7FA" stroke="#0097A7" stroke-width="2"/>
+                        <rect x="116" y="45" width="25" height="20" rx="3" fill="#E0F7FA" stroke="#0097A7" stroke-width="2"/>
+                    </svg>`;
+                } else if (id === 3) {
+                    svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 80">
+                        <rect x="5" y="5" width="150" height="70" fill="#4CAF50" stroke="#388E3C" stroke-width="4"/>
+                        <rect x="25" y="15" width="30" height="35" rx="3" fill="#E8F5E9" stroke="#388E3C" stroke-width="2"/>
+                        <rect x="105" y="15" width="30" height="35" rx="3" fill="#E8F5E9" stroke="#388E3C" stroke-width="2"/>
+                        <rect x="65" y="25" width="30" height="40" rx="4" fill="#8D6E63"/>
+                        <circle cx="72" cy="18" r="8" fill="#81C784"/>
+                        <circle cx="88" cy="15" r="7" fill="#4CAF50"/>
+                    </svg>`;
+                } else if (id === 4) {
+                    svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 80">
+                        <rect x="10" y="5" width="140" height="70" fill="#8BC34A" stroke="#689F38" stroke-width="4"/>
+                        <rect x="25" y="20" width="22" height="30" rx="2" fill="#F1F8E9" stroke="#689F38" stroke-width="2"/>
+                        <rect x="55" y="20" width="22" height="30" rx="2" fill="#F1F8E9" stroke="#689F38" stroke-width="2"/>
+                        <rect x="85" y="20" width="22" height="30" rx="2" fill="#F1F8E9" stroke="#689F38" stroke-width="2"/>
+                        <rect x="115" y="20" width="22" height="30" rx="2" fill="#F1F8E9" stroke="#689F38" stroke-width="2"/>
+                    </svg>`;
+                } else if (id === 5) {
+                    svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 80">
+                        <rect x="15" y="45" width="130" height="30" fill="#FF5722" stroke="#E64A19" stroke-width="4"/>
+                        <rect x="35" y="15" width="90" height="30" rx="4" fill="#FF7043" stroke="#E64A19" stroke-width="3"/>
+                        <line x1="80" y1="15" x2="80" y2="2" stroke="#555" stroke-width="3"/>
+                        <circle cx="80" cy="2" r="3" fill="#E64A19"/>
+                    </svg>`;
+                }
+            } else if (structure === 'spaceship') {
+                if (id === 1) {
+                    svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 80">
+                        <path d="M40 5 L30 65 L 130 65 L 120 5 Z" fill="#CFD8DC" stroke="#90A4AE" stroke-width="4"/>
+                        <rect x="50" y="65" width="20" height="10" fill="#37474F"/>
+                        <rect x="90" y="65" width="20" height="10" fill="#37474F"/>
+                        <path d="M50 75 L40 85 L80 85 L70 75 Z" fill="#FF5722"/>
+                        <path d="M90 75 L80 85 L120 85 L110 75 Z" fill="#FF5722"/>
+                        <circle cx="80" cy="35" r="12" fill="#E0F7FA" stroke="#90A4AE" stroke-width="3"/>
+                    </svg>`;
+                } else if (id === 2) {
+                    svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 80">
+                        <path d="M35 5 L25 75 H 135 L 125 5 Z" fill="#E91E63" stroke="#C2185B" stroke-width="4"/>
+                        <path d="M25 75 L5 75 L15 35 Z" fill="#C2185B"/>
+                        <path d="M135 75 L155 75 L145 35 Z" fill="#C2185B"/>
+                        <circle cx="80" cy="40" r="16" fill="#80DEEA" stroke="#fff" stroke-width="3"/>
+                    </svg>`;
+                } else if (id === 3) {
+                    svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 80">
+                        <path d="M40 5 H 120 L 125 75 H 35 Z" fill="#9C27B0" stroke="#7B1FA2" stroke-width="4"/>
+                        <circle cx="80" cy="40" r="20" fill="#80DEEA" stroke="#7B1FA2" stroke-width="4"/>
+                        <path d="M68 40 A12 12 0 0 1 92 40" fill="none" stroke="#00838F" stroke-width="3"/>
+                        <circle cx="72" cy="32" r="3" fill="#333"/>
+                        <circle cx="88" cy="32" r="3" fill="#333"/>
+                    </svg>`;
+                } else if (id === 4) {
+                    svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 80">
+                        <path d="M48 5 L 40 75 H 120 L 112 5 Z" fill="#009688" stroke="#00796B" stroke-width="4"/>
+                        <line x1="80" y1="5" x2="80" y2="75" stroke="#00796B" stroke-width="2" stroke-dasharray="6,6"/>
+                    </svg>`;
+                } else if (id === 5) {
+                    svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 80">
+                        <path d="M80 5 L45 75 H 115 Z" fill="#03A9F4" stroke="#0288D1" stroke-width="4"/>
+                        <circle cx="80" cy="35" r="8" fill="#F44336" stroke="#fff" stroke-width="2"/>
+                        <line x1="80" y1="5" x2="80" y2="1" stroke="#333" stroke-width="2"/>
+                        <circle cx="80" cy="1" r="2" fill="#F44336"/>
+                    </svg>`;
+                }
+            }
+            return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg.replace(/\s+/g, ' '));
+        }
+
         function initTowerGame() {
             get('active-game-title').textContent = 'מגדל קוביות משותף 🧱';
             
@@ -3588,19 +3895,8 @@
             let abaScore = 0;
             let currentTurn = 'roy'; // Roy starts
             let stackedBlocks = [];
-
-            // Roy has blocks 1, 3, 5
-            // Aba has blocks 2, 4
-            let royBlocks = [
-                { id: 1, color: '#ef5350', border: '#d32f2f', label: 'קובייה 1', text: 'קובייה ראשונה' },
-                { id: 3, color: '#66bb6a', border: '#388e3c', label: 'קובייה 3', text: 'קובייה שלישית' },
-                { id: 5, color: '#42a5f5', border: '#1976d2', label: 'קובייה 5', text: 'קובייה חמישית' }
-            ];
-            let abaBlocks = [
-                { id: 2, color: '#ffa726', border: '#f57c00', label: 'קובייה 2', text: 'קובייה שנייה' },
-                { id: 4, color: '#ab47bc', border: '#7b1fa2', label: 'קובייה 4', text: 'קובייה רביעית' }
-            ];
-
+            let royBlocks = [];
+            let abaBlocks = [];
             let royPlayed = [false, false, false];
             let abaPlayed = [false, false];
 
@@ -3609,13 +3905,13 @@
                 if (sb) {
                     sb.innerHTML = `
                         <div class="numwar-score-item aba">
-                            <span>אבא יאיר:</span>
-                            <span class="numwar-score-val" id="score-aba">${abaScore}</span>
+                             <span>אבא יאיר:</span>
+                             <span class="numwar-score-val" id="score-aba">${abaScore}</span>
                         </div>
                         <div class="numwar-score-val" style="background:#e8f5e9;color:#2e7d32;font-weight:900;">גובה: ${stackedBlocks.length}/5</div>
                         <div class="numwar-score-item roy">
-                            <span>רועי:</span>
-                            <span class="numwar-score-val" id="score-roy">${royScore}</span>
+                             <span>רועי:</span>
+                             <span class="numwar-score-val" id="score-roy">${royScore}</span>
                         </div>
                     `;
                 }
@@ -3673,7 +3969,12 @@
                         card.style.color = '#fff';
                         card.style.fontSize = 'clamp(14px, 2.5vw, 18px)';
                         card.style.textShadow = '0 1px 3px rgba(0,0,0,0.3)';
-                        card.textContent = block.label;
+                        card.innerHTML = `
+                            <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; width:100%; gap:4px; padding:4px;">
+                                <img src="${block.image}" style="width:clamp(40px, 8vh, 60px); height:clamp(30px, 6vh, 45px); object-fit:contain;" />
+                                <div style="font-size:clamp(10px, 2vw, 12px); font-weight:bold; text-align:center; line-height:1.1;">${block.label}</div>
+                            </div>
+                        `;
 
                         if (royPlayed[idx]) {
                             card.classList.add('disabled');
@@ -3702,7 +4003,12 @@
                         card.style.color = '#fff';
                         card.style.fontSize = 'clamp(14px, 2.5vw, 18px)';
                         card.style.textShadow = '0 1px 3px rgba(0,0,0,0.3)';
-                        card.textContent = block.label;
+                        card.innerHTML = `
+                            <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; width:100%; gap:4px; padding:4px;">
+                                <img src="${block.image}" style="width:clamp(40px, 8vh, 60px); height:clamp(30px, 6vh, 45px); object-fit:contain;" />
+                                <div style="font-size:clamp(10px, 2vw, 12px); font-weight:bold; text-align:center; line-height:1.1;">${block.label}</div>
+                            </div>
+                        `;
 
                         if (abaPlayed[idx]) {
                             card.classList.add('disabled');
@@ -3739,12 +4045,15 @@
                 var container = get('tower-container');
                 var el = D.createElement('div');
                 el.className = 'numwar-block-stacked';
-                el.style.background = block.color;
-                el.style.borderColor = block.border;
+                el.style.width = 'clamp(100px, 20vw, 160px)';
+                el.style.height = 'clamp(40px, 6.5vh, 52px)';
                 
                 let stackedCount = stackedBlocks.length;
-                el.style.bottom = `calc(12px + ${stackedCount} * clamp(30px, 5vh, 40px))`;
-                el.textContent = block.label;
+                el.style.bottom = `calc(12px + ${stackedCount} * clamp(40px, 6.5vh, 52px))`;
+                el.style.background = 'transparent';
+                el.style.border = 'none';
+                el.style.boxShadow = 'none';
+                el.innerHTML = `<img src="${block.image}" style="width:100%; height:100%; object-fit:contain; animation: blockDrop 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;" />`;
                 
                 container.appendChild(el);
                 stackedBlocks.push(block);
@@ -3779,6 +4088,7 @@
                         
                         let nameStr = currentTurn === 'roy' ? 'רועי' : 'אבא יאיר';
                         get('arena-status').textContent = `תור ${nameStr} לשים קובייה! ⏳`;
+                        playCoopAudio('coop/towertalk_turn_' + currentTurn + '.mp3', `תור ${nameStr}`);
                         
                         isProcessing = false;
                         renderHands();
@@ -3786,10 +4096,88 @@
                 }, 1600);
             }
 
-            drawLayout();
+            // Draw Choice overlay
+            get('game-workspace').innerHTML = `
+                <div style="display:flex; flex-direction:column; align-items:center; gap:20px; width:100%; max-width:600px; margin:40px auto; padding:25px; background:rgba(255,255,255,0.9); border-radius:24px; box-shadow:0 8px 32px rgba(0,0,0,0.15); border:3px solid #fff;">
+                    <h2 style="font-size:clamp(22px, 4.5vw, 32px); font-weight:900; color:#333; text-align:center; margin:0; direction:rtl;">מה נרצה לבנות היום? 🧱</h2>
+                    <div style="display:flex; flex-direction:row; gap:16px; justify-content:center; flex-wrap:wrap; width:100%;">
+                        <div class="build-opt-card" onclick="startTowerBuild('castle')" style="cursor:pointer; flex:1; min-width:130px; max-width:160px; padding:16px; border:4px solid #ffc107; border-radius:20px; background:#fff; text-align:center; box-shadow:0 4px 10px rgba(0,0,0,0.1); transition:transform 0.2s;">
+                            <div style="font-size:clamp(40px, 8vw, 55px); margin-bottom:8px;">🏰</div>
+                            <div style="font-size:clamp(16px, 3vw, 20px); font-weight:bold; color:#ff9800;">טירה</div>
+                        </div>
+                        <div class="build-opt-card" onclick="startTowerBuild('building')" style="cursor:pointer; flex:1; min-width:130px; max-width:160px; padding:16px; border:4px solid #4caf50; border-radius:20px; background:#fff; text-align:center; box-shadow:0 4px 10px rgba(0,0,0,0.1); transition:transform 0.2s;">
+                            <div style="font-size:clamp(40px, 8vw, 55px); margin-bottom:8px;">🏢</div>
+                            <div style="font-size:clamp(16px, 3vw, 20px); font-weight:bold; color:#388e3c;">בניינים</div>
+                        </div>
+                        <div class="build-opt-card" onclick="startTowerBuild('spaceship')" style="cursor:pointer; flex:1; min-width:130px; max-width:160px; padding:16px; border:4px solid #2196f3; border-radius:20px; background:#fff; text-align:center; box-shadow:0 4px 10px rgba(0,0,0,0.1); transition:transform 0.2s;">
+                            <div style="font-size:clamp(40px, 8vw, 55px); margin-bottom:8px;">🚀</div>
+                            <div style="font-size:clamp(16px, 3vw, 20px); font-weight:bold; color:#1976d2;">חללית</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Add hover transitions programmatically
+            D.querySelectorAll('.build-opt-card').forEach(el => {
+                el.onmouseover = () => { el.style.transform = 'scale(1.06)'; el.style.boxShadow = '0 6px 16px rgba(0,0,0,0.15)'; };
+                el.onmouseout = () => { el.style.transform = 'scale(1)'; el.style.boxShadow = '0 4px 10px rgba(0,0,0,0.1)'; };
+            });
+
+            window.startTowerBuild = function(type) {
+                let list = [];
+                if (type === 'castle') {
+                    list = [
+                        { id: 1, color: '#ffc107', border: '#ff9800', label: 'בסיס הטירה 🏰', text: 'בסיס הטירה', image: getTowerSvg('castle', 1) },
+                        { id: 2, color: '#ff9800', border: '#f57c00', label: 'חומת לבנים 🧱', text: 'חומת לבנים', image: getTowerSvg('castle', 2) },
+                        { id: 3, color: '#e91e63', border: '#c2185b', label: 'חלון המגדל 🪟', text: 'חלון המגדל', image: getTowerSvg('castle', 3) },
+                        { id: 4, color: '#9c27b0', border: '#7b1fa2', label: 'צריח הטירה 🏰', text: 'צריח הטירה', image: getTowerSvg('castle', 4) },
+                        { id: 5, color: '#2196f3', border: '#1976d2', label: 'גג ודגל 🚩', text: 'גג ודגל', image: getTowerSvg('castle', 5) }
+                    ];
+                } else if (type === 'building') {
+                    list = [
+                        { id: 1, color: '#3f51b5', border: '#303f9f', label: 'כניסת הבניין 🏢', text: 'כניסת הבניין', image: getTowerSvg('building', 1) },
+                        { id: 2, color: '#00bcd4', border: '#0097a7', label: 'קומות ראשונות 🏢', text: 'קומות ראשונות', image: getTowerSvg('building', 2) },
+                        { id: 3, color: '#4caf50', border: '#388e3c', label: 'קומות אמצעיות 🏢', text: 'קומות אמצעיות', image: getTowerSvg('building', 3) },
+                        { id: 4, color: '#8bc34a', border: '#689f38', label: 'קומות עליונות 🏢', text: 'קומות עליונות', image: getTowerSvg('building', 4) },
+                        { id: 5, color: '#ff5722', border: '#e64a19', label: 'גג הבניין 🏢', text: 'גג הבניין', image: getTowerSvg('building', 5) }
+                    ];
+                } else {
+                    list = [
+                        { id: 1, color: '#f44336', border: '#d32f2f', label: 'מנועי החללית 🚀', text: 'מנועי החללית', image: getTowerSvg('spaceship', 1) },
+                        { id: 2, color: '#e91e63', border: '#c2185b', label: 'גוף החללית 🚀', text: 'גוף החללית', image: getTowerSvg('spaceship', 2) },
+                        { id: 3, color: '#9c27b0', border: '#7b1fa2', label: 'חלון החללית 🚀', text: 'חלון החללית', image: getTowerSvg('spaceship', 3) },
+                        { id: 4, color: '#009688', border: '#00796b', label: 'חרטום החללית 🚀', text: 'חרטום החללית', image: getTowerSvg('spaceship', 4) },
+                        { id: 5, color: '#03a9f4', border: '#0288d1', label: 'ראש החללית 🚀', text: 'ראש החללית', image: getTowerSvg('spaceship', 5) }
+                    ];
+                }
+                
+                royBlocks = [list[0], list[2], list[4]];
+                abaBlocks = [list[1], list[3]];
+                
+                drawLayout();
+                playCoopAudio('coop/towertalk_turn_roy.mp3', 'תור רועי לשים קובייה');
+            };
         }
 
         // ── פאזל משותף ──
+        function getPuzzleSvg(type) {
+            let svg = '';
+            if (type === 'car') {
+                svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400"><rect width="400" height="400" fill="#FFF9C4"/><circle cx="200" cy="200" r="180" fill="#FFF59D" /><rect x="20" y="270" width="360" height="40" rx="5" fill="#78909C"/><line x1="40" y1="290" x2="360" y2="290" stroke="#fff" stroke-width="4" stroke-dasharray="15,15"/><path d="M70 270 L80 200 Q100 160 170 160 L280 160 Q340 160 350 210 L360 270 Z" fill="#F44336"/><path d="M140 160 L160 110 H 260 L280 160 Z" fill="#E0F7FA" stroke="#F44336" stroke-width="4"/><circle cx="130" cy="270" r="30" fill="#37474F" stroke="#fff" stroke-width="4"/><circle cx="290" cy="270" r="30" fill="#37474F" stroke="#fff" stroke-width="4"/><circle cx="130" cy="270" r="10" fill="#ECEFF1"/><circle cx="290" cy="270" r="10" fill="#ECEFF1"/><rect x="330" y="200" width="20" height="15" rx="3" fill="#FFEB3B"/></svg>`;
+            } else if (type === 'spaceship') {
+                svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400"><rect width="400" height="400" fill="#0D47A1"/><circle cx="60" cy="80" r="3" fill="#fff"/><circle cx="340" cy="60" r="2" fill="#fff"/><circle cx="100" cy="300" r="2" fill="#fff"/><circle cx="310" cy="280" r="3" fill="#fff"/><circle cx="200" cy="50" r="4" fill="#FFD54F"/><circle cx="50" cy="200" r="2" fill="#fff"/><circle cx="320" cy="320" r="35" fill="#FF5722"/><ellipse cx="320" cy="320" rx="50" ry="10" fill="none" stroke="#FFAB91" stroke-width="4" transform="rotate(-15 320 320)"/><path d="M170 300 L200 380 L230 300 Z" fill="#FF9800"/><path d="M185 300 L200 350 L215 300 Z" fill="#FFEB3B"/><path d="M200 60 C140 140 150 300 150 300 H 250 C250 300 260 140 200 60 Z" fill="#ECEFF1"/><path d="M150 240 L110 300 L150 300 Z" fill="#D32F2F"/><path d="M250 240 L290 300 L250 300 Z" fill="#D32F2F"/><circle cx="200" cy="160" r="22" fill="#80DEEA" stroke="#B0BEC5" stroke-width="4"/><circle cx="200" cy="160" r="14" fill="#E0F7FA"/></svg>`;
+            } else if (type === 'building') {
+                svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400"><rect width="400" height="400" fill="#37474F"/><circle cx="300" cy="100" r="35" fill="#FFF59D"/><circle cx="285" cy="85" r="30" fill="#37474F"/><rect x="50" y="180" width="80" height="220" fill="#263238"/><rect x="270" y="150" width="80" height="250" fill="#263238"/><rect x="130" y="80" width="140" height="320" rx="5" fill="#546E7A" stroke="#78909C" stroke-width="4"/><rect x="150" y="110" width="25" height="20" rx="2" fill="#FFF59D"/><rect x="190" y="110" width="25" height="20" rx="2" fill="#FFF59D"/><rect x="225" y="110" width="25" height="20" rx="2" fill="#FFF59D"/><rect x="150" y="160" width="25" height="20" rx="2" fill="#FFF59D"/><rect x="190" y="160" width="25" height="20" rx="2" fill="#FFF59D"/><rect x="225" y="160" width="25" height="20" rx="2" fill="#FFF59D"/><rect x="150" y="210" width="25" height="20" rx="2" fill="#FFF59D"/><rect x="190" y="210" width="25" height="20" rx="2" fill="#FFF59D"/><rect x="225" y="210" width="25" height="20" rx="2" fill="#FFF59D"/><rect x="150" y="260" width="25" height="20" rx="2" fill="#FFF59D"/><rect x="190" y="260" width="25" height="20" rx="2" fill="#FFF59D"/><rect x="225" y="260" width="25" height="20" rx="2" fill="#FFF59D"/><rect x="150" y="310" width="25" height="20" rx="2" fill="#FFF59D"/><rect x="190" y="310" width="25" height="20" rx="2" fill="#FFF59D"/><rect x="225" y="310" width="25" height="20" rx="2" fill="#FFF59D"/></svg>`;
+            } else if (type === 'shark') {
+                svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400"><rect width="400" height="400" fill="#00E5FF"/><circle cx="200" cy="200" r="170" fill="#00B8D4" opacity="0.3"/><path d="M50 200 C100 120 280 120 340 180 C360 200 370 210 320 230 C280 250 100 250 50 200 Z" fill="#90A4AE"/><path d="M120 220 C180 240 280 240 320 230 C300 215 150 200 120 220 Z" fill="#ECEFF1"/><path d="M50 200 L10 160 L25 200 L10 240 Z" fill="#78909C"/><path d="M200 148 Q230 80 250 100 Q230 155 210 152 Z" fill="#78909C"/><circle cx="300" cy="175" r="6" fill="#000"/><circle cx="302" cy="173" r="2" fill="#fff"/><path d="M280 212 Q300 225 320 210 Z" fill="#37474F"/><path d="M290 212 L295 218 L300 212 L305 218 L310 212" fill="none" stroke="#fff" stroke-width="2"/></svg>`;
+            } else if (type === 'mgamish') {
+                svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400"><rect width="400" height="400" fill="#E8F5E9"/><circle cx="200" cy="200" r="160" fill="#C8E6C9" opacity="0.5"/><path d="M100 240 Q 200 120 300 240" fill="none" stroke="#FF5722" stroke-width="36" stroke-linecap="round"/><path d="M100 240 Q 200 120 300 240" fill="none" stroke="#FF7043" stroke-width="24" stroke-linecap="round"/><circle cx="200" cy="140" r="30" fill="#FF5722" stroke="#FF7043" stroke-width="4"/><circle cx="190" cy="135" r="4" fill="#000"/><circle cx="210" cy="135" r="4" fill="#000"/><path d="M190 148 Q200 156 210 148" fill="none" stroke="#000" stroke-width="2"/><line x1="160" y1="170" x2="130" y2="190" stroke="#FF5722" stroke-width="10" stroke-linecap="round"/><line x1="240" y1="170" x2="270" y2="190" stroke="#FF5722" stroke-width="10" stroke-linecap="round"/></svg>`;
+            } else if (type === 'firetruck') {
+                svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400"><rect width="400" height="400" fill="#FFE0B2"/><circle cx="200" cy="200" r="160" fill="#FFD180" opacity="0.4" /><rect x="90" y="145" width="200" height="15" rx="2" fill="#B0BEC5"/><line x1="110" y1="145" x2="110" y2="160" stroke="#37474F" stroke-width="3"/><line x1="140" y1="145" x2="140" y2="160" stroke="#37474F" stroke-width="3"/><line x1="170" y1="145" x2="170" y2="160" stroke="#37474F" stroke-width="3"/><line x1="200" y1="145" x2="200" y2="160" stroke="#37474F" stroke-width="3"/><line x1="230" y1="145" x2="230" y2="160" stroke="#37474F" stroke-width="3"/><line x1="260" y1="145" x2="260" y2="160" stroke="#37474F" stroke-width="3"/><rect x="60" y="160" width="280" height="110" rx="8" fill="#D50000"/><rect x="250" y="160" width="90" height="60" rx="5" fill="#E0F7FA"/><rect x="255" y="165" width="80" height="50" rx="3" fill="#80DEEA"/><rect x="60" y="240" width="280" height="30" fill="#B0BEC5"/><circle cx="110" cy="270" r="30" fill="#212121" stroke="#fff" stroke-width="4"/><circle cx="290" cy="270" r="30" fill="#212121" stroke="#fff" stroke-width="4"/><circle cx="110" cy="270" r="10" fill="#ECEFF1"/><circle cx="290" cy="270" r="10" fill="#ECEFF1"/><rect x="280" y="145" width="20" height="15" rx="3" fill="#00E5FF"/><path d="M280 145 H300 V150 H280 Z" fill="#D50000"/></svg>`;
+            }
+            return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg.replace(/\s+/g, ' '));
+        }
+
         function initCoopPuzzleGame() {
             get('active-game-title').textContent = 'פאזל משותף 🧩';
             
@@ -3798,6 +4186,7 @@
             let currentTurn = 'roy'; // Roy starts
             let selectedPieceIndex = null;
             let placedPieces = [false, false, false, false];
+            let selectedPuzzleImage = '';
 
             // Slices configuration:
             // 0: Top-Left, 1: Top-Right, 2: Bottom-Left, 3: Bottom-Right
@@ -3888,7 +4277,7 @@
                         var piece = puzzlePieces[idx];
                         var el = D.createElement('div');
                         el.className = 'coop-puzzle-piece';
-                        el.style.backgroundImage = "url('images/roy-aba-yair.jpg')";
+                        el.style.backgroundImage = "url('" + selectedPuzzleImage + "')";
                         el.style.backgroundSize = "200% 200%";
                         el.style.backgroundPosition = piece.bgPos;
 
@@ -3914,7 +4303,7 @@
                         var piece = puzzlePieces[idx];
                         var el = D.createElement('div');
                         el.className = 'coop-puzzle-piece aba-piece';
-                        el.style.backgroundImage = "url('images/roy-aba-yair.jpg')";
+                        el.style.backgroundImage = "url('" + selectedPuzzleImage + "')";
                         el.style.backgroundSize = "200% 200%";
                         el.style.backgroundPosition = piece.bgPos;
 
@@ -3961,7 +4350,7 @@
                     slotEl.innerHTML = '';
                     var pieceEl = D.createElement('div');
                     pieceEl.className = 'coop-puzzle-piece in-slot';
-                    pieceEl.style.backgroundImage = "url('images/roy-aba-yair.jpg')";
+                    pieceEl.style.backgroundImage = "url('" + selectedPuzzleImage + "')";
                     pieceEl.style.backgroundSize = "200% 200%";
                     pieceEl.style.backgroundPosition = puzzlePieces[slotIdx].bgPos;
                     slotEl.appendChild(pieceEl);
@@ -4011,7 +4400,50 @@
                 }
             }
 
-            drawLayout();
+            // Draw Choice overlay
+            get('game-workspace').innerHTML = `
+                <div style="display:flex; flex-direction:column; align-items:center; gap:20px; width:100%; max-width:600px; margin:40px auto; padding:25px; background:rgba(255,255,255,0.9); border-radius:24px; box-shadow:0 8px 32px rgba(0,0,0,0.15); border:3px solid #fff;">
+                    <h2 style="font-size:clamp(22px, 4.5vw, 32px); font-weight:900; color:#333; text-align:center; margin:0; direction:rtl;">מה נרצה להרכיב היום? 🧩</h2>
+                    <div style="display:flex; flex-direction:row; gap:16px; justify-content:center; flex-wrap:wrap; width:100%;">
+                        <div class="puzzle-opt-card" onclick="startPuzzleBuild('car')" style="cursor:pointer; flex:1; min-width:130px; max-width:160px; padding:16px; border:4px solid #ffc107; border-radius:20px; background:#fff; text-align:center; box-shadow:0 4px 10px rgba(0,0,0,0.1); transition:transform 0.2s;">
+                            <div style="font-size:clamp(40px, 8vw, 55px); margin-bottom:8px;">🚗</div>
+                            <div style="font-size:clamp(16px, 3vw, 20px); font-weight:bold; color:#ff9800;">מכונית</div>
+                        </div>
+                        <div class="puzzle-opt-card" onclick="startPuzzleBuild('spaceship')" style="cursor:pointer; flex:1; min-width:130px; max-width:160px; padding:16px; border:4px solid #2196f3; border-radius:20px; background:#fff; text-align:center; box-shadow:0 4px 10px rgba(0,0,0,0.1); transition:transform 0.2s;">
+                            <div style="font-size:clamp(40px, 8vw, 55px); margin-bottom:8px;">🚀</div>
+                            <div style="font-size:clamp(16px, 3vw, 20px); font-weight:bold; color:#1976d2;">חללית</div>
+                        </div>
+                        <div class="puzzle-opt-card" onclick="startPuzzleBuild('building')" style="cursor:pointer; flex:1; min-width:130px; max-width:160px; padding:16px; border:4px solid #4caf50; border-radius:20px; background:#fff; text-align:center; box-shadow:0 4px 10px rgba(0,0,0,0.1); transition:transform 0.2s;">
+                            <div style="font-size:clamp(40px, 8vw, 55px); margin-bottom:8px;">🏢</div>
+                            <div style="font-size:clamp(16px, 3vw, 20px); font-weight:bold; color:#388e3c;">בניין</div>
+                        </div>
+                        <div class="puzzle-opt-card" onclick="startPuzzleBuild('shark')" style="cursor:pointer; flex:1; min-width:130px; max-width:160px; padding:16px; border:4px solid #00bcd4; border-radius:20px; background:#fff; text-align:center; box-shadow:0 4px 10px rgba(0,0,0,0.1); transition:transform 0.2s;">
+                            <div style="font-size:clamp(40px, 8vw, 55px); margin-bottom:8px;">🦈</div>
+                            <div style="font-size:clamp(16px, 3vw, 20px); font-weight:bold; color:#0097a7;">כריש</div>
+                        </div>
+                        <div class="puzzle-opt-card" onclick="startPuzzleBuild('mgamish')" style="cursor:pointer; flex:1; min-width:130px; max-width:160px; padding:16px; border:4px solid #9c27b0; border-radius:20px; background:#fff; text-align:center; box-shadow:0 4px 10px rgba(0,0,0,0.1); transition:transform 0.2s;">
+                            <div style="font-size:clamp(40px, 8vw, 55px); margin-bottom:8px;">🤸</div>
+                            <div style="font-size:clamp(16px, 3vw, 20px); font-weight:bold; color:#7b1fa2;">מר גמיש</div>
+                        </div>
+                        <div class="puzzle-opt-card" onclick="startPuzzleBuild('firetruck')" style="cursor:pointer; flex:1; min-width:130px; max-width:160px; padding:16px; border:4px solid #f44336; border-radius:20px; background:#fff; text-align:center; box-shadow:0 4px 10px rgba(0,0,0,0.1); transition:transform 0.2s;">
+                            <div style="font-size:clamp(40px, 8vw, 55px); margin-bottom:8px;">🚒</div>
+                            <div style="font-size:clamp(16px, 3vw, 20px); font-weight:bold; color:#d32f2f;">כבאית</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Add hover transitions programmatically
+            D.querySelectorAll('.puzzle-opt-card').forEach(el => {
+                el.onmouseover = () => { el.style.transform = 'scale(1.06)'; el.style.boxShadow = '0 6px 16px rgba(0,0,0,0.15)'; };
+                el.onmouseout = () => { el.style.transform = 'scale(1)'; el.style.boxShadow = '0 4px 10px rgba(0,0,0,0.1)'; };
+            });
+
+            window.startPuzzleBuild = function(type) {
+                selectedPuzzleImage = getPuzzleSvg(type);
+                drawLayout();
+                playCoopAudio('coop/coop_turn_roy.mp3', 'רועי, בחר חלק פאזל ולחץ על המקום הנכון');
+            };
         }
 
         // ── סדר בחדר ביחד ──
@@ -4123,82 +4555,126 @@
                     isProcessing = true;
                     playSuccessSound();
 
-                    // Move to basket
-                    if (currentTurn === 'roy') {
-                        royScore++;
-                        var basket = get('roy-basket-items');
-                        if (basket) {
-                            let bi = D.createElement('div');
-                            bi.className = 'coop-tidy-item';
-                            bi.style.width = 'clamp(35px, 7vmin, 50px)';
-                            bi.style.height = 'clamp(35px, 7vmin, 50px)';
-                            bi.style.cursor = 'default';
-                            bi.innerHTML = `<img src="${item.image}" style="width:80%; height:80%; object-fit:contain;" />`;
-                            basket.appendChild(bi);
-                        }
-                    } else {
-                        abaScore++;
-                        var basket = get('aba-basket-items');
-                        if (basket) {
-                            let bi = D.createElement('div');
-                            bi.className = 'coop-tidy-item';
-                            bi.style.width = 'clamp(35px, 7vmin, 50px)';
-                            bi.style.height = 'clamp(35px, 7vmin, 50px)';
-                            bi.style.cursor = 'default';
-                            bi.style.borderColor = '#FF5722';
-                            bi.innerHTML = `<img src="${item.image}" style="width:80%; height:80%; object-fit:contain;" />`;
-                            basket.appendChild(bi);
-                        }
-                    }
-
-                    // Remove from pool
-                    itemsPool.splice(idx, 1);
-                    renderItems();
-                    updateScoreboard();
-
-                    // Speak item name
-                    let fileMap = {
-                        'images/tidy_car.png': 'tidy_car.mp3',
-                        'images/tidy_bear.png': 'tidy_bear.mp3',
-                        'images/tidy_ball.png': 'tidy_ball.mp3',
-                        'images/tidy_apple.png': 'tidy_apple.mp3',
-                        'images/tidy_dog.png': 'tidy_dog.mp3',
-                        'images/tidy_cat.png': 'tidy_cat.mp3'
-                    };
-                    playCoopAudio('coop/' + fileMap[item.image], item.nameHe);
-
-                    setTimeout(() => {
-                        currentStep++;
-                        updateProgressUI();
-
-                        if (itemsPool.length === 0) {
-                            // Completed!
-                            let victoryMsg = 'כל הכבוד! סידרנו את כל החדר ביחד! 🧼🎉';
-                            get('arena-status').textContent = victoryMsg;
-                            try { if(typeof confetti === 'function') confetti({particleCount: 150, origin:{y:0.6}, zIndex:1000}); } catch(e){}
-                            showKisses();
-                            playCoopAudio('coop/tidy_victory.mp3', victoryMsg);
-
+                    // Find DOM element representing clicked item
+                    var container = get('tidy-items-container');
+                    var itemElements = container.querySelectorAll('.coop-tidy-item');
+                    var clickedEl = itemElements[idx];
+                    if (clickedEl) {
+                        var rect = clickedEl.getBoundingClientRect();
+                        var targetBasket = currentTurn === 'roy' ? get('roy-basket-side') : get('aba-basket-side');
+                        var basketRect = targetBasket.getBoundingClientRect();
+                        
+                        // Create floating clone
+                        var clone = D.createElement('div');
+                        clone.className = 'coop-tidy-item';
+                        clone.style.position = 'fixed';
+                        clone.style.left = rect.left + 'px';
+                        clone.style.top = rect.top + 'px';
+                        clone.style.width = rect.width + 'px';
+                        clone.style.height = rect.height + 'px';
+                        clone.style.zIndex = '9999';
+                        clone.style.pointerEvents = 'none';
+                        clone.style.display = 'flex';
+                        clone.style.justifyContent = 'center';
+                        clone.style.alignItems = 'center';
+                        clone.style.background = '#fff';
+                        clone.style.border = '4px solid ' + (currentTurn === 'roy' ? '#2196F3' : '#FF5722');
+                        clone.style.borderRadius = '20px';
+                        clone.style.boxShadow = '0 8px 24px rgba(0,0,0,0.3)';
+                        clone.innerHTML = clickedEl.innerHTML;
+                        
+                        document.body.appendChild(clone);
+                        clickedEl.style.visibility = 'hidden';
+                        
+                        setTimeout(() => {
+                            clone.style.transition = 'all 1.0s cubic-bezier(0.25, 1, 0.5, 1)';
+                            var targetX = basketRect.left + basketRect.width / 2 - rect.width / 2;
+                            var targetY = basketRect.top + basketRect.height / 2 - rect.height / 2;
+                            clone.style.left = targetX + 'px';
+                            clone.style.top = targetY + 'px';
+                            clone.style.transform = 'scale(0.4)';
+                            clone.style.opacity = '0.3';
+                        }, 50);
+                        
+                        setTimeout(() => {
+                            if (clone.parentNode) clone.parentNode.removeChild(clone);
+                            
+                            // Move to basket
+                            if (currentTurn === 'roy') {
+                                royScore++;
+                                var basket = get('roy-basket-items');
+                                if (basket) {
+                                    let bi = D.createElement('div');
+                                    bi.className = 'coop-tidy-item';
+                                    bi.style.width = 'clamp(35px, 7vmin, 50px)';
+                                    bi.style.height = 'clamp(35px, 7vmin, 50px)';
+                                    bi.style.cursor = 'default';
+                                    bi.innerHTML = `<img src="${item.image}" style="width:80%; height:80%; object-fit:contain;" />`;
+                                    basket.appendChild(bi);
+                                }
+                            } else {
+                                abaScore++;
+                                var basket = get('aba-basket-items');
+                                if (basket) {
+                                    let bi = D.createElement('div');
+                                    bi.className = 'coop-tidy-item';
+                                    bi.style.width = 'clamp(35px, 7vmin, 50px)';
+                                    bi.style.height = 'clamp(35px, 7vmin, 50px)';
+                                    bi.style.cursor = 'default';
+                                    bi.style.borderColor = '#FF5722';
+                                    bi.innerHTML = `<img src="${item.image}" style="width:80%; height:80%; object-fit:contain;" />`;
+                                    basket.appendChild(bi);
+                                }
+                            }
+                            
+                            // Remove from pool
+                            itemsPool.splice(idx, 1);
+                            updateScoreboard();
+                            
+                            // Speak item name
+                            let fileMap = {
+                                'images/tidy_car.png': 'tidy_car.mp3',
+                                'images/tidy_bear.png': 'tidy_bear.mp3',
+                                'images/tidy_ball.png': 'tidy_ball.mp3',
+                                'images/tidy_apple.png': 'tidy_apple.mp3',
+                                'images/tidy_dog.png': 'tidy_dog.mp3',
+                                'images/tidy_cat.png': 'tidy_cat.mp3'
+                            };
+                            playCoopAudio('coop/' + fileMap[item.image], item.nameHe);
+                            
                             setTimeout(() => {
-                                isProcessing = false;
-                                currentStep = 5; // completion target
-                                handleAnswer(true, null, null, null);
-                            }, 2500);
-                        } else {
-                            // Switch turn
-                            currentTurn = currentTurn === 'roy' ? 'aba' : 'roy';
-                            var pend = get('numwar-pendulum');
-                            if (pend) pend.className = 'numwar-pendulum-arm to-' + currentTurn;
-
-                            let nameStr = currentTurn === 'roy' ? 'רועי' : 'אבא יאיר';
-                            let categoryStr = currentTurn === 'roy' ? 'צעצועים וחפצים 🧸' : 'חיות ופירות 🍎';
-                            get('arena-status').textContent = `תור ${nameStr} לבחור ${categoryStr}! ⏳`;
-playCoopAudio(currentTurn === 'roy' ? 'coop/numwar_turn_roy.mp3' : 'coop/numwar_turn_aba.mp3', `תור ${nameStr}`);
-
-                            isProcessing = false;
-                            renderItems();
-                        }
-                    }, 1600);
+                                currentStep++;
+                                updateProgressUI();
+                                
+                                if (itemsPool.length === 0) {
+                                    // Completed!
+                                    let victoryMsg = 'כל הכבוד! סידרנו את כל החדר ביחד! 🧼🎉';
+                                    get('arena-status').textContent = victoryMsg;
+                                    try { if(typeof confetti === 'function') confetti({particleCount: 150, origin:{y:0.6}, zIndex:1000}); } catch(e){}
+                                    showKisses();
+                                    playCoopAudio('coop/tidy_victory.mp3', victoryMsg);
+                                    
+                                    setTimeout(() => {
+                                        isProcessing = false;
+                                        currentStep = 6; // match completion target
+                                        handleAnswer(true, null, null, null);
+                                    }, 2500);
+                                } else {
+                                    // Switch turn
+                                    currentTurn = currentTurn === 'roy' ? 'aba' : 'roy';
+                                    var pend = get('numwar-pendulum');
+                                    if (pend) pend.className = 'numwar-pendulum-arm to-' + currentTurn;
+                                    
+                                    let nameStr = currentTurn === 'roy' ? 'רועי' : 'אבא יאיר';
+                                    let categoryStr = currentTurn === 'roy' ? 'צעצועים וחפצים 🧸' : 'חיות ופירות 🍎';
+                                    get('arena-status').textContent = `תור ${nameStr} לבחור ${categoryStr}! ⏳`;
+                                    
+                                    isProcessing = false;
+                                    renderItems();
+                                }
+                            }, 1600);
+                        }, 1050);
+                    }
                 } else {
                     // Wrong basket
                     playErrorSound();
@@ -4209,8 +4685,9 @@ playCoopAudio(currentTurn === 'roy' ? 'coop/numwar_turn_roy.mp3' : 'coop/numwar_
                     playCoopAudio(filename, errStr);
                 }
             }
-
+            
             drawLayout();
+            playCoopAudio('coop/tidy_instructions.mp3', 'בואו נעשה סדר בחדר! רועי מסדר צעצועים וחפצים, ואבא יאיר מסדר פירות וחיות.');
         }
 
         function handleMgChoice(side, puz) {
@@ -4240,6 +4717,319 @@ playCoopAudio(currentTurn === 'roy' ? 'coop/numwar_turn_roy.mp3' : 'coop/numwar_
                 playMgHappySound();
                 handleAnswer(true, null, loadMgRound, null);
             }
+        }
+
+        // ── השלם את התבנית ──
+        const patternsPool = [
+            { sequence: ['🔴', '🔵', '🔴', '🔵', '🔴'], answer: '🔵', wrong: ['🔴', '💛', '💚'], question: 'מה הקובייה הבאה בתבנית?' },
+            { sequence: ['🚗', '✈️', '🚗', '✈️'], answer: '🚗', wrong: ['✈️', '🚂', '🚁'], question: 'איזה כלי תחבורה בא עכשיו?' },
+            { sequence: ['🍎', '🍌', '🍎', '🍌', '🍎'], answer: '🍌', wrong: ['🍎', '🍇', '🍓'], question: 'איזה פרי מגיע עכשיו?' },
+            { sequence: ['🐶', '🐱', '🐶', '🐱'], answer: '🐶', wrong: ['🐱', '🦁', '🐷'], question: 'איזה בעל חיים מגיע עכשיו?' },
+            { sequence: ['🌟', '🌙', '🌟', '🌙', '🌟'], answer: '🌙', wrong: ['🌟', '☀️', '☁️'], question: 'מה מגיע הבא בתור?' },
+            { sequence: ['🔺', '🟩', '🔺', '🟩'], answer: '🔺', wrong: ['🟩', '🟡', '🔷'], question: 'איזה צורה באה עכשיו?' },
+            { sequence: ['🔴', '🔴', '🔵', '🔴', '🔴'], answer: '🔵', wrong: ['🔴', '💛', '🟩'], question: 'מה משלים את התבנית?' },
+            { sequence: ['💛', '💚', '💛', '💚', '💛'], answer: '💚', wrong: ['💛', '💙', '💜'], question: 'איזה צבע מגיע עכשיו?' }
+        ];
+        let patternsOrder = [];
+
+        function initPatternsGame() {
+            get('active-game-title').textContent = 'השלם את התבנית 🔴';
+            get('game-workspace').innerHTML = `
+                <div style="font-size:clamp(22px, 5vw, 32px); font-weight:900; margin-bottom:20px; color:#333; text-align:center; direction:rtl;" id="pattern-question">מה הקובייה הבאה בתבנית? 🤔</div>
+                <div id="pattern-seq-area" style="display:flex; flex-direction:row-reverse; gap:12px; justify-content:center; align-items:center; margin-bottom:30px; background:rgba(255,255,255,0.6); padding:20px; border-radius:24px; border:4px solid #fff; box-shadow:0 6px 20px rgba(0,0,0,0.12); flex-wrap:wrap; max-width:90%; margin-left:auto; margin-right:auto;"></div>
+                <div id="pattern-options-area" class="opts-row" style="margin-top:20px;"></div>
+            `;
+            patternsOrder = shuffle(createRange(patternsPool.length)).slice(0, 4);
+            loadPatternsRound();
+        }
+
+        function loadPatternsRound() {
+            let p = patternsPool[patternsOrder[currentStep]];
+            get('pattern-question').textContent = p.question;
+            
+            // Build sequence UI
+            let seqArea = get('pattern-seq-area');
+            seqArea.innerHTML = '';
+            p.sequence.forEach(symbol => {
+                let box = D.createElement('div');
+                box.style.cssText = 'width:clamp(60px, 12vmin, 90px); height:clamp(60px, 12vmin, 90px); background:#fff; border:3px solid #ff9800; border-radius:18px; display:flex; align-items:center; justify-content:center; font-size:clamp(32px, 6vmin, 48px); box-shadow:0 4px 8px rgba(0,0,0,0.1);';
+                box.textContent = symbol;
+                seqArea.appendChild(box);
+            });
+            
+            // Missing block representation (question mark card)
+            let questionBox = D.createElement('div');
+            questionBox.style.cssText = 'width:clamp(60px, 12vmin, 90px); height:clamp(60px, 12vmin, 90px); background:#fff; border:3px dashed #ff5722; border-radius:18px; display:flex; align-items:center; justify-content:center; font-size:clamp(32px, 6vmin, 48px); font-weight:bold; color:#ff5722; animation: pulse 1.5s infinite;';
+            questionBox.textContent = '❓';
+            seqArea.appendChild(questionBox);
+            
+            speakLetter(p.question, 'he');
+            
+            let correctOpt = { text: p.answer, isCorrect: true };
+            let wrongOpts = p.wrong.map(symbol => ({ text: symbol, isCorrect: false }));
+            let opts = shuffle([correctOpt].concat(wrongOpts));
+            
+            let oArea = get('pattern-options-area');
+            oArea.innerHTML = '';
+            opts.forEach((opt, i) => {
+                let w = D.createElement('div');
+                w.className = 'option-wrapper';
+                let b = D.createElement('button');
+                b.className = 'action-btn option-btn';
+                b.style.cssText = 'width:clamp(70px,18vmin,140px); height:clamp(70px,18vmin,140px); background:#fff; border:5px solid #4CAF50; border-radius:20px; padding:0; display:flex; justify-content:center; align-items:center; overflow:hidden; font-size:clamp(40px, 8vmin, 64px); box-shadow:0 6px 14px rgba(0,0,0,0.15); transition:transform 0.15s;';
+                b.textContent = opt.text;
+                b.onclick = () => {
+                    if (isProcessing) return;
+                    if (opt.isCorrect) {
+                        isProcessing = true;
+                        // Replace '❓' card with the correct answer shape
+                        questionBox.style.borderStyle = 'solid';
+                        questionBox.style.borderColor = '#4CAF50';
+                        questionBox.style.animation = 'superPop 0.5s ease-out forwards';
+                        questionBox.textContent = opt.text;
+                        setTimeout(() => {
+                            isProcessing = false;
+                            handleAnswer(true, b, loadPatternsRound, null);
+                        }, 1000);
+                    } else {
+                        handleAnswer(false, b, null, null);
+                    }
+                };
+                let n = D.createElement('div');
+                n.className = 'option-number';
+                n.textContent = i + 1;
+                w.appendChild(b);
+                w.appendChild(n);
+                oArea.appendChild(w);
+            });
+        }
+
+        // ── מאיפה זה מגיע ──
+        function getOriginsSvg(type) {
+            let svg = '';
+            if (type === 'cow') {
+                svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#E8F5E9" rx="15"/><circle cx="50" cy="50" r="38" fill="#FFF"/><path d="M50 88 C70 88 85 70 85 50 C85 40 70 42 50 42 C30 42 15 40 15 50 C15 70 30 88 50 88 Z" fill="#FFCDD2"/><ellipse cx="38" cy="62" rx="4" ry="2" fill="#E91E63"/><ellipse cx="62" cy="62" rx="4" ry="2" fill="#E91E63"/><circle cx="35" cy="38" r="5" fill="#000"/><circle cx="65" cy="38" r="5" fill="#000"/><circle cx="37" cy="36" r="1.5" fill="#fff"/><circle cx="67" cy="36" r="1.5" fill="#fff"/><path d="M22 28 C22 20 32 15 32 25 Z" fill="#CFD8DC"/><path d="M78 28 C78 20 68 15 68 25 Z" fill="#CFD8DC"/><path d="M50 42 C40 42 30 38 28 35 C28 25 35 25 42 30 Z" fill="#000"/><path d="M75 52 C82 52 85 60 80 65 Z" fill="#000"/></svg>`;
+            } else if (type === 'milk') {
+                svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#E3F2FD" rx="15"/><path d="M35 85 L35 45 L42 35 L42 20 H58 V35 L65 45 L65 85 Z" fill="#FFF" stroke="#90A4AE" stroke-width="3"/><rect x="35" y="50" width="30" height="15" fill="#90CAF9"/><path d="M42 28 H58" stroke="#F44336" stroke-width="2"/><text x="50" y="61" font-size="9" font-weight="bold" fill="#0D47A1" text-anchor="middle">MILK</text></svg>`;
+            } else if (type === 'sheep') {
+                svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#ECEFF1" rx="15"/><circle cx="38" cy="40" r="12" fill="#FFF"/><circle cx="62" cy="40" r="12" fill="#FFF"/><circle cx="50" cy="32" r="14" fill="#FFF"/><circle cx="50" cy="50" r="16" fill="#FFF"/><circle cx="32" cy="55" r="10" fill="#FFF"/><circle cx="68" cy="55" r="10" fill="#FFF"/><rect x="42" y="44" width="16" height="24" rx="8" fill="#FFE0B2"/><circle cx="46" cy="50" r="2" fill="#000"/><circle cx="54" cy="50" r="2" fill="#000"/><path d="M48 56 Q50 58 52 56" fill="none" stroke="#E91E63" stroke-width="1.5" stroke-linecap="round"/></svg>`;
+            } else if (type === 'sweater') {
+                svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#FCE4EC" rx="15"/><path d="M20 30 H80 L88 55 L78 58 L72 45 V80 H28 V45 L22 58 L12 55 Z" fill="#E91E63" stroke="#C2185B" stroke-width="3"/><line x1="50" y1="30" x2="50" y2="80" stroke="#FFF" stroke-width="3" stroke-dasharray="5,5"/><circle cx="50" cy="45" r="4" fill="#FFEB3B"/><circle cx="50" cy="65" r="4" fill="#FFEB3B"/></svg>`;
+            } else if (type === 'chicken') {
+                svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#FFFDE7" rx="15"/><circle cx="50" cy="50" r="35" fill="#FFF"/><path d="M42 22 C42 12 58 12 58 22 Z" fill="#E53935"/><path d="M48 18 Q50 12 52 18 Z" fill="#FFB300"/><circle cx="38" cy="40" r="4" fill="#000"/><circle cx="62" cy="40" r="4" fill="#000"/><polygon points="45,48 55,48 50,60" fill="#FF9800"/><path d="M45 56 Q50 65 55 56" fill="#E53935"/></svg>`;
+            } else if (type === 'egg') {
+                svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#FFF3E0" rx="15"/><path d="M50 20 C28 50 28 80 50 80 C72 80 72 50 50 20 Z" fill="#FFE0B2" stroke="#BCAAA4" stroke-width="3"/><ellipse cx="44" cy="40" rx="4" ry="8" fill="#FFF" opacity="0.4" transform="rotate(-20 44 40)"/></svg>`;
+            } else if (type === 'tree') {
+                svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#E8F5E9" rx="15"/><rect x="44" y="55" width="12" height="30" fill="#795548"/><circle cx="50" cy="38" r="25" fill="#4CAF50"/><circle cx="35" cy="48" r="16" fill="#4CAF50"/><circle cx="65" cy="48" r="16" fill="#4CAF50"/><circle cx="42" cy="35" r="4" fill="#F44336"/><circle cx="58" cy="32" r="4" fill="#F44336"/><circle cx="32" cy="48" r="4" fill="#F44336"/><circle cx="68" cy="46" r="4" fill="#F44336"/><circle cx="52" cy="48" r="4" fill="#F44336"/></svg>`;
+            } else if (type === 'apple') {
+                svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#FFEBEE" rx="15"/><path d="M50 30 C30 25 22 55 35 72 C42 80 48 78 50 75 C52 78 58 80 65 72 C78 55 70 25 50 30 Z" fill="#D50000" stroke="#B71C1C" stroke-width="2"/><path d="M50 30 Q54 18 64 16" fill="none" stroke="#795548" stroke-width="3" stroke-linecap="round"/><path d="M58 18 Q68 12 65 24 Z" fill="#4CAF50"/></svg>`;
+            } else if (type === 'bee') {
+                svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#E0F7FA" rx="15"/><ellipse cx="50" cy="52" rx="24" ry="18" fill="#FFEB3B"/><path d="M38 37 C42 45 42 59 38 67 M50 34 C54 44 54 60 50 70 M62 37 C66 45 66 59 62 67" stroke="#3e2723" stroke-width="4" stroke-linecap="round" fill="none"/><ellipse cx="38" cy="38" rx="8" ry="12" fill="#E0F7FA" stroke="#90A4AE" stroke-width="2" transform="rotate(-30 38 38)"/><ellipse cx="62" cy="38" rx="8" ry="12" fill="#E0F7FA" stroke="#90A4AE" stroke-width="2" transform="rotate(30 62 38)"/><circle cx="34" cy="52" r="3" fill="#000"/><path d="M28 52 Q26 48 24 50" fill="none" stroke="#000" stroke-width="2"/></svg>`;
+            } else if (type === 'honey') {
+                svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#FFFDE7" rx="15"/><path d="M35 35 H65 V80 C65 85 35 85 35 80 Z" fill="#FFB300" stroke="#FF8F00" stroke-width="3"/><ellipse cx="50" cy="35" rx="18" ry="6" fill="#FFE082" stroke="#FF8F00" stroke-width="3"/><path d="M32 30 H68 V35 H32 Z" fill="#FFF" stroke="#FF8F00" stroke-width="2"/><rect x="40" y="50" width="20" height="15" fill="#FFF" rx="3"/><text x="50" y="61" font-size="9" font-weight="bold" fill="#D84315" text-anchor="middle">🍯</text></svg>`;
+            } else if (type === 'wheat') {
+                svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#FFFDE7" rx="15"/><path d="M50 90 Q50 40 70 20" fill="none" stroke="#FFA000" stroke-width="3"/><circle cx="58" cy="46" r="4" fill="#FFB300"/><circle cx="50" cy="54" r="4" fill="#FFB300"/><circle cx="62" cy="38" r="4" fill="#FFB300"/><circle cx="54" cy="46" r="4" fill="#FFB300"/><circle cx="66" cy="30" r="4" fill="#FFB300"/><circle cx="58" cy="38" r="4" fill="#FFB300"/><circle cx="70" cy="22" r="4" fill="#FFB300"/><circle cx="62" cy="30" r="4" fill="#FFB300"/></svg>`;
+            } else if (type === 'bread') {
+                svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#FFF3E0" rx="15"/><path d="M22 60 C22 45 35 40 50 40 C65 40 78 45 78 60 C78 70 65 72 50 72 C35 72 22 70 22 60 Z" fill="#FFB74D" stroke="#E65100" stroke-width="3"/><path d="M30 52 L38 48 M45 52 L53 48 M60 52 L68 48" stroke="#E65100" stroke-width="2.5" stroke-linecap="round"/></svg>`;
+            }
+            return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg.replace(/\s+/g, ' '));
+        }
+
+        const originsPool = [
+            { qKey: 'cow', qDesc: 'פרה', aKey: 'milk', aDesc: 'חלב', wKeys: ['sweater', 'egg', 'honey', 'bread'], question: 'מה אנחנו מקבלים מהפרה?' },
+            { qKey: 'sheep', qDesc: 'כבשה', aKey: 'sweater', aDesc: 'סוודר צמר', wKeys: ['milk', 'egg', 'apple', 'bread'], question: 'מה אנחנו מכינים מהצמר של הכבשה?' },
+            { qKey: 'chicken', qDesc: 'תרנגולת', aKey: 'egg', aDesc: 'ביצה', wKeys: ['milk', 'sweater', 'honey', 'apple'], question: 'מה התרנגולת מטילה?' },
+            { qKey: 'tree', qDesc: 'עץ תפוחים', aKey: 'apple', aDesc: 'תפוח', wKeys: ['egg', 'sweater', 'honey', 'bread'], question: 'איזה פרי גדל על עץ התפוחים?' },
+            { qKey: 'bee', qDesc: 'דבורה', aKey: 'honey', aDesc: 'דבש', wKeys: ['milk', 'egg', 'bread', 'sweater'], question: 'מה הדבורה מכינה לנו?' },
+            { qKey: 'wheat', qDesc: 'חיטה', aKey: 'bread', aDesc: 'לחם', wKeys: ['milk', 'egg', 'sweater', 'honey'], question: 'מה אנחנו מכינים מהחיטה?' }
+        ];
+        let originsOrder = [];
+
+        function initOriginsGame() {
+            get('active-game-title').textContent = 'מאיפה זה מגיע? 🥛';
+            get('game-workspace').innerHTML = `
+                <div style="font-size:clamp(22px, 5vw, 32px); font-weight:900; margin-bottom:20px; color:#333; text-align:center; direction:rtl;" id="origins-question">מה מגיע מכאן? 🤔</div>
+                <div id="origins-target-area" class="large-target" style="background:#fff; display:flex; justify-content:center; align-items:center; overflow:hidden; padding:0; box-shadow:0 6px 16px rgba(0,0,0,0.15);"></div>
+                <div id="origins-options-area" class="opts-row"></div>
+            `;
+            originsOrder = shuffle(createRange(originsPool.length)).slice(0, 4);
+            loadOriginsRound();
+        }
+
+        function loadOriginsRound() {
+            let p = originsPool[originsOrder[currentStep]];
+            get('origins-question').textContent = p.question;
+            
+            let targetArea = get('origins-target-area');
+            let sourceImg = getOriginsSvg(p.qKey);
+            targetArea.innerHTML = `<img src="${sourceImg}" alt="${p.qDesc}" style="width:85%; height:85%; object-fit:contain;" />`;
+            
+            speakLetter(p.question, 'he');
+            targetArea.onclick = () => speakLetter(p.question, 'he');
+            
+            let correctOpt = { key: p.aKey, desc: p.aDesc, isCorrect: true };
+            let wrongOpts = shuffle(p.wKeys).slice(0, 3).map(k => {
+                let matching = originsPool.find(item => item.aKey === k);
+                let desc = matching ? matching.aDesc : 'משהו אחר';
+                return { key: k, desc: desc, isCorrect: false };
+            });
+            
+            let opts = shuffle([correctOpt].concat(wrongOpts));
+            let oArea = get('origins-options-area');
+            oArea.innerHTML = '';
+            
+            opts.forEach((opt, i) => {
+                let w = D.createElement('div');
+                w.className = 'option-wrapper';
+                let b = D.createElement('button');
+                b.className = 'action-btn option-btn';
+                b.style.cssText = 'width:clamp(70px,18vmin,140px); height:clamp(70px,18vmin,140px); background:#fff; border:5px solid #4CAF50; border-radius:20px; padding:0; display:flex; justify-content:center; align-items:center; overflow:hidden; box-shadow:0 6px 14px rgba(0,0,0,0.15); transition:transform 0.15s;';
+                b.innerHTML = `<img src="${getOriginsSvg(opt.key)}" alt="${opt.desc}" style="width:80%; height:80%; object-fit:contain;" />`;
+                
+                b.onclick = () => {
+                    if (isProcessing) return;
+                    if (opt.isCorrect) {
+                        isProcessing = true;
+                        speakLetter(opt.desc, 'he', function() {
+                            isProcessing = false;
+                            handleAnswer(true, b, loadOriginsRound, null);
+                        });
+                    } else {
+                        speakLetter(opt.desc, 'he');
+                        handleAnswer(false, b, null, null);
+                    }
+                };
+                
+                let n = D.createElement('div');
+                n.className = 'option-number';
+                n.textContent = i + 1;
+                w.appendChild(b);
+                w.appendChild(n);
+                oArea.appendChild(w);
+            });
+        }
+
+        // ── הורה וגור ──
+        function getFamiliesSvg(type) {
+            let svg = '';
+            if (type === 'dog') {
+                // Father dog (left/center) with puppy (right/bottom)
+                svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#FFE0B2" rx="15"/><circle cx="42" cy="55" r="22" fill="#A1887F"/><path d="M22 35 C15 42 15 58 22 58 Z" fill="#5D4037"/><path d="M62 35 C69 42 69 58 62 58 Z" fill="#5D4037"/><circle cx="33" cy="50" r="3.5" fill="#000"/><circle cx="51" cy="50" r="3.5" fill="#000"/><ellipse cx="42" cy="60" rx="6" ry="4" fill="#3E2723"/><path d="M38 66 Q42 69 46 66" fill="none" stroke="#000" stroke-width="1.5"/><path d="M30 73 Q42 77 54 73" fill="none" stroke="#00E5FF" stroke-width="4" stroke-linecap="round"/><circle cx="74" cy="68" r="14" fill="#A1887F"/><path d="M62 58 C58 62 58 72 62 72 Z" fill="#5D4037"/><path d="M86 58 C90 62 90 72 86 72 Z" fill="#5D4037"/><circle cx="69" cy="65" r="2" fill="#000"/><circle cx="79" cy="65" r="2" fill="#000"/><ellipse cx="74" cy="71" rx="3" ry="2" fill="#3E2723"/><path d="M71 75 Q74 77 77 75" fill="none" stroke="#000" stroke-width="1"/></svg>`;
+            } else if (type === 'puppy') {
+                svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#FFF3E0" rx="15"/><circle cx="50" cy="52" r="30" fill="#A1887F"/><path d="M26 34 C20 40 20 56 26 56 Z" fill="#5D4037"/><path d="M74 34 C80 40 80 56 74 56 Z" fill="#5D4037"/><circle cx="40" cy="48" r="5.5" fill="#000"/><circle cx="60" cy="48" r="5.5" fill="#000"/><ellipse cx="50" cy="60" rx="6" ry="4" fill="#3E2723"/><path d="M46 66 C46 72 54 72 54 66 Z" fill="#FF8A80"/></svg>`;
+            } else if (type === 'cat') {
+                // Mother cat (left/center) with kitten (right/bottom)
+                svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#ECEFF1" rx="15"/><polygon points="24,30 36,48 18,45" fill="#B0BEC5"/><polygon points="26,33 34,46 21,44" fill="#FFB6C1"/><polygon points="60,30 48,48 66,45" fill="#B0BEC5"/><polygon points="58,33 50,46 63,44" fill="#FFB6C1"/><circle cx="42" cy="55" r="22" fill="#B0BEC5"/><circle cx="33" cy="51" r="3.5" fill="#4CAF50"/><circle cx="51" cy="51" r="3.5" fill="#4CAF50"/><path d="M29 47 Q33 44 37 47 M47 47 Q51 44 55 47" fill="none" stroke="#000" stroke-width="1.5"/><path d="M22 30 Q18 24 24 24 Q26 27 22 30 Z" fill="#FF4081"/><path d="M26 30 Q30 24 24 24 Q22 27 26 30 Z" fill="#FF4081"/><circle cx="24" cy="27" r="2" fill="#FFF"/><polygon points="39,58 45,58 42,62" fill="#FF8A80"/><path d="M34 58 H22 M34 62 H24 M50 58 H62 M50 62 H60" fill="none" stroke="#37474F" stroke-width="1.5"/><polygon points="63,53 70,64 59,62" fill="#CFD8DC"/><polygon points="85,53 78,64 89,62" fill="#CFD8DC"/><circle cx="74" cy="68" r="14" fill="#CFD8DC"/><circle cx="69" cy="65" r="2" fill="#00E5FF"/><circle cx="79" cy="65" r="2" fill="#00E5FF"/><polygon points="72,70 76,70 74,72" fill="#FF8A80"/><path d="M66 70 H58 M82 70 H90" fill="none" stroke="#37474F" stroke-width="1"/></svg>`;
+            } else if (type === 'kitten') {
+                svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#F5F5F5" rx="15"/><polygon points="25,30 38,52 20,48" fill="#FF8A80"/><polygon points="75,30 62,52 80,48" fill="#FF8A80"/><circle cx="50" cy="56" r="27" fill="#CFD8DC"/><circle cx="40" cy="52" r="5.5" fill="#00E5FF"/><circle cx="60" cy="52" r="5.5" fill="#00E5FF"/><polygon points="47,62 53,62 50,66" fill="#FF8A80"/><path d="M43 71 Q50 75 57 71" fill="none" stroke="#37474F" stroke-width="1.5"/></svg>`;
+            } else if (type === 'ram') {
+                // Father ram (left/center) with lamb (right/bottom)
+                svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#ECEFF1" rx="15"/><path d="M18 46 C8 34 18 20 28 30 M18 46 C20 38 28 30 28 30" fill="none" stroke="#D7CCC8" stroke-width="5" stroke-linecap="round"/><path d="M58 46 C68 34 58 20 48 30 M58 46 C56 38 48 30 48 30" fill="none" stroke="#D7CCC8" stroke-width="5" stroke-linecap="round"/><circle cx="38" cy="55" r="22" fill="#FFF"/><rect x="30" y="49" width="16" height="20" rx="6" fill="#FFE0B2"/><circle cx="34" cy="54" r="2" fill="#000"/><circle cx="42" cy="54" r="2" fill="#000"/><path d="M36 60 Q38 62 40 60" fill="none" stroke="#E91E63" stroke-width="1.5"/><circle cx="74" cy="68" r="14" fill="#FFF"/><rect x="69" y="64" width="10" height="12" rx="4" fill="#FFE0B2"/><circle cx="71" cy="67" r="1.5" fill="#000"/><circle cx="77" cy="67" r="1.5" fill="#000"/><circle cx="67" cy="70" r="1.5" fill="#FF8A80"/><circle cx="81" cy="70" r="1.5" fill="#FF8A80"/></svg>`;
+            } else if (type === 'lamb') {
+                svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#FFF" rx="15"/><circle cx="38" cy="40" r="8" fill="#F5F5F5"/><circle cx="62" cy="40" r="8" fill="#F5F5F5"/><circle cx="50" cy="34" r="10" fill="#F5F5F5"/><circle cx="50" cy="48" r="12" fill="#F5F5F5"/><rect x="44" y="44" width="12" height="18" rx="6" fill="#FFE0B2"/><circle cx="47" cy="48" r="1.5" fill="#000"/><circle cx="53" cy="48" r="1.5" fill="#000"/><circle cx="42" cy="52" r="2" fill="#FF8A80"/><circle cx="58" cy="52" r="2" fill="#FF8A80"/></svg>`;
+            } else if (type === 'bull') {
+                // Father bull (left/center) with calf (right/bottom)
+                svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#EFEBE9" rx="15"/><path d="M18 42 Q6 28 20 33" fill="none" stroke="#ECEFF1" stroke-width="5" stroke-linecap="round"/><path d="M58 42 Q70 28 56 33" fill="none" stroke="#ECEFF1" stroke-width="5" stroke-linecap="round"/><circle cx="38" cy="56" r="22" fill="#5D4037"/><path d="M38 78 C48 78 56 68 56 56 H20 C20 68 28 78 38 78 Z" fill="#8D6E63"/><ellipse cx="30" cy="68" rx="2.5" ry="1.5" fill="#3E2723"/><ellipse cx="46" cy="68" rx="2.5" ry="1.5" fill="#3E2723"/><circle cx="28" cy="48" r="3" fill="#000"/><circle cx="48" cy="48" r="3" fill="#000"/><circle cx="74" cy="68" r="14" fill="#8D6E63"/><path d="M74 80 C80 80 85 73 85 65 H63 C63 73 68 80 74 80 Z" fill="#FFCDD2"/><circle cx="68" cy="62" r="2" fill="#000"/><circle cx="80" cy="62" r="2" fill="#000"/></svg>`;
+            } else if (type === 'calf') {
+                svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#F1F8E9" rx="15"/><circle cx="50" cy="56" r="26" fill="#8D6E63"/><path d="M50 82 C62 82 72 70 72 56 H28 C28 70 38 82 50 82 Z" fill="#FFCDD2"/><ellipse cx="42" cy="66" rx="3" ry="1.5" fill="#E91E63"/><ellipse cx="58" cy="66" rx="3" ry="1.5" fill="#E91E63"/><circle cx="38" cy="46" r="4" fill="#000"/><circle cx="62" cy="46" r="4" fill="#000"/></svg>`;
+            } else if (type === 'rooster') {
+                // Father rooster (left/center) with chick (right/bottom)
+                svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#FFFDE7" rx="15"/><path d="M38 34 C32 22 44 22 38 34 Z M31 34 Q38 20 45 34" fill="#D50000"/><circle cx="38" cy="56" r="22" fill="#FFF"/><polygon points="30,52 42,52 36,64" fill="#FF9800"/><path d="M33 60 Q36 70 39 60 Z" fill="#D50000"/><circle cx="29" cy="46" r="3" fill="#000"/><circle cx="43" cy="46" r="3" fill="#000"/><circle cx="74" cy="68" r="14" fill="#FFEB3B"/><polygon points="70,68 78,68 74,74" fill="#FF9800"/><circle cx="69" cy="63" r="2" fill="#000"/><circle cx="79" cy="63" r="2" fill="#000"/><circle cx="65" cy="67" r="1.5" fill="#FF8A80"/><circle cx="83" cy="67" r="1.5" fill="#FF8A80"/></svg>`;
+            } else if (type === 'chick') {
+                svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#FFFDE7" rx="15"/><circle cx="50" cy="55" r="28" fill="#FFEB3B"/><circle cx="40" cy="48" r="4.5" fill="#000"/><circle cx="60" cy="48" r="4.5" fill="#000"/><polygon points="46,55 54,55 50,63" fill="#FF9800"/><circle cx="35" cy="56" r="3" fill="#FF8A80"/><circle cx="65" cy="56" r="3" fill="#FF8A80"/></svg>`;
+            } else if (type === 'deer') {
+                // Father deer (left/center) with fawn (right/bottom)
+                svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#E8F5E9" rx="15"/><path d="M28 38 L20 20 L25 20 L32 34 M24 30 L14 26 L16 24 L25 29" fill="#795548" stroke="#5D4037" stroke-width="1.5"/><path d="M48 38 L56 20 L51 20 L44 34 M52 30 L62 26 L60 24 L51 29" fill="#795548" stroke="#5D4037" stroke-width="1.5"/><circle cx="38" cy="58" r="20" fill="#A1887F"/><circle cx="30" cy="52" r="3" fill="#000"/><circle cx="46" cy="52" r="3" fill="#000"/><ellipse cx="38" cy="65" rx="5" ry="3" fill="#3E2723"/><circle cx="74" cy="68" r="13" fill="#A1887F"/><circle cx="69" cy="64" r="2" fill="#000"/><circle cx="79" cy="64" r="2" fill="#000"/><circle cx="70" cy="58" r="1" fill="#FFF"/><circle cx="74" cy="57" r="1" fill="#FFF"/><circle cx="78" cy="58" r="1" fill="#FFF"/><ellipse cx="74" cy="72" rx="3" ry="2" fill="#3E2723"/></svg>`;
+            } else if (type === 'fawn') {
+                svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#F1F8E9" rx="15"/><circle cx="50" cy="56" r="25" fill="#A1887F"/><circle cx="40" cy="48" r="5" fill="#000"/><circle cx="60" cy="48" r="5" fill="#000"/><circle cx="42" cy="46" r="1.5" fill="#fff"/><circle cx="62" cy="46" r="1.5" fill="#fff"/><ellipse cx="50" cy="64" rx="5" ry="3.5" fill="#3E2723"/><circle cx="42" cy="38" r="2.5" fill="#FFF"/><circle cx="50" cy="36" r="2.5" fill="#FFF"/><circle cx="58" cy="38" r="2.5" fill="#FFF"/></svg>`;
+            } else if (type === 'bear') {
+                // Mother bear (left/center) with cub (right/bottom)
+                svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#EFEBE9" rx="15"/><circle cx="22" cy="38" r="7" fill="#795548"/><circle cx="54" cy="38" r="7" fill="#795548"/><path d="M18 34 Q16 30 20 30 Q24 30 22 34 Z M22 34 Q26 34 24 38 Q20 40 18 36" fill="#FF4081"/><circle cx="21" cy="34" r="1.5" fill="#FFF"/><circle cx="38" cy="56" r="22" fill="#8D6E63"/><ellipse cx="38" cy="63" rx="9" ry="6" fill="#D7CCC8"/><circle cx="29" cy="50" r="3" fill="#000"/><circle cx="47" cy="50" r="3" fill="#000"/><ellipse cx="38" cy="60" rx="3.5" ry="2" fill="#000"/><circle cx="68" cy="58" r="4.5" fill="#795548"/><circle cx="80" cy="58" r="4.5" fill="#795548"/><circle cx="74" cy="68" r="14" fill="#8D6E63"/><ellipse cx="74" cy="73" rx="6" ry="4" fill="#D7CCC8"/><circle cx="69" cy="64" r="2" fill="#000"/><circle cx="79" cy="64" r="2" fill="#000"/><ellipse cx="74" cy="71" rx="2" ry="1" fill="#000"/></svg>`;
+            } else if (type === 'cub') {
+                svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#F5F5F5" rx="15"/><circle cx="33" cy="35" r="8" fill="#795548"/><circle cx="67" cy="35" r="8" fill="#795548"/><circle cx="50" cy="58" r="26" fill="#8D6E63"/><ellipse cx="50" cy="64" rx="10" ry="7" fill="#D7CCC8"/><circle cx="40" cy="52" r="4.5" fill="#000"/><circle cx="60" cy="52" r="4.5" fill="#000"/><ellipse cx="50" cy="61" rx="3.5" ry="2" fill="#000"/></svg>`;
+            } else if (type === 'lion') {
+                // Father lion (left/center) with cub (right/bottom)
+                svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#FFF8E1" rx="15"/><circle cx="38" cy="54" r="28" fill="#FFA000"/><circle cx="38" cy="54" r="21" fill="#FFC107"/><circle cx="29" cy="48" r="3" fill="#000"/><circle cx="47" cy="48" r="3" fill="#000"/><polygon points="35,55 41,55 38,59" fill="#E65100"/><path d="M32 63 Q38 66 44 63" fill="none" stroke="#37474F" stroke-width="1.5"/><circle cx="68" cy="58" r="4" fill="#FFC107"/><circle cx="80" cy="58" r="4" fill="#FFC107"/><circle cx="74" cy="68" r="13" fill="#FFD54F"/><circle cx="69" cy="64" r="2" fill="#000"/><circle cx="79" cy="64" r="2" fill="#000"/><polygon points="72,70 76,70 74,73" fill="#E65100"/></svg>`;
+            } else if (type === 'lion_cub') {
+                svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#FFFDE7" rx="15"/><circle cx="32" cy="32" r="8" fill="#FFC107"/><circle cx="68" cy="32" r="8" fill="#FFC107"/><circle cx="50" cy="54" r="26" fill="#FFD54F"/><circle cx="38" cy="48" r="4.5" fill="#000"/><circle cx="62" cy="48" r="4.5" fill="#000"/><polygon points="47,56 53,56 50,60" fill="#E65100"/><path d="M44 65 Q50 68 56 65" fill="none" stroke="#37474F" stroke-width="1.5"/></svg>`;
+            }
+            return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg.replace(/\s+/g, ' '));
+        }
+
+        const familiesPool = [
+            { qKey: 'lion', qDesc: 'אריה', aKey: 'lion_cub', aDesc: 'גור אריות', wKeys: ['puppy', 'kitten', 'chick', 'cub'], question: 'מי הגור של האריה?' },
+            { qKey: 'rooster', qDesc: 'תרנגול', aKey: 'chick', aDesc: 'אפרוח', wKeys: ['puppy', 'kitten', 'lamb', 'fawn'], question: 'מי האפרוח של התרנגול?' },
+            { qKey: 'deer', qDesc: 'איל', aKey: 'fawn', aDesc: 'עופר', wKeys: ['puppy', 'kitten', 'calf', 'cub'], question: 'מי העופר של האיל?' },
+            { qKey: 'bull', qDesc: 'פר', aKey: 'calf', aDesc: 'עגל', wKeys: ['kitten', 'lamb', 'chick', 'lion_cub'], question: 'מי העגל של הפר?' },
+            { qKey: 'ram', qDesc: 'איל', aKey: 'lamb', aDesc: 'טלה', wKeys: ['puppy', 'chick', 'cub', 'fawn'], question: 'מי הטלה של האיל?' },
+            { qKey: 'dog', qDesc: 'כלב', aKey: 'puppy', aDesc: 'גור כלבים', wKeys: ['kitten', 'lamb', 'chick', 'cub'], question: 'מי הגור של הכלב?' },
+            { qKey: 'cat', qDesc: 'חתולה', aKey: 'kitten', aDesc: 'גור חתולים', wKeys: ['puppy', 'lamb', 'chick', 'lion_cub'], question: 'מי הגור של החתולה?' },
+            { qKey: 'bear', qDesc: 'דובה', aKey: 'cub', aDesc: 'גור דובים', wKeys: ['puppy', 'kitten', 'lamb', 'fawn'], question: 'מי הגור של הדובה?' }
+        ];
+        let familiesOrder = [];
+
+        function initFamiliesGame() {
+            get('active-game-title').textContent = 'הורה וגור 🐕';
+            get('game-workspace').innerHTML = `
+                <div style="font-size:clamp(22px, 5vw, 32px); font-weight:900; margin-bottom:20px; color:#333; text-align:center; direction:rtl;" id="families-question">מי הגור שלו? 🤔</div>
+                <div id="families-target-area" class="large-target" style="background:#fff; display:flex; justify-content:center; align-items:center; overflow:hidden; padding:0; box-shadow:0 6px 16px rgba(0,0,0,0.15);"></div>
+                <div id="families-options-area" class="opts-row"></div>
+            `;
+            familiesOrder = shuffle(createRange(familiesPool.length)).slice(0, 4);
+            loadFamiliesRound();
+        }
+
+        function loadFamiliesRound() {
+            let p = familiesPool[familiesOrder[currentStep]];
+            get('families-question').textContent = p.question;
+            
+            let targetArea = get('families-target-area');
+            let parentImg = getFamiliesSvg(p.qKey);
+            targetArea.innerHTML = `<img src="${parentImg}" alt="${p.qDesc}" style="width:85%; height:85%; object-fit:contain;" />`;
+            
+            speakLetter(p.question, 'he');
+            targetArea.onclick = () => speakLetter(p.question, 'he');
+            
+            let correctOpt = { key: p.aKey, desc: p.aDesc, isCorrect: true };
+            let wrongOpts = shuffle(p.wKeys).slice(0, 3).map(k => {
+                let matching = familiesPool.find(item => item.aKey === k);
+                let desc = matching ? matching.aDesc : 'גור אחר';
+                return { key: k, desc: desc, isCorrect: false };
+            });
+            
+            let opts = shuffle([correctOpt].concat(wrongOpts));
+            let oArea = get('families-options-area');
+            oArea.innerHTML = '';
+            
+            opts.forEach((opt, i) => {
+                let w = D.createElement('div');
+                w.className = 'option-wrapper';
+                let b = D.createElement('button');
+                b.className = 'action-btn option-btn';
+                b.style.cssText = 'width:clamp(70px,18vmin,140px); height:clamp(70px,18vmin,140px); background:#fff; border:5px solid #4CAF50; border-radius:20px; padding:0; display:flex; justify-content:center; align-items:center; overflow:hidden; box-shadow:0 6px 14px rgba(0,0,0,0.15); transition:transform 0.15s;';
+                b.innerHTML = `<img src="${getFamiliesSvg(opt.key)}" alt="${opt.desc}" style="width:80%; height:80%; object-fit:contain;" />`;
+                
+                b.onclick = () => {
+                    if (isProcessing) return;
+                    if (opt.isCorrect) {
+                        isProcessing = true;
+                        speakLetter(opt.desc, 'he', function() {
+                            isProcessing = false;
+                            handleAnswer(true, b, loadFamiliesRound, null);
+                        });
+                    } else {
+                        speakLetter(opt.desc, 'he');
+                        handleAnswer(false, b, null, null);
+                    }
+                };
+                
+                let n = D.createElement('div');
+                n.className = 'option-number';
+                n.textContent = i + 1;
+                w.appendChild(b);
+                w.appendChild(n);
+                oArea.appendChild(w);
+            });
         }
 
         // Register Service Worker for PWA offline support
