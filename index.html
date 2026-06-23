@@ -2211,7 +2211,20 @@
             { qImg: 'images/habitat/monkey.png', aImg: 'images/habitat/palmtree.png', qDesc: 'קוף', aDesc: 'עץ דקל' }
         ];
         let habOrder = [];
-        function initHabitatGame() { get('active-game-title').textContent='מי גר כאן? 🏠'; get('game-workspace').innerHTML=`<div id="tool-target-area" class="large-target"></div><div id="tool-options-area" class="opts-row"></div>`; habOrder=shuffle(createRange(habData.length)).slice(0,4); loadHabitatRound(); }
+        function initHabitatGame() {
+            get('active-game-title').textContent='מי גר כאן? 🏠';
+            get('game-workspace').innerHTML=`<div id="tool-target-area" class="large-target"></div><div id="tool-options-area" class="opts-row"></div>`;
+            habOrder = shuffle(createRange(habData.length)).slice(0, 4);
+            const toLoad = habOrder.flatMap(i => [habData[i].qImg, habData[i].aImg]);
+            let loaded = 0;
+            toLoad.forEach(src => {
+                const img = new Image();
+                img.onload = img.onerror = () => {
+                    if (++loaded === toLoad.length) loadHabitatRound();
+                };
+                img.src = src;
+            });
+        }
         function loadHabitatRound() {
             let p = habData[habOrder[currentStep]];
             let targetArea = get('tool-target-area');
