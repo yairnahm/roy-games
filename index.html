@@ -3475,6 +3475,19 @@
                         if (sitEl) {
                             var newMedia = renderMediaHTML('sh-situation', 'sharing-situation-img', scene.video || scene.goodImg);
                             sitEl.outerHTML = newMedia;
+                            
+                            var newSitEl = get('sh-situation');
+                            if (newSitEl && newSitEl.tagName === 'VIDEO') {
+                                newSitEl.onerror = function() {
+                                    console.warn('Video failed to load/play, falling back to static success image');
+                                    var imgFallback = renderMediaHTML('sh-situation', 'sharing-situation-img', scene.goodImg);
+                                    var currSit = get('sh-situation');
+                                    if (currSit) currSit.outerHTML = imgFallback;
+                                };
+                                newSitEl.play().catch(function(err) {
+                                    console.warn('Explicit play() failed:', err);
+                                });
+                            }
                         }
                         playAudioWithCallback(scene.fbAudio, function(){
                             isProcessing = false;

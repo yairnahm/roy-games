@@ -1,4 +1,4 @@
-const CACHE_NAME = 'roy-games-v7';
+const CACHE_NAME = 'roy-games-v8';
 const ASSETS_TO_CACHE = [
   './',
   './index.html'
@@ -30,6 +30,12 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
+
+  // Bypass service worker caching for video files to support browser range requests
+  const url = new URL(event.request.url);
+  if (url.pathname.endsWith('.mp4') || url.pathname.includes('/videos/')) {
+    return;
+  }
 
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
