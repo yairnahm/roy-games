@@ -105,6 +105,18 @@
             border: 4px solid #fff;
             box-shadow: 0 4px 10px rgba(0,0,0,0.15);
             margin-bottom: 1vmin;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.4s ease, opacity 0.4s ease;
+        }
+        .numwar-avatar.active-turn {
+            transform: scale(1.8);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+            z-index: 10;
+            position: relative;
+        }
+        .numwar-avatar.inactive-turn {
+            filter: grayscale(100%);
+            opacity: 0.65;
+            transform: scale(0.9);
         }
         .numwar-name {
             font-size: clamp(16px, 3.5vw, 24px);
@@ -1318,7 +1330,7 @@
         <h3>באיזו קטגוריה נרצה לשחק?</h3>
         <div class="hub-container">
             <div class="hub-card" onclick="openCategory('lang','שפה ואותיות')"><div class="hub-icon">🔤</div><div class="hub-title">שפה ואותיות</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">2 משחקים</div></div>
-            <div class="hub-card" onclick="openCategory('think','חשיבה וזיכרון')"><div class="hub-icon">🧠</div><div class="hub-title">חשיבה וזיכרון</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">5 משחקים</div></div>
+            <div class="hub-card" onclick="openCategory('think','חשיבה וזיכרון')"><div class="hub-icon">🧠</div><div class="hub-title">חשיבה וזיכרון</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">6 משחקים</div></div>
             <div class="hub-card" onclick="openCategory('emotion','רגשות ואנשים')"><div class="hub-icon">😊</div><div class="hub-title">רגשות ואנשים</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">6 משחקים</div></div>
             <div class="hub-card" onclick="openCategory('numbers','מספרים וסדר')"><div class="hub-icon">🔢</div><div class="hub-title">מספרים וסדר</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">4 משחקים</div></div>
             <div class="hub-card" onclick="openCategory('world','עולם סביבנו')"><div class="hub-icon">🌍</div><div class="hub-title">עולם סביבנו</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">6 משחקים</div></div>
@@ -1331,6 +1343,7 @@
         <div class="top-bar" style="align-self:stretch;max-width:900px;margin:0 auto 1vmin;width:100%;"><button class="exit-btn" onclick="backToCategories()">➜ חזור</button><h2 id="cat-title" style="margin:0;font-size:clamp(16px,4vmin,26px);"></h2><div style="width:60px;"></div></div>
         <div class="hub-container">
             <div class="hub-card" data-cat="think" style="position:relative;" onclick="openDifficultyScreen('memory', '🧠', 'משחק הזיכרון')"><span class="star-badge" data-game="memory" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🧠</div><div class="hub-title">זיכרון</div></div>
+            <div class="hub-card" data-cat="think" style="position:relative;" onclick="openDifficultyScreen('diffscene', '🖼️', 'מה שונה בתמונה?')"><span class="star-badge" data-game="diffscene" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🖼️</div><div class="hub-title">מה שונה?</div></div>
             <div class="hub-card" data-cat="create" style="position:relative;" onclick="openDifficultyScreen('tracing', '✏️', 'השלם את הצורה')"><div class="hub-icon">✏️</div><div class="hub-title">ציור</div></div>
             <div class="hub-card" data-cat="numbers" style="position:relative;" onclick="openDifficultyScreen('counting', '🔢', 'ספור את הצורות')"><span class="star-badge" data-game="counting" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">✨</span><div class="hub-icon">🔢</div><div class="hub-title">ספירה</div></div>
             <div class="hub-card" data-cat="numbers" style="position:relative;" onclick="openDifficultyScreen('sequence', '🔄', 'מה הסדר הנכון?')"><span class="star-badge" data-game="sequence" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🔄</div><div class="hub-title">סדר נכון</div></div>
@@ -1441,7 +1454,7 @@
     <div id="feedback-layer" class="hidden feedback-icon"></div>
 
     <script>
-        const bgIcons = { 'sharing': ['🤝','❤️','🌟','🎁'], 'memory': ['🧠','💭','💡'], 'tracing': ['✏️','🎨','📐'], 'counting': ['🔢','🧮','➕'], 'sequence': ['🔄','✨','🎯'], 'fly': ['🪰','💨'], 'cop': ['🚓','🚨'], 'diff': ['🔎','👀'], 'oddone': ['🍎','🐶','🚗'], 'missing': ['A','B','C'], 'tools': ['🔨','🔧','🔩'], 'context': ['🧩','🖼️','🎨'], 'vparts': ['🚗','✈️','🚂','⛵','🚁'], 'habitat': ['🏠','🌳','🌊'], 'shadow': ['👤','🌑','👀'], 'halfhalf': ['✂️','🎨','🧩'], 'chrono': ['⏳','📅','🔄'], 'bigger': ['⚖️','🐘','🐭','🔢'], 'emotion': ['😄','😢','😡','😱'], 'faces': ['📸','❤️','👨‍👩‍👧‍👦','🤳'], 'mgamish': ['🤸','💪','🌟','🤸‍♂️'], 'firstletter': ['🔡','🔤','📖','✏️'], 'numwar': ['⚔️','🃏','🔢','⭐'], 'towertalk': ['🧱','🏗️','🏢'], 'cooppuzzle': ['🧩','🖼️','🎨','📸'], 'tidyup': ['🧼','🧸','🧺','🧹'], 'patterns': ['🔴','🔵','💛','🟩','🔺','🌟'], 'origins': ['🐄','🥛','🐑','🐔','🐝','🍞'], 'families': ['🐕','🐶','🐈','🐱','🐥','🦁'] };
+        const bgIcons = { 'sharing': ['🤝','❤️','🌟','🎁'], 'memory': ['🧠','💭','💡'], 'tracing': ['✏️','🎨','📐'], 'counting': ['🔢','🧮','➕'], 'sequence': ['🔄','✨','🎯'], 'fly': ['🪰','💨'], 'cop': ['🚓','🚨'], 'diff': ['🔎','👀'], 'oddone': ['🍎','🐶','🚗'], 'missing': ['A','B','C'], 'tools': ['🔨','🔧','🔩'], 'context': ['🧩','🖼️','🎨'], 'vparts': ['🚗','✈️','🚂','⛵','🚁'], 'habitat': ['🏠','🌳','🌊'], 'shadow': ['👤','🌑','👀'], 'halfhalf': ['✂️','🎨','🧩'], 'chrono': ['⏳','📅','🔄'], 'bigger': ['⚖️','🐘','🐭','🔢'], 'emotion': ['😄','😢','😡','😱'], 'faces': ['📸','❤️','👨‍👩‍👧‍👦','🤳'], 'mgamish': ['🤸','💪','🌟','🤸‍♂️'], 'firstletter': ['🔡','🔤','📖','✏️'], 'numwar': ['⚔️','🃏','🔢','⭐'], 'towertalk': ['🧱','🏗️','🏢'], 'cooppuzzle': ['🧩','🖼️','🎨','📸'], 'tidyup': ['🧼','🧸','🧺','🧹'], 'patterns': ['🔴','🔵','💛','🟩','🔺','🌟'], 'origins': ['🐄','🥛','🐑','🐔','🐝','🍞'], 'families': ['🐕','🐶','🐈','🐱','🐥','🦁'], 'diffscene': ['🖼️','🔍','👀'] };
         function setAppBackground(theme) {
             D.body.className = 'bg-' + theme; let bg = get('bg-animations'); bg.innerHTML = '';
             if(theme !== 'hub' && bgIcons[theme]) {
@@ -1664,6 +1677,7 @@
                 else if(currentGameMode === 'patterns') initPatternsGame();
                 else if(currentGameMode === 'origins') initOriginsGame();
                 else if(currentGameMode === 'families') initFamiliesGame();
+                else if(currentGameMode === 'diffscene') initDiffsceneGame();
             }, 50);
         }
 
@@ -4612,6 +4626,24 @@
                 playCoopAudio('coop/tidy_instructions_dynamic.mp3', speakText);
             }
 
+            function updateAvatarTurns() {
+                var royAv = get('tidy-roy-avatar');
+                var abaAv = get('tidy-aba-avatar');
+                if (royAv && abaAv) {
+                    if (currentTurn === 'roy') {
+                        royAv.classList.add('active-turn');
+                        royAv.classList.remove('inactive-turn');
+                        abaAv.classList.add('inactive-turn');
+                        abaAv.classList.remove('active-turn');
+                    } else {
+                        abaAv.classList.add('active-turn');
+                        abaAv.classList.remove('inactive-turn');
+                        royAv.classList.add('inactive-turn');
+                        royAv.classList.remove('active-turn');
+                    }
+                }
+            }
+
             function updateScoreboard() {
                 var sb = get('tidy-score');
                 if (sb) {
@@ -4636,7 +4668,7 @@
                     <div class="numwar-layout">
                         <!-- Aba Side / Basket (Renders on Right in RTL) -->
                         <div class="numwar-side" id="aba-basket-side" style="padding: 2vmin; border: 4px solid #FF5722; background: rgba(255, 87, 34, 0.05);">
-                            <img class="numwar-avatar" src="images/aba_sunglasses.jpg" alt="אבא יאיר">
+                            <img class="numwar-avatar" id="tidy-aba-avatar" src="images/aba_sunglasses.jpg" alt="אבא יאיר">
                             <div class="numwar-name">הסל של אבא יאיר</div>
                             <div style="font-size:clamp(12px, 2.5vw, 15px); color:#FF5722; font-weight:bold; margin-bottom:1vmin;">${abaBasketTitle}</div>
                             <div class="coop-tidy-basket-items" id="aba-basket-items"></div>
@@ -4657,7 +4689,7 @@
 
                         <!-- Roy Side / Basket (Renders on Left in RTL) -->
                         <div class="numwar-side" id="roy-basket-side" style="padding: 2vmin; border: 4px solid #2196F3; background: rgba(33, 150, 243, 0.05);">
-                            <img class="numwar-avatar" src="images/roy_sunglasses.jpg" alt="רועי">
+                            <img class="numwar-avatar" id="tidy-roy-avatar" src="images/roy_sunglasses.jpg" alt="רועי">
                             <div class="numwar-name">הסל של רועי</div>
                             <div style="font-size:clamp(12px, 2.5vw, 15px); color:#2196F3; font-weight:bold; margin-bottom:1vmin;">${royBasketTitle}</div>
                             <div class="coop-tidy-basket-items" id="roy-basket-items"></div>
@@ -4667,6 +4699,7 @@
 
                 updateScoreboard();
                 renderItems();
+                updateAvatarTurns();
             }
 
             function renderItems() {
@@ -4820,6 +4853,7 @@
                                     
                                     isProcessing = false;
                                     renderItems();
+                                    updateAvatarTurns();
                                 }
                             }, 1600);
                         }, 1050);
@@ -5108,6 +5142,242 @@
                 w.appendChild(n);
                 oArea.appendChild(w);
             });
+        }
+
+        // ── מה שונה בתמונה? ──
+        const diffscenePool = [
+            {
+                background: 'images/diff_bg_shelf.png',
+                items: [
+                    { emoji: '🧸', alt: '🤖', name: 'דובי', altName: 'רובוט' },
+                    { emoji: '🚗', alt: '🚕', name: 'מכונית', altName: 'מונית' },
+                    { emoji: '⚽', alt: '🏀', name: 'כדורגל', altName: 'כדורסל' },
+                    { emoji: '🦖', alt: '🐉', name: 'דינוזאור', altName: 'דרקון' },
+                    { emoji: '🚀', alt: '🛸', name: 'חללית', altName: 'צלחת מעופפת' },
+                    { emoji: '🚂', alt: '✈️', name: 'רכבת', altName: 'מטוס' },
+                    { emoji: '🎺', alt: '🥁', name: 'חצוצרה', altName: 'תוף' },
+                    { emoji: '🎨', alt: '✏️', name: 'פלטת צבעים', altName: 'עיפרון' },
+                    { emoji: '👑', alt: '👒', name: 'כתר', altName: 'כובע' },
+                    { emoji: '🎁', alt: '🎈', name: 'מתנה', altName: 'בלון' }
+                ],
+                positions: [
+                    { x: 22, y: 22 }, { x: 50, y: 20 }, { x: 78, y: 22 },
+                    { x: 35, y: 38 }, { x: 65, y: 38 },
+                    { x: 20, y: 56 }, { x: 50, y: 55 }, { x: 80, y: 56 },
+                    { x: 35, y: 76 }, { x: 65, y: 76 }
+                ]
+            },
+            {
+                background: 'images/diff_bg_garden.png',
+                items: [
+                    { emoji: '🍎', alt: '🍌', name: 'תפוח', altName: 'בננה' },
+                    { emoji: '🦋', alt: '🐝', name: 'פרפר', altName: 'דבורה' },
+                    { emoji: '🌻', alt: '🌹', name: 'חמנייה', altName: 'ורד' },
+                    { emoji: '🐸', alt: '🦎', name: 'צפרדע', altName: 'לטאה' },
+                    { emoji: '🐰', alt: '🐹', name: 'ארנב', altName: 'אוגר' },
+                    { emoji: '🐌', alt: '🐛', name: 'חלזון', altName: 'זחל' },
+                    { emoji: '🍓', alt: '🍒', name: 'תות', altName: 'דובדבן' },
+                    { emoji: '🐥', alt: '🦉', name: 'אפרוח', altName: 'ינשוף' },
+                    { emoji: '🐞', alt: '🐜', name: 'חיפושית', altName: 'נמלה' },
+                    { emoji: '🥕', alt: '🌽', name: 'גזר', altName: 'תירס' }
+                ],
+                positions: [
+                    { x: 18, y: 22 }, { x: 50, y: 24 }, { x: 82, y: 22 },
+                    { x: 32, y: 44 }, { x: 68, y: 44 },
+                    { x: 18, y: 68 }, { x: 50, y: 64 }, { x: 82, y: 68 },
+                    { x: 34, y: 84 }, { x: 66, y: 84 }
+                ]
+            },
+            {
+                background: 'images/diff_bg_sky.png',
+                items: [
+                    { emoji: '☁️', alt: '🌧️', name: 'ענן', altName: 'ענן גשם' },
+                    { emoji: '☀️', alt: '🌙', name: 'שמש', altName: 'ירח' },
+                    { emoji: '🎈', alt: '🪁', name: 'בלון', altName: 'עפיפון' },
+                    { emoji: '🕊️', alt: '🦅', name: 'יונה', altName: 'נשר' },
+                    { emoji: '🚁', alt: '🚀', name: 'מסוק', altName: 'חללית' },
+                    { emoji: '🛸', alt: '👾', name: 'חללית חייזרים', altName: 'חייזר' },
+                    { emoji: '🌈', alt: '⚡', name: 'קשת', altName: 'ברק' },
+                    { emoji: '✈️', alt: '🎈', name: 'מטוס', altName: 'בלון' },
+                    { emoji: '⛈️', alt: '❄️', name: 'ענן סערה', altName: 'פתית שלג' },
+                    { emoji: '🦉', alt: '🦇', name: 'ינשוף', altName: 'עטלף' }
+                ],
+                positions: [
+                    { x: 25, y: 22 }, { x: 50, y: 18 }, { x: 75, y: 22 },
+                    { x: 18, y: 46 }, { x: 50, y: 44 }, { x: 82, y: 46 },
+                    { x: 34, y: 68 }, { x: 66, y: 68 },
+                    { x: 22, y: 84 }, { x: 78, y: 84 }
+                ]
+            },
+            {
+                background: 'images/diff_bg_space.png',
+                items: [
+                    { emoji: '🪐', alt: '☄️', name: 'שבתאי', altName: 'שביט' },
+                    { emoji: '🚀', alt: '🛸', name: 'חללית', altName: 'צלחת מעופפת' },
+                    { emoji: '👾', alt: '🤖', name: 'חייזר', altName: 'רובוט' },
+                    { emoji: '🌍', alt: '🌕', name: 'כדור הארץ', altName: 'ירח מלא' },
+                    { emoji: '🧑‍🚀', alt: '👽', name: 'אסטרונאוט', altName: 'חייזר ירוק' },
+                    { emoji: '🛰️', alt: '📡', name: 'לוויין', altName: 'אנטנה' },
+                    { emoji: '🌟', alt: '🌙', name: 'כוכב', altName: 'סהר' },
+                    { emoji: '☄️', alt: '☀️', name: 'מטאור', altName: 'שמש' },
+                    { emoji: '🛸', alt: '👾', name: 'צלחת מעופפת', altName: 'חייזר' },
+                    { emoji: '☀️', alt: '🪐', name: 'שמש', altName: 'כוכב לכת' }
+                ],
+                positions: [
+                    { x: 20, y: 20 }, { x: 50, y: 18 }, { x: 80, y: 20 },
+                    { x: 35, y: 38 }, { x: 65, y: 38 },
+                    { x: 20, y: 58 }, { x: 50, y: 58 }, { x: 80, y: 58 },
+                    { x: 35, y: 78 }, { x: 65, y: 78 }
+                ]
+            }
+        ];
+        let diffsceneOrder = [];
+        let diffsceneItems = [];
+        let diffscenePositions = [];
+        let diffsceneChangedIndex = null;
+        let diffsceneState = 'memorize'; 
+
+        function initDiffsceneGame() {
+            get('active-game-title').textContent = 'מה שונה בתמונה? 🖼️';
+            diffsceneOrder = shuffle([0, 1, 2, 3]);
+            loadDiffsceneRound();
+        }
+
+        function loadDiffsceneRound() {
+            let roundIdx = diffsceneOrder[currentStep];
+            let data = diffscenePool[roundIdx];
+            let N = currentDifficulty === 1 ? 4 : (currentDifficulty === 2 ? 7 : 10);
+            
+            diffsceneItems = shuffle(data.items.slice()).slice(0, N);
+            diffscenePositions = data.positions.slice(0, N);
+            diffsceneChangedIndex = rand(0, N - 1);
+            diffsceneState = 'memorize';
+            
+            let qText = 'רועי, הבט היטב בתמונה וזכור כל פריט בה. לחץ עליה כשאתה מוכן';
+            
+            let ws = get('game-workspace');
+            ws.innerHTML = `
+                <div style="font-size:clamp(17px, 3.8vw, 24px); font-weight:900; margin-bottom:15px; color:#333; text-align:center; direction:rtl; line-height:1.4;" id="diffscene-question">${qText} 🔊</div>
+                
+                <div id="diffscene-image-container" style="width: min(90vw, 550px); aspect-ratio: 4/3; margin: 0 auto; position: relative; border-radius: 24px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.2); cursor: pointer; border: 4px solid #fff; transition: transform 0.2s;">
+                    <img src="${data.background}" style="width:100%; height:100%; object-fit:cover; pointer-events:none;" />
+                    <div id="diffscene-items-overlay" style="position:absolute; left:0; top:0; width:100%; height:100%; pointer-events:none;"></div>
+                </div>
+                
+                <div style="text-align:center; margin-top:20px;">
+                    <button id="diffscene-ready-btn" class="sys-btn" style="background:#2196F3; color:#fff; padding:12px 36px; font-size:18px; font-weight:bold; border-radius:16px; border:none; cursor:pointer; box-shadow:0 4px 12px rgba(33, 150, 243, 0.3); transition: transform 0.2s;">אני מוכן! 👆</button>
+                </div>
+            `;
+            
+            let overlay = get('diffscene-items-overlay');
+            diffsceneItems.forEach((item, i) => {
+                let pos = diffscenePositions[i];
+                let el = D.createElement('div');
+                el.className = 'diffscene-item-card';
+                el.style.cssText = `position: absolute; left: ${pos.x}%; top: ${pos.y}%; transform: translate(-50%, -50%); width: clamp(52px, 11vmin, 72px); height: clamp(52px, 11vmin, 72px); border-radius: 50%; background: rgba(255,255,255,0.85); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); border: 3px solid #fff; box-shadow: 0 5px 12px rgba(0,0,0,0.15); display: flex; align-items: center; justify-content: center; font-size: clamp(26px, 6vmin, 40px); transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); pointer-events: auto; cursor: pointer;`;
+                el.innerHTML = item.emoji;
+                el.dataset.index = i;
+                
+                el.onclick = function(e) {
+                    e.stopPropagation();
+                    if (diffsceneState === 'memorize') {
+                        switchToTestPhase();
+                    } else {
+                        onCardClicked(i, el);
+                    }
+                };
+                
+                overlay.appendChild(el);
+            });
+            
+            let rBtn = get('diffscene-ready-btn');
+            let imgCont = get('diffscene-image-container');
+            if (rBtn) {
+                rBtn.onmouseover = () => { rBtn.style.transform = 'scale(1.05)'; };
+                rBtn.onmouseout = () => { rBtn.style.transform = 'scale(1)'; };
+                rBtn.onclick = function(e) {
+                    e.stopPropagation();
+                    switchToTestPhase();
+                };
+            }
+            if (imgCont) {
+                imgCont.onmouseover = () => { if (diffsceneState === 'memorize') imgCont.style.transform = 'scale(1.01)'; };
+                imgCont.onmouseout = () => { imgCont.style.transform = 'scale(1)'; };
+                imgCont.onclick = function() {
+                    if (diffsceneState === 'memorize') {
+                        switchToTestPhase();
+                    }
+                };
+            }
+            
+            speakLetter(qText, 'he');
+            get('diffscene-question').onclick = () => {
+                let txt = diffsceneState === 'memorize' ? qText : 'האם אתה מצליח לזהות מה שונה?';
+                speakLetter(txt, 'he');
+            };
+        }
+
+        function switchToTestPhase() {
+            if (diffsceneState !== 'memorize') return;
+            diffsceneState = 'test';
+            playClickSound();
+            
+            let testText = 'האם אתה מצליח לזהות מה שונה?';
+            get('diffscene-question').textContent = testText + ' 🔊';
+            speakLetter(testText, 'he');
+            
+            let rBtn = get('diffscene-ready-btn');
+            if (rBtn) rBtn.style.display = 'none';
+            
+            let imgCont = get('diffscene-image-container');
+            if (imgCont) {
+                imgCont.style.cursor = 'default';
+                imgCont.style.transform = 'scale(1)';
+            }
+            
+            let cards = get('diffscene-items-overlay').querySelectorAll('.diffscene-item-card');
+            let targetCard = cards[diffsceneChangedIndex];
+            if (targetCard) {
+                targetCard.style.transform = 'translate(-50%, -50%) scale(1.2)';
+                setTimeout(() => {
+                    targetCard.innerHTML = diffsceneItems[diffsceneChangedIndex].alt;
+                    targetCard.style.transform = 'translate(-50%, -50%) scale(1)';
+                }, 150);
+            }
+        }
+
+        function onCardClicked(idx, el) {
+            if (isProcessing) return;
+            
+            if (idx === diffsceneChangedIndex) {
+                isProcessing = true;
+                playSuccessSound();
+                el.style.borderColor = '#4CAF50';
+                el.style.boxShadow = '0 0 16px #4CAF50';
+                el.style.transform = 'translate(-50%, -50%) scale(1.15) rotate(360deg)';
+                
+                let feedbackStr = `כל הכבוד! נכון מאוד! ה${diffsceneItems[idx].name} השתנה ל${diffsceneItems[idx].altName}!`;
+                get('diffscene-question').textContent = feedbackStr + ' 🎉';
+                
+                speakLetter(feedbackStr, 'he', function() {
+                    isProcessing = false;
+                    handleAnswer(true, el, loadDiffsceneRound, null);
+                });
+            } else {
+                playErrorSound();
+                el.style.borderColor = '#F44336';
+                el.style.boxShadow = '0 0 12px #F44336';
+                el.style.transform = 'translate(-50%, -50%) scale(0.9)';
+                
+                let errStr = 'לא זה, נסה לזכור מה היה שם קודם!';
+                speakLetter(errStr, 'he');
+                
+                handleAnswer(false, el, null, function() {
+                    el.style.borderColor = '#fff';
+                    el.style.boxShadow = '0 5px 12px rgba(0,0,0,0.15)';
+                    el.style.transform = 'translate(-50%, -50%) scale(1)';
+                });
+            }
         }
 
         // Register Service Worker for PWA offline support
