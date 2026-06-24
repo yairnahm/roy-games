@@ -5389,6 +5389,15 @@
                     console.log('ServiceWorker registration failed: ', err);
                 });
             });
+
+            // Reload page automatically when service worker updates and takes control
+            let refreshing = false;
+            navigator.serviceWorker.addEventListener('controllerchange', function() {
+                if (!refreshing) {
+                    refreshing = true;
+                    window.location.reload();
+                }
+            });
         }
 
     </script>
