@@ -5236,6 +5236,7 @@
         let diffscenePositions = [];
         let diffsceneChangedIndex = null;
         let diffsceneState = 'memorize'; 
+        let diffscenePlayable = false;
 
         function initDiffsceneGame() {
             get('active-game-title').textContent = 'מה שונה בתמונה? 🖼️';
@@ -5252,6 +5253,7 @@
             diffscenePositions = data.positions.slice(0, N);
             diffsceneChangedIndex = rand(0, N - 1);
             diffsceneState = 'memorize';
+            diffscenePlayable = true;
             
             let qText = 'רועי, הבט היטב בתמונה וזכור כל פריט בה. לחץ עליה כשאתה מוכן';
             
@@ -5262,6 +5264,7 @@
                 <div id="diffscene-image-container" style="width: min(90vw, 550px); aspect-ratio: 4/3; margin: 0 auto; position: relative; border-radius: 24px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.2); cursor: pointer; border: 4px solid #fff; transition: transform 0.2s;">
                     <img src="${data.background}" style="width:100%; height:100%; object-fit:cover; pointer-events:none;" />
                     <div id="diffscene-items-overlay" style="position:absolute; left:0; top:0; width:100%; height:100%; pointer-events:none;"></div>
+                    <div id="diffscene-black-mask" style="position:absolute; left:0; top:0; width:100%; height:100%; background:#000; z-index:20; display:none;"></div>
                 </div>
                 
                 <div style="text-align:center; margin-top:20px;">
@@ -5274,7 +5277,7 @@
                 let pos = diffscenePositions[i];
                 let el = D.createElement('div');
                 el.className = 'diffscene-item-card';
-                el.style.cssText = `position: absolute; left: ${pos.x}%; top: ${pos.y}%; transform: translate(-50%, -50%); width: clamp(52px, 11vmin, 72px); height: clamp(52px, 11vmin, 72px); border-radius: 50%; background: rgba(255,255,255,0.85); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); border: 3px solid #fff; box-shadow: 0 5px 12px rgba(0,0,0,0.15); display: flex; align-items: center; justify-content: center; font-size: clamp(26px, 6vmin, 40px); transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); pointer-events: auto; cursor: pointer;`;
+                el.style.cssText = `position: absolute; left: ${pos.x}%; top: ${pos.y}%; transform: translate(-50%, -50%); width: clamp(60px, 12vmin, 80px); height: clamp(60px, 12vmin, 80px); display: flex; align-items: center; justify-content: center; font-size: clamp(34px, 7vmin, 50px); transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); pointer-events: auto; cursor: pointer; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.5));`;
                 el.innerHTML = item.emoji;
                 el.dataset.index = i;
                 
@@ -5320,11 +5323,8 @@
         function switchToTestPhase() {
             if (diffsceneState !== 'memorize') return;
             diffsceneState = 'test';
+            diffscenePlayable = false;
             playClickSound();
-            
-            let testText = 'האם אתה מצליח לזהות מה שונה?';
-            get('diffscene-question').textContent = testText + ' 🔊';
-            speakLetter(testText, 'he');
             
             let rBtn = get('diffscene-ready-btn');
             if (rBtn) rBtn.style.display = 'none';
@@ -5335,25 +5335,43 @@
                 imgCont.style.transform = 'scale(1)';
             }
             
-            let cards = get('diffscene-items-overlay').querySelectorAll('.diffscene-item-card');
-            let targetCard = cards[diffsceneChangedIndex];
-            if (targetCard) {
-                targetCard.style.transform = 'translate(-50%, -50%) scale(1.2)';
-                setTimeout(() => {
+            // Show black mask overlay
+            let mask = get('diffscene-black-mask');
+            if (mask) mask.style.display = 'block';
+            
+            // Wait 1.25 seconds (1250ms)
+            setTimeout(() => {
+                // Hide black mask overlay
+                if (mask) mask.style.display = 'none';
+                
+                // Swap the changed item emoji
+                let cards = get('diffscene-items-overlay').querySelectorAll('.diffscene-item-card');
+                let targetCard = cards[diffsceneChangedIndex];
+                if (targetCard) {
+                    targetCard.style.transform = 'translate(-50%, -50%) scale(1.2)';
                     targetCard.innerHTML = diffsceneItems[diffsceneChangedIndex].alt;
-                    targetCard.style.transform = 'translate(-50%, -50%) scale(1)';
-                }, 150);
-            }
+                    setTimeout(() => {
+                        targetCard.style.transform = 'translate(-50%, -50%) scale(1)';
+                    }, 150);
+                }
+                
+                // Enable gameplay clicks
+                diffscenePlayable = true;
+                
+                // Show test question and speak it
+                let testText = 'האם אתה מצליח לזהות מה שונה?';
+                get('diffscene-question').textContent = testText + ' 🔊';
+                speakLetter(testText, 'he');
+            }, 1250);
         }
 
         function onCardClicked(idx, el) {
-            if (isProcessing) return;
+            if (isProcessing || !diffscenePlayable) return;
             
             if (idx === diffsceneChangedIndex) {
                 isProcessing = true;
                 playSuccessSound();
-                el.style.borderColor = '#4CAF50';
-                el.style.boxShadow = '0 0 16px #4CAF50';
+                el.style.filter = 'drop-shadow(0 0 12px #4CAF50) drop-shadow(0 0 20px #4CAF50)';
                 el.style.transform = 'translate(-50%, -50%) scale(1.15) rotate(360deg)';
                 
                 let feedbackStr = `כל הכבוד! נכון מאוד! ה${diffsceneItems[idx].name} השתנה ל${diffsceneItems[idx].altName}!`;
@@ -5365,16 +5383,14 @@
                 });
             } else {
                 playErrorSound();
-                el.style.borderColor = '#F44336';
-                el.style.boxShadow = '0 0 12px #F44336';
+                el.style.filter = 'drop-shadow(0 0 10px #F44336) drop-shadow(0 0 16px #F44336)';
                 el.style.transform = 'translate(-50%, -50%) scale(0.9)';
                 
                 let errStr = 'לא זה, נסה לזכור מה היה שם קודם!';
                 speakLetter(errStr, 'he');
                 
                 handleAnswer(false, el, null, function() {
-                    el.style.borderColor = '#fff';
-                    el.style.boxShadow = '0 5px 12px rgba(0,0,0,0.15)';
+                    el.style.filter = 'drop-shadow(0 3px 6px rgba(0,0,0,0.5))';
                     el.style.transform = 'translate(-50%, -50%) scale(1)';
                 });
             }
