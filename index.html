@@ -3135,35 +3135,70 @@
         }
 
         function speakLetter(text, lang, onEnd) {
+            var completed = false;
+            var safeOnEnd = function() { if (completed) return; completed = true; if (onEnd) onEnd(); };
+
             try {
-                if (!window.speechSynthesis) { if (onEnd) onEnd(); return; }
-                speechSynthesis.cancel();
-                var u = new SpeechSynthesisUtterance(text);
-                var isHe = lang === 'he';
-                u.lang = isHe ? 'he-IL' : 'en-US';
-                u.rate = 0.82;
-                u.pitch = 1.08;
-                if (onEnd) {
-                    var completed = false;
-                    var safeOnEnd = function() { if (completed) return; completed = true; onEnd(); };
+                // Try Google Translate TTS online first to guarantee a high-quality female voice
+                var tlCode = lang === 'he' ? 'iw' : 'en';
+                var ttsUrl = 'https://translate.google.com/translate_tts?ie=UTF-8&tl=' + tlCode + '&client=tw-ob&q=' + encodeURIComponent(text);
+                var audio = new Audio(ttsUrl);
+                
+                var fallbackToNative = function() {
+                    if (completed) return;
+                    useNativeSpeechSynthesis();
+                };
+
+                audio.onended = safeOnEnd;
+                audio.onerror = fallbackToNative;
+                
+                // Set a safety timeout in case it doesn't load/play in time (e.g. slow connection)
+                var loadTimeout = setTimeout(fallbackToNative, 1500);
+                
+                audio.play().then(function() {
+                    clearTimeout(loadTimeout);
+                }).catch(function() {
+                    clearTimeout(loadTimeout);
+                    fallbackToNative();
+                });
+            } catch(e) {
+                useNativeSpeechSynthesis();
+            }
+
+            function useNativeSpeechSynthesis() {
+                try {
+                    if (!window.speechSynthesis) { safeOnEnd(); return; }
+                    speechSynthesis.cancel();
+                    var u = new SpeechSynthesisUtterance(text);
+                    var isHe = lang === 'he';
+                    u.lang = isHe ? 'he-IL' : 'en-US';
+                    u.rate = 0.82;
+                    u.pitch = 1.08;
+                    
                     u.onend = safeOnEnd;
                     u.onerror = safeOnEnd;
-                    setTimeout(safeOnEnd, Math.max(text.length * 150, 1000) + 500);
+                    
+                    // Safety backup timeout
+                    setTimeout(safeOnEnd, Math.max(text.length * 150, 1000) + 800);
+
+                    var spoken = false;
+                    function doSpeak() {
+                        if (spoken) return;
+                        spoken = true;
+                        var voices = speechSynthesis.getVoices();
+                        var v = pickFemaleVoice(voices, isHe ? 'he' : 'en');
+                        if (v) u.voice = v;
+                        speechSynthesis.speak(u);
+                    }
+
+                    if (speechSynthesis.getVoices().length === 0) {
+                        speechSynthesis.onvoiceschanged = function(){ speechSynthesis.onvoiceschanged = null; doSpeak(); };
+                        setTimeout(doSpeak, 300);
+                    } else { doSpeak(); }
+                } catch(err) {
+                    safeOnEnd();
                 }
-                var spoken = false;
-                function doSpeak() {
-                    if (spoken) return;
-                    spoken = true;
-                    var voices = speechSynthesis.getVoices();
-                    var v = pickFemaleVoice(voices, isHe ? 'he' : 'en');
-                    if (v) u.voice = v;
-                    speechSynthesis.speak(u);
-                }
-                if (speechSynthesis.getVoices().length === 0) {
-                    speechSynthesis.onvoiceschanged = function(){ speechSynthesis.onvoiceschanged = null; doSpeak(); };
-                    setTimeout(doSpeak, 300);
-                } else { doSpeak(); }
-            } catch(e) { if (onEnd) onEnd(); }
+            }
         }
         function openFirstLetterLangScreen() { playClickSound(); hideAllScreens(); show('firstletter-lang-screen'); }
         function startFirstLetterGame(lang) {
@@ -3466,26 +3501,7 @@
                     function useTts() {
                         if (settled) return;
                         settled = true;
-                        if (!speakText || !window.speechSynthesis) { safeOnEnd(); return; }
-                        speechSynthesis.cancel();
-                        function doSpeak() {
-                            if (spoken) return;
-                            spoken = true;
-                            var voices = speechSynthesis.getVoices();
-                            var u = new SpeechSynthesisUtterance(speakText);
-                            u.lang = 'he-IL'; u.rate = 0.88; u.pitch = 1.15;
-                            var v = pickFemaleVoice(voices, 'he');
-                            if (v) u.voice = v;
-                            if (onEnd) {
-                                var fb2 = setTimeout(safeOnEnd, Math.max(speakText.length * 90, 1200) + 800);
-                                u.onend = function(){ clearTimeout(fb2); safeOnEnd(); };
-                            }
-                            speechSynthesis.speak(u);
-                        }
-                        if (speechSynthesis.getVoices().length === 0) {
-                            speechSynthesis.onvoiceschanged = function(){ speechSynthesis.onvoiceschanged = null; doSpeak(); };
-                            setTimeout(doSpeak, 400);
-                        } else { doSpeak(); }
+                        speakLetter(speakText, 'he', safeOnEnd);
                     }
                     if (onEnd) {
                         var fb = setTimeout(function(){ if(!settled){ settled=true; safeOnEnd(); } }, 8000);
