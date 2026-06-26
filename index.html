@@ -12,7 +12,8 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;700;900&display=swap');
 
-        * { box-sizing: border-box; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        button, [onclick], [role="button"] { touch-action: manipulation; }
 
         body { 
             font-family: 'Rubik', sans-serif; 
@@ -1485,11 +1486,33 @@
 
         let audioCtxReady = false; let audioCtx = null;
         try { let AC = window.AudioContext || window.webkitAudioContext; if(AC) audioCtx = new AC(); } catch(e) {}
+
+        // iOS fix: first touch activates AudioContext and touch recognition
+        document.addEventListener('touchstart', function onFirstTouch() {
+            document.removeEventListener('touchstart', onFirstTouch);
+            if (audioCtx && audioCtx.state === 'suspended') { try { audioCtx.resume(); } catch(e) {} }
+        }, { passive: true });
         function initAudio() { if (!audioCtxReady && audioCtx) { try { if(audioCtx.state === 'suspended') audioCtx.resume(); } catch(e){} audioCtxReady = true; } }
         function playTone(f, t, d, s = 0, v = 0.1) { if(!audioCtx) return; initAudio(); try { let o = audioCtx.createOscillator(); let g = audioCtx.createGain(); o.type = t; o.frequency.setValueAtTime(f, audioCtx.currentTime + s); g.gain.setValueAtTime(v, audioCtx.currentTime + s); g.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + s + d); o.connect(g); g.connect(audioCtx.destination); o.start(audioCtx.currentTime + s); o.stop(audioCtx.currentTime + s + d); } catch(e){} }
         function playSuccessSound() { playTone(523.25, 'sine', 0.5, 0); playTone(659.25, 'sine', 0.5, 0.1); playTone(783.99, 'sine', 0.5, 0.2); playTone(1046.50, 'sine', 1.0, 0.3); }
         function playErrorSound() { playTone(300, 'triangle', 0.3, 0); playTone(250, 'triangle', 0.4, 0.15); }
         function playClickSound() { playTone(600, 'sine', 0.1, 0, 0.05); }
+
+        // Touch fix: fires immediately on touchend, suppresses the follow-up click
+        function addTapHandler(el, fn) {
+            var tapped = false;
+            el.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                if (tapped) return;
+                tapped = true;
+                setTimeout(function(){ tapped = false; }, 600);
+                fn(e);
+            }, { passive: false });
+            el.addEventListener('click', function(e) {
+                if (tapped) return;
+                fn(e);
+            });
+        }
         function playMgFunnySound() {
             if(!audioCtx) return; initAudio();
             function brass(freq, start, dur, vol, endFreq) {
@@ -3094,23 +3117,30 @@
         var FL_HE_POOL = ['ב','ג','ד','ח','ט','כ','ל','מ','נ','ס','פ','צ','ק','ר','ש','ת'];
         var FL_EN_POOL = ['A','B','C','D','E','F','G','H','L','M','N','O','P','R','S','T','V'];
 
+        function pickFemaleVoice(voices, lang) {
+            var MALE_NAMES = /david|asaf|yosef|jorge|diego|daniel|thomas|alex|fred|bruce|tom|he-il-x-heg|he_il_x_heg|\bmale\b/i;
+            var FEMALE_NAMES = /hila|michal|idit|anat|carmit|yael|tamar|noa|sara|female|woman|girl|natural|samantha|karen|victoria|tessa|moira|fiona|alice|amelie|anna|sarah|zira/i;
+            var langVoices = voices.filter(function(v) { return v.lang.startsWith(lang); });
+            if (!langVoices.length) return null;
+            var nonMale = langVoices.filter(function(v) { return !MALE_NAMES.test(v.name); });
+            var pool = nonMale.length ? nonMale : langVoices;
+            return pool.find(function(v) { return FEMALE_NAMES.test(v.name); }) || pool[0];
+        }
+
         function speakLetter(text, lang, onEnd) {
             try {
                 if (!window.speechSynthesis) { if (onEnd) onEnd(); return; }
                 speechSynthesis.cancel();
                 var u = new SpeechSynthesisUtterance(text);
-                u.lang = lang === 'he' ? 'he-IL' : 'en-US';
-                u.rate = 0.8;
+                var isHe = lang === 'he';
+                u.lang = isHe ? 'he-IL' : 'en-US';
+                u.rate = 0.82;
+                u.pitch = 1.08;
                 if (onEnd) {
                     var completed = false;
-                    var safeOnEnd = function() {
-                        if (completed) return;
-                        completed = true;
-                        onEnd();
-                    };
+                    var safeOnEnd = function() { if (completed) return; completed = true; onEnd(); };
                     u.onend = safeOnEnd;
                     u.onerror = safeOnEnd;
-                    // fallback safety timer
                     setTimeout(safeOnEnd, Math.max(text.length * 150, 1000) + 500);
                 }
                 var spoken = false;
@@ -3118,20 +3148,8 @@
                     if (spoken) return;
                     spoken = true;
                     var voices = speechSynthesis.getVoices();
-                    if (lang === 'he') {
-                        var heVoices = voices.filter(function(vv) {
-                            return vv.lang.startsWith('he') || vv.lang.startsWith('iw');
-                        });
-                        var femaleHeVoices = heVoices.filter(function(vv) {
-                            var name = vv.name.toLowerCase();
-                            return !name.includes('david') && !name.includes('asaf') && !name.includes('male') && !name.includes('he-il-x-heg-local');
-                        });
-                        var v = femaleHeVoices.find(function(vv) {
-                            var name = vv.name.toLowerCase();
-                            return /hila|michal|idit|anat|carmit|yael|female|natural/i.test(name);
-                        }) || femaleHeVoices[0] || heVoices[0];
-                        if (v) u.voice = v;
-                    }
+                    var v = pickFemaleVoice(voices, isHe ? 'he' : 'en');
+                    if (v) u.voice = v;
                     speechSynthesis.speak(u);
                 }
                 if (speechSynthesis.getVoices().length === 0) {
@@ -3449,17 +3467,7 @@
                             var voices = speechSynthesis.getVoices();
                             var u = new SpeechSynthesisUtterance(speakText);
                             u.lang = 'he-IL'; u.rate = 0.88; u.pitch = 1.15;
-                            var heVoices = voices.filter(function(vv) {
-                                return vv.lang.startsWith('he') || vv.lang.startsWith('iw');
-                            });
-                            var femaleHeVoices = heVoices.filter(function(vv) {
-                                var name = vv.name.toLowerCase();
-                                return !name.includes('david') && !name.includes('asaf') && !name.includes('male') && !name.includes('he-il-x-heg-local');
-                            });
-                            var v = femaleHeVoices.find(function(vv) {
-                                var name = vv.name.toLowerCase();
-                                return /hila|michal|idit|anat|carmit|yael|female|natural/i.test(name);
-                            }) || femaleHeVoices[0] || heVoices[0];
+                            var v = pickFemaleVoice(voices, 'he');
                             if (v) u.voice = v;
                             if (onEnd) {
                                 var fb2 = setTimeout(safeOnEnd, Math.max(speakText.length * 90, 1200) + 800);
@@ -6415,7 +6423,7 @@
                 card.innerHTML = `${mediaHTML}<div style="padding:10px 6px;font-size:clamp(14px,3.5vw,18px);font-weight:bold;color:#333;text-align:center;direction:rtl;line-height:1.3;">${ch.text}</div>`;
                 card.onmouseover = () => { card.style.transform = 'scale(1.06)'; card.style.borderColor = '#2196F3'; };
                 card.onmouseout  = () => { card.style.transform = 'scale(1)';    card.style.borderColor = '#e0e0e0'; };
-                card.onclick = e => { e.stopPropagation(); onDiffvideoChoiceSelected(ch.isCorrect, card); };
+                addTapHandler(card, function(e) { e.stopPropagation(); onDiffvideoChoiceSelected(ch.isCorrect, card); });
                 area.appendChild(card);
             });
         }
