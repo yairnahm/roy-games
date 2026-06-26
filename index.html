@@ -1715,7 +1715,7 @@
         
         function openDifficultyScreen(gameId, icon, title) {
             playClickSound(); hideAllScreens(); setAppBackground(gameId); currentGameMode = gameId;
-            if(gameId === 'emotion' || gameId === 'emparts' || gameId === 'sharing' || gameId === 'goodbad' || gameId === 'towertalk' || gameId === 'cooppuzzle' || gameId === 'tidyup') {
+            if(gameId === 'emotion' || gameId === 'emparts' || gameId === 'sharing' || gameId === 'goodbad' || gameId === 'towertalk' || gameId === 'cooppuzzle' || gameId === 'tidyup' || gameId === 'whatneeds') {
                 startGameEngine(1); // עוקף את מסך הרמות
                 return;
             }
