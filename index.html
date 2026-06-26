@@ -1330,7 +1330,7 @@
         <h3>באיזו קטגוריה נרצה לשחק?</h3>
         <div class="hub-container">
             <div class="hub-card" onclick="openCategory('lang','שפה ואותיות')"><div class="hub-icon">🔤</div><div class="hub-title">שפה ואותיות</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">2 משחקים</div></div>
-            <div class="hub-card" onclick="openCategory('think','חשיבה וזיכרון')"><div class="hub-icon">🧠</div><div class="hub-title">חשיבה וזיכרון</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">6 משחקים</div></div>
+            <div class="hub-card" onclick="openCategory('think','חשיבה וזיכרון')"><div class="hub-icon">🧠</div><div class="hub-title">חשיבה וזיכרון</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">7 משחקים</div></div>
             <div class="hub-card" onclick="openCategory('emotion','רגשות ואנשים')"><div class="hub-icon">😊</div><div class="hub-title">רגשות ואנשים</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">6 משחקים</div></div>
             <div class="hub-card" onclick="openCategory('numbers','מספרים וסדר')"><div class="hub-icon">🔢</div><div class="hub-title">מספרים וסדר</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">4 משחקים</div></div>
             <div class="hub-card" onclick="openCategory('world','עולם סביבנו')"><div class="hub-icon">🌍</div><div class="hub-title">עולם סביבנו</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">6 משחקים</div></div>
@@ -1344,6 +1344,7 @@
         <div class="hub-container">
             <div class="hub-card" data-cat="think" style="position:relative;" onclick="openDifficultyScreen('memory', '🧠', 'משחק הזיכרון')"><span class="star-badge" data-game="memory" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🧠</div><div class="hub-title">זיכרון</div></div>
             <div class="hub-card" data-cat="think" style="position:relative;" onclick="openDifficultyScreen('diffscene', '🖼️', 'מה שונה בתמונה?')"><span class="star-badge" data-game="diffscene" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🖼️</div><div class="hub-title">מה שונה?</div></div>
+            <div class="hub-card" data-cat="think" style="position:relative;" onclick="openDifficultyScreen('diffvideo', '🎬', 'מה שונה בסרטון?')"><span class="star-badge" data-game="diffvideo" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🎬</div><div class="hub-title">מה שונה בסרטון?</div></div>
             <div class="hub-card" data-cat="create" style="position:relative;" onclick="openDifficultyScreen('tracing', '✏️', 'השלם את הצורה')"><div class="hub-icon">✏️</div><div class="hub-title">ציור</div></div>
             <div class="hub-card" data-cat="numbers" style="position:relative;" onclick="openDifficultyScreen('counting', '🔢', 'ספור את הצורות')"><span class="star-badge" data-game="counting" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">✨</span><div class="hub-icon">🔢</div><div class="hub-title">ספירה</div></div>
             <div class="hub-card" data-cat="numbers" style="position:relative;" onclick="openDifficultyScreen('sequence', '🔄', 'מה הסדר הנכון?')"><span class="star-badge" data-game="sequence" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🔄</div><div class="hub-title">סדר נכון</div></div>
@@ -1454,7 +1455,7 @@
     <div id="feedback-layer" class="hidden feedback-icon"></div>
 
     <script>
-        const bgIcons = { 'sharing': ['🤝','❤️','🌟','🎁'], 'memory': ['🧠','💭','💡'], 'tracing': ['✏️','🎨','📐'], 'counting': ['🔢','🧮','➕'], 'sequence': ['🔄','✨','🎯'], 'fly': ['🪰','💨'], 'cop': ['🚓','🚨'], 'diff': ['🔎','👀'], 'oddone': ['🍎','🐶','🚗'], 'missing': ['A','B','C'], 'tools': ['🔨','🔧','🔩'], 'context': ['🧩','🖼️','🎨'], 'vparts': ['🚗','✈️','🚂','⛵','🚁'], 'habitat': ['🏠','🌳','🌊'], 'shadow': ['👤','🌑','👀'], 'halfhalf': ['✂️','🎨','🧩'], 'chrono': ['⏳','📅','🔄'], 'bigger': ['⚖️','🐘','🐭','🔢'], 'emotion': ['😄','😢','😡','😱'], 'faces': ['📸','❤️','👨‍👩‍👧‍👦','🤳'], 'mgamish': ['🤸','💪','🌟','🤸‍♂️'], 'firstletter': ['🔡','🔤','📖','✏️'], 'numwar': ['⚔️','🃏','🔢','⭐'], 'towertalk': ['🧱','🏗️','🏢'], 'cooppuzzle': ['🧩','🖼️','🎨','📸'], 'tidyup': ['🧼','🧸','🧺','🧹'], 'patterns': ['🔴','🔵','💛','🟩','🔺','🌟'], 'origins': ['🐄','🥛','🐑','🐔','🐝','🍞'], 'families': ['🐕','🐶','🐈','🐱','🐥','🦁'], 'diffscene': ['🖼️','🔍','👀'] };
+        const bgIcons = { 'sharing': ['🤝','❤️','🌟','🎁'], 'memory': ['🧠','💭','💡'], 'tracing': ['✏️','🎨','📐'], 'counting': ['🔢','🧮','➕'], 'sequence': ['🔄','✨','🎯'], 'fly': ['🪰','💨'], 'cop': ['🚓','🚨'], 'diff': ['🔎','👀'], 'oddone': ['🍎','🐶','🚗'], 'missing': ['A','B','C'], 'tools': ['🔨','🔧','🔩'], 'context': ['🧩','🖼️','🎨'], 'vparts': ['🚗','✈️','🚂','⛵','🚁'], 'habitat': ['🏠','🌳','🌊'], 'shadow': ['👤','🌑','👀'], 'halfhalf': ['✂️','🎨','🧩'], 'chrono': ['⏳','📅','🔄'], 'bigger': ['⚖️','🐘','🐭','🔢'], 'emotion': ['😄','😢','😡','😱'], 'faces': ['📸','❤️','👨‍👩‍👧‍👦','🤳'], 'mgamish': ['🤸','💪','🌟','🤸‍♂️'], 'firstletter': ['🔡','🔤','📖','✏️'], 'numwar': ['⚔️','🃏','🔢','⭐'], 'towertalk': ['🧱','🏗️','🏢'], 'cooppuzzle': ['🧩','🖼️','🎨','📸'], 'tidyup': ['🧼','🧸','🧺','🧹'], 'patterns': ['🔴','🔵','💛','🟩','🔺','🌟'], 'origins': ['🐄','🥛','🐑','🐔','🐝','🍞'], 'families': ['🐕','🐶','🐈','🐱','🐥','🦁'], 'diffscene': ['🖼️','🔍','👀'], 'diffvideo': ['🎬','🔎','👀'] };
         function setAppBackground(theme) {
             D.body.className = 'bg-' + theme; let bg = get('bg-animations'); bg.innerHTML = '';
             if(theme !== 'hub' && bgIcons[theme]) {
@@ -1678,6 +1679,7 @@
                 else if(currentGameMode === 'origins') initOriginsGame();
                 else if(currentGameMode === 'families') initFamiliesGame();
                 else if(currentGameMode === 'diffscene') initDiffsceneGame();
+                else if(currentGameMode === 'diffvideo') initDiffvideoGame();
             }, 50);
         }
 
@@ -5341,10 +5343,235 @@
                 let errStr = 'לא זה, הבט היטב בתמונה ונסה לגלות מה השתנה!';
                 speakLetter(errStr, 'he');
                 
-                handleAnswer(false, el, null, function() {
-                    el.style.borderColor = 'transparent';
-                    el.style.boxShadow = 'none';
-                    el.style.backgroundColor = 'transparent';
+            }
+        }
+
+        // ── מה שונה בסרטון? ──
+        const diffvideoPool = [
+            {
+                baseVideo: 'images/diffvideo_1_base.mp4',
+                diffVideo: 'images/diffvideo_1_diff.mp4',
+                name: 'דג אדום שוחה',
+                feedback: 'כל הכבוד! הדג הצהוב הפך לדג אדום שוחה!',
+                choices: [
+                    { emoji: '🐠', text: 'דג אדום שוחה', isCorrect: true },
+                    { emoji: '🐟', text: 'דג צהוב שוחה', isCorrect: false },
+                    { emoji: '🐢', text: 'צב ים זוחל', isCorrect: false },
+                    { emoji: '🐙', text: 'תמנון סגול', isCorrect: false }
+                ]
+            },
+            {
+                baseVideo: 'images/diffvideo_2_base.mp4',
+                diffVideo: 'images/diffvideo_2_diff.mp4',
+                name: 'מכונית צהובה',
+                feedback: 'נכון מאוד! המכונית האדומה ברקע הפכה למכונית צהובה!',
+                choices: [
+                    { emoji: '🟨', text: 'מכונית צהובה', isCorrect: true },
+                    { emoji: '🟥', text: 'מכונית אדומה', isCorrect: false },
+                    { emoji: '🟩', text: 'משאית ירוקה', isCorrect: false },
+                    { emoji: '🟦', text: 'אופנוע כחול', isCorrect: false }
+                ]
+            },
+            {
+                baseVideo: 'images/diffvideo_3_base.mp4',
+                diffVideo: 'images/diffvideo_3_diff.mp4',
+                name: 'ילדה משחקת',
+                feedback: 'כל הכבוד! הילד ששיחק הפך לילדה!',
+                choices: [
+                    { emoji: '👧', text: 'ילדה משחקת', isCorrect: true },
+                    { emoji: '👦', text: 'ילד משחק', isCorrect: false },
+                    { emoji: '🐶', text: 'כלב רץ', isCorrect: false },
+                    { emoji: '🐈', text: 'חתול ישן', isCorrect: false }
+                ]
+            },
+            {
+                baseVideo: 'images/diffvideo_4_base.mp4',
+                diffVideo: 'images/diffvideo_4_diff.mp4',
+                name: 'פרח ורוד',
+                feedback: 'נכון מאוד! העציץ הירוק פתאום פרח עם פרח ורוד!',
+                choices: [
+                    { emoji: '🌸', text: 'פרח ורוד בעציץ', isCorrect: true },
+                    { emoji: '🌿', text: 'עציץ ירוק בלבד', isCorrect: false },
+                    { emoji: '🪵', text: 'ענף עץ יבש', isCorrect: false },
+                    { emoji: '🌵', text: 'קקטוס קוצני', isCorrect: false }
+                ]
+            }
+        ];
+        let diffvideoOrder = [];
+        let diffvideoState = 'memorize'; 
+        let diffvideoPlayable = false;
+
+        function initDiffvideoGame() {
+            get('active-game-title').textContent = 'מה שונה בסרטון? 🎬';
+            diffvideoOrder = shuffle([0, 1, 2, 3]);
+            loadDiffvideoRound();
+        }
+
+        function loadDiffvideoRound() {
+            let roundIdx = diffvideoOrder[currentStep];
+            let data = diffvideoPool[roundIdx];
+            
+            diffvideoState = 'memorize';
+            diffvideoPlayable = false;
+            
+            let qText = 'רועי, הבט היטב בסרטון וזכור את הפרטים. לחץ כשאתה מוכן';
+            
+            let ws = get('game-workspace');
+            ws.innerHTML = `
+                <div style="font-size:clamp(17px, 3.8vw, 24px); font-weight:900; margin-bottom:15px; color:#333; text-align:center; direction:rtl; line-height:1.4;" id="diffvideo-question">${qText} 🔊</div>
+                
+                <div id="diffvideo-container" style="width: min(90vw, 550px); aspect-ratio: 4/3; margin: 0 auto; position: relative; border-radius: 24px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.2); border: 4px solid #fff; cursor: pointer;">
+                    <video id="diffvideo-player" src="${data.baseVideo}" autoplay loop muted playsinline style="width:100%; height:100%; object-fit:cover; pointer-events:none;"></video>
+                    <div id="diffvideo-black-mask" style="position:absolute; left:0; top:0; width:100%; height:100%; background:#000; z-index:20; display:none;"></div>
+                </div>
+                
+                <div id="diffvideo-choices-area" style="display:none; justify-content:center; flex-wrap:wrap; gap:15px; margin-top:20px; max-width:600px; margin-left:auto; margin-right:auto;"></div>
+                
+                <div id="diffvideo-action-area" style="text-align:center; margin-top:20px;">
+                    <button id="diffvideo-ready-btn" class="sys-btn" style="background:#2196F3; color:#fff; padding:12px 36px; font-size:18px; font-weight:bold; border-radius:16px; border:none; cursor:pointer; box-shadow:0 4px 12px rgba(33, 150, 243, 0.3); transition: transform 0.2s;">אני מוכן! 👆</button>
+                </div>
+            `;
+            
+            let player = get('diffvideo-player');
+            if (player) {
+                player.play().catch(e => {});
+            }
+
+            let rBtn = get('diffvideo-ready-btn');
+            if (rBtn) {
+                rBtn.onmouseover = () => { rBtn.style.transform = 'scale(1.05)'; };
+                rBtn.onmouseout = () => { rBtn.style.transform = 'scale(1)'; };
+                rBtn.onclick = function(e) {
+                    e.stopPropagation();
+                    switchDiffvideoToTest();
+                };
+            }
+            
+            let imgCont = get('diffvideo-container');
+            if (imgCont) {
+                imgCont.onclick = function() {
+                    if (diffvideoState === 'memorize') {
+                        switchDiffvideoToTest();
+                    }
+                };
+            }
+            
+            speakLetter(qText, 'he');
+            get('diffvideo-question').onclick = () => {
+                let txt = diffvideoState === 'memorize' ? qText : (diffvideoState === 'test' ? 'האם שמת לב מה השתנה בסרטון?' : 'מה שונה בסרטון? בחר את התשובה הנכונה');
+                speakLetter(txt, 'he');
+            };
+        }
+
+        function switchDiffvideoToTest() {
+            if (diffvideoState !== 'memorize') return;
+            diffvideoState = 'test';
+            playClickSound();
+            
+            let rBtn = get('diffvideo-action-area');
+            if (rBtn) rBtn.style.display = 'none';
+            
+            let roundIdx = diffvideoOrder[currentStep];
+            let data = diffvideoPool[roundIdx];
+            let player = get('diffvideo-player');
+            if (player) {
+                player.src = data.diffVideo;
+                player.play().catch(e => {});
+            }
+            
+            let mask = get('diffvideo-black-mask');
+            if (mask) mask.style.display = 'block';
+            
+            setTimeout(() => {
+                if (mask) mask.style.display = 'none';
+                
+                let testText = 'האם שמת לב מה השתנה בסרטון?';
+                get('diffvideo-question').textContent = testText + ' 🔊';
+                speakLetter(testText, 'he');
+                
+                setTimeout(() => {
+                    showDiffvideoChoices();
+                }, 4000);
+            }, 1250);
+        }
+
+        function showDiffvideoChoices() {
+            diffvideoState = 'choices';
+            diffvideoPlayable = true;
+            
+            let roundIdx = diffvideoOrder[currentStep];
+            let data = diffvideoPool[roundIdx];
+            
+            let qText = 'מה שונה בסרטון? בחר את התשובה הנכונה:';
+            get('diffvideo-question').textContent = qText + ' 🔊';
+            speakLetter(qText, 'he');
+            
+            let correctChoice = data.choices.find(c => c.isCorrect);
+            let wrongChoices = data.choices.filter(c => !c.isCorrect);
+            
+            let numChoices = currentDifficulty === 1 ? 2 : (currentDifficulty === 2 ? 3 : 4);
+            let selectedWrong = shuffle(wrongChoices.slice()).slice(0, numChoices - 1);
+            let finalChoices = shuffle([correctChoice, ...selectedWrong]);
+            
+            let choicesArea = get('diffvideo-choices-area');
+            choicesArea.innerHTML = '';
+            choicesArea.style.display = 'flex';
+            
+            finalChoices.forEach((ch, idx) => {
+                let card = D.createElement('div');
+                card.style.cssText = `background: #fff; border: 4px solid #e0e0e0; border-radius: 20px; padding: clamp(10px, 2vw, 20px); width: clamp(110px, 25vw, 130px); text-align: center; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: all 0.2s ease; direction: rtl;`;
+                card.innerHTML = `
+                    <div style="font-size: clamp(36px, 8vw, 50px); margin-bottom: 8px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));">${ch.emoji}</div>
+                    <div style="font-size: clamp(13px, 3vw, 16px); font-weight: bold; color: #333; line-height: 1.2;">${ch.text}</div>
+                `;
+                
+                card.onmouseover = () => { card.style.transform = 'scale(1.05)'; card.style.borderColor = '#2196F3'; };
+                card.onmouseout = () => { card.style.transform = 'scale(1)'; card.style.borderColor = '#e0e0e0'; };
+                
+                card.onclick = function(e) {
+                    e.stopPropagation();
+                    onDiffvideoChoiceSelected(ch.isCorrect, card);
+                };
+                
+                choicesArea.appendChild(card);
+            });
+        }
+
+        function onDiffvideoChoiceSelected(isCorrect, card) {
+            if (isProcessing || !diffvideoPlayable) return;
+            
+            let roundIdx = diffvideoOrder[currentStep];
+            let data = diffvideoPool[roundIdx];
+            
+            if (isCorrect) {
+                isProcessing = true;
+                playSuccessSound();
+                
+                card.style.borderColor = '#4CAF50';
+                card.style.boxShadow = '0 0 15px rgba(76, 175, 80, 0.4)';
+                card.style.background = '#e8f5e9';
+                
+                let feedbackStr = data.feedback;
+                get('diffvideo-question').textContent = feedbackStr + ' 🎉';
+                
+                speakLetter(feedbackStr, 'he', function() {
+                    isProcessing = false;
+                    handleAnswer(true, card, loadDiffvideoRound, null);
+                });
+            } else {
+                playErrorSound();
+                
+                card.style.borderColor = '#F44336';
+                card.style.boxShadow = '0 0 15px rgba(244, 67, 54, 0.4)';
+                card.style.background = '#ffebee';
+                
+                let errStr = 'לא זה, נסה להיזכר מה ראית בסרטון הראשון!';
+                speakLetter(errStr, 'he');
+                
+                handleAnswer(false, card, null, function() {
+                    card.style.borderColor = '#e0e0e0';
+                    card.style.boxShadow = '0 4px 10px rgba(0,0,0,0.1)';
+                    card.style.background = '#fff';
                 });
             }
         }
