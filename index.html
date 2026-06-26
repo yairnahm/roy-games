@@ -5145,96 +5145,46 @@
         }
 
         // ── מה שונה בתמונה? ──
+        // ── מה שונה בתמונה? ──
         const diffscenePool = [
             {
-                background: 'images/diff_bg_toyshelf.png',
-                items: [
-                    { emoji: '🧸', alt: '🤖', name: 'דובי', altName: 'רובוט' },
-                    { emoji: '🚗', alt: '🚕', name: 'מכונית', altName: 'מונית' },
-                    { emoji: '⚽', alt: '🏀', name: 'כדורגל', altName: 'כדורסל' },
-                    { emoji: '🦖', alt: '🐉', name: 'דינוזאור', altName: 'דרקון' },
-                    { emoji: '🚀', alt: '🛸', name: 'חללית', altName: 'צלחת מעופפת' },
-                    { emoji: '🚂', alt: '✈️', name: 'רכבת', altName: 'מטוס' },
-                    { emoji: '🎺', alt: '🥁', name: 'חצוצרה', altName: 'תוף' },
-                    { emoji: '🎨', alt: '✏️', name: 'פלטת צבעים', altName: 'עיפרון' },
-                    { emoji: '👑', alt: '👒', name: 'כתר', altName: 'כובע' },
-                    { emoji: '🎁', alt: '🎈', name: 'מתנה', altName: 'בלון' }
-                ],
-                positions: [
-                    { x: 22, y: 22 }, { x: 50, y: 20 }, { x: 78, y: 22 },
-                    { x: 35, y: 38 }, { x: 65, y: 38 },
-                    { x: 20, y: 56 }, { x: 50, y: 55 }, { x: 80, y: 56 },
-                    { x: 35, y: 76 }, { x: 65, y: 76 }
-                ]
+                // Armchair changed to oak wooden cabinet/closet
+                baseImage: 'images/diff_room_base.png',
+                diffImage: 'images/diff_room_1.png',
+                name: 'כורסה ירוקה',
+                altName: 'ארון עץ',
+                feedback: 'כל הכבוד! הכורסה הירוקה השתנתה לארון עץ!',
+                hotspot: { x: 18, y: 55, w: 25, h: 45 }
             },
             {
-                background: 'images/diff_bg_trees.png',
-                items: [
-                    { emoji: '🍎', alt: '🍌', name: 'תפוח', altName: 'בננה' },
-                    { emoji: '🦋', alt: '🐝', name: 'פרפר', altName: 'דבורה' },
-                    { emoji: '🌻', alt: '🌹', name: 'חמנייה', altName: 'ורד' },
-                    { emoji: '🐸', alt: '🦎', name: 'צפרדע', altName: 'לטאה' },
-                    { emoji: '🐰', alt: '🐹', name: 'ארנב', altName: 'אוגר' },
-                    { emoji: '🐌', alt: '🐛', name: 'חלזון', altName: 'זחל' },
-                    { emoji: '🍓', alt: '🍒', name: 'תות', altName: 'דובדבן' },
-                    { emoji: '🐥', alt: '🦉', name: 'אפרוח', altName: 'ינשוף' },
-                    { emoji: '🐞', alt: '🐜', name: 'חיפושית', altName: 'נמלה' },
-                    { emoji: '🥕', alt: '🌽', name: 'גזר', altName: 'תירס' }
-                ],
-                positions: [
-                    { x: 18, y: 22 }, { x: 50, y: 24 }, { x: 82, y: 22 },
-                    { x: 32, y: 44 }, { x: 68, y: 44 },
-                    { x: 18, y: 68 }, { x: 50, y: 64 }, { x: 82, y: 68 },
-                    { x: 34, y: 84 }, { x: 66, y: 84 }
-                ]
+                // Colorful garland removed from the wall
+                baseImage: 'images/diff_room_base.png',
+                diffImage: 'images/diff_room_2.png',
+                name: 'שרשרת כדורים צבעונית',
+                altName: 'קיר ריק',
+                feedback: 'נכון מאוד! שרשרת הכדורים הצבעונית נעלמה מהקיר!',
+                hotspot: { x: 50, y: 15, w: 90, h: 20 }
             },
             {
-                background: 'images/diff_bg_aquarium.png',
-                items: [
-                    { emoji: '🐠', alt: '🐡', name: 'דג', altName: 'אבו נפחא' },
-                    { emoji: '🐙', alt: '🦑', name: 'תמנון', altName: 'דיונון' },
-                    { emoji: '🦀', alt: '🦞', name: 'סרטן', altName: 'לובסטר' },
-                    { emoji: '🐬', alt: '🐳', name: 'דולפין', altName: 'לוויתן' },
-                    { emoji: '🦈', alt: '🐋', name: 'כריש', altName: 'לוויתן כחול' },
-                    { emoji: '🐢', alt: '🐊', name: 'צב ים', altName: 'תנין' },
-                    { emoji: '🐚', alt: '🐙', name: 'קונכייה', altName: 'תמנון' },
-                    { emoji: '🦐', alt: '🦀', name: 'חסילון', altName: 'סרטן' },
-                    { emoji: '🦑', alt: '🐙', name: 'דיונון', altName: 'תמנון' },
-                    { emoji: '🐳', alt: '🐬', name: 'לוויתן', altName: 'דולפין' }
-                ],
-                positions: [
-                    { x: 25, y: 22 }, { x: 50, y: 18 }, { x: 75, y: 22 },
-                    { x: 18, y: 46 }, { x: 50, y: 44 }, { x: 82, y: 46 },
-                    { x: 34, y: 68 }, { x: 66, y: 68 },
-                    { x: 22, y: 84 }, { x: 78, y: 84 }
-                ]
+                // Wall art geometric frames changed to sun/cloud drawings
+                baseImage: 'images/diff_room_base.png',
+                diffImage: 'images/diff_room_3.png',
+                name: 'תמונות מודרניות',
+                altName: 'ציורי שמש וענן',
+                feedback: 'כל הכבוד! התמונות המודרניות השתנו לציורי שמש וענן של ילדים!',
+                hotspot: { x: 50, y: 35, w: 40, h: 22 }
             },
             {
-                background: 'images/diff_bg_beach.png',
-                items: [
-                    { emoji: '☀️', alt: '⛅', name: 'שמש', altName: 'ענן ושמש' },
-                    { emoji: '☁️', alt: '🌧️', name: 'ענן', altName: 'ענן גשם' },
-                    { emoji: '🕶️', alt: '👓', name: 'משקפי שמש', altName: 'משקפיים' },
-                    { emoji: '🍦', alt: '🍧', name: 'גלידה', altName: 'קינוח כוס' },
-                    { emoji: '⛵', alt: '🛥️', name: 'סירה', altName: 'סירת מנוע' },
-                    { emoji: '🏖️', alt: '🌴', name: 'שמשיית חוף', altName: 'עץ דקל' },
-                    { emoji: '🍉', alt: '🍍', name: 'אבטיח', altName: 'אננס' },
-                    { emoji: '🩴', alt: '👟', name: 'כפכף', altName: 'נעל ריצה' },
-                    { emoji: '🏐', alt: '⚽', name: 'כדורעף', altName: 'כדורגל' },
-                    { emoji: '🥥', alt: '🍋', name: 'קוקוס', altName: 'לימון' }
-                ],
-                positions: [
-                    { x: 20, y: 20 }, { x: 50, y: 18 }, { x: 80, y: 20 },
-                    { x: 35, y: 38 }, { x: 65, y: 38 },
-                    { x: 20, y: 58 }, { x: 50, y: 58 }, { x: 80, y: 58 },
-                    { x: 35, y: 78 }, { x: 65, y: 78 }
-                ]
+                // Wicker doll basket changed to blue plastic toy box
+                baseImage: 'images/diff_room_base.png',
+                diffImage: 'images/diff_room_4.png',
+                name: 'סל קש עם בובות',
+                altName: 'ארגז פלסטיק כחול עם קוביות',
+                feedback: 'כל הכבוד! סל הקש עם הבובות השתנה לארגז פלסטיק כחול עם קוביות משחק!',
+                hotspot: { x: 50, y: 78, w: 30, h: 28 }
             }
         ];
         let diffsceneOrder = [];
-        let diffsceneItems = [];
-        let diffscenePositions = [];
-        let diffsceneChangedIndex = null;
         let diffsceneState = 'memorize'; 
         let diffscenePlayable = false;
 
@@ -5247,11 +5197,7 @@
         function loadDiffsceneRound() {
             let roundIdx = diffsceneOrder[currentStep];
             let data = diffscenePool[roundIdx];
-            let N = currentDifficulty === 1 ? 4 : (currentDifficulty === 2 ? 7 : 10);
             
-            diffsceneItems = shuffle(data.items.slice()).slice(0, N);
-            diffscenePositions = data.positions.slice(0, N);
-            diffsceneChangedIndex = rand(0, N - 1);
             diffsceneState = 'memorize';
             diffscenePlayable = true;
             
@@ -5262,7 +5208,7 @@
                 <div style="font-size:clamp(17px, 3.8vw, 24px); font-weight:900; margin-bottom:15px; color:#333; text-align:center; direction:rtl; line-height:1.4;" id="diffscene-question">${qText} 🔊</div>
                 
                 <div id="diffscene-image-container" style="width: min(90vw, 550px); aspect-ratio: 4/3; margin: 0 auto; position: relative; border-radius: 24px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.2); cursor: pointer; border: 4px solid #fff; transition: transform 0.2s;">
-                    <img src="${data.background}" style="width:100%; height:100%; object-fit:cover; pointer-events:none;" />
+                    <img id="diffscene-img-element" src="${data.baseImage}" style="width:100%; height:100%; object-fit:cover; pointer-events:none;" />
                     <div id="diffscene-items-overlay" style="position:absolute; left:0; top:0; width:100%; height:100%; pointer-events:none;"></div>
                     <div id="diffscene-black-mask" style="position:absolute; left:0; top:0; width:100%; height:100%; background:#000; z-index:20; display:none;"></div>
                 </div>
@@ -5272,13 +5218,13 @@
                 </div>
             `;
             
+            // Build transparent hotspots based on diffscenePool coordinates
             let overlay = get('diffscene-items-overlay');
-            diffsceneItems.forEach((item, i) => {
-                let pos = diffscenePositions[i];
+            diffscenePool.forEach((item, i) => {
+                let hs = item.hotspot;
                 let el = D.createElement('div');
-                el.className = 'diffscene-item-card';
-                el.style.cssText = `position: absolute; left: ${pos.x}%; top: ${pos.y}%; transform: translate(-50%, -50%); width: clamp(60px, 12vmin, 80px); height: clamp(60px, 12vmin, 80px); display: flex; align-items: center; justify-content: center; font-size: clamp(34px, 7vmin, 50px); transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); pointer-events: auto; cursor: pointer; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.5));`;
-                el.innerHTML = item.emoji;
+                el.className = 'diffscene-hotspot';
+                el.style.cssText = `position: absolute; left: ${hs.x}%; top: ${hs.y}%; transform: translate(-50%, -50%); width: ${hs.w}%; height: ${hs.h}%; border-radius: 12px; border: 3px dashed transparent; pointer-events: auto; cursor: pointer; transition: all 0.3s ease;`;
                 el.dataset.index = i;
                 
                 el.onclick = function(e) {
@@ -5286,7 +5232,7 @@
                     if (diffsceneState === 'memorize') {
                         switchToTestPhase();
                     } else {
-                        onCardClicked(i, el);
+                        onHotspotClicked(i, el);
                     }
                 };
                 
@@ -5344,15 +5290,12 @@
                 // Hide black mask overlay
                 if (mask) mask.style.display = 'none';
                 
-                // Swap the changed item emoji
-                let cards = get('diffscene-items-overlay').querySelectorAll('.diffscene-item-card');
-                let targetCard = cards[diffsceneChangedIndex];
-                if (targetCard) {
-                    targetCard.style.transform = 'translate(-50%, -50%) scale(1.2)';
-                    targetCard.innerHTML = diffsceneItems[diffsceneChangedIndex].alt;
-                    setTimeout(() => {
-                        targetCard.style.transform = 'translate(-50%, -50%) scale(1)';
-                    }, 150);
+                // Swap the background image to the difference image of current round
+                let roundIdx = diffsceneOrder[currentStep];
+                let data = diffscenePool[roundIdx];
+                let imgEl = get('diffscene-img-element');
+                if (imgEl) {
+                    imgEl.src = data.diffImage;
                 }
                 
                 // Enable gameplay clicks
@@ -5365,16 +5308,21 @@
             }, 1250);
         }
 
-        function onCardClicked(idx, el) {
+        function onHotspotClicked(idx, el) {
             if (isProcessing || !diffscenePlayable) return;
             
-            if (idx === diffsceneChangedIndex) {
+            let roundIdx = diffsceneOrder[currentStep];
+            if (idx === roundIdx) {
+                // Correct choice
                 isProcessing = true;
                 playSuccessSound();
-                el.style.filter = 'drop-shadow(0 0 12px #4CAF50) drop-shadow(0 0 20px #4CAF50)';
-                el.style.transform = 'translate(-50%, -50%) scale(1.15) rotate(360deg)';
                 
-                let feedbackStr = `כל הכבוד! נכון מאוד! ה${diffsceneItems[idx].name} השתנה ל${diffsceneItems[idx].altName}!`;
+                // Outline and glow effect on correct hotspot area
+                el.style.borderColor = '#4CAF50';
+                el.style.boxShadow = '0 0 20px #4CAF50, inset 0 0 20px #4CAF50';
+                el.style.backgroundColor = 'rgba(76, 175, 80, 0.15)';
+                
+                let feedbackStr = diffscenePool[roundIdx].feedback;
                 get('diffscene-question').textContent = feedbackStr + ' 🎉';
                 
                 speakLetter(feedbackStr, 'he', function() {
@@ -5382,16 +5330,21 @@
                     handleAnswer(true, el, loadDiffsceneRound, null);
                 });
             } else {
+                // Incorrect choice
                 playErrorSound();
-                el.style.filter = 'drop-shadow(0 0 10px #F44336) drop-shadow(0 0 16px #F44336)';
-                el.style.transform = 'translate(-50%, -50%) scale(0.9)';
                 
-                let errStr = 'לא זה, נסה לזכור מה היה שם קודם!';
+                // Red glowing outline feedback on clicked hotspot area
+                el.style.borderColor = '#F44336';
+                el.style.boxShadow = '0 0 15px #F44336, inset 0 0 15px #F44336';
+                el.style.backgroundColor = 'rgba(244, 67, 54, 0.1)';
+                
+                let errStr = 'לא זה, הבט היטב בתמונה ונסה לגלות מה השתנה!';
                 speakLetter(errStr, 'he');
                 
                 handleAnswer(false, el, null, function() {
-                    el.style.filter = 'drop-shadow(0 3px 6px rgba(0,0,0,0.5))';
-                    el.style.transform = 'translate(-50%, -50%) scale(1)';
+                    el.style.borderColor = 'transparent';
+                    el.style.boxShadow = 'none';
+                    el.style.backgroundColor = 'transparent';
                 });
             }
         }
