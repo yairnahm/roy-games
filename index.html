@@ -1684,6 +1684,8 @@
         }
 
         function quitActiveGame() {
+            if (typeof diffvideoTimer1 !== 'undefined' && diffvideoTimer1) clearTimeout(diffvideoTimer1);
+            if (typeof diffvideoTimer2 !== 'undefined' && diffvideoTimer2) clearTimeout(diffvideoTimer2);
             playClickSound(); hideAllScreens();
             var agc = get('active-game-container');
             if (agc) agc.style.height = '';
@@ -5349,8 +5351,18 @@
         // ── מה שונה בסרטון? ──
         const diffvideoPool = [
             {
-                baseVideo: 'images/diffvideo_1_base.mp4',
-                diffVideo: 'images/diffvideo_1_diff.mp4',
+                sceneType: 'playroom',
+                name: 'משאית כחולה',
+                feedback: 'כל הכבוד! המשאית האדומה הפכה למשאית כחולה!',
+                choices: [
+                    { emoji: '🚚', text: 'משאית כחולה', isCorrect: true },
+                    { emoji: '🚛', text: 'משאית אדומה', isCorrect: false },
+                    { emoji: '🐢', text: 'צב ים זוחל', isCorrect: false },
+                    { emoji: '🐠', text: 'דג אדום שוחה', isCorrect: false }
+                ]
+            },
+            {
+                sceneType: 'aquarium',
                 name: 'דג אדום שוחה',
                 feedback: 'כל הכבוד! הדג הצהוב הפך לדג אדום שוחה!',
                 choices: [
@@ -5361,8 +5373,7 @@
                 ]
             },
             {
-                baseVideo: 'images/diffvideo_2_base.mp4',
-                diffVideo: 'images/diffvideo_2_diff.mp4',
+                sceneType: 'road',
                 name: 'מכונית צהובה',
                 feedback: 'נכון מאוד! המכונית האדומה ברקע הפכה למכונית צהובה!',
                 choices: [
@@ -5373,41 +5384,923 @@
                 ]
             },
             {
-                baseVideo: 'images/diffvideo_3_base.mp4',
-                diffVideo: 'images/diffvideo_3_diff.mp4',
-                name: 'ילדה משחקת',
-                feedback: 'כל הכבוד! הילד ששיחק הפך לילדה!',
+                sceneType: 'playground',
+                name: 'ילדה מנופפת לשלום',
+                feedback: 'כל הכבוד! הילד שנופף לשלום הפך לילדה מנופפת לשלום!',
                 choices: [
-                    { emoji: '👧', text: 'ילדה משחקת', isCorrect: true },
-                    { emoji: '👦', text: 'ילד משחק', isCorrect: false },
+                    { emoji: '👧', text: 'ילדה מנופפת לשלום', isCorrect: true },
+                    { emoji: '👦', text: 'ילד מנופף לשלום', isCorrect: false },
                     { emoji: '🐶', text: 'כלב רץ', isCorrect: false },
-                    { emoji: '🐈', text: 'חתול ישן', isCorrect: false }
+                    { emoji: '🦋', text: 'פרפר מעופף', isCorrect: false }
                 ]
             },
             {
-                baseVideo: 'images/diffvideo_4_base.mp4',
-                diffVideo: 'images/diffvideo_4_diff.mp4',
-                name: 'פרח ורוד',
+                sceneType: 'garden',
+                name: 'פרח ורוד שפורח',
                 feedback: 'נכון מאוד! העציץ הירוק פתאום פרח עם פרח ורוד!',
                 choices: [
-                    { emoji: '🌸', text: 'פרח ורוד בעציץ', isCorrect: true },
+                    { emoji: '🌸', text: 'פרח ורוד שפורח', isCorrect: true },
                     { emoji: '🌿', text: 'עציץ ירוק בלבד', isCorrect: false },
-                    { emoji: '🪵', text: 'ענף עץ יבש', isCorrect: false },
-                    { emoji: '🌵', text: 'קקטוס קוצני', isCorrect: false }
+                    { emoji: '🍄', text: 'פטריה אדומה', isCorrect: false },
+                    { emoji: '🌾', text: 'עשב צהוב', isCorrect: false }
                 ]
             }
         ];
+        let diffvideoTimer1 = null;
+        let diffvideoTimer2 = null;
         let diffvideoOrder = [];
         let diffvideoState = 'memorize'; 
         let diffvideoPlayable = false;
+        let diffvideoAnimId = null;
+
+        function startDiffvideoAnimation(canvas, sceneType, isDifference) {
+            if (diffvideoAnimId) {
+                cancelAnimationFrame(diffvideoAnimId);
+                diffvideoAnimId = null;
+            }
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+            let frame = 0;
+
+            // Initialize particles
+            let bubbles = [];
+            for (let i = 0; i < 15; i++) {
+                bubbles.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height + height,
+                    r: Math.random() * 6 + 3,
+                    speed: Math.random() * 2 + 1
+                });
+            }
+
+            let roadOffset = 0;
+            let trees = [
+                { x: 100, scale: 0.2, speed: 0.02 },
+                { x: 700, scale: 0.3, speed: 0.025 },
+                { x: 200, scale: 0.5, speed: 0.015 }
+            ];
+
+            let clouds = [
+                { x: 100, y: 100, scale: 1.2, speed: 0.2 },
+                { x: 500, y: 80, scale: 0.8, speed: 0.15 }
+            ];
+
+            function draw() {
+                frame++;
+                ctx.clearRect(0, 0, width, height);
+
+                if (sceneType === 'playroom') {
+                    // Playroom background wall
+                    ctx.fillStyle = '#f3e5f5'; // Light purple/lavender wall
+                    ctx.fillRect(0, 0, width, height);
+
+                    // Wooden floor
+                    ctx.fillStyle = '#d7ccc8';
+                    ctx.fillRect(0, height * 0.65, width, height * 0.35);
+                    ctx.fillStyle = '#8d6e63'; // Planks texture lines
+                    for (let x = 50; x < width; x += 100) {
+                        ctx.beginPath();
+                        ctx.moveTo(x, height * 0.65);
+                        ctx.lineTo(x - 50, height);
+                        ctx.strokeStyle = 'rgba(0,0,0,0.06)';
+                        ctx.lineWidth = 4;
+                        ctx.stroke();
+                    }
+
+                    // Green velvet carpet
+                    ctx.fillStyle = '#81c784';
+                    ctx.beginPath();
+                    ctx.ellipse(width / 2, height * 0.75, 300, 100, 0, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Wall Poster
+                    ctx.fillStyle = '#fff59d'; // Yellow background
+                    ctx.strokeStyle = '#a1887f'; // Wooden border
+                    ctx.lineWidth = 8;
+                    ctx.beginPath();
+                    ctx.roundRect(width / 2 - 80, 80, 160, 100, 8);
+                    ctx.fill();
+                    ctx.stroke();
+
+                    // Chart on poster: Boy in blue pointing to Boy in yellow
+                    ctx.lineWidth = 3;
+                    ctx.strokeStyle = '#333';
+                    // Arrow
+                    ctx.beginPath();
+                    ctx.moveTo(width / 2 - 20, 130);
+                    ctx.lineTo(width / 2 + 20, 130);
+                    ctx.moveTo(width / 2 + 10, 120);
+                    ctx.lineTo(width / 2 + 20, 130);
+                    ctx.lineTo(width / 2 + 10, 140);
+                    ctx.stroke();
+
+                    // Boy in blue schematic (left side of poster)
+                    ctx.fillStyle = '#2196f3';
+                    ctx.beginPath();
+                    ctx.arc(width / 2 - 50, 115, 10, 0, Math.PI * 2); // Head
+                    ctx.fill();
+                    ctx.fillRect(width / 2 - 58, 128, 16, 20); // Torso
+
+                    // Boy in yellow schematic (right side of poster)
+                    ctx.fillStyle = '#ffeb3b';
+                    ctx.beginPath();
+                    ctx.arc(width / 2 + 50, 115, 10, 0, Math.PI * 2); // Head
+                    ctx.fill();
+                    ctx.fillRect(width / 2 + 42, 128, 16, 20); // Torso
+
+                    // Bookshelf on the right
+                    ctx.fillStyle = '#a1887f'; // Oak bookshelf
+                    ctx.beginPath();
+                    ctx.roundRect(650, 120, 110, 320, 6);
+                    ctx.fill();
+                    // Shelves
+                    ctx.fillStyle = '#8d6e63';
+                    ctx.fillRect(650, 220, 110, 12);
+                    ctx.fillRect(650, 320, 110, 12);
+
+                    // Toys on shelf
+                    // Blue cube
+                    ctx.fillStyle = '#2196f3';
+                    ctx.fillRect(670, 185, 30, 30);
+                    // Yellow cylinder/circle
+                    ctx.fillStyle = '#ffeb3b';
+                    ctx.beginPath();
+                    ctx.arc(720, 200, 15, 0, Math.PI * 2);
+                    ctx.fill();
+                    // Purple triangle
+                    ctx.fillStyle = '#9c27b0';
+                    ctx.beginPath();
+                    ctx.moveTo(670, 310);
+                    ctx.lineTo(685, 280);
+                    ctx.lineTo(700, 310);
+                    ctx.closePath();
+                    ctx.fill();
+                    // Green book
+                    ctx.fillStyle = '#4caf50';
+                    ctx.fillRect(710, 275, 12, 38);
+                    ctx.fillStyle = '#2e7d32';
+                    ctx.fillRect(722, 275, 12, 38);
+
+                    // Animation details: Truck rolling back and forth
+                    let truckX = width / 2 + Math.sin(frame * 0.035) * 80;
+                    let truckY = height * 0.68;
+                    let truckDirection = Math.cos(frame * 0.035) >= 0; // true: moving right, false: moving left
+
+                    // Boy 1 (Left - blue shirt, green pants, brown hair)
+                    ctx.save();
+                    ctx.translate(160, height * 0.58);
+                    // Head
+                    ctx.fillStyle = '#ffe0bd';
+                    ctx.beginPath();
+                    ctx.arc(40, -10, 35, 0, Math.PI * 2);
+                    ctx.fill();
+                    // Eyes and Smile
+                    ctx.fillStyle = '#212121';
+                    ctx.beginPath();
+                    ctx.arc(52, -15, 4, 0, Math.PI * 2);
+                    ctx.arc(32, -15, 4, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.strokeStyle = '#d84315';
+                    ctx.lineWidth = 3;
+                    ctx.beginPath();
+                    ctx.arc(42, -5, 12, 0, Math.PI);
+                    ctx.stroke();
+                    // Brown Hair
+                    ctx.fillStyle = '#5d4037';
+                    ctx.beginPath();
+                    ctx.arc(40, -22, 37, Math.PI, 0);
+                    ctx.fill();
+                    // Blue shirt (body)
+                    ctx.fillStyle = '#2196f3';
+                    ctx.beginPath();
+                    ctx.ellipse(30, 60, 42, 45, 0.1, 0, Math.PI * 2);
+                    ctx.fill();
+                    // Green pants
+                    ctx.fillStyle = '#4caf50';
+                    ctx.beginPath();
+                    ctx.roundRect(0, 100, 75, 40, 12);
+                    ctx.fill();
+                    // White shoes
+                    ctx.fillStyle = '#eeeeee';
+                    ctx.beginPath();
+                    ctx.roundRect(-20, 125, 50, 22, 8);
+                    ctx.roundRect(30, 125, 50, 22, 8);
+                    ctx.fill();
+                    // Arm reaching to truck (moves dynamically)
+                    let handYDiff = Math.sin(frame * 0.035) * 10;
+                    ctx.strokeStyle = '#ffe0bd';
+                    ctx.lineWidth = 14;
+                    ctx.lineCap = 'round';
+                    ctx.beginPath();
+                    ctx.moveTo(40, 50);
+                    ctx.lineTo(130 + (truckX - width/2) * 0.25, 90 + handYDiff);
+                    ctx.stroke();
+                    ctx.restore();
+
+                    // Boy 2 (Right - yellow shirt, dark blue pants, black hair)
+                    ctx.save();
+                    ctx.translate(470, height * 0.58);
+                    // Head
+                    ctx.fillStyle = '#ffe0bd';
+                    ctx.beginPath();
+                    ctx.arc(40, -10, 35, 0, Math.PI * 2);
+                    ctx.fill();
+                    // Eyes and Smile
+                    ctx.fillStyle = '#212121';
+                    ctx.beginPath();
+                    ctx.arc(48, -15, 4, 0, Math.PI * 2);
+                    ctx.arc(28, -15, 4, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.strokeStyle = '#d84315';
+                    ctx.lineWidth = 3;
+                    ctx.beginPath();
+                    ctx.arc(38, -5, 12, 0, Math.PI);
+                    ctx.stroke();
+                    // Black Hair
+                    ctx.fillStyle = '#212121';
+                    ctx.beginPath();
+                    ctx.arc(40, -22, 37, Math.PI, 0);
+                    ctx.fill();
+                    // Yellow shirt (body)
+                    ctx.fillStyle = '#ffeb3b';
+                    ctx.beginPath();
+                    ctx.ellipse(45, 60, 42, 45, -0.1, 0, Math.PI * 2);
+                    ctx.fill();
+                    // Dark blue pants
+                    ctx.fillStyle = '#1565c0';
+                    ctx.beginPath();
+                    ctx.roundRect(0, 100, 75, 40, 12);
+                    ctx.fill();
+                    // Red shoes
+                    ctx.fillStyle = '#e53935';
+                    ctx.beginPath();
+                    ctx.roundRect(-5, 125, 50, 22, 8);
+                    ctx.roundRect(45, 125, 50, 22, 8);
+                    ctx.fill();
+                    // Arm reaching to truck (moves dynamically)
+                    let handYDiff2 = Math.cos(frame * 0.035) * 10;
+                    ctx.strokeStyle = '#ffe0bd';
+                    ctx.lineWidth = 14;
+                    ctx.lineCap = 'round';
+                    ctx.beginPath();
+                    ctx.moveTo(35, 50);
+                    ctx.lineTo(-45 + (truckX - width/2) * 0.25, 90 + handYDiff2);
+                    ctx.stroke();
+                    ctx.restore();
+
+                    // Toy Truck
+                    ctx.save();
+                    ctx.translate(truckX, truckY);
+                    if (!truckDirection) ctx.scale(-1, 1);
+
+                    // Dump Truck Color (Difference: Blue/Green vs Original: Red/Yellow)
+                    let cabinColor = isDifference ? '#1e88e5' : '#d32f2f'; // Blue vs Red
+                    let bodyColor = isDifference ? '#4caf50' : '#ffb300'; // Green vs Orange/Yellow
+
+                    // Cabin
+                    ctx.fillStyle = cabinColor;
+                    ctx.beginPath();
+                    ctx.roundRect(20, -40, 50, 60, [10, 20, 5, 5]);
+                    ctx.fill();
+                    // Cabin window
+                    ctx.fillStyle = '#b3e5fc';
+                    ctx.beginPath();
+                    ctx.roundRect(35, -30, 25, 20, [4, 8, 2, 2]);
+                    ctx.fill();
+
+                    // Chasis / connection
+                    ctx.fillStyle = '#424242';
+                    ctx.fillRect(-60, 10, 90, 15);
+
+                    // Dump bed (container)
+                    ctx.fillStyle = bodyColor;
+                    ctx.beginPath();
+                    ctx.moveTo(-65, -35);
+                    ctx.lineTo(10, -35);
+                    ctx.lineTo(10, 12);
+                    ctx.lineTo(-55, 12);
+                    ctx.closePath();
+                    ctx.fill();
+
+                    // Wheels
+                    ctx.fillStyle = '#212121';
+                    ctx.beginPath();
+                    ctx.arc(-40, 25, 18, 0, Math.PI * 2);
+                    ctx.arc(35, 25, 18, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    ctx.fillStyle = '#eeeeee';
+                    ctx.beginPath();
+                    ctx.arc(-40, 25, 7, 0, Math.PI * 2);
+                    ctx.arc(35, 25, 7, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    ctx.restore();
+
+                } else if (sceneType === 'aquarium') {
+                    // Aquarium
+                    let grad = ctx.createRadialGradient(width/2, height/2, 10, width/2, height/2, width/2);
+                    grad.addColorStop(0, '#00b4d8');
+                    grad.addColorStop(1, '#0077b6');
+                    ctx.fillStyle = grad;
+                    ctx.fillRect(0, 0, width, height);
+
+                    // Bubbles
+                    ctx.fillStyle = 'rgba(255,255,255,0.4)';
+                    bubbles.forEach(b => {
+                        ctx.beginPath();
+                        ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+                        ctx.fill();
+                        b.y -= b.speed;
+                        b.x += Math.sin(frame * 0.05 + b.y) * 0.5;
+                        if (b.y < -20) {
+                            b.y = height + 20;
+                            b.x = Math.random() * width;
+                        }
+                    });
+
+                    // Seaweed
+                    ctx.fillStyle = '#2d6a4f';
+                    for (let xPos of [150, 300, 650]) {
+                        ctx.beginPath();
+                        ctx.moveTo(xPos, height);
+                        for (let y = height; y >= 200; y -= 10) {
+                            let wave = Math.sin(frame * 0.03 + y * 0.02) * 15;
+                            ctx.lineTo(xPos + wave, y);
+                        }
+                        ctx.lineTo(xPos + 40, height);
+                        ctx.closePath();
+                        ctx.fill();
+                    }
+
+                    // Fish
+                    let fishX = width / 2 + Math.sin(frame * 0.015) * 220;
+                    let fishY = height / 2 + Math.cos(frame * 0.01) * 60;
+                    let movingRight = Math.cos(frame * 0.015) >= 0;
+
+                    ctx.save();
+                    ctx.translate(fishX, fishY);
+                    if (!movingRight) ctx.scale(-1, 1);
+
+                    // Tail
+                    let tailWiggle = Math.sin(frame * 0.2) * 12;
+                    ctx.fillStyle = isDifference ? '#F44336' : '#FFB703';
+                    ctx.beginPath();
+                    ctx.moveTo(-50, 0);
+                    ctx.lineTo(-80, -25 + tailWiggle);
+                    ctx.lineTo(-70, 0);
+                    ctx.lineTo(-80, 25 - tailWiggle);
+                    ctx.closePath();
+                    ctx.fill();
+
+                    // Body
+                    ctx.beginPath();
+                    ctx.ellipse(0, 0, 55, 32, 0, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Fins
+                    ctx.fillStyle = isDifference ? '#D32F2F' : '#FB8500';
+                    ctx.beginPath();
+                    ctx.moveTo(10, 20);
+                    ctx.quadraticCurveTo(20, 45, 0, 45);
+                    ctx.quadraticCurveTo(-5, 25, 10, 20);
+                    ctx.fill();
+
+                    ctx.beginPath();
+                    ctx.moveTo(0, -22);
+                    ctx.quadraticCurveTo(15, -45, -10, -42);
+                    ctx.quadraticCurveTo(-15, -25, 0, -22);
+                    ctx.fill();
+
+                    // Eye
+                    ctx.fillStyle = '#ffffff';
+                    ctx.beginPath();
+                    ctx.arc(28, -8, 7, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = '#000000';
+                    ctx.beginPath();
+                    ctx.arc(29, -8, 3.5, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    ctx.restore();
+
+                } else if (sceneType === 'road') {
+                    // Sky
+                    let skyGrad = ctx.createLinearGradient(0, 0, 0, height * 0.6);
+                    skyGrad.addColorStop(0, '#a8ded9');
+                    skyGrad.addColorStop(1, '#eaf2f1');
+                    ctx.fillStyle = skyGrad;
+                    ctx.fillRect(0, 0, width, height * 0.6);
+
+                    // Sun
+                    ctx.fillStyle = '#FFF9C4';
+                    ctx.beginPath();
+                    ctx.arc(700, 80, 50, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Ground
+                    ctx.fillStyle = '#81c784';
+                    ctx.fillRect(0, height * 0.6, width, height * 0.4);
+
+                    // Clouds
+                    ctx.fillStyle = 'rgba(255,255,255,0.8)';
+                    clouds.forEach(c => {
+                        ctx.beginPath();
+                        ctx.arc(c.x, c.y, 25 * c.scale, 0, Math.PI*2);
+                        ctx.arc(c.x + 20 * c.scale, c.y - 10 * c.scale, 30 * c.scale, 0, Math.PI*2);
+                        ctx.arc(c.x + 45 * c.scale, c.y, 25 * c.scale, 0, Math.PI*2);
+                        ctx.closePath();
+                        ctx.fill();
+                        c.x -= c.speed;
+                        if (c.x < -100) c.x = width + 100;
+                    });
+
+                    // Road
+                    ctx.fillStyle = '#757575';
+                    ctx.beginPath();
+                    ctx.moveTo(350, height * 0.6);
+                    ctx.lineTo(450, height * 0.6);
+                    ctx.lineTo(750, height);
+                    ctx.lineTo(50, height);
+                    ctx.closePath();
+                    ctx.fill();
+
+                    // Moving lines
+                    ctx.strokeStyle = '#ffffff';
+                    ctx.lineWidth = 6;
+                    ctx.setLineDash([30, 30]);
+                    ctx.beginPath();
+                    ctx.moveTo(400, height * 0.6);
+                    ctx.lineTo(400, height);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+
+                    // Trees
+                    ctx.fillStyle = '#388e3c';
+                    trees.forEach(t => {
+                        t.scale += t.speed;
+                        if (t.scale > 2) t.scale = 0.2;
+                        let treeX = t.x === 100 ? 400 - (350 * (t.scale / 2)) : 400 + (350 * (t.scale / 2));
+                        let treeY = height * 0.6 + (height * 0.4 * (t.scale / 2));
+                        let treeH = 60 * t.scale;
+                        let treeW = 35 * t.scale;
+
+                        ctx.beginPath();
+                        ctx.moveTo(treeX, treeY - treeH);
+                        ctx.lineTo(treeX - treeW, treeY);
+                        ctx.lineTo(treeX + treeW, treeY);
+                        ctx.closePath();
+                        ctx.fill();
+                    });
+
+                    // Car
+                    let carY = 320 + Math.sin(frame * 0.25) * 4;
+                    ctx.save();
+                    ctx.translate(400, carY);
+
+                    ctx.fillStyle = isDifference ? '#FFD600' : '#E91E63'; // Yellow vs Red
+                    // Canopy
+                    ctx.beginPath();
+                    ctx.moveTo(-50, 0);
+                    ctx.lineTo(-30, -35);
+                    ctx.lineTo(30, -35);
+                    ctx.lineTo(50, 0);
+                    ctx.closePath();
+                    ctx.fill();
+
+                    // Chassis
+                    ctx.beginPath();
+                    ctx.roundRect(-80, 0, 160, 42, 12);
+                    ctx.fill();
+
+                    // Windows
+                    ctx.fillStyle = '#B3E5FC';
+                    ctx.beginPath();
+                    ctx.moveTo(-42, -3);
+                    ctx.lineTo(-26, -30);
+                    ctx.lineTo(26, -30);
+                    ctx.lineTo(42, -3);
+                    ctx.closePath();
+                    ctx.fill();
+
+                    // Divider
+                    ctx.fillStyle = isDifference ? '#FFD600' : '#E91E63';
+                    ctx.fillRect(-2, -32, 5, 30);
+
+                    // Headlights
+                    ctx.fillStyle = '#FFF59D';
+                    ctx.beginPath();
+                    ctx.arc(74, 15, 8, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Taillight
+                    ctx.fillStyle = '#FF1744';
+                    ctx.fillRect(-78, 10, 6, 12);
+
+                    // Wheels
+                    let wheelAngle = frame * 0.15;
+                    for (let wx of [-45, 45]) {
+                        ctx.save();
+                        ctx.translate(wx, 42);
+                        ctx.rotate(wheelAngle);
+
+                        ctx.fillStyle = '#212121';
+                        ctx.beginPath();
+                        ctx.arc(0, 0, 24, 0, Math.PI*2);
+                        ctx.fill();
+
+                        ctx.fillStyle = '#B0BEC5';
+                        ctx.beginPath();
+                        ctx.arc(0, 0, 12, 0, Math.PI*2);
+                        ctx.fill();
+
+                        ctx.strokeStyle = '#37474F';
+                        ctx.lineWidth = 3;
+                        ctx.beginPath();
+                        ctx.moveTo(-12, 0); ctx.lineTo(12, 0);
+                        ctx.moveTo(0, -12); ctx.lineTo(0, 12);
+                        ctx.stroke();
+
+                        ctx.restore();
+                    }
+
+                    ctx.restore();
+
+                } else if (sceneType === 'playground') {
+                    // Playground
+                    ctx.fillStyle = '#BBDEFB';
+                    ctx.fillRect(0, 0, width, height * 0.65);
+
+                    ctx.fillStyle = '#FFF59D';
+                    ctx.beginPath();
+                    ctx.arc(100, 100, 45, 0, Math.PI*2);
+                    ctx.fill();
+
+                    // Sun rays
+                    ctx.strokeStyle = '#FFF59D';
+                    ctx.lineWidth = 4;
+                    for (let a = 0; a < Math.PI * 2; a += Math.PI / 6) {
+                        let rayLen = 65 + Math.sin(frame * 0.05 + a * 3) * 6;
+                        ctx.beginPath();
+                        ctx.moveTo(100, 100);
+                        ctx.lineTo(100 + Math.cos(a) * rayLen, 100 + Math.sin(a) * rayLen);
+                        ctx.stroke();
+                    }
+
+                    // Floor
+                    ctx.fillStyle = '#C8E6C9';
+                    ctx.fillRect(0, height * 0.65, width, height * 0.35);
+
+                    // Swing Frame
+                    ctx.strokeStyle = '#795548';
+                    ctx.lineWidth = 8;
+                    ctx.beginPath();
+                    ctx.moveTo(150, height * 0.65 + 30);
+                    ctx.lineTo(250, 150);
+                    ctx.lineTo(350, height * 0.65 + 30);
+                    ctx.moveTo(250, 150);
+                    ctx.lineTo(400, 150);
+                    ctx.lineTo(400, height * 0.65 + 30);
+                    ctx.stroke();
+
+                    // Swing
+                    let swingAngle = Math.sin(frame * 0.06) * 0.45;
+                    ctx.save();
+                    ctx.translate(250, 150);
+                    ctx.rotate(swingAngle);
+
+                    ctx.strokeStyle = '#9E9E9E';
+                    ctx.lineWidth = 3;
+                    ctx.beginPath();
+                    ctx.moveTo(-15, 0); ctx.lineTo(-15, 180);
+                    ctx.moveTo(15, 0); ctx.lineTo(15, 180);
+                    ctx.stroke();
+
+                    ctx.fillStyle = '#d84315';
+                    ctx.fillRect(-22, 180, 44, 10);
+                    ctx.restore();
+
+                    // Windmill
+                    ctx.save();
+                    ctx.translate(650, 280);
+                    ctx.strokeStyle = '#9E9E9E';
+                    ctx.lineWidth = 6;
+                    ctx.beginPath();
+                    ctx.moveTo(0, 0); ctx.lineTo(0, 180);
+                    ctx.stroke();
+
+                    ctx.rotate(frame * 0.08);
+                    let colors = ['#E91E63', '#9C27B0', '#2196F3', '#4CAF50'];
+                    for (let j = 0; j < 4; j++) {
+                        ctx.fillStyle = colors[j];
+                        ctx.beginPath();
+                        ctx.moveTo(0, 0);
+                        ctx.quadraticCurveTo(25, -20, 50, 0);
+                        ctx.quadraticCurveTo(25, 20, 0, 0);
+                        ctx.fill();
+                        ctx.rotate(Math.PI / 2);
+                    }
+                    ctx.fillStyle = '#FFEB3B';
+                    ctx.beginPath();
+                    ctx.arc(0, 0, 10, 0, Math.PI*2);
+                    ctx.fill();
+                    ctx.restore();
+
+                    // Waving Child
+                    ctx.save();
+                    ctx.translate(500, 270);
+                    let waveAngle = Math.sin(frame * 0.15) * 0.35;
+
+                    if (isDifference) {
+                        // Girl in Pink
+                        ctx.fillStyle = '#4e342e';
+                        ctx.beginPath();
+                        ctx.arc(-22, -45, 12, 0, Math.PI*2);
+                        ctx.arc(22, -45, 12, 0, Math.PI*2);
+                        ctx.fill();
+
+                        ctx.fillStyle = '#ffccbc';
+                        ctx.beginPath();
+                        ctx.arc(0, -45, 20, 0, Math.PI*2);
+                        ctx.fill();
+
+                        ctx.fillStyle = '#000';
+                        ctx.beginPath();
+                        ctx.arc(-7, -48, 2.5, 0, Math.PI*2);
+                        ctx.arc(7, -48, 2.5, 0, Math.PI*2);
+                        ctx.fill();
+                        ctx.strokeStyle = '#d84315';
+                        ctx.lineWidth = 2.5;
+                        ctx.beginPath();
+                        ctx.arc(0, -42, 6, 0, Math.PI, false);
+                        ctx.stroke();
+
+                        ctx.fillStyle = '#F48FB1';
+                        ctx.beginPath();
+                        ctx.moveTo(0, -25);
+                        ctx.lineTo(-30, 45);
+                        ctx.lineTo(30, 45);
+                        ctx.closePath();
+                        ctx.fill();
+
+                        ctx.strokeStyle = '#ffccbc';
+                        ctx.lineWidth = 6;
+                        ctx.beginPath();
+                        ctx.moveTo(-10, 45); ctx.lineTo(-10, 85);
+                        ctx.moveTo(10, 45); ctx.lineTo(10, 85);
+                        ctx.stroke();
+                        ctx.fillStyle = '#e91e63';
+                        ctx.beginPath();
+                        ctx.roundRect(-16, 80, 12, 10, 4);
+                        ctx.roundRect(4, 80, 12, 10, 4);
+                        ctx.fill();
+
+                        ctx.strokeStyle = '#ffccbc';
+                        ctx.lineWidth = 6;
+                        ctx.beginPath();
+                        ctx.moveTo(-15, -15);
+                        ctx.lineTo(-30, 15);
+                        ctx.stroke();
+
+                        ctx.save();
+                        ctx.translate(15, -15);
+                        ctx.rotate(-0.8 + waveAngle);
+                        ctx.beginPath();
+                        ctx.moveTo(0, 0);
+                        ctx.lineTo(35, 0);
+                        ctx.stroke();
+                        ctx.restore();
+                    } else {
+                        // Boy in Blue
+                        ctx.fillStyle = '#ffccbc';
+                        ctx.beginPath();
+                        ctx.arc(0, -45, 20, 0, Math.PI*2);
+                        ctx.fill();
+
+                        ctx.fillStyle = '#5d4037';
+                        ctx.beginPath();
+                        ctx.arc(0, -50, 21, Math.PI, 0);
+                        ctx.fill();
+
+                        ctx.fillStyle = '#000';
+                        ctx.beginPath();
+                        ctx.arc(-7, -48, 2.5, 0, Math.PI*2);
+                        ctx.arc(7, -48, 2.5, 0, Math.PI*2);
+                        ctx.fill();
+                        ctx.strokeStyle = '#d84315';
+                        ctx.lineWidth = 2.5;
+                        ctx.beginPath();
+                        ctx.arc(0, -42, 6, 0, Math.PI, false);
+                        ctx.stroke();
+
+                        ctx.fillStyle = '#64B5F6';
+                        ctx.fillRect(-15, -25, 30, 45);
+                        ctx.fillStyle = '#81C784';
+                        ctx.fillRect(-15, 20, 30, 20);
+
+                        ctx.strokeStyle = '#ffccbc';
+                        ctx.lineWidth = 6;
+                        ctx.beginPath();
+                        ctx.moveTo(-8, 40); ctx.lineTo(-8, 85);
+                        ctx.moveTo(8, 40); ctx.lineTo(8, 85);
+                        ctx.stroke();
+                        ctx.fillStyle = '#1565C0';
+                        ctx.beginPath();
+                        ctx.roundRect(-14, 80, 12, 10, 4);
+                        ctx.roundRect(2, 80, 12, 10, 4);
+                        ctx.fill();
+
+                        ctx.strokeStyle = '#ffccbc';
+                        ctx.lineWidth = 6;
+                        ctx.beginPath();
+                        ctx.moveTo(-15, -18);
+                        ctx.lineTo(-30, 10);
+                        ctx.stroke();
+
+                        ctx.save();
+                        ctx.translate(15, -18);
+                        ctx.rotate(-0.8 + waveAngle);
+                        ctx.beginPath();
+                        ctx.moveTo(0, 0);
+                        ctx.lineTo(35, 0);
+                        ctx.stroke();
+                        ctx.restore();
+                    }
+                    ctx.restore();
+
+                } else if (sceneType === 'garden') {
+                    // Garden
+                    let gardGrad = ctx.createLinearGradient(0, 0, 0, height);
+                    gardGrad.addColorStop(0, '#FFE082');
+                    gardGrad.addColorStop(1, '#FFF9C4');
+                    ctx.fillStyle = gardGrad;
+                    ctx.fillRect(0, 0, width, height);
+
+                    // Rays
+                    ctx.fillStyle = 'rgba(255,255,255,0.08)';
+                    for (let k = 0; k < 6; k++) {
+                        ctx.beginPath();
+                        ctx.moveTo(0, 0);
+                        ctx.lineTo(150 + k * 180, height);
+                        ctx.lineTo(300 + k * 180, height);
+                        ctx.closePath();
+                        ctx.fill();
+                    }
+
+                    // Leaves
+                    ctx.fillStyle = 'rgba(139, 195, 74, 0.4)';
+                    for (let s = 0; s < 4; s++) {
+                        let leafX = (width * 0.1 + s * 230 + frame * 0.5) % (width + 80) - 40;
+                        let leafY = (height * 0.2 + s * 110 + Math.sin(frame * 0.03 + s) * 20) % height;
+                        ctx.beginPath();
+                        ctx.ellipse(leafX, leafY, 18, 9, 0.5, 0, Math.PI*2);
+                        ctx.fill();
+                    }
+
+                    // Ladybug Leaf
+                    ctx.fillStyle = '#4CAF50';
+                    ctx.beginPath();
+                    ctx.ellipse(150, 480, 100, 30, -0.15, 0, Math.PI*2);
+                    ctx.fill();
+
+                    // Ladybug
+                    ctx.save();
+                    let bugOffset = Math.sin(frame * 0.02) * 50;
+                    ctx.translate(150 + bugOffset, 460);
+                    ctx.fillStyle = '#000000';
+                    ctx.beginPath();
+                    ctx.arc(10, -5, 5, 0, Math.PI*2);
+                    ctx.fill();
+
+                    ctx.fillStyle = '#E53935';
+                    ctx.beginPath();
+                    ctx.arc(0, 0, 10, 0, Math.PI*2);
+                    ctx.fill();
+                    ctx.fillStyle = '#000000';
+                    ctx.beginPath();
+                    ctx.arc(-4, -4, 2, 0, Math.PI*2);
+                    ctx.arc(4, 4, 2, 0, Math.PI*2);
+                    ctx.arc(-3, 4, 2, 0, Math.PI*2);
+                    ctx.arc(3, -4, 2, 0, Math.PI*2);
+                    ctx.fill();
+                    ctx.restore();
+
+                    // Flower Pot
+                    ctx.save();
+                    ctx.translate(width / 2, height / 2 + 100);
+
+                    ctx.fillStyle = '#D84315';
+                    ctx.beginPath();
+                    ctx.roundRect(-80, 0, 160, 16, 6);
+                    ctx.fill();
+
+                    ctx.fillStyle = '#BF360C';
+                    ctx.beginPath();
+                    ctx.moveTo(-70, 16);
+                    ctx.lineTo(-50, 120);
+                    ctx.lineTo(50, 120);
+                    ctx.lineTo(70, 16);
+                    ctx.closePath();
+                    ctx.fill();
+
+                    ctx.fillStyle = '#3E2723';
+                    ctx.beginPath();
+                    ctx.ellipse(0, 3, 70, 8, 0, 0, Math.PI*2);
+                    ctx.fill();
+
+                    // Sway Stems
+                    let sway = Math.sin(frame * 0.05) * 12;
+                    ctx.strokeStyle = '#4CAF50';
+                    ctx.lineWidth = 8;
+                    ctx.lineCap = 'round';
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(-15, 0);
+                    ctx.quadraticCurveTo(-40 + sway * 0.5, -90, -35 + sway, -150);
+                    ctx.stroke();
+
+                    ctx.beginPath();
+                    ctx.moveTo(15, 0);
+                    ctx.quadraticCurveTo(40 + sway * 0.5, -80, 35 + sway, -140);
+                    ctx.stroke();
+
+                    ctx.beginPath();
+                    ctx.moveTo(0, 0);
+                    ctx.quadraticCurveTo(sway * 0.5, -110, sway, -190);
+                    ctx.stroke();
+
+                    // Leaves
+                    ctx.fillStyle = '#81C784';
+                    ctx.save();
+                    ctx.translate(sway * 0.5, -90);
+                    ctx.rotate(0.2 + sway * 0.01);
+                    ctx.beginPath();
+                    ctx.ellipse(20, 0, 18, 9, 0.4, 0, Math.PI*2);
+                    ctx.fill();
+                    ctx.restore();
+
+                    ctx.save();
+                    ctx.translate(-20 + sway * 0.6, -110);
+                    ctx.rotate(-0.4 + sway * 0.01);
+                    ctx.beginPath();
+                    ctx.ellipse(-20, 0, 18, 9, -0.4, 0, Math.PI*2);
+                    ctx.fill();
+                    ctx.restore();
+
+                    // Blooming Flower
+                    if (isDifference) {
+                        ctx.save();
+                        ctx.translate(sway, -195);
+                        let flowerScale = 1.0 + Math.sin(frame * 0.09) * 0.08;
+                        ctx.scale(flowerScale, flowerScale);
+
+                        ctx.fillStyle = 'rgba(255,235,59,0.3)';
+                        ctx.beginPath();
+                        ctx.arc(0, 0, 45, 0, Math.PI*2);
+                        ctx.fill();
+
+                        ctx.fillStyle = '#F48FB1';
+                        for (let p = 0; p < 6; p++) {
+                            ctx.beginPath();
+                            ctx.arc(Math.cos(p * Math.PI / 3) * 22, Math.sin(p * Math.PI / 3) * 22, 18, 0, Math.PI*2);
+                            ctx.fill();
+                        }
+
+                        ctx.fillStyle = '#FBC02D';
+                        ctx.beginPath();
+                        ctx.arc(0, 0, 16, 0, Math.PI*2);
+                        ctx.fill();
+                        ctx.fillStyle = '#FFF59D';
+                        ctx.beginPath();
+                        ctx.arc(-4, -4, 5, 0, Math.PI*2);
+                        ctx.fill();
+
+                        ctx.restore();
+                    }
+                    ctx.restore();
+                }
+
+                diffvideoAnimId = requestAnimationFrame(draw);
+            }
+
+            draw();
+        }
 
         function initDiffvideoGame() {
             get('active-game-title').textContent = 'מה שונה בסרטון? 🎬';
-            diffvideoOrder = shuffle([0, 1, 2, 3]);
+            diffvideoOrder = shuffle([0, 1, 2, 3, 4]);
             loadDiffvideoRound();
         }
 
         function loadDiffvideoRound() {
+            if (diffvideoTimer1) clearTimeout(diffvideoTimer1);
+            if (diffvideoTimer2) clearTimeout(diffvideoTimer2);
+            if (diffvideoAnimId) {
+                cancelAnimationFrame(diffvideoAnimId);
+                diffvideoAnimId = null;
+            }
+            
             let roundIdx = diffvideoOrder[currentStep];
             let data = diffvideoPool[roundIdx];
             
@@ -5421,7 +6314,7 @@
                 <div style="font-size:clamp(17px, 3.8vw, 24px); font-weight:900; margin-bottom:15px; color:#333; text-align:center; direction:rtl; line-height:1.4;" id="diffvideo-question">${qText} 🔊</div>
                 
                 <div id="diffvideo-container" style="width: min(90vw, 550px); aspect-ratio: 4/3; margin: 0 auto; position: relative; border-radius: 24px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.2); border: 4px solid #fff; cursor: pointer;">
-                    <video id="diffvideo-player" src="${data.baseVideo}" autoplay loop muted playsinline style="width:100%; height:100%; object-fit:cover; pointer-events:none;"></video>
+                    <canvas id="diffvideo-canvas" width="800" height="600" style="width:100%; height:100%; object-fit:cover; display:block;"></canvas>
                     <div id="diffvideo-black-mask" style="position:absolute; left:0; top:0; width:100%; height:100%; background:#000; z-index:20; display:none;"></div>
                 </div>
                 
@@ -5432,9 +6325,9 @@
                 </div>
             `;
             
-            let player = get('diffvideo-player');
-            if (player) {
-                player.play().catch(e => {});
+            let canvas = get('diffvideo-canvas');
+            if (canvas) {
+                startDiffvideoAnimation(canvas, data.sceneType, false);
             }
 
             let rBtn = get('diffvideo-ready-btn');
@@ -5473,23 +6366,24 @@
             
             let roundIdx = diffvideoOrder[currentStep];
             let data = diffvideoPool[roundIdx];
-            let player = get('diffvideo-player');
-            if (player) {
-                player.src = data.diffVideo;
-                player.play().catch(e => {});
+            
+            // Switch canvas to difference animation immediately (behind the mask)
+            let canvas = get('diffvideo-canvas');
+            if (canvas) {
+                startDiffvideoAnimation(canvas, data.sceneType, true);
             }
             
             let mask = get('diffvideo-black-mask');
             if (mask) mask.style.display = 'block';
             
-            setTimeout(() => {
+            diffvideoTimer1 = setTimeout(() => {
                 if (mask) mask.style.display = 'none';
                 
                 let testText = 'האם שמת לב מה השתנה בסרטון?';
                 get('diffvideo-question').textContent = testText + ' 🔊';
                 speakLetter(testText, 'he');
                 
-                setTimeout(() => {
+                diffvideoTimer2 = setTimeout(() => {
                     showDiffvideoChoices();
                 }, 4000);
             }, 1250);
