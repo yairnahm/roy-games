@@ -1686,6 +1686,7 @@
         function quitActiveGame() {
             if (typeof diffvideoTimer1 !== 'undefined' && diffvideoTimer1) clearTimeout(diffvideoTimer1);
             if (typeof diffvideoTimer2 !== 'undefined' && diffvideoTimer2) clearTimeout(diffvideoTimer2);
+            if (typeof diffvideoTimerInterval !== 'undefined' && diffvideoTimerInterval) clearInterval(diffvideoTimerInterval);
             playClickSound(); hideAllScreens();
             var agc = get('active-game-container');
             if (agc) agc.style.height = '';
@@ -5351,65 +5352,55 @@
         // ── מה שונה בסרטון? ──
         const diffvideoPool = [
             {
-                sceneType: 'playroom',
-                name: 'משאית כחולה',
-                feedback: 'כל הכבוד! המשאית האדומה הפכה למשאית כחולה!',
+                mediaA: 'images/diffvideo/scene1_a.jpg',
+                mediaB: 'images/diffvideo/scene1_b.jpg',
+                feedback: 'כל הכבוד! הכלב הפך לחתול!',
                 choices: [
-                    { emoji: '🚚', text: 'משאית כחולה', img: 'images/choice_truck_blue.png', isCorrect: true },
-                    { emoji: '🚛', text: 'משאית אדומה', img: 'images/choice_truck_red.png', isCorrect: false },
-                    { emoji: '🐢', text: 'צב ים זוחל', img: 'images/choice_turtle.png', isCorrect: false },
-                    { emoji: '🐠', text: 'דג אדום שוחה', img: 'images/choice_fish_red.png', isCorrect: false }
+                    { text: 'האישה', img: 'images/diffvideo/scene1_choice_woman.jpg', isCorrect: false },
+                    { text: 'העגלה', img: 'images/diffvideo/scene1_choice_stroller.jpg', isCorrect: false },
+                    { text: 'הכלב', img: 'images/diffvideo/scene1_choice_dog.jpg', isCorrect: true },
+                    { text: 'היונה', img: 'images/diffvideo/scene1_choice_pigeon.jpg', isCorrect: false }
                 ]
             },
             {
-                sceneType: 'aquarium',
-                name: 'דג אדום שוחה',
-                feedback: 'כל הכבוד! הדג הצהוב הפך לדג אדום שוחה!',
+                mediaA: 'images/diffvideo/scene2_a.jpg',
+                mediaB: 'images/diffvideo/scene2_b.jpg',
+                feedback: 'נכון מאוד! התפוח הפך לתפוז!',
                 choices: [
-                    { emoji: '🐠', text: 'דג אדום שוחה', img: 'images/choice_fish_red.png', isCorrect: true },
-                    { emoji: '🐟', text: 'דג צהוב שוחה', img: 'images/choice_fish_yellow.png', isCorrect: false },
-                    { emoji: '🐢', text: 'צב ים זוחל', img: 'images/choice_turtle.png', isCorrect: false },
-                    { emoji: '🐙', text: 'תמנון סגול', isCorrect: false }
+                    { text: 'הסבא', img: 'images/diffvideo/scene2_choice_grandpa.jpg', isCorrect: false },
+                    { text: 'הקפה', img: 'images/diffvideo/scene2_choice_coffee.jpg', isCorrect: false },
+                    { text: 'החמניות', img: 'images/diffvideo/scene2_choice_flowers.jpg', isCorrect: false },
+                    { text: 'התפוז', img: 'images/diffvideo/scene2_choice_orange.jpg', isCorrect: true }
                 ]
             },
             {
-                sceneType: 'road',
-                name: 'מכונית צהובה',
-                feedback: 'נכון מאוד! המכונית האדומה ברקע הפכה למכונית צהובה!',
+                mediaA: 'images/diffvideo/scene3_a.jpg',
+                mediaB: 'images/diffvideo/scene3_b.jpg',
+                feedback: 'כל הכבוד! הפליקן הפך לשחף!',
                 choices: [
-                    { emoji: '🟨', text: 'מכונית צהובה', isCorrect: true },
-                    { emoji: '🟥', text: 'מכונית אדומה', isCorrect: false },
-                    { emoji: '🟩', text: 'משאית ירוקה', isCorrect: false },
-                    { emoji: '🟦', text: 'אופנוע כחול', isCorrect: false }
+                    { text: 'הילדים', img: 'images/diffvideo/scene3_choice_kids.jpg', isCorrect: false },
+                    { text: 'האישה', img: 'images/diffvideo/scene3_choice_woman.jpg', isCorrect: false },
+                    { text: 'השחף', img: 'images/diffvideo/scene3_choice_seagull.jpg', isCorrect: false },
+                    { text: 'הפליקן', img: 'images/diffvideo/scene3_choice_pelican.jpg', isCorrect: true }
                 ]
             },
             {
-                sceneType: 'playground',
-                name: 'ילדה מנופפת לשלום',
-                feedback: 'כל הכבוד! הילד שנופף לשלום הפך לילדה מנופפת לשלום!',
+                mediaA: 'images/diffvideo/scene4_a.jpg',
+                mediaB: 'images/diffvideo/scene4_b.jpg',
+                feedback: 'נכון! התרמיל האדום הפך לתרמיל כחול!',
                 choices: [
-                    { emoji: '👧', text: 'ילדה מנופפת לשלום', isCorrect: true },
-                    { emoji: '👦', text: 'ילד מנופף לשלום', isCorrect: false },
-                    { emoji: '🐶', text: 'כלב רץ', isCorrect: false },
-                    { emoji: '🦋', text: 'פרפר מעופף', isCorrect: false }
-                ]
-            },
-            {
-                sceneType: 'garden',
-                name: 'פרח ורוד שפורח',
-                feedback: 'נכון מאוד! העציץ הירוק פתאום פרח עם פרח ורוד!',
-                choices: [
-                    { emoji: '🌸', text: 'פרח ורוד שפורח', isCorrect: true },
-                    { emoji: '🌿', text: 'עציץ ירוק בלבד', isCorrect: false },
-                    { emoji: '🍄', text: 'פטריה אדומה', isCorrect: false },
-                    { emoji: '🌾', text: 'עשב צהוב', isCorrect: false }
+                    { text: 'הילד', img: 'images/diffvideo/scene4_choice_boy.jpg', isCorrect: false },
+                    { text: 'הסנאי', img: 'images/diffvideo/scene4_choice_squirrel.jpg', isCorrect: false },
+                    { text: 'התרמיל האדום', img: 'images/diffvideo/scene4_choice_bag.jpg', isCorrect: true },
+                    { text: 'העץ', img: 'images/diffvideo/scene4_choice_tree.jpg', isCorrect: false }
                 ]
             }
         ];
         let diffvideoTimer1 = null;
         let diffvideoTimer2 = null;
+        let diffvideoTimerInterval = null;
         let diffvideoOrder = [];
-        let diffvideoState = 'memorize'; 
+        let diffvideoState = 'compare';
         let diffvideoPlayable = false;
         let diffvideoAnimId = null;
 
@@ -6288,184 +6279,157 @@
         }
 
         function initDiffvideoGame() {
-            get('active-game-title').textContent = 'מה שונה בסרטון? 🎬';
-            diffvideoOrder = shuffle([0, 1, 2, 3, 4]);
+            get('active-game-title').textContent = 'מה שונה? 🔎';
+            diffvideoOrder = shuffle([0, 1, 2, 3]);
             loadDiffvideoRound();
+        }
+
+        function makeDvMedia(src) {
+            let style = 'width:100%;height:100%;object-fit:cover;display:block;border-radius:16px;';
+            if (!src) return '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:48px;background:#f0f0f0;border-radius:16px;">🎬</div>';
+            if (/\.(mp4|webm|mov)$/i.test(src)) {
+                return `<video src="${src}" autoplay loop muted playsinline style="${style}"></video>`;
+            }
+            return `<img src="${src}" style="${style}">`;
         }
 
         function loadDiffvideoRound() {
             if (diffvideoTimer1) clearTimeout(diffvideoTimer1);
             if (diffvideoTimer2) clearTimeout(diffvideoTimer2);
-            if (diffvideoAnimId) {
-                cancelAnimationFrame(diffvideoAnimId);
-                diffvideoAnimId = null;
-            }
-            
+            if (diffvideoTimerInterval) clearInterval(diffvideoTimerInterval);
+            if (diffvideoAnimId) { cancelAnimationFrame(diffvideoAnimId); diffvideoAnimId = null; }
+
             let roundIdx = diffvideoOrder[currentStep];
             let data = diffvideoPool[roundIdx];
-            
-            diffvideoState = 'memorize';
+            diffvideoState = 'compare';
             diffvideoPlayable = false;
-            
-            let qText = 'רועי, הבט היטב בסרטון וזכור את הפרטים. לחץ כשאתה מוכן';
-            
+
+            let qText = 'הבט היטב בשני הסרטונים — מה השתנה?';
             let ws = get('game-workspace');
             ws.innerHTML = `
-                <div style="font-size:clamp(17px, 3.8vw, 24px); font-weight:900; margin-bottom:15px; color:#333; text-align:center; direction:rtl; line-height:1.4;" id="diffvideo-question">${qText} 🔊</div>
-                
-                <div id="diffvideo-container" style="width: min(90vw, 550px); aspect-ratio: 4/3; margin: 0 auto; position: relative; border-radius: 24px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.2); border: 4px solid #fff; cursor: pointer;">
-                    <canvas id="diffvideo-canvas" width="800" height="600" style="width:100%; height:100%; object-fit:cover; display:block;"></canvas>
-                    <div id="diffvideo-black-mask" style="position:absolute; left:0; top:0; width:100%; height:100%; background:#000; z-index:20; display:none;"></div>
-                </div>
-                
-                <div id="diffvideo-choices-area" style="display:none; justify-content:center; flex-wrap:wrap; gap:15px; margin-top:20px; max-width:600px; margin-left:auto; margin-right:auto;"></div>
-                
-                <div id="diffvideo-action-area" style="text-align:center; margin-top:20px;">
-                    <button id="diffvideo-ready-btn" class="sys-btn" style="background:#2196F3; color:#fff; padding:12px 36px; font-size:18px; font-weight:bold; border-radius:16px; border:none; cursor:pointer; box-shadow:0 4px 12px rgba(33, 150, 243, 0.3); transition: transform 0.2s;">אני מוכן! 👆</button>
-                </div>
-            `;
-            
-            let canvas = get('diffvideo-canvas');
-            if (canvas) {
-                startDiffvideoAnimation(canvas, data.sceneType, false);
-            }
+                <div id="dv-question" style="font-size:clamp(16px,4vw,22px);font-weight:900;color:#333;text-align:center;direction:rtl;margin-bottom:10px;cursor:pointer;">${qText} 🔊</div>
 
-            let rBtn = get('diffvideo-ready-btn');
-            if (rBtn) {
-                rBtn.onmouseover = () => { rBtn.style.transform = 'scale(1.05)'; };
-                rBtn.onmouseout = () => { rBtn.style.transform = 'scale(1)'; };
-                rBtn.onclick = function(e) {
-                    e.stopPropagation();
-                    switchDiffvideoToTest();
-                };
-            }
-            
-            let imgCont = get('diffvideo-container');
-            if (imgCont) {
-                imgCont.onclick = function() {
-                    if (diffvideoState === 'memorize') {
-                        switchDiffvideoToTest();
-                    }
-                };
-            }
-            
+                <div id="dv-timer-wrap" style="width:min(90vw,560px);height:10px;background:#e0e0e0;border-radius:999px;margin:0 auto 12px;overflow:hidden;">
+                    <div id="dv-timer-bar" style="height:100%;width:100%;background:linear-gradient(90deg,#2196F3,#21CBF3);border-radius:999px;transition:width 1s linear;"></div>
+                </div>
+
+                <div id="dv-media-wrap" style="display:flex;gap:clamp(8px,2vw,16px);justify-content:center;align-items:stretch;width:min(90vw,560px);margin:0 auto;">
+                    <div style="flex:1;display:flex;flex-direction:column;gap:6px;">
+                        <div style="text-align:center;font-size:clamp(13px,3vw,16px);font-weight:700;color:#555;">סרטון א׳</div>
+                        <div style="aspect-ratio:16/9;border-radius:16px;overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,0.18);border:3px solid #fff;">
+                            ${makeDvMedia(data.mediaA)}
+                        </div>
+                    </div>
+                    <div style="flex:1;display:flex;flex-direction:column;gap:6px;">
+                        <div style="text-align:center;font-size:clamp(13px,3vw,16px);font-weight:700;color:#555;">סרטון ב׳</div>
+                        <div style="aspect-ratio:16/9;border-radius:16px;overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,0.18);border:3px solid #fff;">
+                            ${makeDvMedia(data.mediaB)}
+                        </div>
+                    </div>
+                </div>
+
+                <div id="dv-choices" style="display:none;justify-content:center;flex-wrap:wrap;gap:clamp(10px,3vw,18px);margin-top:20px;max-width:560px;margin-left:auto;margin-right:auto;"></div>
+            `;
+
             speakLetter(qText, 'he');
-            get('diffvideo-question').onclick = () => {
-                let txt = diffvideoState === 'memorize' ? qText : (diffvideoState === 'test' ? 'האם שמת לב מה השתנה בסרטון?' : 'מה שונה בסרטון? בחר את התשובה הנכונה');
+            get('dv-question').onclick = () => {
+                let txt = diffvideoState === 'compare' ? qText : 'מה שונה? בחר את התשובה הנכונה';
                 speakLetter(txt, 'he');
             };
+
+            let total = 15;
+            let elapsed = 0;
+            diffvideoTimerInterval = setInterval(() => {
+                elapsed++;
+                let bar = get('dv-timer-bar');
+                if (bar) bar.style.width = Math.max(0, (total - elapsed) / total * 100) + '%';
+                if (elapsed >= total) {
+                    clearInterval(diffvideoTimerInterval);
+                    diffvideoTimerInterval = null;
+                    dvFadeOutAndShowChoices();
+                }
+            }, 1000);
         }
 
-        function switchDiffvideoToTest() {
-            if (diffvideoState !== 'memorize') return;
-            diffvideoState = 'test';
-            playClickSound();
-            
-            let rBtn = get('diffvideo-action-area');
-            if (rBtn) rBtn.style.display = 'none';
-            
-            let roundIdx = diffvideoOrder[currentStep];
-            let data = diffvideoPool[roundIdx];
-            
-            // Switch canvas to difference animation immediately (behind the mask)
-            let canvas = get('diffvideo-canvas');
-            if (canvas) {
-                startDiffvideoAnimation(canvas, data.sceneType, true);
-            }
-            
-            let mask = get('diffvideo-black-mask');
-            if (mask) mask.style.display = 'block';
-            
-            diffvideoTimer1 = setTimeout(() => {
-                if (mask) mask.style.display = 'none';
-                
-                let testText = 'האם שמת לב מה השתנה בסרטון?';
-                get('diffvideo-question').textContent = testText + ' 🔊';
-                speakLetter(testText, 'he');
-                
-                diffvideoTimer2 = setTimeout(() => {
+        function dvFadeOutAndShowChoices() {
+            let wrap = get('dv-media-wrap');
+            let tw = get('dv-timer-wrap');
+            if (tw) tw.style.display = 'none';
+            if (wrap) {
+                wrap.style.transition = 'opacity 1.4s ease';
+                wrap.style.opacity = '0';
+                diffvideoTimer1 = setTimeout(() => {
+                    if (wrap) wrap.style.display = 'none';
                     showDiffvideoChoices();
-                }, 4000);
-            }, 1250);
+                }, 1400);
+            } else {
+                showDiffvideoChoices();
+            }
         }
 
         function showDiffvideoChoices() {
             diffvideoState = 'choices';
             diffvideoPlayable = true;
-            
+
             let roundIdx = diffvideoOrder[currentStep];
             let data = diffvideoPool[roundIdx];
-            
-            let qText = 'מה שונה בסרטון? בחר את התשובה הנכונה:';
-            get('diffvideo-question').textContent = qText + ' 🔊';
+
+            let qText = 'מה שונה? בחר את התשובה הנכונה:';
+            let q = get('dv-question');
+            if (q) { q.textContent = qText + ' 🔊'; }
             speakLetter(qText, 'he');
-            
-            let correctChoice = data.choices.find(c => c.isCorrect);
-            let wrongChoices = data.choices.filter(c => !c.isCorrect);
-            
+
             let numChoices = currentDifficulty === 1 ? 2 : (currentDifficulty === 2 ? 3 : 4);
-            let selectedWrong = shuffle(wrongChoices.slice()).slice(0, numChoices - 1);
-            let finalChoices = shuffle([correctChoice, ...selectedWrong]);
-            
-            let choicesArea = get('diffvideo-choices-area');
-            choicesArea.innerHTML = '';
-            choicesArea.style.display = 'flex';
-            
-            finalChoices.forEach((ch, idx) => {
+            let correct = data.choices.find(c => c.isCorrect);
+            let wrong = shuffle(data.choices.filter(c => !c.isCorrect)).slice(0, numChoices - 1);
+            let finalChoices = shuffle([correct, ...wrong]);
+
+            let area = get('dv-choices');
+            area.innerHTML = '';
+            area.style.display = 'flex';
+
+            finalChoices.forEach(ch => {
                 let card = D.createElement('div');
-                card.style.cssText = `background: #fff; border: 4px solid #e0e0e0; border-radius: 20px; padding: clamp(10px, 2vw, 20px); width: clamp(110px, 25vw, 130px); text-align: center; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: all 0.2s ease; direction: rtl; display: flex; flex-direction: column; align-items: center; justify-content: center;`;
-                let mediaHTML = ch.img ? `<img src="${ch.img}" style="width: clamp(55px, 12vw, 75px); height: clamp(55px, 12vw, 75px); object-fit: contain; margin-bottom: 8px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.12)); display: block;">` : `<div style="font-size: clamp(36px, 8vw, 50px); margin-bottom: 8px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));">${ch.emoji}</div>`;
-                card.innerHTML = `
-                    ${mediaHTML}
-                    <div style="font-size: clamp(13px, 3vw, 16px); font-weight: bold; color: #333; line-height: 1.2;">${ch.text}</div>
-                `;
-                
-                card.onmouseover = () => { card.style.transform = 'scale(1.05)'; card.style.borderColor = '#2196F3'; };
-                card.onmouseout = () => { card.style.transform = 'scale(1)'; card.style.borderColor = '#e0e0e0'; };
-                
-                card.onclick = function(e) {
-                    e.stopPropagation();
-                    onDiffvideoChoiceSelected(ch.isCorrect, card);
-                };
-                
-                choicesArea.appendChild(card);
+                card.style.cssText = 'background:#fff;border:4px solid #e0e0e0;border-radius:20px;width:clamp(120px,40vw,190px);cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,0.12);transition:all 0.2s ease;display:flex;flex-direction:column;align-items:center;overflow:hidden;';
+                let mediaHTML = ch.img
+                    ? `<img src="${ch.img}" style="width:100%;aspect-ratio:1/1;object-fit:cover;display:block;">`
+                    : `<div style="font-size:clamp(48px,13vw,72px);aspect-ratio:1/1;width:100%;display:flex;align-items:center;justify-content:center;">${ch.emoji || '❓'}</div>`;
+                card.innerHTML = `${mediaHTML}<div style="padding:10px 6px;font-size:clamp(14px,3.5vw,18px);font-weight:bold;color:#333;text-align:center;direction:rtl;line-height:1.3;">${ch.text}</div>`;
+                card.onmouseover = () => { card.style.transform = 'scale(1.06)'; card.style.borderColor = '#2196F3'; };
+                card.onmouseout  = () => { card.style.transform = 'scale(1)';    card.style.borderColor = '#e0e0e0'; };
+                card.onclick = e => { e.stopPropagation(); onDiffvideoChoiceSelected(ch.isCorrect, card); };
+                area.appendChild(card);
             });
         }
 
         function onDiffvideoChoiceSelected(isCorrect, card) {
             if (isProcessing || !diffvideoPlayable) return;
-            
             let roundIdx = diffvideoOrder[currentStep];
             let data = diffvideoPool[roundIdx];
-            
+
             if (isCorrect) {
                 isProcessing = true;
                 playSuccessSound();
-                
                 card.style.borderColor = '#4CAF50';
-                card.style.boxShadow = '0 0 15px rgba(76, 175, 80, 0.4)';
+                card.style.boxShadow = '0 0 15px rgba(76,175,80,0.4)';
                 card.style.background = '#e8f5e9';
-                
                 let feedbackStr = data.feedback;
-                get('diffvideo-question').textContent = feedbackStr + ' 🎉';
-                
+                let q = get('dv-question');
+                if (q) q.textContent = feedbackStr + ' 🎉';
                 speakLetter(feedbackStr, 'he', function() {
                     isProcessing = false;
                     handleAnswer(true, card, loadDiffvideoRound, null);
                 });
             } else {
                 playErrorSound();
-                
                 card.style.borderColor = '#F44336';
-                card.style.boxShadow = '0 0 15px rgba(244, 67, 54, 0.4)';
+                card.style.boxShadow = '0 0 15px rgba(244,67,54,0.4)';
                 card.style.background = '#ffebee';
-                
-                let errStr = 'לא זה, נסה להיזכר מה ראית בסרטון הראשון!';
+                let errStr = 'לא זה — הסתכל שוב!';
                 speakLetter(errStr, 'he');
-                
                 handleAnswer(false, card, null, function() {
                     card.style.borderColor = '#e0e0e0';
-                    card.style.boxShadow = '0 4px 10px rgba(0,0,0,0.1)';
+                    card.style.boxShadow = '0 4px 14px rgba(0,0,0,0.12)';
                     card.style.background = '#fff';
                 });
             }
