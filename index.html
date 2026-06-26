@@ -792,18 +792,18 @@
         .sharing-img-btn.wrong-flash { border-color:#f44336; animation:shake 0.4s; }
 
         /* ── משחק טוב או לא טוב? ── */
-        .goodbad-scene { display:flex; flex-direction:column; align-items:center; gap:12px; padding:10px; max-width:650px; margin:0 auto; width:100%; box-sizing:border-box; }
-        .goodbad-question { font-size:clamp(15px, 3.2vw, 22px); font-weight:900; color:#333; margin:0; line-height:1.4; text-align:center; max-width:90vw; background:rgba(255,255,255,0.9); padding:10px 20px; border-radius:18px; cursor:pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        .goodbad-img-wrap { width:min(86vw, 420px); aspect-ratio:4/3; border-radius:24px; overflow:hidden; border: 4px solid #fff; box-shadow:0 8px 20px rgba(0,0,0,0.15); background:#fff; position:relative; }
+        .goodbad-scene { display:flex; flex-direction:column; align-items:center; gap:clamp(6px, 1.2vh, 12px); padding:6px; max-width:650px; margin:0 auto; width:100%; box-sizing:border-box; }
+        .goodbad-question { font-size:clamp(14px, 2.8vw, 19px); font-weight:900; color:#333; margin:0; line-height:1.3; text-align:center; max-width:90vw; background:rgba(255,255,255,0.9); padding:6px 16px; border-radius:14px; cursor:pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .goodbad-img-wrap { width:min(84vw, 380px, 42vh); aspect-ratio:4/3; border-radius:20px; overflow:hidden; border: 4px solid #fff; box-shadow:0 6px 15px rgba(0,0,0,0.12); background:#fff; position:relative; }
         .goodbad-img { width:100%; height:100%; object-fit:cover; display:block; }
-        .goodbad-choices { display:flex; gap:20px; justify-content:center; width:100%; max-width:420px; margin-top:5px; }
-        .goodbad-btn { flex:1; aspect-ratio:1.2; border:4px solid #fff; border-radius:24px; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; background:#fff; box-shadow:0 6px 15px rgba(0,0,0,0.1); transition:transform 0.15s, box-shadow 0.15s, border-color 0.2s, background-color 0.2s; outline:none; }
-        .goodbad-btn:hover { transform:scale(1.05); box-shadow:0 10px 25px rgba(0,0,0,0.18); }
+        .goodbad-choices { display:flex; gap:16px; justify-content:center; width:100%; max-width:420px; margin-top:4px; }
+        .goodbad-btn { flex:1; height:clamp(55px, 10.5vh, 85px); border:4px solid #fff; border-radius:20px; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; background:#fff; box-shadow:0 4px 10px rgba(0,0,0,0.08); transition:transform 0.15s, box-shadow 0.15s, border-color 0.2s, background-color 0.2s; outline:none; }
+        .goodbad-btn:hover { transform:scale(1.04); box-shadow:0 8px 18px rgba(0,0,0,0.15); }
         .goodbad-btn:active { transform:scale(0.95); }
         .goodbad-btn.correct-flash { border-color:#4CAF50; background-color:#e8f5e9; box-shadow:0 0 15px rgba(76, 175, 80, 0.4); }
         .goodbad-btn.wrong-flash { border-color:#F44336; background-color:#ffebee; animation:shake 0.4s; }
-        .goodbad-emoji { font-size:clamp(40px, 8vw, 55px); margin-bottom:4px; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.1)); }
-        .goodbad-btn-text { font-size:clamp(14px, 3vw, 18px); font-weight:bold; color:#333; }
+        .goodbad-emoji { font-size:clamp(22px, 4.5vh, 38px); margin-bottom:2px; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.1)); }
+        .goodbad-btn-text { font-size:clamp(12px, 2vh, 15px); font-weight:bold; color:#333; }
 
         /* ── Tracing Indicators ── */
         .start-indicator {
@@ -1664,7 +1664,7 @@
             // Force 100svh height for cooperative sharing and turn-taking modes, clear for others
             var agc = get('active-game-container');
             if (agc) {
-                if (currentGameMode === 'sharing' || currentGameMode === 'numwar' || currentGameMode === 'towertalk' || currentGameMode === 'cooppuzzle' || currentGameMode === 'tidyup') {
+                if (currentGameMode === 'sharing' || currentGameMode === 'goodbad' || currentGameMode === 'diffscene' || currentGameMode === 'diffvideo' || currentGameMode === 'numwar' || currentGameMode === 'towertalk' || currentGameMode === 'cooppuzzle' || currentGameMode === 'tidyup') {
                     agc.style.height = '100svh';
                 } else {
                     agc.style.height = '';
@@ -5185,7 +5185,7 @@
                 name: 'כורסה ירוקה',
                 altName: 'ארון עץ',
                 feedback: 'כל הכבוד! הכורסה הירוקה השתנתה לארון עץ!',
-                hotspot: { x: 18, y: 55, w: 25, h: 45 }
+                hotspot: { x: 23, y: 68, w: 25, h: 48 }
             },
             {
                 // Colorful garland removed from the wall
@@ -5194,7 +5194,7 @@
                 name: 'שרשרת כדורים צבעונית',
                 altName: 'קיר ריק',
                 feedback: 'נכון מאוד! שרשרת הכדורים הצבעונית נעלמה מהקיר!',
-                hotspot: { x: 50, y: 15, w: 90, h: 20 }
+                hotspot: { x: 38, y: 22, w: 32, h: 18 }
             },
             {
                 // Wall art geometric frames changed to sun/cloud drawings
@@ -5203,7 +5203,7 @@
                 name: 'תמונות מודרניות',
                 altName: 'ציורי שמש וענן',
                 feedback: 'כל הכבוד! התמונות המודרניות השתנו לציורי שמש וענן של ילדים!',
-                hotspot: { x: 50, y: 35, w: 40, h: 22 }
+                hotspot: { x: 68, y: 25, w: 26, h: 30 }
             },
             {
                 // Wicker doll basket changed to blue plastic toy box
@@ -5212,7 +5212,7 @@
                 name: 'סל קש עם בובות',
                 altName: 'ארגז פלסטיק כחול עם קוביות',
                 feedback: 'כל הכבוד! סל הקש עם הבובות השתנה לארגז פלסטיק כחול עם קוביות משחק!',
-                hotspot: { x: 50, y: 78, w: 30, h: 28 }
+                hotspot: { x: 48, y: 85, w: 22, h: 22 }
             }
         ];
         let diffsceneOrder = [];
@@ -5238,7 +5238,7 @@
             ws.innerHTML = `
                 <div style="font-size:clamp(17px, 3.8vw, 24px); font-weight:900; margin-bottom:15px; color:#333; text-align:center; direction:rtl; line-height:1.4;" id="diffscene-question">${qText} 🔊</div>
                 
-                <div id="diffscene-image-container" style="width: min(90vw, 550px); aspect-ratio: 4/3; margin: 0 auto; position: relative; border-radius: 24px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.2); cursor: pointer; border: 4px solid #fff; transition: transform 0.2s;">
+                <div id="diffscene-image-container" style="width: min(90vw, 550px, 52vh); aspect-ratio: 4/3; margin: 0 auto; position: relative; border-radius: 24px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.2); cursor: pointer; border: 4px solid #fff; transition: transform 0.2s;">
                     <img id="diffscene-img-element" src="${data.baseImage}" style="width:100%; height:100%; object-fit:cover; pointer-events:none;" />
                     <div id="diffscene-items-overlay" style="position:absolute; left:0; top:0; width:100%; height:100%; pointer-events:none;"></div>
                     <div id="diffscene-black-mask" style="position:absolute; left:0; top:0; width:100%; height:100%; background:#000; z-index:20; display:none;"></div>
