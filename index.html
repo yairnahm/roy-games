@@ -6474,9 +6474,13 @@
         // Register Service Worker for PWA offline support
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function() {
-                navigator.serviceWorker.register('./sw.js').then(function(reg) {
+                navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' }).then(function(reg) {
                     console.log('ServiceWorker registration successful with scope: ', reg.scope);
-                }, function(err) {
+                    // Force checking for updates immediately on load
+                    reg.update().catch(function(err) {
+                        console.error('ServiceWorker update failed: ', err);
+                    });
+                }).catch(function(err) {
                     console.log('ServiceWorker registration failed: ', err);
                 });
             });
