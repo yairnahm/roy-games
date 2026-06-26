@@ -5355,10 +5355,10 @@
                 name: 'משאית כחולה',
                 feedback: 'כל הכבוד! המשאית האדומה הפכה למשאית כחולה!',
                 choices: [
-                    { emoji: '🚚', text: 'משאית כחולה', isCorrect: true },
-                    { emoji: '🚛', text: 'משאית אדומה', isCorrect: false },
-                    { emoji: '🐢', text: 'צב ים זוחל', isCorrect: false },
-                    { emoji: '🐠', text: 'דג אדום שוחה', isCorrect: false }
+                    { emoji: '🚚', text: 'משאית כחולה', img: 'images/choice_truck_blue.png', isCorrect: true },
+                    { emoji: '🚛', text: 'משאית אדומה', img: 'images/choice_truck_red.png', isCorrect: false },
+                    { emoji: '🐢', text: 'צב ים זוחל', img: 'images/choice_turtle.png', isCorrect: false },
+                    { emoji: '🐠', text: 'דג אדום שוחה', img: 'images/choice_fish_red.png', isCorrect: false }
                 ]
             },
             {
@@ -5366,9 +5366,9 @@
                 name: 'דג אדום שוחה',
                 feedback: 'כל הכבוד! הדג הצהוב הפך לדג אדום שוחה!',
                 choices: [
-                    { emoji: '🐠', text: 'דג אדום שוחה', isCorrect: true },
-                    { emoji: '🐟', text: 'דג צהוב שוחה', isCorrect: false },
-                    { emoji: '🐢', text: 'צב ים זוחל', isCorrect: false },
+                    { emoji: '🐠', text: 'דג אדום שוחה', img: 'images/choice_fish_red.png', isCorrect: true },
+                    { emoji: '🐟', text: 'דג צהוב שוחה', img: 'images/choice_fish_yellow.png', isCorrect: false },
+                    { emoji: '🐢', text: 'צב ים זוחל', img: 'images/choice_turtle.png', isCorrect: false },
                     { emoji: '🐙', text: 'תמנון סגול', isCorrect: false }
                 ]
             },
@@ -6413,9 +6413,10 @@
             
             finalChoices.forEach((ch, idx) => {
                 let card = D.createElement('div');
-                card.style.cssText = `background: #fff; border: 4px solid #e0e0e0; border-radius: 20px; padding: clamp(10px, 2vw, 20px); width: clamp(110px, 25vw, 130px); text-align: center; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: all 0.2s ease; direction: rtl;`;
+                card.style.cssText = `background: #fff; border: 4px solid #e0e0e0; border-radius: 20px; padding: clamp(10px, 2vw, 20px); width: clamp(110px, 25vw, 130px); text-align: center; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: all 0.2s ease; direction: rtl; display: flex; flex-direction: column; align-items: center; justify-content: center;`;
+                let mediaHTML = ch.img ? `<img src="${ch.img}" style="width: clamp(55px, 12vw, 75px); height: clamp(55px, 12vw, 75px); object-fit: contain; margin-bottom: 8px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.12)); display: block;">` : `<div style="font-size: clamp(36px, 8vw, 50px); margin-bottom: 8px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));">${ch.emoji}</div>`;
                 card.innerHTML = `
-                    <div style="font-size: clamp(36px, 8vw, 50px); margin-bottom: 8px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));">${ch.emoji}</div>
+                    ${mediaHTML}
                     <div style="font-size: clamp(13px, 3vw, 16px); font-weight: bold; color: #333; line-height: 1.2;">${ch.text}</div>
                 `;
                 
