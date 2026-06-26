@@ -5281,6 +5281,14 @@
                 imgCont.style.transform = 'scale(1)';
             }
             
+            // Swap the background image to the difference image immediately so it loads behind the mask
+            let roundIdx = diffsceneOrder[currentStep];
+            let data = diffscenePool[roundIdx];
+            let imgEl = get('diffscene-img-element');
+            if (imgEl) {
+                imgEl.src = data.diffImage;
+            }
+            
             // Show black mask overlay
             let mask = get('diffscene-black-mask');
             if (mask) mask.style.display = 'block';
@@ -5289,14 +5297,6 @@
             setTimeout(() => {
                 // Hide black mask overlay
                 if (mask) mask.style.display = 'none';
-                
-                // Swap the background image to the difference image of current round
-                let roundIdx = diffsceneOrder[currentStep];
-                let data = diffscenePool[roundIdx];
-                let imgEl = get('diffscene-img-element');
-                if (imgEl) {
-                    imgEl.src = data.diffImage;
-                }
                 
                 // Enable gameplay clicks
                 diffscenePlayable = true;
