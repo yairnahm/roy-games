@@ -70,6 +70,83 @@
         body.bg-patterns { background: linear-gradient(135deg, #fff5cc 0%, #ffdf80 100%); }
         body.bg-origins { background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); }
         body.bg-families { background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); }
+        body.bg-whatneeds { background: linear-gradient(135deg, #fce4ec 0%, #e1f5fe 100%); }
+
+        /* ── מה צריך? Game ── */
+        .wn-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: clamp(6px, 1.5vmin, 14px);
+            width: min(90vw, 480px);
+            height: min(90vw, 480px);
+            margin: 0 auto 16px;
+        }
+        .wn-tile {
+            border-radius: 16px;
+            overflow: hidden;
+            background: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.10);
+            position: relative;
+        }
+        .wn-tile-empty {
+            background: transparent;
+            box-shadow: none;
+        }
+        .wn-tile-center {
+            border: 4px solid #e91e63;
+            box-shadow: 0 4px 14px rgba(233,30,99,0.25);
+        }
+        .wn-tile img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .wn-tile-emoji {
+            font-size: clamp(32px, 8vmin, 64px);
+            line-height: 1;
+        }
+        .wn-choices {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            gap: clamp(8px, 2vmin, 20px);
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+        .wn-choice-btn {
+            width: clamp(72px, 18vmin, 130px);
+            height: clamp(72px, 18vmin, 130px);
+            background: #fff;
+            border: 4px solid #e91e63;
+            border-radius: 20px;
+            cursor: pointer;
+            box-shadow: 0 5px 14px rgba(0,0,0,0.13);
+            transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            padding: 6px;
+            touch-action: manipulation;
+            font-family: 'Rubik', sans-serif;
+        }
+        .wn-choice-btn:hover { transform: translateY(-4px) scale(1.05); box-shadow: 0 10px 22px rgba(0,0,0,0.2); }
+        .wn-choice-btn:active { transform: translateY(-1px) scale(0.97); }
+        .wn-choice-emoji { font-size: clamp(28px, 7vmin, 52px); line-height: 1; }
+        .wn-choice-label { font-size: clamp(11px, 2.5vmin, 16px); font-weight: 700; color: #333; text-align: center; }
+        .wn-question-text {
+            font-size: clamp(18px, 4.5vw, 28px);
+            font-weight: 900;
+            color: #333;
+            text-align: center;
+            direction: rtl;
+            margin-bottom: 10px;
+        }
         .fl-letter-btn { width: clamp(70px,18vmin,110px); height: clamp(70px,18vmin,110px); background: #fff; border: 5px solid #2196F3; border-radius: 20px; cursor: pointer; box-shadow: 0 6px 12px rgba(0,0,0,0.15); transition: 0.2s; font-size: clamp(28px,7vw,52px); font-weight: 900; color: #2196F3; display: flex; align-items: center; justify-content: center; touch-action: manipulation; outline: none; font-family: 'Rubik', sans-serif; }
         .fl-letter-btn:hover { transform: scale(1.06); box-shadow: 0 8px 18px rgba(0,0,0,0.2); }
 
@@ -1349,7 +1426,7 @@
             <div class="hub-card" onclick="openCategory('think','חשיבה וזיכרון')"><div class="hub-icon">🧠</div><div class="hub-title">חשיבה וזיכרון</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">7 משחקים</div></div>
             <div class="hub-card" onclick="openCategory('emotion','רגשות ואנשים')"><div class="hub-icon">😊</div><div class="hub-title">רגשות ואנשים</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">6 משחקים</div></div>
             <div class="hub-card" onclick="openCategory('numbers','מספרים וסדר')"><div class="hub-icon">🔢</div><div class="hub-title">מספרים וסדר</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">4 משחקים</div></div>
-            <div class="hub-card" onclick="openCategory('world','עולם סביבנו')"><div class="hub-icon">🌍</div><div class="hub-title">עולם סביבנו</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">6 משחקים</div></div>
+            <div class="hub-card" onclick="openCategory('world','עולם סביבנו')"><div class="hub-icon">🌍</div><div class="hub-title">עולם סביבנו</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">7 משחקים</div></div>
             <div class="hub-card" onclick="openCategory('create','יצירה וחידות')"><div class="hub-icon">🎨</div><div class="hub-title">יצירה וחידות</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">4 משחקים</div></div>
             <div class="hub-card" onclick="openCategory('action','משחקי פעולה')"><div class="hub-icon">🎮</div><div class="hub-title">משחקי פעולה</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">2 משחקים</div></div>
         </div>
@@ -1388,6 +1465,7 @@
             <div class="hub-card" data-cat="emotion" style="position:relative;" onclick="openDifficultyScreen('goodbad','👍','טוב או לא טוב?')"><span class="star-badge" data-game="goodbad" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">👍</div><div class="hub-title">טוב או לא טוב?</div></div>
             <div class="hub-card" data-cat="emotion" style="position:relative;" onclick="openDifficultyScreen('towertalk', '🧱', 'מגדל קוביות')"><span class="star-badge" data-game="towertalk" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🧱</div><div class="hub-title">מגדל קוביות</div></div>
             <div class="hub-card" data-cat="emotion" style="position:relative;" onclick="openDifficultyScreen('cooppuzzle', '🧩', 'פאזל משותף')"><span class="star-badge" data-game="cooppuzzle" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🧩</div><div class="hub-title">פאזל משותף</div></div>
+            <div class="hub-card" data-cat="world" style="position:relative;" onclick="openDifficultyScreen('whatneeds', '🤔', 'מה צריך?')"><span class="star-badge" data-game="whatneeds" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🤔</div><div class="hub-title">מה צריך?</div></div>
             <div class="hub-card" data-cat="emotion" style="position:relative;" onclick="openDifficultyScreen('tidyup', '🧼', 'סדר בחדר')"><span class="star-badge" data-game="tidyup" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🧼</div><div class="hub-title">סדר בחדר</div></div>
             <div class="hub-card" data-cat="create" style="position:relative;" onclick="openMgGame()"><div class="hub-icon">🤸</div><div class="hub-title">מר גמיש</div></div>
             <div class="hub-card" data-cat="lang" onclick="openFirstLetterLangScreen()"><div class="hub-icon">🔡</div><div class="hub-title">באיזו אות מתחיל?</div></div>
@@ -1472,7 +1550,7 @@
     <div id="feedback-layer" class="hidden feedback-icon"></div>
 
     <script>
-        const bgIcons = { 'goodbad': ['👍','👎','❤️','😊'], 'sharing': ['🤝','❤️','🌟','🎁'], 'memory': ['🧠','💭','💡'], 'tracing': ['✏️','🎨','📐'], 'counting': ['🔢','🧮','➕'], 'sequence': ['🔄','✨','🎯'], 'fly': ['🪰','💨'], 'cop': ['🚓','🚨'], 'diff': ['🔎','👀'], 'oddone': ['🍎','🐶','🚗'], 'missing': ['A','B','C'], 'tools': ['🔨','🔧','🔩'], 'context': ['🧩','🖼️','🎨'], 'vparts': ['🚗','✈️','🚂','⛵','🚁'], 'habitat': ['🏠','🌳','🌊'], 'shadow': ['👤','🌑','👀'], 'halfhalf': ['✂️','🎨','🧩'], 'chrono': ['⏳','📅','🔄'], 'bigger': ['⚖️','🐘','🐭','🔢'], 'emotion': ['😄','😢','😡','😱'], 'faces': ['📸','❤️','👨‍👩‍👧‍👦','🤳'], 'mgamish': ['🤸','💪','🌟','🤸‍♂️'], 'firstletter': ['🔡','🔤','📖','✏️'], 'numwar': ['⚔️','🃏','🔢','⭐'], 'towertalk': ['🧱','🏗️','🏢'], 'cooppuzzle': ['🧩','🖼️','🎨','📸'], 'tidyup': ['🧼','🧸','🧺','🧹'], 'patterns': ['🔴','🔵','💛','🟩','🔺','🌟'], 'origins': ['🐄','🥛','🐑','🐔','🐝','🍞'], 'families': ['🐕','🐶','🐈','🐱','🐥','🦁'], 'diffscene': ['🖼️','🔍','👀'], 'diffvideo': ['🎬','🔎','👀'] };
+        const bgIcons = { 'goodbad': ['👍','👎','❤️','😊'], 'sharing': ['🤝','❤️','🌟','🎁'], 'memory': ['🧠','💭','💡'], 'tracing': ['✏️','🎨','📐'], 'counting': ['🔢','🧮','➕'], 'sequence': ['🔄','✨','🎯'], 'fly': ['🪰','💨'], 'cop': ['🚓','🚨'], 'diff': ['🔎','👀'], 'oddone': ['🍎','🐶','🚗'], 'missing': ['A','B','C'], 'tools': ['🔨','🔧','🔩'], 'context': ['🧩','🖼️','🎨'], 'vparts': ['🚗','✈️','🚂','⛵','🚁'], 'habitat': ['🏠','🌳','🌊'], 'shadow': ['👤','🌑','👀'], 'halfhalf': ['✂️','🎨','🧩'], 'chrono': ['⏳','📅','🔄'], 'bigger': ['⚖️','🐘','🐭','🔢'], 'emotion': ['😄','😢','😡','😱'], 'faces': ['📸','❤️','👨‍👩‍👧‍👦','🤳'], 'mgamish': ['🤸','💪','🌟','🤸‍♂️'], 'firstletter': ['🔡','🔤','📖','✏️'], 'numwar': ['⚔️','🃏','🔢','⭐'], 'towertalk': ['🧱','🏗️','🏢'], 'cooppuzzle': ['🧩','🖼️','🎨','📸'], 'tidyup': ['🧼','🧸','🧺','🧹'], 'patterns': ['🔴','🔵','💛','🟩','🔺','🌟'], 'origins': ['🐄','🥛','🐑','🐔','🐝','🍞'], 'families': ['🐕','🐶','🐈','🐱','🐥','🦁'], 'diffscene': ['🖼️','🔍','👀'], 'diffvideo': ['🎬','🔎','👀'], 'whatneeds': ['🤔','❓','💡','🔍','👁️','🌟'] };
         function setAppBackground(theme) {
             D.body.className = 'bg-' + theme; let bg = get('bg-animations'); bg.innerHTML = '';
             if(theme !== 'hub' && bgIcons[theme]) {
@@ -1721,6 +1799,7 @@
                 else if(currentGameMode === 'families') initFamiliesGame();
                 else if(currentGameMode === 'diffscene') initDiffsceneGame();
                 else if(currentGameMode === 'diffvideo') initDiffvideoGame();
+                else if(currentGameMode === 'whatneeds') initWhatNeedsGame();
             }, 50);
         }
 
@@ -1731,7 +1810,7 @@
             playClickSound(); hideAllScreens();
             var agc = get('active-game-container');
             if (agc) agc.style.height = '';
-            if(currentGameMode === 'emotion' || currentGameMode === 'emparts' || currentGameMode === 'missing' || currentGameMode === 'mgamish' || currentGameMode === 'firstletter' || currentGameMode === 'sharing' || currentGameMode === 'goodbad' || currentGameMode === 'numwar' || currentGameMode === 'towertalk' || currentGameMode === 'cooppuzzle' || currentGameMode === 'tidyup' || currentGameMode === 'patterns' || currentGameMode === 'origins' || currentGameMode === 'families') { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); } else if(currentGameMode === 'faces') { show('faces-mode-screen'); } else { show('unified-diff-screen'); }
+            if(currentGameMode === 'emotion' || currentGameMode === 'emparts' || currentGameMode === 'missing' || currentGameMode === 'mgamish' || currentGameMode === 'firstletter' || currentGameMode === 'sharing' || currentGameMode === 'goodbad' || currentGameMode === 'numwar' || currentGameMode === 'towertalk' || currentGameMode === 'cooppuzzle' || currentGameMode === 'tidyup' || currentGameMode === 'patterns' || currentGameMode === 'origins' || currentGameMode === 'families' || currentGameMode === 'whatneeds') { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); } else if(currentGameMode === 'faces') { show('faces-mode-screen'); } else { show('unified-diff-screen'); }
         }
         function updateProgressUI() { for(let i=0;i<activeGameRounds;i++) { let d = get(`active-progress-container-dot-${i}`); if(d){ if(i < currentStep) d.classList.add('fill'); else d.classList.remove('fill'); } } }
 
@@ -1782,7 +1861,7 @@
             var agc = get('active-game-container');
             if (agc) agc.style.height = '';
             if(currentGameMode==='missing') { show('missing-lang-screen'); }
-            else if(currentGameMode==='emotion' || currentGameMode==='emparts' || currentGameMode==='mgamish' || currentGameMode==='firstletter' || currentGameMode==='sharing' || currentGameMode==='goodbad' || currentGameMode==='numwar' || currentGameMode==='towertalk' || currentGameMode==='cooppuzzle' || currentGameMode==='tidyup' || currentGameMode==='patterns' || currentGameMode==='origins' || currentGameMode==='families') { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); }
+            else if(currentGameMode==='emotion' || currentGameMode==='emparts' || currentGameMode==='mgamish' || currentGameMode==='firstletter' || currentGameMode==='sharing' || currentGameMode==='goodbad' || currentGameMode==='numwar' || currentGameMode==='towertalk' || currentGameMode==='cooppuzzle' || currentGameMode==='tidyup' || currentGameMode==='patterns' || currentGameMode==='origins' || currentGameMode==='families' || currentGameMode==='whatneeds') { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); }
             else if(currentGameMode==='faces') { show('faces-mode-screen'); }
             else {
                 try {
@@ -6678,6 +6757,184 @@
                     btnElement.classList.remove('wrong-flash');
                 });
             }
+        }
+
+        // ── מה צריך? — Visual Association Game ──
+        // Each scene: child image (center face), gaze direction, 4 surrounding objects, 4 choices
+        // The correct choice = the item in the direction the child is gazing at
+        const whatneedsData = [
+            {
+                id: 1,
+                childImg: 'images/whatneeds/scene1/tile_1_1.jpg',
+                question: 'על מה הילד מסתכל?',
+                gaze: 'right',  // scene1: eyes look slightly right
+                surrounds: {
+                    up:    { emoji: '🌞', label: 'שמש' },
+                    down:  { emoji: '🌊', label: 'ים' },
+                    left:  { emoji: '🎈', label: 'בלון' },
+                    right: { emoji: '🍕', label: 'פיצה' }   // CORRECT
+                },
+                correct: 'right',
+                hint: 'הילד מביט ימינה! הוא רואה... 🍕'
+            },
+            {
+                id: 2,
+                childImg: 'images/whatneeds/scene2/tile_1_1.jpg',
+                question: 'על מה הילד מסתכל?',
+                gaze: 'up',    // scene2: eyes look clearly upward
+                surrounds: {
+                    up:    { emoji: '⭐', label: 'כוכב' },   // CORRECT
+                    down:  { emoji: '🐟', label: 'דג' },
+                    left:  { emoji: '🍦', label: 'גלידה' },
+                    right: { emoji: '🚀', label: 'רקטה' }
+                },
+                correct: 'up',
+                hint: 'הילד מביט למעלה! הוא רואה... ⭐'
+            },
+            {
+                id: 3,
+                childImg: 'images/whatneeds/scene3/tile_1_1.jpg',
+                question: 'על מה הילד מסתכל?',
+                gaze: 'left',  // scene3: eyes clearly look left
+                surrounds: {
+                    up:    { emoji: '☁️', label: 'ענן' },
+                    down:  { emoji: '🌺', label: 'פרח' },
+                    left:  { emoji: '🐶', label: 'כלב' },    // CORRECT
+                    right: { emoji: '🍎', label: 'תפוח' }
+                },
+                correct: 'left',
+                hint: 'הילד מביט שמאלה! הוא רואה... 🐶'
+            },
+            {
+                id: 4,
+                childImg: 'images/whatneeds/scene4/tile_1_1.jpg',
+                question: 'על מה הילד מסתכל?',
+                gaze: 'left',  // scene4: eyes look up-left
+                surrounds: {
+                    up:    { emoji: '🎠', label: 'קרוסלה' },
+                    down:  { emoji: '🧸', label: 'דובי' },
+                    left:  { emoji: '🌈', label: 'קשת' },    // CORRECT
+                    right: { emoji: '🎁', label: 'מתנה' }
+                },
+                correct: 'left',
+                hint: 'הילד מביט שמאלה! הוא רואה... 🌈'
+            },
+            {
+                id: 5,
+                childImg: 'images/whatneeds/scene5/tile_1_1.jpg',
+                question: 'על מה הילד מסתכל?',
+                gaze: 'right', // scene5: eyes look up-right
+                surrounds: {
+                    up:    { emoji: '🏠', label: 'בית' },
+                    down:  { emoji: '🎭', label: 'מסכה' },
+                    left:  { emoji: '📚', label: 'ספרים' },
+                    right: { emoji: '🦋', label: 'פרפר' }    // CORRECT
+                },
+                correct: 'right',
+                hint: 'הילד מביט ימינה! הוא רואה... 🦋'
+            }
+        ];
+
+        let whatneedsOrder = [];
+
+        function initWhatNeedsGame() {
+            setAppBackground('whatneeds');
+            get('active-game-title').textContent = 'מה צריך? 🤔';
+            get('game-workspace').innerHTML = `
+                <div class="wn-question-text" id="wn-question">על מה הילד מסתכל? 👀</div>
+                <div class="wn-grid" id="wn-grid"></div>
+                <div class="wn-choices" id="wn-choices"></div>
+            `;
+            whatneedsOrder = shuffle(createRange(whatneedsData.length)).slice(0, activeGameRounds);
+            loadWhatNeedsRound();
+        }
+
+        function loadWhatNeedsRound() {
+            let scene = whatneedsData[whatneedsOrder[currentStep]];
+            if (!scene) return;
+
+            get('wn-question').textContent = scene.question + ' 👀';
+            speakLetter(scene.question, 'he');
+
+            // Build 3x3 grid
+            // Layout:  [empty] [up]    [empty]
+            //          [left]  [child] [right]
+            //          [empty] [down]  [empty]
+            let grid = get('wn-grid');
+            grid.innerHTML = '';
+
+            const positions = [
+                { pos: 'corner', surround: null },
+                { pos: 'up',     surround: scene.surrounds.up    },
+                { pos: 'corner', surround: null },
+                { pos: 'left',   surround: scene.surrounds.left  },
+                { pos: 'center', surround: null },
+                { pos: 'right',  surround: scene.surrounds.right },
+                { pos: 'corner', surround: null },
+                { pos: 'down',   surround: scene.surrounds.down  },
+                { pos: 'corner', surround: null }
+            ];
+
+            positions.forEach(cell => {
+                let tile = D.createElement('div');
+                tile.className = 'wn-tile';
+
+                if (cell.pos === 'corner') {
+                    tile.classList.add('wn-tile-empty');
+                } else if (cell.pos === 'center') {
+                    tile.classList.add('wn-tile-center');
+                    let img = D.createElement('img');
+                    img.src = scene.childImg;
+                    img.alt = 'ילד';
+                    img.onerror = function() {
+                        this.style.display = 'none';
+                        tile.innerHTML = '<span class="wn-tile-emoji">🧒</span>';
+                    };
+                    tile.appendChild(img);
+                } else {
+                    // Surrounding object tile
+                    let obj = cell.surround;
+                    tile.innerHTML = `<span class="wn-tile-emoji">${obj.emoji}</span>`;
+                    // Subtle indicator for direction
+                    let dirLabel = D.createElement('div');
+                    dirLabel.style.cssText = 'position:absolute;bottom:4px;left:50%;transform:translateX(-50%);font-size:clamp(9px,2vmin,12px);font-weight:700;color:#888;white-space:nowrap;';
+                    tile.appendChild(dirLabel);
+                }
+
+                grid.appendChild(tile);
+            });
+
+            // Build 4 choice buttons (shuffle all 4 directions)
+            let dirs = ['up', 'down', 'left', 'right'];
+            let choices = shuffle(dirs).map(dir => ({
+                dir: dir,
+                obj: scene.surrounds[dir],
+                isCorrect: dir === scene.correct
+            }));
+
+            let choicesArea = get('wn-choices');
+            choicesArea.innerHTML = '';
+            choices.forEach((choice, idx) => {
+                let btn = D.createElement('button');
+                btn.className = 'wn-choice-btn';
+                btn.id = `wn-choice-${idx}`;
+                btn.innerHTML = `
+                    <span class="wn-choice-emoji">${choice.obj.emoji}</span>
+                    <span class="wn-choice-label">${choice.obj.label}</span>
+                `;
+                btn.onclick = () => {
+                    if (isProcessing) return;
+                    if (choice.isCorrect) {
+                        speakLetter(choice.obj.label, 'he', function() {
+                            handleAnswer(true, btn, loadWhatNeedsRound, null);
+                        });
+                    } else {
+                        speakLetter(choice.obj.label, 'he');
+                        handleAnswer(false, btn, null, null);
+                    }
+                };
+                choicesArea.appendChild(btn);
+            });
         }
 
         // Register Service Worker for PWA offline support
