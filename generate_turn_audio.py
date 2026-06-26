@@ -7,15 +7,12 @@ audio_dir = os.path.join(base_dir, 'audio', 'coop')
 os.makedirs(audio_dir, exist_ok=True)
 
 samples = [
-    ("תור רועי", "numwar_turn_roy.mp3"),
-    ("תור אבא", "numwar_turn_aba.mp3")
+    ("תּוֹר רוֹעִי", "numwar_turn_roy.mp3"),
+    ("תּוֹר אַבָּא", "numwar_turn_aba.mp3")
 ]
 
 for text, filename in samples:
     out_path = os.path.join(audio_dir, filename)
-    if not os.path.isfile(out_path):
-        tts = gTTS(text=text, lang='he')
-        tts.save(out_path)
-        print(f'Generated {out_path}')
-    else:
-        print(f'Already exists: {out_path}')
+    tts = gTTS(text=text, lang='iw')
+    tts.save(out_path)
+    print(f'Generated {out_path}')

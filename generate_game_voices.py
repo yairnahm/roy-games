@@ -10,51 +10,45 @@ os.makedirs(COOP_DIR, exist_ok=True)
 
 # Habitat voices
 HABITAT_VOICES = {
-    "bee.mp3": "דבורה",
-    "beehive.mp3": "כוורת",
-    "dog.mp3": "כלב",
-    "doghouse.mp3": "מלונה",
-    "bird.mp3": "ציפור",
-    "nest.mp3": "קן ציפור",
-    "fish.mp3": "דג",
-    "ocean.mp3": "ים",
-    "spider.mp3": "עכביש",
-    "spiderweb.mp3": "קורי עכביש",
-    "horse.mp3": "סוס",
-    "stable.mp3": "אורווה",
-    "king.mp3": "מלך",
-    "castle.mp3": "ארמון",
-    "frog.mp3": "צפרדע",
-    "lilypad.mp3": "שושנת מים",
-    "bat.mp3": "עטלף",
-    "cave.mp3": "מערה",
-    "monkey.mp3": "קוף",
-    "palmtree.mp3": "עץ דקל",
+    "bee.mp3": "דְּבוֹרָה",
+    "beehive.mp3": "כַּוֶּרֶת",
+    "dog.mp3": "כֶּלֶב",
+    "doghouse.mp3": "מְלוּנָה",
+    "bird.mp3": "צִפּוֹר",
+    "nest.mp3": "קֵן צִפּוֹר",
+    "fish.mp3": "דָּג",
+    "ocean.mp3": "יָם",
+    "spider.mp3": "עַכָּבִישׁ",
+    "spiderweb.mp3": "קוּרֵי עַכָּבִישׁ",
+    "horse.mp3": "סוּס",
+    "stable.mp3": "אֻרְוָה",
+    "king.mp3": "מֶלֶךְ",
+    "castle.mp3": "אַרְמוֹן",
+    "frog.mp3": "צְפַרְדֵּעַ",
+    "lilypad.mp3": "שׁוֹשַׁנַּת מַיִם",
+    "bat.mp3": "עֲטַלֵּף",
+    "cave.mp3": "מְעָרָה",
+    "monkey.mp3": "קוֹף",
+    "palmtree.mp3": "עֵץ דֶּקֶל",
 }
 
 # Coop/Tidyup/Tower voices
 COOP_VOICES = {
-    "tidy_instructions.mp3": "בואו נעשה סדר בחדר! רועי מסדר צעצועים וחפצים, ואבא יאיר מסדר פירות וחיות.",
-    "towertalk_turn_roy.mp3": "תור רועי לשים קובייה.",
-    "towertalk_turn_aba.mp3": "תור אבא יאיר לשים קובייה."
+    "tidy_instructions.mp3": "בּוֹאוּ נַעֲשֶׂה סֵדֶר בַּחֶדֶר! רוֹעִי מְסַדֵּר צַעֲצוּעִים וַחֲפָצִים, וְאַבָּא יָאִיר מְסַדֵּר פֵּרוֹת וְחַיּוֹת.",
+    "towertalk_turn_roy.mp3": "תּוֹר רוֹעִי לָשִׂים קֻבִּיָּה.",
+    "towertalk_turn_aba.mp3": "תּוֹר אַבָּא יָאִיר לָשִׂים קֻבִּיָּה."
 }
 
 print("Generating Habitat voices...")
 for filename, text in HABITAT_VOICES.items():
     filepath = os.path.join(HABITAT_DIR, filename)
-    if not os.path.exists(filepath):
-        print(f"Generating {filepath} -> '{text}'")
-        gTTS(text=text, lang="iw", slow=False).save(filepath)
-    else:
-        print(f"Already exists: {filepath}")
+    print(f"Generating {filepath} -> '{text}'")
+    gTTS(text=text, lang="iw", slow=False).save(filepath)
 
 print("\nGenerating Coop/Tidyup/Tower voices...")
 for filename, text in COOP_VOICES.items():
     filepath = os.path.join(COOP_DIR, filename)
-    if not os.path.exists(filepath):
-        print(f"Generating {filepath} -> '{text}'")
-        gTTS(text=text, lang="iw", slow=False).save(filepath)
-    else:
-        print(f"Already exists: {filepath}")
+    print(f"Generating {filepath} -> '{text}'")
+    gTTS(text=text, lang="iw", slow=False).save(filepath)
 
 print("\nDone generating audio files!")

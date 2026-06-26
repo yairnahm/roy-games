@@ -3120,7 +3120,14 @@
         function pickFemaleVoice(voices, lang) {
             var MALE_NAMES = /david|asaf|yosef|jorge|diego|daniel|thomas|alex|fred|bruce|tom|he-il-x-heg|he_il_x_heg|\bmale\b/i;
             var FEMALE_NAMES = /hila|michal|idit|anat|carmit|yael|tamar|noa|sara|female|woman|girl|natural|samantha|karen|victoria|tessa|moira|fiona|alice|amelie|anna|sarah|zira/i;
-            var langVoices = voices.filter(function(v) { return v.lang.startsWith(lang); });
+            var targetLang = lang.toLowerCase();
+            var langVoices = voices.filter(function(v) {
+                var vlang = v.lang.toLowerCase();
+                if (targetLang === 'he' || targetLang === 'iw') {
+                    return vlang.startsWith('he') || vlang.startsWith('iw');
+                }
+                return vlang.startsWith(targetLang);
+            });
             if (!langVoices.length) return null;
             var nonMale = langVoices.filter(function(v) { return !MALE_NAMES.test(v.name); });
             var pool = nonMale.length ? nonMale : langVoices;
