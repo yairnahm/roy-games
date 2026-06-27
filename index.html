@@ -73,13 +73,14 @@
         body.bg-whatneeds { background: linear-gradient(135deg, #fce4ec 0%, #e1f5fe 100%); }
 
         /* ── מה קשור? Game ── */
+        #active-game-container:has(.wn-cross) #active-game-title { display: none; }
         .wn-cross {
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: clamp(5px, 1.2vmin, 10px);
-            margin: 0 auto 10px;
-            width: min(84vw, 380px);
+            margin: 0 auto 8px;
+            width: min(90vw, 460px);
         }
         .wn-cross-middle {
             display: flex;
@@ -103,14 +104,14 @@
             border: 2px solid #ddd;
         }
         .wn-tile-side {
-            width: clamp(68px, 20vw, 95px);
-            height: clamp(68px, 20vw, 95px);
+            width: clamp(78px, 22vw, 108px);
+            height: clamp(78px, 22vw, 108px);
             gap: 3px;
             padding: 5px;
         }
         .wn-tile-center {
             flex: 1;
-            height: clamp(170px, 46vw, 260px);
+            height: clamp(170px, 46vw, 270px);
             border: 4px solid #e91e63;
             background: #fff;
             box-shadow: 0 4px 14px rgba(233,30,99,0.25);
@@ -120,6 +121,7 @@
             height: 100%;
             object-fit: contain;
         }
+        .wn-tile-center img { object-fit: cover; }
         .wn-tile-emoji { font-size: clamp(26px, 7vmin, 46px); line-height: 1; }
         .wn-tile-obj-label { font-size: clamp(9px, 2.2vmin, 13px); font-weight: 700; color: #555; text-align: center; }
         .wn-choices {
@@ -131,8 +133,8 @@
             margin-top: 4px;
         }
         .wn-choice-btn {
-            width: clamp(72px, 19vmin, 118px);
-            height: clamp(72px, 19vmin, 118px);
+            width: clamp(80px, 20vmin, 124px);
+            height: clamp(80px, 20vmin, 124px);
             background: #fff;
             border: 3px solid #e91e63;
             border-radius: 18px;
@@ -6931,7 +6933,7 @@
                 let tile = D.createElement('div');
                 tile.className = 'wn-tile wn-tile-side';
                 if (obj.img) {
-                    tile.innerHTML = `<img src="${obj.img}" alt="${obj.label}" style="width:78%;height:78%;object-fit:cover;border-radius:10px;"><span class="wn-tile-obj-label">${obj.label}</span>`;
+                    tile.innerHTML = `<img src="${obj.img}" alt="${obj.label}" style="width:90%;height:90%;object-fit:cover;border-radius:10px;"><span class="wn-tile-obj-label">${obj.label}</span>`;
                 } else {
                     tile.innerHTML = `<span class="wn-tile-emoji">${obj.emoji}</span><span class="wn-tile-obj-label">${obj.label}</span>`;
                 }
