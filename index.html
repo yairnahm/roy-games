@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-06-26-v24-whatneeds -->
+<!DOCTYPE html><!-- build: 2026-06-27-v26-whatneeds-redesign -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -73,79 +73,68 @@
         body.bg-whatneeds { background: linear-gradient(135deg, #fce4ec 0%, #e1f5fe 100%); }
 
         /* ── מה צריך? Game ── */
-        .wn-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            grid-template-rows: repeat(3, 1fr);
-            gap: clamp(6px, 1.5vmin, 14px);
-            width: min(90vw, 480px);
-            height: min(90vw, 480px);
-            margin: 0 auto 16px;
+        .wn-cross {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: clamp(6px, 1.5vmin, 12px);
+            margin: 0 auto 8px;
+            width: min(88vw, 400px);
+        }
+        .wn-cross-middle {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            gap: clamp(6px, 1.5vmin, 12px);
+            width: 100%;
         }
         .wn-tile {
-            border-radius: 16px;
+            border-radius: 18px;
             overflow: hidden;
             background: #f5f5f5;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             box-shadow: 0 3px 10px rgba(0,0,0,0.10);
             position: relative;
+            flex-shrink: 0;
         }
-        .wn-tile-empty {
-            background: transparent;
-            box-shadow: none;
+        .wn-tile-side {
+            width: clamp(76px, 22vw, 110px);
+            height: clamp(76px, 22vw, 110px);
+            gap: 4px;
+            padding: 6px;
         }
         .wn-tile-center {
+            flex: 1;
+            height: clamp(110px, 30vw, 160px);
             border: 4px solid #e91e63;
             box-shadow: 0 4px 14px rgba(233,30,99,0.25);
         }
+        .wn-tile-choice {
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+            touch-action: manipulation;
+        }
+        .wn-tile-choice:hover { transform: scale(1.09); border-color: #e91e63; box-shadow: 0 8px 20px rgba(233,30,99,0.25); }
+        .wn-tile-choice:active { transform: scale(0.95); }
         .wn-tile img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
-        .wn-tile-emoji {
-            font-size: clamp(32px, 8vmin, 64px);
-            line-height: 1;
-        }
-        .wn-choices {
-            display: flex;
-            flex-direction: row;
-            justify-content: center;
-            gap: clamp(8px, 2vmin, 20px);
-            flex-wrap: wrap;
-            margin-top: 8px;
-        }
-        .wn-choice-btn {
-            width: clamp(72px, 18vmin, 130px);
-            height: clamp(72px, 18vmin, 130px);
-            background: #fff;
-            border: 4px solid #e91e63;
-            border-radius: 20px;
-            cursor: pointer;
-            box-shadow: 0 5px 14px rgba(0,0,0,0.13);
-            transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-            padding: 6px;
-            touch-action: manipulation;
-            font-family: 'Rubik', sans-serif;
-        }
-        .wn-choice-btn:hover { transform: translateY(-4px) scale(1.05); box-shadow: 0 10px 22px rgba(0,0,0,0.2); }
-        .wn-choice-btn:active { transform: translateY(-1px) scale(0.97); }
-        .wn-choice-emoji { font-size: clamp(28px, 7vmin, 52px); line-height: 1; }
-        .wn-choice-label { font-size: clamp(11px, 2.5vmin, 16px); font-weight: 700; color: #333; text-align: center; }
+        .wn-tile-emoji { font-size: clamp(30px, 8vmin, 52px); line-height: 1; }
+        .wn-tile-obj-label { font-size: clamp(10px, 2.5vmin, 14px); font-weight: 700; color: #333; text-align: center; }
         .wn-question-text {
-            font-size: clamp(18px, 4.5vw, 28px);
+            font-size: clamp(17px, 4.2vw, 26px);
             font-weight: 900;
             color: #333;
             text-align: center;
             direction: rtl;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
         .fl-letter-btn { width: clamp(70px,18vmin,110px); height: clamp(70px,18vmin,110px); background: #fff; border: 5px solid #2196F3; border-radius: 20px; cursor: pointer; box-shadow: 0 6px 12px rgba(0,0,0,0.15); transition: 0.2s; font-size: clamp(28px,7vw,52px); font-weight: 900; color: #2196F3; display: flex; align-items: center; justify-content: center; touch-action: manipulation; outline: none; font-family: 'Rubik', sans-serif; }
         .fl-letter-btn:hover { transform: scale(1.06); box-shadow: 0 8px 18px rgba(0,0,0,0.2); }
@@ -6760,78 +6749,72 @@
         }
 
         // ── מה צריך? — Visual Association Game ──
-        // Each scene: child image (center face), gaze direction, 4 surrounding objects, 4 choices
-        // The correct choice = the item in the direction the child is gazing at
+        // Each scene: child gazes toward the correct item — player taps the item the child needs
         const whatneedsData = [
             {
                 id: 1,
                 childImg: 'images/whatneeds/scene1/tile_1_1.jpg',
-                question: 'על מה הילד מסתכל?',
-                gaze: 'right',  // scene1: eyes look slightly right
+                question: 'מה הילד צריך כדי לצייר?',
+                gaze: 'right',
                 surrounds: {
-                    up:    { emoji: '🌞', label: 'שמש' },
-                    down:  { emoji: '🌊', label: 'ים' },
-                    left:  { emoji: '🎈', label: 'בלון' },
-                    right: { emoji: '🍕', label: 'פיצה' }   // CORRECT
+                    up:    { emoji: '📚', label: 'ספרים' },
+                    down:  { emoji: '✂️', label: 'מספריים' },
+                    left:  { emoji: '📏', label: 'סרגל' },
+                    right: { emoji: '✏️', label: 'עיפרון' }   // CORRECT
                 },
-                correct: 'right',
-                hint: 'הילד מביט ימינה! הוא רואה... 🍕'
+                correct: 'right'
             },
             {
                 id: 2,
                 childImg: 'images/whatneeds/scene2/tile_1_1.jpg',
-                question: 'על מה הילד מסתכל?',
-                gaze: 'up',    // scene2: eyes look clearly upward
+                question: 'מה הילד צריך לאכול את המרק?',
+                gaze: 'up',
                 surrounds: {
-                    up:    { emoji: '⭐', label: 'כוכב' },   // CORRECT
-                    down:  { emoji: '🐟', label: 'דג' },
-                    left:  { emoji: '🍦', label: 'גלידה' },
-                    right: { emoji: '🚀', label: 'רקטה' }
+                    up:    { emoji: '🥄', label: 'כפית' },    // CORRECT
+                    down:  { emoji: '🍞', label: 'לחם' },
+                    left:  { emoji: '🧂', label: 'מלח' },
+                    right: { emoji: '🥛', label: 'חלב' }
                 },
-                correct: 'up',
-                hint: 'הילד מביט למעלה! הוא רואה... ⭐'
+                correct: 'up'
             },
             {
                 id: 3,
                 childImg: 'images/whatneeds/scene3/tile_1_1.jpg',
-                question: 'על מה הילד מסתכל?',
-                gaze: 'left',  // scene3: eyes clearly look left
+                question: 'מה הילד צריך כדי לישון?',
+                gaze: 'left',
                 surrounds: {
-                    up:    { emoji: '☁️', label: 'ענן' },
-                    down:  { emoji: '🌺', label: 'פרח' },
-                    left:  { emoji: '🐶', label: 'כלב' },    // CORRECT
-                    right: { emoji: '🍎', label: 'תפוח' }
+                    up:    { emoji: '🌙', label: 'ירח' },
+                    down:  { emoji: '🧸', label: 'דובי' },
+                    left:  { emoji: '🛌', label: 'שמיכה' },   // CORRECT
+                    right: { emoji: '🔦', label: 'פנס' }
                 },
-                correct: 'left',
-                hint: 'הילד מביט שמאלה! הוא רואה... 🐶'
+                correct: 'left'
             },
             {
                 id: 4,
                 childImg: 'images/whatneeds/scene4/tile_1_1.jpg',
-                question: 'על מה הילד מסתכל?',
-                gaze: 'left',  // scene4: eyes look up-left
+                question: 'מה הילד צריך לשטוף ידיים?',
+                gaze: 'left',
                 surrounds: {
-                    up:    { emoji: '🎠', label: 'קרוסלה' },
-                    down:  { emoji: '🧸', label: 'דובי' },
-                    left:  { emoji: '🌈', label: 'קשת' },    // CORRECT
-                    right: { emoji: '🎁', label: 'מתנה' }
+                    up:    { emoji: '🪥', label: 'מברשת' },
+                    down:  { emoji: '🛁', label: 'אמבטיה' },
+                    left:  { emoji: '🧼', label: 'סבון' },    // CORRECT
+                    right: { emoji: '🚿', label: 'מקלחת' }
                 },
-                correct: 'left',
-                hint: 'הילד מביט שמאלה! הוא רואה... 🌈'
+                correct: 'left'
             },
             {
                 id: 5,
                 childImg: 'images/whatneeds/scene5/tile_1_1.jpg',
-                question: 'על מה הילד מסתכל?',
-                gaze: 'right', // scene5: eyes look up-right
+                question: 'מה הילד צריך ללכת לבית הספר?',
+                gaze: 'right',
                 surrounds: {
-                    up:    { emoji: '🏠', label: 'בית' },
-                    down:  { emoji: '🎭', label: 'מסכה' },
-                    left:  { emoji: '📚', label: 'ספרים' },
-                    right: { emoji: '🦋', label: 'פרפר' }    // CORRECT
+                    up:    { emoji: '🖍️', label: 'טושים' },
+                    down:  { emoji: '🍎', label: 'תפוח' },
+                    left:  { emoji: '📓', label: 'מחברת' },
+                    right: { emoji: '🎒', label: 'תיק' }      // CORRECT
                 },
-                correct: 'right',
-                hint: 'הילד מביט ימינה! הוא רואה... 🦋'
+                correct: 'right'
             }
         ];
 
@@ -6841,9 +6824,12 @@
             setAppBackground('whatneeds');
             get('active-game-title').textContent = 'מה צריך? 🤔';
             get('game-workspace').innerHTML = `
-                <div class="wn-question-text" id="wn-question">על מה הילד מסתכל? 👀</div>
-                <div class="wn-grid" id="wn-grid"></div>
-                <div class="wn-choices" id="wn-choices"></div>
+                <div class="wn-question-text" id="wn-question"></div>
+                <div class="wn-cross" id="wn-cross">
+                    <div class="wn-cross-top" id="wn-top-wrap"></div>
+                    <div class="wn-cross-middle" id="wn-mid-wrap"></div>
+                    <div class="wn-cross-bottom" id="wn-bot-wrap"></div>
+                </div>
             `;
             whatneedsOrder = shuffle(createRange(whatneedsData.length)).slice(0, activeGameRounds);
             loadWhatNeedsRound();
@@ -6853,88 +6839,56 @@
             let scene = whatneedsData[whatneedsOrder[currentStep]];
             if (!scene) return;
 
-            get('wn-question').textContent = scene.question + ' 👀';
+            get('wn-question').textContent = scene.question + ' 🤔';
             speakLetter(scene.question, 'he');
 
-            // Build 3x3 grid
-            // Layout:  [empty] [up]    [empty]
-            //          [left]  [child] [right]
-            //          [empty] [down]  [empty]
-            let grid = get('wn-grid');
-            grid.innerHTML = '';
-
-            const positions = [
-                { pos: 'corner', surround: null },
-                { pos: 'up',     surround: scene.surrounds.up    },
-                { pos: 'corner', surround: null },
-                { pos: 'left',   surround: scene.surrounds.left  },
-                { pos: 'center', surround: null },
-                { pos: 'right',  surround: scene.surrounds.right },
-                { pos: 'corner', surround: null },
-                { pos: 'down',   surround: scene.surrounds.down  },
-                { pos: 'corner', surround: null }
-            ];
-
-            positions.forEach(cell => {
+            function makeSideTile(obj, dir) {
                 let tile = D.createElement('div');
-                tile.className = 'wn-tile';
-
-                if (cell.pos === 'corner') {
-                    tile.classList.add('wn-tile-empty');
-                } else if (cell.pos === 'center') {
-                    tile.classList.add('wn-tile-center');
-                    let img = D.createElement('img');
-                    img.src = scene.childImg;
-                    img.alt = 'ילד';
-                    img.onerror = function() {
-                        this.style.display = 'none';
-                        tile.innerHTML = '<span class="wn-tile-emoji">🧒</span>';
-                    };
-                    tile.appendChild(img);
-                } else {
-                    // Surrounding object tile
-                    let obj = cell.surround;
-                    tile.innerHTML = `<span class="wn-tile-emoji">${obj.emoji}</span>`;
-                    // Subtle indicator for direction
-                    let dirLabel = D.createElement('div');
-                    dirLabel.style.cssText = 'position:absolute;bottom:4px;left:50%;transform:translateX(-50%);font-size:clamp(9px,2vmin,12px);font-weight:700;color:#888;white-space:nowrap;';
-                    tile.appendChild(dirLabel);
-                }
-
-                grid.appendChild(tile);
-            });
-
-            // Build 4 choice buttons (shuffle all 4 directions)
-            let dirs = ['up', 'down', 'left', 'right'];
-            let choices = shuffle(dirs).map(dir => ({
-                dir: dir,
-                obj: scene.surrounds[dir],
-                isCorrect: dir === scene.correct
-            }));
-
-            let choicesArea = get('wn-choices');
-            choicesArea.innerHTML = '';
-            choices.forEach((choice, idx) => {
-                let btn = D.createElement('button');
-                btn.className = 'wn-choice-btn';
-                btn.id = `wn-choice-${idx}`;
-                btn.innerHTML = `
-                    <span class="wn-choice-emoji">${choice.obj.emoji}</span>
-                    <span class="wn-choice-label">${choice.obj.label}</span>
-                `;
-                btn.onclick = () => {
+                tile.className = 'wn-tile wn-tile-side wn-tile-choice';
+                tile.innerHTML = `<span class="wn-tile-emoji">${obj.emoji}</span><span class="wn-tile-obj-label">${obj.label}</span>`;
+                let isCorrect = dir === scene.correct;
+                addTapHandler(tile, function() {
                     if (isProcessing) return;
-                    if (choice.isCorrect) {
-                        speakLetter(choice.obj.label, 'he', function() {
-                            handleAnswer(true, btn, loadWhatNeedsRound, null);
+                    if (isCorrect) {
+                        speakLetter(obj.label, 'he', function() {
+                            handleAnswer(true, tile, loadWhatNeedsRound, null);
                         });
                     } else {
-                        speakLetter(choice.obj.label, 'he');
-                        handleAnswer(false, btn, null, null);
+                        speakLetter(obj.label, 'he');
+                        handleAnswer(false, tile, null, null);
                     }
-                };
-                choicesArea.appendChild(btn);
-            });
+                });
+                return tile;
+            }
+
+            // Top
+            let topWrap = get('wn-top-wrap');
+            topWrap.innerHTML = '';
+            topWrap.appendChild(makeSideTile(scene.surrounds.up, 'up'));
+
+            // Middle row: left | child | right
+            let midWrap = get('wn-mid-wrap');
+            midWrap.innerHTML = '';
+            midWrap.appendChild(makeSideTile(scene.surrounds.left, 'left'));
+
+            let centerTile = D.createElement('div');
+            centerTile.className = 'wn-tile wn-tile-center';
+            let img = D.createElement('img');
+            img.src = scene.childImg;
+            img.alt = 'ילד';
+            img.onerror = function() {
+                this.style.display = 'none';
+                centerTile.innerHTML = '<span style="font-size:clamp(60px,16vw,100px)">🧒</span>';
+            };
+            centerTile.appendChild(img);
+            midWrap.appendChild(centerTile);
+
+            midWrap.appendChild(makeSideTile(scene.surrounds.right, 'right'));
+
+            // Bottom
+            let botWrap = get('wn-bot-wrap');
+            botWrap.innerHTML = '';
+            botWrap.appendChild(makeSideTile(scene.surrounds.down, 'down'));
         }
 
         // Register Service Worker for PWA offline support
