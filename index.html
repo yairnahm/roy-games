@@ -110,7 +110,7 @@
         }
         .wn-tile-center {
             flex: 1;
-            height: clamp(100px, 28vw, 150px);
+            height: clamp(170px, 46vw, 260px);
             border: 4px solid #e91e63;
             background: #fff;
             box-shadow: 0 4px 14px rgba(233,30,99,0.25);
@@ -118,7 +118,7 @@
         .wn-tile img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
         }
         .wn-tile-emoji { font-size: clamp(26px, 7vmin, 46px); line-height: 1; }
         .wn-tile-obj-label { font-size: clamp(9px, 2.2vmin, 13px); font-weight: 700; color: #555; text-align: center; }
@@ -6777,14 +6777,14 @@
         const whatneedsData = [
             {
                 id: 1,
-                childImg: 'images/whatneeds/scene1/tile_1_1.jpg',
+                childImg: 'images/whatneeds/child_left.jpg',
                 question: 'מה קשור למה שהילד רואה?',
                 gaze: 'right',
                 surrounds: {
-                    up:    { emoji: '🎪', label: 'קרקס' },
-                    down:  { emoji: '🌊', label: 'ים' },
-                    left:  { emoji: '🍯', label: 'דבש' },
-                    right: { emoji: '🥛', label: 'חלב' }   // child looks at milk
+                    up:    { img: 'images/whatneeds/surrounds/circus.png',         label: 'קרקס' },
+                    down:  { img: 'images/whatneeds/surrounds/sea.png',            label: 'ים' },
+                    left:  { img: 'images/whatneeds/choices/honey_jar.png',        label: 'דבש' },
+                    right: { img: 'images/whatneeds/surrounds/milk.png',           label: 'חלב' }
                 },
                 choices: [
                     { img: 'images/whatneeds/choices/cow.png',   label: 'פרה',   isCorrect: true  },
@@ -6795,14 +6795,14 @@
             },
             {
                 id: 2,
-                childImg: 'images/whatneeds/scene2/tile_1_1.jpg',
+                childImg: 'images/whatneeds/child_up.jpg',
                 question: 'מה קשור למה שהילד רואה?',
                 gaze: 'up',
                 surrounds: {
-                    up:    { emoji: '☁️', label: 'ענן גשם' },  // child looks at rain cloud
-                    down:  { emoji: '☀️', label: 'שמש' },
-                    left:  { emoji: '🎂', label: 'עוגה' },
-                    right: { emoji: '🌸', label: 'פרח' }
+                    up:    { img: 'images/whatneeds/surrounds/rain_cloud.png',     label: 'ענן גשם' },
+                    down:  { img: 'images/whatneeds/surrounds/sun.png',            label: 'שמש' },
+                    left:  { img: 'images/whatneeds/surrounds/birthday_cake.png',  label: 'עוגה' },
+                    right: { img: 'images/whatneeds/surrounds/flower.png',         label: 'פרח' }
                 },
                 choices: [
                     { img: 'images/whatneeds/choices/umbrella.png',   label: 'מטרייה',    isCorrect: true  },
@@ -6813,14 +6813,14 @@
             },
             {
                 id: 3,
-                childImg: 'images/whatneeds/scene3/tile_1_1.jpg',
+                childImg: 'images/whatneeds/child_right.jpg',
                 question: 'מה קשור למה שהילד רואה?',
                 gaze: 'left',
                 surrounds: {
-                    up:    { emoji: '🎵', label: 'מוזיקה' },
-                    down:  { emoji: '🏕️', label: 'אוהל' },
-                    left:  { emoji: '🔥', label: 'אש' },   // child looks at fire
-                    right: { emoji: '🍎', label: 'תפוח' }
+                    up:    { img: 'images/whatneeds/choices/musical_notes.png',    label: 'מוזיקה' },
+                    down:  { img: 'images/whatneeds/surrounds/camping_tent.png',   label: 'אוהל' },
+                    left:  { img: 'images/whatneeds/surrounds/fire.png',           label: 'אש' },
+                    right: { img: 'images/whatneeds/surrounds/apple.png',          label: 'תפוח' }
                 },
                 choices: [
                     { img: 'images/whatneeds/choices/water_bucket.png', label: 'מים',      isCorrect: true  },
@@ -6831,14 +6831,14 @@
             },
             {
                 id: 4,
-                childImg: 'images/whatneeds/scene4/tile_1_1.jpg',
+                childImg: 'images/whatneeds/child_right.jpg',
                 question: 'מה קשור למה שהילד רואה?',
                 gaze: 'left',
                 surrounds: {
-                    up:    { emoji: '🌊', label: 'גלים' },
-                    down:  { emoji: '🎸', label: 'גיטרה' },
-                    left:  { emoji: '🐝', label: 'דבורה' },  // child looks at bee
-                    right: { emoji: '❄️', label: 'שלג' }
+                    up:    { img: 'images/whatneeds/surrounds/sea.png',            label: 'גלים' },
+                    down:  { img: 'images/whatneeds/surrounds/guitar.png',         label: 'גיטרה' },
+                    left:  { img: 'images/whatneeds/choices/bee.png',              label: 'דבורה' },
+                    right: { img: 'images/whatneeds/surrounds/snow.png',           label: 'שלג' }
                 },
                 choices: [
                     { img: 'images/whatneeds/choices/honey_jar.png',     label: 'דבש',       isCorrect: true  },
@@ -6849,14 +6849,14 @@
             },
             {
                 id: 5,
-                childImg: 'images/whatneeds/scene5/tile_1_1.jpg',
+                childImg: 'images/whatneeds/child_left.jpg',
                 question: 'מה קשור למה שהילד רואה?',
                 gaze: 'right',
                 surrounds: {
-                    up:    { emoji: '🍕', label: 'פיצה' },
-                    down:  { emoji: '🌺', label: 'פרח' },
-                    left:  { emoji: '🚂', label: 'רכבת' },
-                    right: { emoji: '🌙', label: 'ירח' }   // child looks at moon
+                    up:    { img: 'images/whatneeds/surrounds/pizza.png',          label: 'פיצה' },
+                    down:  { img: 'images/whatneeds/surrounds/flower.png',         label: 'פרח' },
+                    left:  { img: 'images/whatneeds/surrounds/train.png',          label: 'רכבת' },
+                    right: { img: 'images/whatneeds/surrounds/moon.png',           label: 'ירח' }
                 },
                 choices: [
                     { img: 'images/whatneeds/choices/star.png',         label: 'כוכב',  isCorrect: true  },
@@ -6867,14 +6867,14 @@
             },
             {
                 id: 6,
-                childImg: 'images/whatneeds/scene6/tile_1_1.jpg',
+                childImg: 'images/whatneeds/child_left.jpg',
                 question: 'מה הילד רואה במראה?',
                 gaze: 'right',
                 surrounds: {
-                    up:    { emoji: '🐱', label: 'חתול' },
-                    down:  { emoji: '⚽', label: 'כדור' },
-                    left:  { emoji: '🐟', label: 'דג' },
-                    right: { emoji: '🪞', label: 'מראה' }  // child looks at mirror → sees himself
+                    up:    { img: 'images/whatneeds/choices/cat.png',              label: 'חתול' },
+                    down:  { img: 'images/whatneeds/choices/soccer_ball.png',      label: 'כדור' },
+                    left:  { img: 'images/whatneeds/choices/fish.png',             label: 'דג' },
+                    right: { img: 'images/whatneeds/surrounds/mirror.png',         label: 'מראה' }
                 },
                 choices: [
                     { img: 'images/roy.jpg',                             label: 'רועי',   isCorrect: true  },
@@ -6889,9 +6889,8 @@
 
         function initWhatNeedsGame() {
             setAppBackground('whatneeds');
-            get('active-game-title').textContent = 'מה קשור? 🔗';
+            get('active-game-title').textContent = '';
             get('game-workspace').innerHTML = `
-                <div class="wn-question-text" id="wn-question"></div>
                 <div class="wn-cross" id="wn-cross">
                     <div class="wn-cross-top" id="wn-top-wrap"></div>
                     <div class="wn-cross-middle" id="wn-mid-wrap"></div>
@@ -6907,7 +6906,6 @@
             let scene = whatneedsData[whatneedsOrder[currentStep]];
             if (!scene) return;
 
-            get('wn-question').textContent = scene.question + ' 🤔';
             speakLetter(scene.question, 'he');
 
             // Context tiles around child — visual only, not clickable
