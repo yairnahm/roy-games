@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-06-27-v27-whatrelated -->
+<!DOCTYPE html><!-- build: 2026-06-27-v28-roy-mirror -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -6864,6 +6864,24 @@
                     { emoji: '🦋', label: 'פרפר',      isCorrect: false },   // butterfly → flower
                     { emoji: '🛤️', label: 'פסים',      isCorrect: false }    // tracks → train
                 ]
+            },
+            {
+                id: 6,
+                childImg: 'images/whatneeds/scene6/tile_1_1.jpg',
+                question: 'מה הילד רואה במראה?',
+                gaze: 'right',
+                surrounds: {
+                    up:    { emoji: '🐱', label: 'חתול' },
+                    down:  { emoji: '⚽', label: 'כדור' },
+                    left:  { emoji: '🐟', label: 'דג' },
+                    right: { emoji: '🪞', label: 'מראה' }  // child looks at mirror → sees himself
+                },
+                choices: [
+                    { img: 'images/roy.jpg', label: 'רועי', isCorrect: true },  // you see yourself in mirror = Roy ✓
+                    { emoji: '🐱', label: 'חתול',           isCorrect: false },  // cat → cat surround
+                    { emoji: '🐟', label: 'דג',             isCorrect: false },  // fish → fish surround
+                    { emoji: '⚽', label: 'כדור',            isCorrect: false }   // ball → ball surround
+                ]
             }
         ];
 
@@ -6896,7 +6914,11 @@
             function makeCtxTile(obj) {
                 let tile = D.createElement('div');
                 tile.className = 'wn-tile wn-tile-side';
-                tile.innerHTML = `<span class="wn-tile-emoji">${obj.emoji}</span><span class="wn-tile-obj-label">${obj.label}</span>`;
+                if (obj.img) {
+                    tile.innerHTML = `<img src="${obj.img}" alt="${obj.label}" style="width:78%;height:78%;object-fit:cover;border-radius:10px;"><span class="wn-tile-obj-label">${obj.label}</span>`;
+                } else {
+                    tile.innerHTML = `<span class="wn-tile-emoji">${obj.emoji}</span><span class="wn-tile-obj-label">${obj.label}</span>`;
+                }
                 return tile;
             }
 
@@ -6935,7 +6957,11 @@
                 let btn = D.createElement('button');
                 btn.className = 'wn-choice-btn';
                 btn.id = `wn-choice-${idx}`;
-                btn.innerHTML = `<span class="wn-tile-emoji">${choice.emoji}</span><span class="wn-tile-obj-label">${choice.label}</span>`;
+                if (choice.img) {
+                    btn.innerHTML = `<img src="${choice.img}" alt="${choice.label}" style="width:70%;height:70%;object-fit:cover;border-radius:50%;margin-bottom:2px;"><span class="wn-tile-obj-label">${choice.label}</span>`;
+                } else {
+                    btn.innerHTML = `<span class="wn-tile-emoji">${choice.emoji}</span><span class="wn-tile-obj-label">${choice.label}</span>`;
+                }
                 addTapHandler(btn, function() {
                     if (isProcessing) return;
                     if (choice.isCorrect) {
