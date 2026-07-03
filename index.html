@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-07-03-v29-audio-fix -->
+<!DOCTYPE html><!-- build: 2026-07-03-v30-shape-and-patterns -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -838,6 +838,9 @@
         .vp-patch { position: absolute; background: #fff; border: 4px dashed #333; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; font-size: clamp(20px, 5vw, 40px); font-weight: bold; color: #ccc; z-index: 5; }
         .vp-option-inner { width: 100%; height: 100%; background-repeat: no-repeat; pointer-events: none; border-radius: 12px;}
 
+        /* השלם את הצורה (Shape) */
+        #shape-target { position: relative; width: 100%; max-width: 420px; aspect-ratio: 1/1; background: white; border-radius: 20px; border: 5px solid #2196F3; margin: 0 auto 20px auto; box-shadow: 0 10px 20px rgba(0,0,0,0.15); overflow: hidden; }
+
         /* השלם את החצי */
         .half-left { clip-path: inset(0 50% 0 0); }
         .half-right { clip-path: inset(0 0 0 50%); }
@@ -1470,6 +1473,7 @@
             <div class="hub-card" data-cat="world" style="position:relative;" onclick="openDifficultyScreen('tools', '🔨', 'מה הכלי המתאים?')"><div class="hub-icon">🔨</div><div class="hub-title">כלים</div></div>
             <div class="hub-card" data-cat="world" style="position:relative;" onclick="openDifficultyScreen('context', '🧩', 'מה שייך לכאן?')"><span class="star-badge" data-game="context" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">✨</span><div class="hub-icon">🧩</div><div class="hub-title">הקשרים</div></div>
             <div class="hub-card" data-cat="world" style="position:relative;" onclick="openDifficultyScreen('vparts', '🚜', 'איזה חלק חסר?')"><div class="hub-icon">🚜</div><div class="hub-title">חלקי רכבים</div></div>
+            <div class="hub-card" data-cat="think" style="position:relative;" onclick="openDifficultyScreen('shape', '🖼️', 'השלם את הצורה')"><span class="star-badge" data-game="shape" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🖼️</div><div class="hub-title">השלם את הצורה</div></div>
             <div class="hub-card" data-cat="think" style="position:relative;" onclick="openDifficultyScreen('bigger', '⚖️', 'מה יותר גדול?')"><div class="hub-icon">⚖️</div><div class="hub-title">יותר גדול</div></div>
             <div class="hub-card" data-cat="emotion" style="position:relative;" onclick="openDifficultyScreen('emotion', '🎭', 'איך הם מרגישים?')"><div class="hub-icon">🎭</div><div class="hub-title">רגשות</div></div>
             <div class="hub-card" data-cat="world" style="position:relative;" onclick="openDifficultyScreen('habitat', '🏠', 'מי גר כאן?')"><div class="hub-icon">🏠</div><div class="hub-title">מי גר כאן?</div></div>
@@ -1551,6 +1555,7 @@
             <div class="grid-card level-card" onclick="startGameEngine(3)"><div class="grid-card-icon">🔴</div><div class="grid-card-name">רמה 3 (קשה)</div></div>
             <div class="grid-card level-card level-card-adv" id="lvl-4-btn" onclick="startGameEngine(4)" style="display:none; border-color:#FF9800;"><div class="grid-card-icon">🟠</div><div class="grid-card-name">רמה 4 (מומחה)</div></div>
             <div class="grid-card level-card level-card-adv" id="lvl-5-btn" onclick="startGameEngine(5)" style="display:none; border-color:#E91E63;"><div class="grid-card-icon">🟣</div><div class="grid-card-name">רמה 5 (גאון)</div></div>
+            <div class="grid-card level-card level-card-adv" id="lvl-6-btn" onclick="startGameEngine(6)" style="display:none; border-color:#009688;"><div class="grid-card-icon">🟢</div><div class="grid-card-name">רמה 6 (אלוף)</div></div>
         </div>
     </div>
 
@@ -1570,7 +1575,7 @@
     <div id="feedback-layer" class="hidden feedback-icon"></div>
 
     <script>
-        const bgIcons = { 'goodbad': ['👍','👎','❤️','😊'], 'sharing': ['🤝','❤️','🌟','🎁'], 'memory': ['🧠','💭','💡'], 'tracing': ['✏️','🎨','📐'], 'counting': ['🔢','🧮','➕'], 'sequence': ['🔄','✨','🎯'], 'fly': ['🪰','💨'], 'cop': ['🚓','🚨'], 'diff': ['🔎','👀'], 'oddone': ['🍎','🐶','🚗'], 'missing': ['A','B','C'], 'tools': ['🔨','🔧','🔩'], 'context': ['🧩','🖼️','🎨'], 'vparts': ['🚗','✈️','🚂','⛵','🚁'], 'habitat': ['🏠','🌳','🌊'], 'shadow': ['👤','🌑','👀'], 'halfhalf': ['✂️','🎨','🧩'], 'chrono': ['⏳','📅','🔄'], 'bigger': ['⚖️','🐘','🐭','🔢'], 'emotion': ['😄','😢','😡','😱'], 'faces': ['📸','❤️','👨‍👩‍👧‍👦','🤳'], 'mgamish': ['🤸','💪','🌟','🤸‍♂️'], 'firstletter': ['🔡','🔤','📖','✏️'], 'numwar': ['⚔️','🃏','🔢','⭐'], 'towertalk': ['🧱','🏗️','🏢'], 'cooppuzzle': ['🧩','🖼️','🎨','📸'], 'tidyup': ['🧼','🧸','🧺','🧹'], 'patterns': ['🔴','🔵','💛','🟩','🔺','🌟'], 'origins': ['🐄','🥛','🐑','🐔','🐝','🍞'], 'families': ['🐕','🐶','🐈','🐱','🐥','🦁'], 'diffscene': ['🖼️','🔍','👀'], 'diffvideo': ['🎬','🔎','👀'], 'whatneeds': ['🤔','❓','💡','🔍','👁️','🌟'] };
+        const bgIcons = { 'goodbad': ['👍','👎','❤️','😊'], 'sharing': ['🤝','❤️','🌟','🎁'], 'memory': ['🧠','💭','💡'], 'tracing': ['✏️','🎨','📐'], 'counting': ['🔢','🧮','➕'], 'sequence': ['🔄','✨','🎯'], 'fly': ['🪰','💨'], 'cop': ['🚓','🚨'], 'diff': ['🔎','👀'], 'oddone': ['🍎','🐶','🚗'], 'missing': ['A','B','C'], 'tools': ['🔨','🔧','🔩'], 'context': ['🧩','🖼️','🎨'], 'vparts': ['🚗','✈️','🚂','⛵','🚁'], 'habitat': ['🏠','🌳','🌊'], 'shadow': ['👤','🌑','👀'], 'halfhalf': ['✂️','🎨','🧩'], 'chrono': ['⏳','📅','🔄'], 'bigger': ['⚖️','🐘','🐭','🔢'], 'emotion': ['😄','😢','😡','😱'], 'faces': ['📸','❤️','👨‍👩‍👧‍👦','🤳'], 'mgamish': ['🤸','💪','🌟','🤸‍♂️'], 'firstletter': ['🔡','🔤','📖','✏️'], 'numwar': ['⚔️','🃏','🔢','⭐'], 'towertalk': ['🧱','🏗️','🏢'], 'cooppuzzle': ['🧩','🖼️','🎨','📸'], 'tidyup': ['🧼','🧸','🧺','🧹'], 'patterns': ['🔴','🔵','💛','🟩','🔺','🌟'], 'origins': ['🐄','🥛','🐑','🐔','🐝','🍞'], 'families': ['🐕','🐶','🐈','🐱','🐥','🦁'], 'diffscene': ['🖼️','🔍','👀'], 'diffvideo': ['🎬','🔎','👀'], 'whatneeds': ['🤔','❓','💡','🔍','👁️','🌟'], 'shape': ['🖼️','🧩','❓'] };
         function setAppBackground(theme) {
             D.body.className = 'bg-' + theme; let bg = get('bg-animations'); bg.innerHTML = '';
             if(theme !== 'hub' && bgIcons[theme]) {
@@ -1739,15 +1744,17 @@
                 startGameEngine(1); // עוקף את מסך הרמות
                 return;
             }
-            get('unified-diff-title').textContent = `${icon} ${title}`; 
-            let advGames = ['counting', 'oddone', 'diff', 'bigger'];
+            get('unified-diff-title').textContent = `${icon} ${title}`;
+            let advGames = ['counting', 'oddone', 'diff', 'bigger', 'patterns', 'shape'];
             get('lvl-4-btn').style.display = advGames.indexOf(gameId) > -1 ? 'flex' : 'none';
             get('lvl-5-btn').style.display = advGames.indexOf(gameId) > -1 ? 'flex' : 'none';
+            get('lvl-6-btn').style.display = (gameId === 'patterns') ? 'flex' : 'none';
 
             // Clear level-recommended first
             document.querySelectorAll('.level-card').forEach(el => el.classList.remove('level-recommended'));
             // Find and highlight recommended level
-            const recommendedLevel = [1,2,3,4,5].find(l => !(typeof awardedStars !== 'undefined' && awardedStars[gameId + '-' + l])) || 1;
+            const maxLevelList = (gameId === 'patterns') ? [1,2,3,4,5,6] : [1,2,3,4,5];
+            const recommendedLevel = maxLevelList.find(l => !(typeof awardedStars !== 'undefined' && awardedStars[gameId + '-' + l])) || 1;
             const recBtn = document.querySelector(`.level-card[onclick="startGameEngine(${recommendedLevel})"]`);
             if (recBtn) recBtn.classList.add('level-recommended');
 
@@ -1820,6 +1827,7 @@
                 else if(currentGameMode === 'diffscene') initDiffsceneGame();
                 else if(currentGameMode === 'diffvideo') initDiffvideoGame();
                 else if(currentGameMode === 'whatneeds') initWhatNeedsGame();
+                else if(currentGameMode === 'shape') initShapeGame();
             }, 50);
         }
 
@@ -5097,7 +5105,35 @@
             { sequence: ['🔴', '🔴', '🔵', '🔴', '🔴'], answer: '🔵', wrong: ['🔴', '💛', '🟩'], question: 'מה משלים את התבנית?' },
             { sequence: ['💛', '💚', '💛', '💚', '💛'], answer: '💚', wrong: ['💛', '💙', '💜'], question: 'איזה צבע מגיע עכשיו?' }
         ];
+        // רמה 4: אותה חוקיות פשוטה (AB) אבל סדרה ארוכה יותר
+        const patternsPool4 = [
+            { sequence: ['🟢', '🟡', '🟢', '🟡', '🟢', '🟡'], answer: '🟢', wrong: ['🟡', '🔴', '🔵'], question: 'מה מגיע אחרי הצהוב, בסדרה הארוכה?' },
+            { sequence: ['🐶', '🐱', '🐶', '🐱', '🐶', '🐱'], answer: '🐶', wrong: ['🐱', '🐭', '🐰'], question: 'איזה בעל חיים הבא בתור?' },
+            { sequence: ['⭐', '🌙', '⭐', '🌙', '⭐', '🌙'], answer: '⭐', wrong: ['🌙', '☀️', '☁️'], question: 'מה משלים את התבנית הארוכה?' },
+            { sequence: ['🍎', '🍇', '🍎', '🍇', '🍎', '🍇'], answer: '🍎', wrong: ['🍇', '🍌', '🍊'], question: 'איזה פרי הבא בתור?' },
+            { sequence: ['🔺', '🔷', '🔺', '🔷', '🔺', '🔷'], answer: '🔺', wrong: ['🔷', '🟡', '🟩'], question: 'איזו צורה משלימה את השורה?' },
+            { sequence: ['🚗', '🚲', '🚗', '🚲', '🚗', '🚲'], answer: '🚗', wrong: ['🚲', '✈️', '🚂'], question: 'מה כלי התחבורה הבא?' }
+        ];
+        // רמה 5: סדרה ארוכה יותר + חוקיות מורכבת יותר - מחזור של 3 סמלים (ABC)
+        const patternsPool5 = [
+            { sequence: ['🔴', '🔵', '💛', '🔴', '🔵', '💛', '🔴'], answer: '🔵', wrong: ['🔴', '💛', '🟢'], question: 'מה הצבע הבא במחזור?' },
+            { sequence: ['🐸', '🐥', '🐟', '🐸', '🐥', '🐟', '🐸'], answer: '🐥', wrong: ['🐸', '🐟', '🐰'], question: 'איזו חיה משלימה את המחזור?' },
+            { sequence: ['⭐', '⭐', '🌙', '⭐', '⭐', '🌙', '⭐'], answer: '⭐', wrong: ['🌙', '☀️', '☁️'], question: 'מה מגיע עכשיו במחזור?' },
+            { sequence: ['🔺', '🟩', '🔵', '🔺', '🟩', '🔵', '🔺'], answer: '🟩', wrong: ['🔺', '🔵', '🟡'], question: 'איזו צורה באה עכשיו?' },
+            { sequence: ['🍎', '🍌', '🍇', '🍎', '🍌', '🍇', '🍎'], answer: '🍌', wrong: ['🍎', '🍇', '🍊'], question: 'איזה פרי משלים את המחזור?' },
+            { sequence: ['🚗', '✈️', '🚂', '🚗', '✈️', '🚂', '🚗'], answer: '✈️', wrong: ['🚗', '🚂', '🚁'], question: 'מה כלי התחבורה במחזור?' }
+        ];
+        // רמה 6: מוסיפים אלמנט נוסף לחוקיות - מחזור של 4 סמלים (ABCD)
+        const patternsPool6 = [
+            { sequence: ['🔴', '🔵', '💛', '🟢', '🔴', '🔵', '💛', '🟢'], answer: '🔴', wrong: ['🔵', '💛', '🟢'], question: 'איזה צבע פותח את המחזור מחדש?' },
+            { sequence: ['🐶', '🐱', '🐰', '🐻', '🐶', '🐱', '🐰', '🐻'], answer: '🐶', wrong: ['🐱', '🐰', '🐻'], question: 'איזו חיה פותחת את המחזור מחדש?' },
+            { sequence: ['⭐', '🌙', '☀️', '☁️', '⭐', '🌙', '☀️', '☁️'], answer: '⭐', wrong: ['🌙', '☀️', '☁️'], question: 'מה פותח את המחזור הארוך מחדש?' },
+            { sequence: ['🔺', '🟩', '🔵', '🟡', '🔺', '🟩', '🔵', '🟡'], answer: '🔺', wrong: ['🟩', '🔵', '🟡'], question: 'איזו צורה פותחת מחזור חדש?' },
+            { sequence: ['🍎', '🍌', '🍇', '🍊', '🍎', '🍌', '🍇', '🍊'], answer: '🍎', wrong: ['🍌', '🍇', '🍊'], question: 'איזה פרי פותח את המחזור מחדש?' },
+            { sequence: ['🚗', '✈️', '🚂', '🚁', '🚗', '✈️', '🚂', '🚁'], answer: '🚗', wrong: ['✈️', '🚂', '🚁'], question: 'מה פותח את המחזור מחדש?' }
+        ];
         let patternsOrder = [];
+        let patternsActivePool = patternsPool;
 
         function initPatternsGame() {
             get('active-game-title').textContent = 'השלם את התבנית 🔴';
@@ -5106,12 +5142,13 @@
                 <div id="pattern-seq-area" style="display:flex; flex-direction:row-reverse; gap:12px; justify-content:center; align-items:center; margin-bottom:30px; background:rgba(255,255,255,0.6); padding:20px; border-radius:24px; border:4px solid #fff; box-shadow:0 6px 20px rgba(0,0,0,0.12); flex-wrap:wrap; max-width:90%; margin-left:auto; margin-right:auto;"></div>
                 <div id="pattern-options-area" class="opts-row" style="margin-top:20px;"></div>
             `;
-            patternsOrder = shuffle(createRange(patternsPool.length)).slice(0, 4);
+            patternsActivePool = currentDifficulty === 6 ? patternsPool6 : (currentDifficulty === 5 ? patternsPool5 : (currentDifficulty === 4 ? patternsPool4 : patternsPool));
+            patternsOrder = shuffle(createRange(patternsActivePool.length)).slice(0, 4);
             loadPatternsRound();
         }
 
         function loadPatternsRound() {
-            let p = patternsPool[patternsOrder[currentStep]];
+            let p = patternsActivePool[patternsOrder[currentStep]];
             get('pattern-question').textContent = p.question;
             
             // Build sequence UI
@@ -5168,6 +5205,104 @@
                 w.appendChild(b);
                 w.appendChild(n);
                 oArea.appendChild(w);
+            });
+        }
+
+        // ── השלם את הצורה ──
+        const shapeData = [
+            { q: 'cute puppy dog photography', cat: 'animals' },
+            { q: 'orange kitten cat photography', cat: 'animals' },
+            { q: 'colorful parrot bird photography', cat: 'animals' },
+            { q: 'baby elephant photography', cat: 'animals' },
+            { q: 'red apple fruit photography', cat: 'food' },
+            { q: 'colorful pizza slice photography', cat: 'food' },
+            { q: 'chocolate cake slice photography', cat: 'food' },
+            { q: 'fresh strawberries photography', cat: 'food' },
+            { q: 'yellow school bus photography', cat: 'vehicles' },
+            { q: 'red sports car photography', cat: 'vehicles' },
+            { q: 'airplane blue sky photography', cat: 'vehicles' },
+            { q: 'sailboat on ocean photography', cat: 'vehicles' },
+            { q: 'sunflower field photography', cat: 'nature' },
+            { q: 'rainbow over mountains photography', cat: 'nature' },
+            { q: 'colorful butterfly on flower photography', cat: 'nature' },
+            { q: 'palm tree beach photography', cat: 'nature' },
+            { q: 'teddy bear toy photography', cat: 'toys' },
+            { q: 'colorful balloons photography', cat: 'toys' },
+            { q: 'wooden building blocks toy photography', cat: 'toys' },
+            { q: 'toy train set photography', cat: 'toys' }
+        ];
+        function getShapeImgUrl(q) {
+            return `https://tse1.mm.bing.net/th?q=${encodeURIComponent(q)}&w=800&h=800&c=7&rs=1`;
+        }
+        const shapeQuadrants = [
+            { cx: 25, cy: 25 }, { cx: 75, cy: 25 }, { cx: 25, cy: 75 }, { cx: 75, cy: 75 }
+        ];
+        let shapeOrder = []; let shapeQuadIdx = [];
+        function getShapeOverlay(level) {
+            // רמה 1: קווי עזר עדינים לחלוקת הרביעים | רמה 2: תמונה נקייה
+            if (level === 1) {
+                return `<svg viewBox="0 0 100 100" preserveAspectRatio="none" style="position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:3;"><line x1="50" y1="0" x2="50" y2="100" stroke="#fff" stroke-width="1.2" opacity="0.85"/><line x1="0" y1="50" x2="100" y2="50" stroke="#fff" stroke-width="1.2" opacity="0.85"/></svg>`;
+            }
+            let lines = ''; let texture = '';
+            if (level >= 3) {
+                lines = `<svg viewBox="0 0 100 100" preserveAspectRatio="none" style="position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:3; opacity:0.35;">
+                    ${createRange(6).map(i => `<line x1="${i*20-20}" y1="0" x2="${i*20+20}" y2="100" stroke="#fff" stroke-width="3"/>`).join('')}
+                </svg>`;
+            }
+            if (level >= 4) {
+                texture = `<svg viewBox="0 0 100 100" preserveAspectRatio="none" style="position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:3; opacity:0.3;">
+                    ${createRange(40).map(() => `<circle cx="${rand(0,100)}" cy="${rand(0,100)}" r="${level >= 5 ? 2.4 : 1.6}" fill="#333"/>`).join('')}
+                </svg>`;
+            }
+            return lines + texture;
+        }
+        function initShapeGame() {
+            get('active-game-title').textContent = 'השלם את הצורה 🖼️';
+            get('game-workspace').innerHTML = `<div id="shape-target"></div><div id="shape-opts" class="opts-row"></div>`;
+            shapeOrder = shuffle(createRange(shapeData.length)).slice(0, 4);
+            shapeQuadIdx = createRange(4).map(() => rand(0, 3));
+            const toLoad = shapeOrder.map(i => getShapeImgUrl(shapeData[i].q));
+            let loaded = 0;
+            toLoad.forEach(src => {
+                const img = new Image();
+                img.onload = img.onerror = () => { if (++loaded === toLoad.length) loadShapeRound(); };
+                img.src = src;
+            });
+        }
+        function loadShapeRound() {
+            let p = shapeData[shapeOrder[currentStep]];
+            let quad = shapeQuadrants[shapeQuadIdx[currentStep]];
+            let imgUrl = getShapeImgUrl(p.q);
+            let overlay = getShapeOverlay(currentDifficulty);
+            get('shape-target').innerHTML = `<div style="position:relative; width:100%; height:100%; overflow:hidden; border-radius:16px;"><img src="${imgUrl}" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:1;">${overlay}<div class="vp-patch" style="width:50%; height:50%; left:${quad.cx - 25}%; top:${quad.cy - 25}%; z-index:4;">❓</div></div>`;
+            get('shape-target').style.borderColor = '#2196F3';
+
+            let others = shapeData.filter((item, idx) => idx !== shapeOrder[currentStep]);
+            let sameCat = others.filter(item => item.cat === p.cat);
+            let distractorSource = (currentDifficulty >= 4 && sameCat.length >= 3) ? sameCat : others;
+            let distractors = shuffle(distractorSource).slice(0, 3);
+            let opts = shuffle([{ q: p.q, correct: true }].concat(distractors.map(d => ({ q: d.q, correct: false }))));
+
+            let bgSizeX = 200, bgSizeY = 200;
+            let posX = ((quad.cx - 25) / 50) * 100, posY = ((quad.cy - 25) / 50) * 100;
+
+            let oArea = get('shape-opts'); oArea.innerHTML = '';
+            opts.forEach((o, i) => {
+                let w = D.createElement('div'); w.className = 'option-wrapper';
+                let b = D.createElement('button'); b.className = 'option-btn';
+                b.innerHTML = `<div class="vp-option-inner" style="width:100%; height:100%; border-radius:12px; background-image:url('${getShapeImgUrl(o.q)}'); background-size:${bgSizeX}% ${bgSizeY}%; background-position:${posX}% ${posY}%; pointer-events:none;"></div>`;
+                b.onclick = () => {
+                    if (isProcessing) return;
+                    if (o.correct) {
+                        get('shape-target').innerHTML = `<img src="${imgUrl}" style="width:100%; height:100%; object-fit:cover; border-radius:16px; animation: superPop 0.5s ease-out forwards;">`;
+                        get('shape-target').style.borderColor = '#4CAF50';
+                        handleAnswer(true, null, loadShapeRound, null);
+                    } else {
+                        handleAnswer(false, b, null, null);
+                    }
+                };
+                let n = D.createElement('div'); n.className = 'option-number'; n.textContent = i + 1;
+                w.appendChild(b); w.appendChild(n); oArea.appendChild(w);
             });
         }
 
