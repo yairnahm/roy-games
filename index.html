@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-06-27-v28-roy-mirror -->
+<!DOCTYPE html><!-- build: 2026-07-03-v29-audio-fix -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -1348,16 +1348,23 @@
         }
 
         let _currentAudio = null;
+        let towertalkType = 'castle'; // סוג המגדל הנבחר - קובע אילו קבצי שמע יושמעו
+        // ערוץ שמע אחוד: כל השמעה חדשה עוצרת קודם כל מה שמתנגן,
+        // כולל הקראה של speechSynthesis - כדי שקולות לא יחפפו זה לזה.
+        function stopAllSpeech() {
+            try { if (_currentAudio) { _currentAudio.pause(); _currentAudio.currentTime = 0; } } catch(e) {}
+            try { if (window.speechSynthesis) speechSynthesis.cancel(); } catch(e) {}
+        }
         function playAudio(filename) {
             try {
-                if (_currentAudio) { _currentAudio.pause(); _currentAudio.currentTime = 0; }
+                stopAllSpeech();
                 _currentAudio = new Audio('./audio/' + filename);
                 _currentAudio.play().catch(function(){});
             } catch(e) {}
         }
-        function playCoopAudio(filename, speakText, callback) {
+        function playCoopAudio(filename, speakText, callback, lang) {
             try {
-                if (_currentAudio) { _currentAudio.pause(); _currentAudio.currentTime = 0; }
+                stopAllSpeech();
                 var a = new Audio('./audio/' + filename);
                 _currentAudio = a;
                 var finished = false;
@@ -1368,16 +1375,16 @@
                 };
                 a.onended = safeCallback;
                 a.onerror = function() {
-                    speakLetter(speakText, 'he', safeCallback);
+                    speakLetter(speakText, lang || 'he', safeCallback);
                 };
                 a.play().then(function() {
                     // Safety backup: in case onended doesn't fire (e.g. mobile Safari bugs)
                     setTimeout(safeCallback, (a.duration || 5) * 1000 + 500);
                 }).catch(function() {
-                    speakLetter(speakText, 'he', safeCallback);
+                    speakLetter(speakText, lang || 'he', safeCallback);
                 });
             } catch(e) {
-                speakLetter(speakText, 'he', callback);
+                speakLetter(speakText, lang || 'he', callback);
             }
         }
     </script>
@@ -3230,25 +3237,38 @@
             var completed = false;
             var safeOnEnd = function() { if (completed) return; completed = true; if (onEnd) onEnd(); };
 
+            // מילים באנגלית באותיות גדולות (HOUSE, ADI) מוקראות אות-אות - נמיר לכתיב רגיל
+            if (lang !== 'he' && text && text.length > 1 && text === text.toUpperCase()) {
+                text = text.toLowerCase();
+            }
+
+            stopAllSpeech();
+
             try {
                 // Try Google Translate TTS online first to guarantee a high-quality female voice
                 var tlCode = lang === 'he' ? 'iw' : 'en';
                 var ttsUrl = 'https://translate.google.com/translate_tts?ie=UTF-8&tl=' + tlCode + '&client=tw-ob&q=' + encodeURIComponent(text);
                 var audio = new Audio(ttsUrl);
-                
+                _currentAudio = audio;
+
+                var usedNative = false;
                 var fallbackToNative = function() {
-                    if (completed) return;
+                    if (completed || usedNative) return;
+                    usedNative = true;
+                    // ודא שהשמע המקוון לא יתחיל לנגן מאוחר יותר במקביל לקול המקומי
+                    try { audio.pause(); audio.currentTime = 0; } catch(e) {}
                     useNativeSpeechSynthesis();
                 };
 
                 audio.onended = safeOnEnd;
                 audio.onerror = fallbackToNative;
-                
+
                 // Set a safety timeout in case it doesn't load/play in time (e.g. slow connection)
                 var loadTimeout = setTimeout(fallbackToNative, 1500);
-                
+
                 audio.play().then(function() {
                     clearTimeout(loadTimeout);
+                    if (usedNative) { try { audio.pause(); } catch(e) {} }
                 }).catch(function() {
                     clearTimeout(loadTimeout);
                     fallbackToNative();
@@ -3318,7 +3338,8 @@
             imgEl.style.animation = '';
             imgEl.src = 'images/firstletter/' + round.img + '.jpg';
             setTimeout(function(){
-                speakLetter(round.word, flLang);
+                // קובץ מוקלט (קול נשי אחיד); נפילה ל-TTS חי רק אם הקובץ חסר
+                playCoopAudio('firstletter/' + flLang + '/word-' + round.img + '.mp3', round.word, null, flLang);
             }, 400);
             var correctLetter = round.letter;
             var pool = flLang === 'he' ? FL_HE_POOL : FL_EN_POOL;
@@ -3336,10 +3357,15 @@
                     if (isCorrect) {
                         isProcessing = true;
                         var soundText = flLang === 'he' ? round.sound : letter;
-                        speakLetter(soundText, flLang, function(){
+                        var onSoundDone = function(){
                             isProcessing = false;
                             handleAnswer(true, btn, loadFirstLetterRound, null);
-                        });
+                        };
+                        if (flLang === 'he') {
+                            playCoopAudio('firstletter/he/sound-' + round.img + '.mp3', soundText, onSoundDone);
+                        } else {
+                            speakLetter(soundText, flLang, onSoundDone);
+                        }
                     } else {
                         handleAnswer(false, btn, null, null);
                     }
@@ -3579,7 +3605,7 @@
 
             function playAudioWithCallback(filename, onEnd, speakText) {
                 try {
-                    if (_currentAudio) { _currentAudio.pause(); _currentAudio.currentTime = 0; }
+                    stopAllSpeech();
                     var a = new Audio('./audio/' + filename);
                     _currentAudio = a;
                     var settled = false;
@@ -4244,8 +4270,8 @@
 
                 updateScoreboard();
 
-                // Speak the block order name
-                playCoopAudio('coop/towertalk_block' + block.id + '.mp3', block.text);
+                // Speak the block order name (per tower type)
+                playCoopAudio('coop/towertalk_' + towertalkType + '_block' + block.id + '.mp3', block.text);
 
                 setTimeout(() => {
                     currentStep++;
@@ -4308,6 +4334,7 @@
             });
 
             window.startTowerBuild = function(type) {
+                towertalkType = type;
                 let list = [];
                 if (type === 'castle') {
                     list = [
@@ -4641,6 +4668,9 @@
             let royBasketTitle = '';
             let abaBasketTitle = '';
             let selectedCategories = [];
+            let tidyComboKey = '';      // מפתח קבוע (לפי סדר קנוני) לקבצי השמע של הצירוף שנבחר
+            let royCleanNames = [];     // שמות הקטגוריות של רועי ללא אימוג'י - לטקסט הקראה
+            let abaCleanName = '';      // שם הקטגוריה של אבא ללא אימוג'י
 
             function showCategorySelection() {
                 var ws = get('game-workspace');
@@ -4762,14 +4792,20 @@
 
                 let royNames = selectedCategories.map(c => catNames[c].replace(/ 🧸| 🐶| 🍎/, ''));
                 royBasketTitle = royNames.join(' ו-') + ' ' + selectedCategories.map(c => catNames[c].split(' ').pop()).join('');
-                
+
                 let abaCat = ['toys', 'animals', 'fruits'].find(c => !selectedCategories.includes(c));
                 abaBasketTitle = catNames[abaCat];
 
+                // סדר קנוני כדי שהמפתח יתאים תמיד לשם קובץ השמע שנוצר מראש
+                let orderedCats = ['toys', 'animals', 'fruits'].filter(c => selectedCategories.includes(c));
+                tidyComboKey = orderedCats.join('_');
+                royCleanNames = orderedCats.map(c => catNames[c].replace(/ 🧸| 🐶| 🍎/, ''));
+                abaCleanName = abaBasketTitle.replace(/ 🧸| 🐶| 🍎/, '');
+
                 drawLayout();
 
-                let speakText = `בואו נעשה סדר בחדר! רועי מסדר ${royNames.join(' ו-')}, ואבא יאיר מסדר ${abaBasketTitle.replace(/ 🧸| 🐶| 🍎/, '')}.`;
-                playCoopAudio('coop/tidy_instructions_dynamic.mp3', speakText);
+                let speakText = `בואו נעשה סדר בחדר! רועי מסדר ${royCleanNames.join(' ו')}, ואבא יאיר מסדר ${abaCleanName}.`;
+                playCoopAudio('coop/tidy_instructions_' + tidyComboKey + '.mp3', speakText);
             }
 
             function updateAvatarTurns() {
@@ -5006,10 +5042,15 @@
                     }
                 } else {
                     playErrorSound();
-                    let errStr = currentTurn === 'roy' 
-                        ? `זה מתאים לסל של אבא יאיר! רועי מסדר ${royBasketTitle.replace(/ 🧸| 🐶| 🍎/, '')}!` 
-                        : `זה מתאים לסל של רועי! אבא יאיר מסדר ${abaBasketTitle.replace(/ 🧸| 🐶| 🍎/, '')}!`;
-                    playCoopAudio('coop/tidy_err_dynamic.mp3', errStr);
+                    let errStr, errFile;
+                    if (currentTurn === 'roy') {
+                        errStr = `זה מתאים לסל של אבא יאיר! רועי מסדר ${royCleanNames.join(' ו')}!`;
+                        errFile = 'coop/tidy_err_roy_' + tidyComboKey + '.mp3';
+                    } else {
+                        errStr = `זה מתאים לסל של רועי! אבא יאיר מסדר ${abaCleanName}!`;
+                        errFile = 'coop/tidy_err_aba_' + tidyComboKey + '.mp3';
+                    }
+                    playCoopAudio(errFile, errStr);
                 }
             }
 
