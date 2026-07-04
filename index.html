@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-07-04-v35-diffscene-new-sets -->
+<!DOCTYPE html><!-- build: 2026-07-04-v36-stars-hints-praise -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -730,6 +730,9 @@
         .emp-opt-btn.correct-flash { border-color: #4CAF50; box-shadow: 0 0 0 4px #4CAF50; }
         .emp-opt-btn.wrong-flash  { border-color: #f44336; animation: shake 0.4s; }
         @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-8px)} 60%{transform:translateX(8px)} 80%{transform:translateX(-5px)} }
+        /* Hint glow: slow single-color opacity pulse, sensory-safe for ASD */
+        .hint-glow { animation: hintGlow 1.8s ease-in-out infinite; }
+        @keyframes hintGlow { 0%, 100% { box-shadow: 0 0 0 0 rgba(76,175,80,0); } 50% { box-shadow: 0 0 0 10px rgba(76,175,80,0.55); } }
         #emp-face-overlay { position:absolute;left:5%;width:90%;object-fit:cover;border-radius:8px;display:none;pointer-events:none;z-index:5;transition:opacity 0.25s;box-shadow:0 2px 10px rgba(0,0,0,0.25); }
 
         #bg-animations { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1; overflow: hidden; }
@@ -1165,9 +1168,13 @@
 
         // ===== STAR WALLET SYSTEM =====
         // Games that give a full star (⭐):
-        const fullStarGames = ['sequence','memory','missing','diff','chrono'];
+        const fullStarGames = ['sequence','memory','missing','diff','chrono',
+            'patterns','shape','diffscene','diffvideo','firstletter',
+            'tools','vparts','habitat','origins','families','emotion','emparts'];
         // Games that give a half star (two halves = 1 full):
-        const halfStarGames = ['context','oddone','halfhalf','counting'];
+        const halfStarGames = ['context','oddone','halfhalf','counting',
+            'tracing','shadow','bigger','mgamish','fly','cop','faces',
+            'sharing','goodbad','towertalk','cooppuzzle','tidyup','numwar','whatneeds'];
         let starWallet = { full: 0, halves: 0 };
         let awardedStars = {};
         try {
@@ -1661,21 +1668,21 @@
         const enc = encodeURIComponent;
         const audioFiles = {
             boy: {
-                reg: ['b-reg1.mp3', 'shared-reg2.mp3', 'shared-reg3.mp3'],
-                kapara: ['b-kap1.mp3', 'b-kap2.mp3'],
+                reg: ['b-reg1.mp3', 'b-reg2.mp3', 'shared-reg2.mp3', 'shared-reg3.mp3', 'shared-reg4.mp3', 'shared-reg5.mp3'],
+                kapara: ['b-kap1.mp3', 'b-kap2.mp3', 'b-kap3.mp3'],
                 life: ['b-life1.mp3', 'b-life2.mp3']
             },
             girl: {
-                reg: ['g-reg1.mp3', 'shared-reg2.mp3', 'shared-reg3.mp3'],
-                kapara: ['g-kap1.mp3', 'g-kap2.mp3'],
+                reg: ['g-reg1.mp3', 'g-reg2.mp3', 'shared-reg2.mp3', 'shared-reg3.mp3', 'shared-reg4.mp3', 'shared-reg5.mp3'],
+                kapara: ['g-kap1.mp3', 'g-kap2.mp3', 'g-kap3.mp3'],
                 life: ['g-life1.mp3', 'g-life2.mp3']
             }
         };
 
         function speakSuccess(isFinal = false) {
             let pool = audioFiles[userGender]; let file = "";
-            if (isFinal) { file = pool.life[rand(0,1)]; }
-            else { globalSuccessCount++; if (globalSuccessCount % 2 === 0) file = pool.kapara[rand(0,1)]; else file = pool.reg[rand(0,2)]; }
+            if (isFinal) { file = pool.life[rand(0, pool.life.length - 1)]; }
+            else { globalSuccessCount++; if (globalSuccessCount % 2 === 0) file = pool.kapara[rand(0, pool.kapara.length - 1)]; else file = pool.reg[rand(0, pool.reg.length - 1)]; }
             playAudio(file);
         }
 
@@ -1687,6 +1694,25 @@
                 kiss.style.left = x + 'vw'; kiss.style.top = y + 'vh'; kiss.style.setProperty('--rot', rand(-45,45) + 'deg'); kiss.style.animationDelay = (Math.random() * 0.4) + 's';
                 D.body.appendChild(kiss); setTimeout(() => kiss.remove(), 2500);
             }
+        }
+
+        // ===== HINT SYSTEM (errorless learning) =====
+        // After 2 errors in the same round: gently glow the correct option.
+        // After 3+: also dim one extra distractor (leaving at least 2 choices).
+        let hintRoundKey = '', roundErrorCount = 0;
+        function showAnswerHint() {
+            try {
+                let root = get('active-game-container') || D.body;
+                let correctEl = root.querySelector('[data-correct="1"]');
+                if (!correctEl || correctEl.classList.contains('dimmed')) return;
+                if (roundErrorCount >= 3) {
+                    let cls = correctEl.classList.length ? ('.' + correctEl.classList[0]) : '';
+                    let opts = Array.from(root.querySelectorAll(correctEl.tagName.toLowerCase() + cls))
+                        .filter(el => el !== correctEl && !el.classList.contains('dimmed') && el.getAttribute('data-correct') !== '1');
+                    if (opts.length > 1) opts[0].classList.add('dimmed');
+                }
+                correctEl.classList.add('hint-glow');
+            } catch(e) {}
         }
 
         function toggleFullScreen() {
@@ -1704,6 +1730,32 @@
                 let lb = get('loader-bar'); if(lb) lb.style.width = '100%';
             }
         });
+
+        // Sync hub-card star badges from fullStarGames/halfStarGames (single source of truth)
+        function syncStarBadges() {
+            const badgeCss = 'position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));';
+            const openerMap = { 'openMissingLangScreen': 'missing', 'openMgGame': 'mgamish', 'openFirstLetterLangScreen': 'firstletter', 'openFacesLangScreen': 'faces' };
+            D.querySelectorAll('#hub-screen .hub-card').forEach(card => {
+                let oc = card.getAttribute('onclick') || '';
+                let m = oc.match(/openDifficultyScreen\('([^']+)'/);
+                let id = m ? m[1] : null;
+                if (!id) { for (const k in openerMap) { if (oc.indexOf(k) === 0) { id = openerMap[k]; break; } } }
+                if (!id) return;
+                let type = getStarType(id);
+                let badge = card.querySelector('.star-badge');
+                if (type === 'none') { if (badge) badge.remove(); return; }
+                if (!badge) {
+                    card.style.position = 'relative';
+                    badge = D.createElement('span');
+                    badge.className = 'star-badge';
+                    badge.setAttribute('data-game', id);
+                    badge.style.cssText = badgeCss;
+                    card.appendChild(badge);
+                }
+                badge.textContent = (type === 'full') ? '⭐' : '✨';
+            });
+        }
+        window.addEventListener('DOMContentLoaded', syncStarBadges);
 
         function openGenderScreen() {
             playClickSound(); initAudio(); hideAllScreens(); show('gender-screen');
@@ -1765,6 +1817,7 @@
 
         function startGameEngine(level) {
             playClickSound(); currentDifficulty = level; currentStep = 0; mistakesInLevel = 0; isProcessing = false; isDrawing = false;
+            hintRoundKey = ''; roundErrorCount = 0;
             hideAllScreens();
             // Force 100svh height for cooperative sharing and turn-taking modes, clear for others
             var agc = get('active-game-container');
@@ -1877,9 +1930,12 @@
                         } catch(err) { console.error('handleAnswer timeout error:', err); isProcessing = false; }
                     }, 2800);
                 } else {
-                    mistakesInLevel++; playErrorSound(); if(btn) btn.classList.add('dimmed'); 
+                    mistakesInLevel++; playErrorSound(); if(btn) btn.classList.add('dimmed');
+                    let hintKey = currentGameMode + '-' + currentDifficulty + '-' + currentStep;
+                    if (hintRoundKey === hintKey) { roundErrorCount++; } else { hintRoundKey = hintKey; roundErrorCount = 1; }
                     let fl = get('feedback-layer'); fl.innerHTML = `<span>🤔</span><div class="feedback-msg">${isScribble ? 'קשקשנו קצת, בוא ננסה שוב' : 'בוא ננסה שוב'}</div>`; show('feedback-layer');
                     playAudio(isScribble ? 'err2.mp3' : 'err1.mp3');
+                    if (roundErrorCount >= 2) showAnswerHint();
                     gameErrorTimeout = setTimeout(() => { try { hide('feedback-layer'); if(failCallback) failCallback(); } catch(err) { console.error('failCallback error:', err); } }, 1500);
                 }
             } catch(err) { console.error(err); isProcessing = false; }
@@ -2261,7 +2317,7 @@
             } 
             dArea.innerHTML=h; let opts=[cr]; let abc= mLang==='en' ? "ABCDEFGHIJKLMNOPQRSTUVWXYZ" : "אבגדהוזחטיכלמנסעפצקרשת"; 
             while(opts.length<4){let r=abc[rand(0,abc.length-1)]; if(opts.indexOf(r)===-1 && r!==cr)opts.push(r);} opts=shuffle(opts); let oArea = get('missing-letters-options'); oArea.innerHTML=''; 
-            opts.forEach(l=>{ let b=D.createElement('button'); b.className='missing-letter-btn'; b.textContent=l; b.onclick=(e)=>{if(isProcessing)return; if(l===cr){ get('missing-blank-spot').textContent=cr; get('missing-blank-spot').style.color='#4CAF50'; get('missing-blank-spot').style.borderBottomColor='#4CAF50'; handleAnswer(true, null, loadMissingRound, null); }else handleAnswer(false, b, null, null); }; oArea.appendChild(b); }); 
+            opts.forEach(l=>{ let b=D.createElement('button'); b.className='missing-letter-btn'; b.textContent=l; if(l===cr) b.setAttribute('data-correct','1'); b.onclick=(e)=>{if(isProcessing)return; if(l===cr){ get('missing-blank-spot').textContent=cr; get('missing-blank-spot').style.color='#4CAF50'; get('missing-blank-spot').style.borderBottomColor='#4CAF50'; handleAnswer(true, null, loadMissingRound, null); }else handleAnswer(false, b, null, null); }; oArea.appendChild(b); }); 
         }
 
         // ==========================================
@@ -2400,6 +2456,7 @@
                 b.style.alignItems='center';
                 b.style.overflow='hidden';
                 b.innerHTML = `<img src="${opt.img}" alt="${opt.desc}" style="width:80%; height:80%; object-fit:contain;" />`;
+                if(opt.isCorrect) b.setAttribute('data-correct','1');
                 b.onclick=(e)=>{
                     if(isProcessing)return;
                     if(opt.isCorrect){
@@ -2563,6 +2620,7 @@
                 b.className='option-btn';
                 b.style.padding='0';
                 b.innerHTML = `<img src="${o.img}" alt="${o.desc}" style="width:100%; height:100%; object-fit:cover; border-radius:12px;" />`;
+                if(o.q===c.c.q) b.setAttribute('data-correct','1');
                 b.onclick=(e)=>{
                     if(isProcessing)return;
                     if(o.q===c.c.q){
@@ -2630,6 +2688,7 @@
                 let bgSizeX = 100 / (o.cw / 100); let bgSizeY = 100 / (o.ch / 100);
                 let posX = o.cw < 100 ? ((o.cx - o.cw/2) / (100 - o.cw)) * 100 : 50; let posY = o.ch < 100 ? ((o.cy - o.ch/2) / (100 - o.ch)) * 100 : 50;
                 b.innerHTML = `<div class="vp-option-inner" style="width:100%; height:100%; border-radius:12px; background-image:url('${o.img}'); background-size:${bgSizeX}% ${bgSizeY}%; background-position:${posX}% ${posY}%; pointer-events:none;"></div>`;
+                if (o === p) b.setAttribute('data-correct','1');
                 b.onclick = (e) => { if (isProcessing) return; if (o === p) { get('vp-target').innerHTML = `<img src="${p.img}" style="width:100%; height:100%; object-fit:cover; animation: superPop 0.5s ease-out forwards;">`; get('vp-target').style.borderColor = '#4CAF50'; handleAnswer(true, null, loadVPartsRound, null); } else { handleAnswer(false, b, null, null); } };
                 let n = D.createElement('div'); n.className = 'option-number'; n.textContent = i + 1; w.appendChild(b); w.appendChild(n); oArea.appendChild(w);
             });
@@ -2701,6 +2760,7 @@
                 b.className='action-btn option-btn';
                 b.style.padding='0';
                 b.innerHTML = `<img src="${opt.aImg}" alt="${opt.aDesc}" style="width:100%; height:100%; object-fit:cover;">`;
+                if(opt===p) b.setAttribute('data-correct','1');
                 b.onclick=(e)=>{
                     if(isProcessing)return;
                     if(opt===p){
@@ -5183,6 +5243,7 @@
                 b.className = 'action-btn option-btn';
                 b.style.cssText = 'width:clamp(70px,18vmin,140px); height:clamp(70px,18vmin,140px); background:#fff; border:5px solid #4CAF50; border-radius:20px; padding:0; display:flex; justify-content:center; align-items:center; overflow:hidden; font-size:clamp(40px, 8vmin, 64px); box-shadow:0 6px 14px rgba(0,0,0,0.15); transition:transform 0.15s;';
                 b.textContent = opt.text;
+                if (opt.isCorrect) b.setAttribute('data-correct','1');
                 b.onclick = () => {
                     if (isProcessing) return;
                     if (opt.isCorrect) {
@@ -5292,6 +5353,7 @@
                 let w = D.createElement('div'); w.className = 'option-wrapper';
                 let b = D.createElement('button'); b.className = 'option-btn';
                 b.innerHTML = `<div class="vp-option-inner" style="width:100%; height:100%; border-radius:12px; background-image:url('${getShapeImgUrl(o.q)}'); background-size:${bgSizeX}% ${bgSizeY}%; background-position:${posX}% ${posY}%; pointer-events:none;"></div>`;
+                if (o.correct) b.setAttribute('data-correct','1');
                 b.onclick = () => {
                     if (isProcessing) return;
                     if (o.correct) {
@@ -5362,7 +5424,7 @@
                 b.className = 'action-btn option-btn';
                 b.style.cssText = 'width:clamp(70px,18vmin,140px); height:clamp(70px,18vmin,140px); background:#fff; border:5px solid #4CAF50; border-radius:20px; padding:0; display:flex; justify-content:center; align-items:center; overflow:hidden; box-shadow:0 6px 14px rgba(0,0,0,0.15); transition:transform 0.15s;';
                 b.innerHTML = `<img src="${getOriginsSvg(opt.key)}" alt="${opt.desc}" style="width:80%; height:80%; object-fit:contain;" />`;
-                
+                if (opt.isCorrect) b.setAttribute('data-correct','1');
                 b.onclick = () => {
                     if (isProcessing) return;
                     if (opt.isCorrect) {
@@ -5443,7 +5505,7 @@
                 b.className = 'action-btn option-btn';
                 b.style.cssText = 'width:clamp(70px,18vmin,140px); height:clamp(70px,18vmin,140px); background:#fff; border:5px solid #4CAF50; border-radius:20px; padding:0; display:flex; justify-content:center; align-items:center; overflow:hidden; box-shadow:0 6px 14px rgba(0,0,0,0.15); transition:transform 0.15s;';
                 b.innerHTML = `<img src="${getFamiliesSvg(opt.key)}" alt="${opt.desc}" style="width:80%; height:80%; object-fit:contain;" />`;
-                
+                if (opt.isCorrect) b.setAttribute('data-correct','1');
                 b.onclick = () => {
                     if (isProcessing) return;
                     if (opt.isCorrect) {
@@ -5558,7 +5620,7 @@
 
         function initDiffsceneGame() {
             get('active-game-title').textContent = 'מה שונה בתמונה? 🖼️';
-            diffsceneOrder = shuffle([0, 1, 2, 3, 4, 5, 6, 7, 8]);
+            diffsceneOrder = shuffle([0, 1, 2, 3]);
             loadDiffsceneRound();
         }
 
@@ -7203,6 +7265,7 @@
                 } else {
                     btn.innerHTML = `<span class="wn-tile-emoji">${choice.emoji}</span><span class="wn-tile-obj-label">${choice.label}</span>`;
                 }
+                if (choice.isCorrect) btn.setAttribute('data-correct','1');
                 addTapHandler(btn, function() {
                     if (isProcessing) return;
                     if (choice.isCorrect) {
