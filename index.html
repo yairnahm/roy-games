@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-07-04-v37-content-packs -->
+<!DOCTYPE html><!-- build: 2026-07-04-v38-polish-a11y -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -13,6 +13,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;700;900&display=swap');
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        button:focus-visible, .hub-card:focus-visible, .grid-card:focus-visible, .category-card:focus-visible { outline: 3px solid #2196F3 !important; outline-offset: 2px; }
         button, [onclick], [role="button"] { touch-action: manipulation; }
 
         body { 
@@ -1219,6 +1220,7 @@
                 localStorage.setItem('awardedStars', JSON.stringify(awardedStars));
             } catch(e) {}
             updateWalletDisplay();
+            showStarToast(type);
         }
         function updateWalletDisplay() {
             let el = get('star-wallet-display');
@@ -1226,11 +1228,11 @@
             let info = getTotalDisplay();
             let visual = '';
             let count = Math.min(info.full, 10);
-            for (let i = 0; i < count; i++) visual += '🪙';
-            if (info.hasHalf) visual += '🪙';
+            for (let i = 0; i < count; i++) visual += '⭐';
+            if (info.hasHalf) visual += '✨';
             if (info.full === 0 && !info.hasHalf) visual = '—';
             let numDisplay = info.full + (info.hasHalf ? '.5' : '');
-            el.innerHTML = '<div style="font-size:clamp(18px,3.5vw,28px);">' + visual + '</div><div style="font-size:clamp(16px,3vw,24px); font-weight:900; color:#ffd700; text-shadow:0 2px 4px rgba(0,0,0,0.2);">' + numDisplay + ' זהב 🪙</div>';
+            el.innerHTML = '<div style="font-size:clamp(18px,3.5vw,28px);">' + visual + '</div><div style="font-size:clamp(16px,3vw,24px); font-weight:900; color:#ffd700; text-shadow:0 2px 4px rgba(0,0,0,0.2);">' + numDisplay + ' כוכבים ⭐</div>';
             
             // Update Max-Stock bag image based on progress
             let totalStars = info.full + (info.hasHalf ? 0.5 : 0);
@@ -1686,8 +1688,22 @@
             playAudio(file);
         }
 
+        // Earned-star toast: one star floats up gently and fades (reduced-motion aware)
+        function showStarToast(type) {
+            try {
+                if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+                let t = D.createElement('div');
+                t.textContent = (type === 'half') ? '✨' : '⭐';
+                t.style.cssText = 'position:fixed;left:50%;top:55%;transform:translate(-50%,0);font-size:clamp(44px,11vmin,80px);z-index:10000;pointer-events:none;transition:transform 1.1s ease-out, opacity 1.1s ease-out;opacity:1;filter:drop-shadow(0 4px 10px rgba(0,0,0,0.3));';
+                D.body.appendChild(t);
+                requestAnimationFrame(function() { t.style.transform = 'translate(-50%,-38vh) scale(0.6)'; t.style.opacity = '0'; });
+                setTimeout(function() { t.remove(); }, 1300);
+            } catch(e) {}
+        }
+
         function showKisses() {
-            for(let i=0; i<6; i++) {
+            if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+            for(let i=0; i<3; i++) {
                 let kiss = D.createElement('div'); kiss.className = 'kiss-icon'; kiss.textContent = '💋';
                 let e = rand(0,3); let x, y;
                 if (e===0) { x=rand(5,95); y=rand(5,15); } else if (e===1) { x=rand(85,95); y=rand(5,95); } else if (e===2) { x=rand(5,95); y=rand(85,95); } else { x=rand(5,15); y=rand(5,95); } 
@@ -1761,11 +1777,18 @@
             playClickSound(); initAudio(); hideAllScreens(); show('gender-screen');
         }
         
+        function getGreeting() {
+            let h = new Date().getHours();
+            if (h >= 5 && h < 12) return 'בוקר טוב';
+            if (h >= 12 && h < 17) return 'צהריים טובים';
+            if (h >= 17 && h < 21) return 'ערב טוב';
+            return 'לילה טוב';
+        }
         function setGender(g) {
             userGender = g; globalSuccessCount = 0;
             initAudio();
-            if(userGender === 'boy') { 
-                get('hub-header').textContent = 'המרכז של רועי'; 
+            if(userGender === 'boy') {
+                get('hub-header').textContent = getGreeting() + ' רועי! ' + (new Date().getHours() >= 17 ? '🌙' : '☀️');
                 get('win-header').textContent = 'כל הכבוד רועי! 🏆';
                 // Play voice intro for boy - use a dedicated new Audio to avoid conflicts
                 try {
@@ -1903,7 +1926,7 @@
                 if(isCorrect) {
                     isProcessing = true; let isFinal = (currentStep >= (activeGameRounds - 1));
                     playSuccessSound(); if (currentGameMode !== 'goodbad') speakSuccess(isFinal); 
-                    try { if(typeof confetti === 'function') confetti({particleCount: 150, origin:{y:0.6}, zIndex:1000}); } catch(e){}
+                    try { if(typeof confetti === 'function' && !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) confetti({particleCount: 150, origin:{y:0.6}, zIndex:1000}); } catch(e){}
                     showKisses();
                     let fl = get('feedback-layer');
                     if (currentGameMode === 'mgamish') {
@@ -4000,7 +4023,7 @@
                         if (royScore > abaScore) {
                             finalMsg = 'כל הכבוד! ניצחת את אבא!';
                             get('arena-status').textContent = finalMsg;
-                            try { if(typeof confetti === 'function') confetti({particleCount: 150, origin:{y:0.6}, zIndex:1000}); } catch(e){}
+                            try { if(typeof confetti === 'function' && !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) confetti({particleCount: 150, origin:{y:0.6}, zIndex:1000}); } catch(e){}
                             showKisses();
                         } else if (abaScore > royScore) {
                             finalMsg = 'אבא ניצח הפעם! כל הכבוד על המשחק!';
@@ -4350,7 +4373,7 @@
                         // Success completion
                         let victoryMsg = 'בנינו מגדל מדהים ביחד! כל הכבוד! 🧱🎉';
                         get('arena-status').textContent = victoryMsg;
-                        try { if(typeof confetti === 'function') confetti({particleCount: 150, origin:{y:0.6}, zIndex:1000}); } catch(e){}
+                        try { if(typeof confetti === 'function' && !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) confetti({particleCount: 150, origin:{y:0.6}, zIndex:1000}); } catch(e){}
                         showKisses();
                         playCoopAudio('coop/towertalk_victory.mp3', victoryMsg);
 
@@ -4650,7 +4673,7 @@
                             // Puzzle completed!
                             let victoryMsg = 'איזה יופי! הרכבנו את הפאזל יחד! 🧩🎉';
                             get('arena-status').textContent = victoryMsg;
-                            try { if(typeof confetti === 'function') confetti({particleCount: 150, origin:{y:0.6}, zIndex:1000}); } catch(e){}
+                            try { if(typeof confetti === 'function' && !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) confetti({particleCount: 150, origin:{y:0.6}, zIndex:1000}); } catch(e){}
                             showKisses();
                             playCoopAudio('coop/coop_puzzle_victory.mp3', victoryMsg);
 
@@ -5072,7 +5095,7 @@
                                 if (itemsPool.length === 0) {
                                     let victoryMsg = 'כל הכבוד! סידרנו את כל החדר ביחד! 🧼🎉';
                                     get('arena-status').textContent = victoryMsg;
-                                    try { if(typeof confetti === 'function') confetti({particleCount: 150, origin:{y:0.6}, zIndex:1000}); } catch(e){}
+                                    try { if(typeof confetti === 'function' && !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) confetti({particleCount: 150, origin:{y:0.6}, zIndex:1000}); } catch(e){}
                                     showKisses();
                                     playCoopAudio('coop/tidy_victory.mp3', victoryMsg);
                                     
