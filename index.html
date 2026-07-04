@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-07-04-v38-polish-a11y -->
+<!DOCTYPE html><!-- build: 2026-07-04-v39-calm-sounds-goodbad -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -72,6 +72,7 @@
         body.bg-origins { background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); }
         body.bg-families { background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); }
         body.bg-whatneeds { background: linear-gradient(135deg, #fce4ec 0%, #e1f5fe 100%); }
+        body.bg-calm { background: linear-gradient(135deg, #d4e6f1 0%, #a9cce3 100%); }
 
         /* ── מה קשור? Game ── */
         #active-game-container:has(.wn-cross) #active-game-title { display: none; }
@@ -1171,11 +1172,11 @@
         // Games that give a full star (⭐):
         const fullStarGames = ['sequence','memory','missing','diff','chrono',
             'patterns','shape','diffscene','diffvideo','firstletter',
-            'tools','vparts','habitat','origins','families','emotion','emparts'];
+            'tools','vparts','habitat','origins','families','emotion','emparts','sounds'];
         // Games that give a half star (two halves = 1 full):
         const halfStarGames = ['context','oddone','halfhalf','counting',
             'tracing','shadow','bigger','mgamish','fly','cop','faces',
-            'sharing','goodbad','towertalk','cooppuzzle','tidyup','numwar','whatneeds'];
+            'sharing','goodbad','towertalk','cooppuzzle','tidyup','numwar','whatneeds','calm'];
         let starWallet = { full: 0, halves: 0 };
         let awardedStars = {};
         try {
@@ -1500,6 +1501,8 @@
             <div class="hub-card" data-cat="emotion" style="position:relative;" onclick="openDifficultyScreen('cooppuzzle', '🧩', 'פאזל משותף')"><span class="star-badge" data-game="cooppuzzle" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🧩</div><div class="hub-title">פאזל משותף</div></div>
             <div class="hub-card" data-cat="world" style="position:relative;" onclick="openDifficultyScreen('whatneeds', '🤔', 'מה צריך?')"><span class="star-badge" data-game="whatneeds" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🤔</div><div class="hub-title">מה צריך?</div></div>
             <div class="hub-card" data-cat="emotion" style="position:relative;" onclick="openDifficultyScreen('tidyup', '🧼', 'סדר בחדר')"><span class="star-badge" data-game="tidyup" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🧼</div><div class="hub-title">סדר בחדר</div></div>
+            <div class="hub-card" data-cat="emotion" style="position:relative;" onclick="openDifficultyScreen('calm', '🌬️', 'רגע של רוגע')"><div class="hub-icon">🌬️</div><div class="hub-title">רגע של רוגע</div></div>
+            <div class="hub-card" data-cat="world" style="position:relative;" onclick="openDifficultyScreen('sounds', '🔊', 'מי עושה כך?')"><div class="hub-icon">🔊</div><div class="hub-title">מי עושה כך?</div></div>
             <div class="hub-card" data-cat="create" style="position:relative;" onclick="openMgGame()"><div class="hub-icon">🤸</div><div class="hub-title">מר גמיש</div></div>
             <div class="hub-card" data-cat="lang" onclick="openFirstLetterLangScreen()"><div class="hub-icon">🔡</div><div class="hub-title">באיזו אות מתחיל?</div></div>
         </div>
@@ -1815,7 +1818,7 @@
         
         function openDifficultyScreen(gameId, icon, title) {
             playClickSound(); hideAllScreens(); setAppBackground(gameId); currentGameMode = gameId;
-            if(gameId === 'emotion' || gameId === 'emparts' || gameId === 'sharing' || gameId === 'goodbad' || gameId === 'towertalk' || gameId === 'cooppuzzle' || gameId === 'tidyup' || gameId === 'whatneeds') {
+            if(gameId === 'emotion' || gameId === 'emparts' || gameId === 'sharing' || gameId === 'goodbad' || gameId === 'towertalk' || gameId === 'cooppuzzle' || gameId === 'tidyup' || gameId === 'whatneeds' || gameId === 'calm' || gameId === 'sounds') {
                 startGameEngine(1); // עוקף את מסך הרמות
                 return;
             }
@@ -1905,17 +1908,20 @@
                 else if(currentGameMode === 'diffvideo') initDiffvideoGame();
                 else if(currentGameMode === 'whatneeds') initWhatNeedsGame();
                 else if(currentGameMode === 'shape') initShapeGame();
+                else if(currentGameMode === 'calm') initCalmGame();
+                else if(currentGameMode === 'sounds') initSoundsGame();
             }, 50);
         }
 
         function quitActiveGame() {
+            if (typeof clearCalmTimers === 'function') clearCalmTimers();
             if (typeof diffvideoTimer1 !== 'undefined' && diffvideoTimer1) clearTimeout(diffvideoTimer1);
             if (typeof diffvideoTimer2 !== 'undefined' && diffvideoTimer2) clearTimeout(diffvideoTimer2);
             if (typeof diffvideoTimerInterval !== 'undefined' && diffvideoTimerInterval) clearInterval(diffvideoTimerInterval);
             playClickSound(); hideAllScreens();
             var agc = get('active-game-container');
             if (agc) agc.style.height = '';
-            if(currentGameMode === 'emotion' || currentGameMode === 'emparts' || currentGameMode === 'missing' || currentGameMode === 'mgamish' || currentGameMode === 'firstletter' || currentGameMode === 'sharing' || currentGameMode === 'goodbad' || currentGameMode === 'numwar' || currentGameMode === 'towertalk' || currentGameMode === 'cooppuzzle' || currentGameMode === 'tidyup' || currentGameMode === 'patterns' || currentGameMode === 'origins' || currentGameMode === 'families' || currentGameMode === 'whatneeds') { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); } else if(currentGameMode === 'faces') { show('faces-mode-screen'); } else { show('unified-diff-screen'); }
+            if(currentGameMode === 'emotion' || currentGameMode === 'emparts' || currentGameMode === 'missing' || currentGameMode === 'mgamish' || currentGameMode === 'firstletter' || currentGameMode === 'sharing' || currentGameMode === 'goodbad' || currentGameMode === 'numwar' || currentGameMode === 'towertalk' || currentGameMode === 'cooppuzzle' || currentGameMode === 'tidyup' || currentGameMode === 'patterns' || currentGameMode === 'origins' || currentGameMode === 'families' || currentGameMode === 'whatneeds' || currentGameMode === 'calm' || currentGameMode === 'sounds') { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); } else if(currentGameMode === 'faces') { show('faces-mode-screen'); } else { show('unified-diff-screen'); }
         }
         function updateProgressUI() { for(let i=0;i<activeGameRounds;i++) { let d = get(`active-progress-container-dot-${i}`); if(d){ if(i < currentStep) d.classList.add('fill'); else d.classList.remove('fill'); } } }
 
@@ -1969,7 +1975,7 @@
             var agc = get('active-game-container');
             if (agc) agc.style.height = '';
             if(currentGameMode==='missing') { show('missing-lang-screen'); }
-            else if(currentGameMode==='emotion' || currentGameMode==='emparts' || currentGameMode==='mgamish' || currentGameMode==='firstletter' || currentGameMode==='sharing' || currentGameMode==='goodbad' || currentGameMode==='numwar' || currentGameMode==='towertalk' || currentGameMode==='cooppuzzle' || currentGameMode==='tidyup' || currentGameMode==='patterns' || currentGameMode==='origins' || currentGameMode==='families' || currentGameMode==='whatneeds') { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); }
+            else if(currentGameMode==='emotion' || currentGameMode==='emparts' || currentGameMode==='mgamish' || currentGameMode==='firstletter' || currentGameMode==='sharing' || currentGameMode==='goodbad' || currentGameMode==='numwar' || currentGameMode==='towertalk' || currentGameMode==='cooppuzzle' || currentGameMode==='tidyup' || currentGameMode==='patterns' || currentGameMode==='origins' || currentGameMode==='families' || currentGameMode==='whatneeds' || currentGameMode==='calm' || currentGameMode==='sounds') { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); }
             else if(currentGameMode==='faces') { show('faces-mode-screen'); }
             else {
                 try {
@@ -7072,6 +7078,54 @@
                 feedback: 'נכון מאוד! לתפוס את כל המקום זה לא נעים לחבר. מפנים מקום ויושבים יחד.',
                 speakQ: 'ילד שוכב על כל השטיח ולא משאיר מקום לחבר, האם זה טוב או לא טוב?',
                 speakFb: 'נכון מאוד! לתפוס את כל המקום זה לא נעים לחבר. מפנים מקום ויושבים יחד.'
+            },
+            {
+                img: 'images/sharing_scenes/01_mashait/bechira_tova.webp',
+                question: 'ילדים משחקים יחד במשאית ומגלגלים אותה זה לזה. האם זה טוב או לא טוב?',
+                correct: true,
+                feedback: 'כל הכבוד! לשחק יחד ולתת גם לחבר זו התנהגות נהדרת!',
+                speakQ: 'ילדים משחקים יחד במשאית ומגלגלים אותה זה לזה, האם זה טוב או לא טוב?',
+                speakFb: 'כל הכבוד! לשחק יחד ולתת גם לחבר זו התנהגות נהדרת!'
+            },
+            {
+                img: 'images/sharing_scenes/02_tablet/bechira_tova.webp',
+                question: 'ילדים צופים יחד בטאבלט ועושים תורות עם שעון. האם זה טוב או לא טוב?',
+                correct: true,
+                feedback: 'כל הכבוד! לצפות יחד ולעשות תורות זה הוגן וכיף לשניכם!',
+                speakQ: 'ילדים צופים יחד בטאבלט ועושים תורות עם שעון, האם זה טוב או לא טוב?',
+                speakFb: 'כל הכבוד! לצפות יחד ולעשות תורות זה הוגן וכיף לשניכם!'
+            },
+            {
+                img: 'images/sharing_scenes/03_ugiya/bechira_raa.webp',
+                question: 'ילד אוכל את כל העוגייה לבד, ולחבר לא נשאר כלום. האם זה טוב או לא טוב?',
+                correct: false,
+                feedback: 'נכון מאוד! לאכול הכל לבד זה מעציב את החבר. כשחולקים, כולם שמחים.',
+                speakQ: 'ילד אוכל את כל העוגייה לבד, ולחבר לא נשאר כלום, האם זה טוב או לא טוב?',
+                speakFb: 'נכון מאוד! לאכול הכל לבד זה מעציב את החבר. כשחולקים, כולם שמחים.'
+            },
+            {
+                img: 'images/sharing_scenes/05_kubiyot/bechira_raa.webp',
+                question: 'ילד שומר את כל הקוביות אצלו ולא נותן לחבר לבנות. האם זה טוב או לא טוב?',
+                correct: false,
+                feedback: 'נכון מאוד! בלי לשתף אין משחק משותף. כשחולקים קוביות, בונים יחד מגדל ענק!',
+                speakQ: 'ילד שומר את כל הקוביות אצלו ולא נותן לחבר לבנות, האם זה טוב או לא טוב?',
+                speakFb: 'נכון מאוד! בלי לשתף אין משחק משותף. כשחולקים קוביות, בונים יחד מגדל ענק!'
+            },
+            {
+                img: 'images/sharing_scenes/06_tzvaim/bechira_tova.webp',
+                question: 'ילדים מציירים יחד וחולקים את קופסת הצבעים. האם זה טוב או לא טוב?',
+                correct: true,
+                feedback: 'כל הכבוד! לחלוק צבעים ולצייר יחד זה נעים ומהנה!',
+                speakQ: 'ילדים מציירים יחד וחולקים את קופסת הצבעים, האם זה טוב או לא טוב?',
+                speakFb: 'כל הכבוד! לחלוק צבעים ולצייר יחד זה נעים ומהנה!'
+            },
+            {
+                img: 'images/sharing_scenes/07_kadur/bechira_raa.webp',
+                question: 'ילד בועט בכדור רחוק במקום למסור לחבר שמבקש. האם זה טוב או לא טוב?',
+                correct: false,
+                feedback: 'נכון מאוד! לא למסור לחבר זה לא נעים. כשמוסרים, שניכם משחקים ונהנים!',
+                speakQ: 'ילד בועט בכדור רחוק במקום למסור לחבר שמבקש, האם זה טוב או לא טוב?',
+                speakFb: 'נכון מאוד! לא למסור לחבר זה לא נעים. כשמוסרים, שניכם משחקים ונהנים!'
             }
         ];
 
@@ -7464,6 +7518,110 @@
                 });
                 choicesArea.appendChild(btn);
             });
+        }
+
+        // ===== מי עושה כך? — animal-sound recognition (pregenerated gTTS questions) =====
+        const soundsData = [
+            { img: 'images/families/bull.png',     name: 'פר',      q: 'sounds/q_moo.mp3',     qText: 'מי עושה מוּ?' },
+            { img: 'images/families/dog.png',      name: 'כלב',     q: 'sounds/q_dog.mp3',     qText: 'מי עושה הב הב?' },
+            { img: 'images/families/cat.png',      name: 'חתול',    q: 'sounds/q_cat.mp3',     qText: 'מי עושה מיאו?' },
+            { img: 'images/families/rooster.png',  name: 'תרנגול',  q: 'sounds/q_rooster.mp3', qText: 'מי עושה קוקוריקו?' },
+            { img: 'images/families/lamb.png',     name: 'טלה',     q: 'sounds/q_lamb.mp3',    qText: 'מי עושה מה מה?' },
+            { img: 'images/families/lion.png',     name: 'אריה',    q: 'sounds/q_lion.mp3',    qText: 'מי שואג בקול גדול?' },
+            { img: 'images/firstletter/bird.jpg',  name: 'ציפור',   q: 'sounds/q_bird.mp3',    qText: 'מי עושה ציף ציף?' },
+            { img: 'images/firstletter/horse.jpg', name: 'סוס',     q: 'sounds/q_horse.mp3',   qText: 'מי צוהל היא הא?' }
+        ];
+        let soundsOrder = [];
+        function initSoundsGame() {
+            get('active-game-title').textContent = 'מי עושה כך? 🔊';
+            get('game-workspace').innerHTML = `
+                <div style="display:flex; flex-direction:column; align-items:center; gap:clamp(10px,3vmin,24px); width:100%;">
+                    <div id="sounds-question" style="font-size:clamp(20px,5vmin,36px); font-weight:900; color:#333; background:rgba(255,255,255,0.85); padding:10px 22px; border-radius:18px; box-shadow:0 6px 14px rgba(0,0,0,0.12);"></div>
+                    <button id="sounds-replay" style="font-size:clamp(18px,4.5vmin,30px); padding:clamp(8px,2vmin,14px) clamp(16px,4.5vmin,30px); border-radius:18px; border:4px solid #2196F3; background:#fff; font-weight:900; color:#1a5276; box-shadow:0 6px 14px rgba(0,0,0,0.15); cursor:pointer; touch-action:manipulation;">🔊 שמע שוב</button>
+                    <div id="sounds-options" style="display:flex; flex-wrap:wrap; justify-content:center; gap:clamp(10px,3vmin,20px);"></div>
+                </div>`;
+            soundsOrder = shuffle(createRange(soundsData.length)).slice(0, activeGameRounds);
+            loadSoundsRound();
+        }
+        function loadSoundsRound() {
+            let p = soundsData[soundsOrder[currentStep]];
+            if (!p) return;
+            get('sounds-question').textContent = p.qText;
+            get('sounds-replay').onclick = function() { playCoopAudio(p.q, p.qText); };
+            playCoopAudio(p.q, p.qText);
+            let others = shuffle(soundsData.filter(function(x) { return x !== p; })).slice(0, 3);
+            let opts = shuffle([p].concat(others));
+            let oArea = get('sounds-options'); oArea.innerHTML = '';
+            opts.forEach(function(o) {
+                let b = D.createElement('button');
+                b.className = 'action-btn option-btn';
+                b.style.cssText = 'width:clamp(85px,20vmin,160px); height:clamp(85px,20vmin,160px); background:#fff; border:5px solid #4CAF50; border-radius:20px; padding:0; overflow:hidden; box-shadow:0 6px 14px rgba(0,0,0,0.15); transition:transform 0.15s; touch-action:manipulation;';
+                b.innerHTML = '<img src="' + o.img + '" alt="' + o.name + '" style="width:100%; height:100%; object-fit:cover; pointer-events:none;">';
+                if (o === p) b.setAttribute('data-correct','1');
+                b.onclick = function() {
+                    if (isProcessing) return;
+                    if (o === p) {
+                        isProcessing = true;
+                        speakLetter(o.name, 'he', function() { isProcessing = false; handleAnswer(true, b, loadSoundsRound, null); });
+                    } else {
+                        speakLetter(o.name, 'he');
+                        handleAnswer(false, b, null, null);
+                    }
+                };
+                oArea.appendChild(b);
+            });
+        }
+
+        // ===== רגע של רוגע: guided breathing (no scoring, gentle pacing) =====
+        let calmTimers = [];
+        function clearCalmTimers() { calmTimers.forEach(function(t){ clearTimeout(t); }); calmTimers = []; }
+        function initCalmGame() {
+            clearCalmTimers();
+            setAppBackground('calm');
+            get('active-game-title').textContent = 'רגע של רוגע 🌬️';
+            get('game-workspace').innerHTML = `
+                <div id="calm-wrap" style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:clamp(14px,4vmin,30px); min-height:60vh;">
+                    <div id="calm-phase-label" style="font-size:clamp(24px,6vmin,44px); font-weight:900; color:#1a5276; text-shadow:0 2px 6px rgba(255,255,255,0.7); min-height:1.4em;">מתכוננים... 🪑</div>
+                    <div style="display:flex; align-items:center; justify-content:center; width:clamp(250px,58vmin,470px); height:clamp(250px,58vmin,470px); flex-shrink:0;">
+                        <div id="calm-circle" style="width:clamp(140px,32vmin,260px); height:clamp(140px,32vmin,260px); border-radius:50%; background:radial-gradient(circle at 35% 35%, #aed6f1, #5dade2 70%, #2e86c1); box-shadow:0 10px 40px rgba(46,134,193,0.45); transform:scale(1); transition:transform 4s ease-in-out;"></div>
+                    </div>
+                    <div id="calm-cycle-label" style="font-size:clamp(16px,3.5vmin,24px); font-weight:700; color:#555;"></div>
+                </div>`;
+            let cycle = 0;
+            const CALM_TOTAL = 4;
+            function calmPhase(text, audioFile, scale, durSec, next) {
+                let c = get('calm-circle'), l = get('calm-phase-label');
+                if (!c || !l) return; // player exited
+                l.textContent = text;
+                c.style.transition = 'transform ' + durSec + 's ease-in-out';
+                c.style.transform = 'scale(' + scale + ')';
+                playCoopAudio(audioFile, text.replace(/[^֐-׿\s.,!?]/g, ''));
+                calmTimers.push(setTimeout(next, durSec * 1000));
+            }
+            function runCalmCycle() {
+                if (!get('calm-circle')) return;
+                let cl = get('calm-cycle-label');
+                if (cl) cl.textContent = 'נשימה ' + (cycle + 1) + ' מתוך ' + CALM_TOTAL;
+                calmPhase('שואפים אוויר... 🌬️', 'calm/calm_in.mp3', 1.75, 4, function() {
+                    calmPhase('עוצרים רגע... ✋', 'calm/calm_hold.mp3', 1.75, 2, function() {
+                        calmPhase('נושפים לאט לאט... 😌', 'calm/calm_out.mp3', 1.0, 6, function() {
+                            cycle++;
+                            currentStep = Math.min(cycle, activeGameRounds - 1);
+                            updateProgressUI();
+                            if (cycle >= CALM_TOTAL) {
+                                currentStep = activeGameRounds - 1;
+                                mistakesInLevel = 0;
+                                playCoopAudio('calm/calm_done.mp3', 'איזה רוגע נעים! כל הכבוד!');
+                                calmTimers.push(setTimeout(function() { handleAnswer(true, null, null, null); }, 2600));
+                            } else {
+                                calmTimers.push(setTimeout(runCalmCycle, 900));
+                            }
+                        });
+                    });
+                });
+            }
+            playCoopAudio('calm/calm_intro.mp3', 'בוא ננשום יחד לאט לאט. הסתכל על העיגול.');
+            calmTimers.push(setTimeout(runCalmCycle, 5200));
         }
 
         // Register Service Worker for PWA offline support
