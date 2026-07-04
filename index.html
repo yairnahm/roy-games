@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-07-03-v30-shape-and-patterns -->
+<!DOCTYPE html><!-- build: 2026-07-04-v35-diffscene-new-sets -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -1786,8 +1786,9 @@
                                (currentGameMode === 'numwar' ? 5 : 
                                (currentGameMode === 'towertalk' ? 5 : 
                                (currentGameMode === 'cooppuzzle' ? 4 : 
-                               (currentGameMode === 'tidyup' ? 6 : 
-                               ((currentGameMode === 'memory') ? (level === 1 ? 3 : (level === 2 ? 4 : 5)) : 4))))));
+                               (currentGameMode === 'tidyup' ? 6 :
+                               (currentGameMode === 'diffscene' ? 6 :
+                               ((currentGameMode === 'memory') ? (level === 1 ? 3 : (level === 2 ? 4 : 5)) : 4)))))));
 
             let pContainer = get('active-progress-container'); pContainer.innerHTML='';
             for(let i=0;i<activeGameRounds;i++) { let d=D.createElement('div'); d.className='progress-dot'; d.id=`active-progress-container-dot-${i}`; pContainer.appendChild(d); }
@@ -5504,15 +5505,60 @@
                 altName: 'ארגז פלסטיק כחול עם קוביות',
                 feedback: 'כל הכבוד! סל הקש עם הבובות השתנה לארגז פלסטיק כחול עם קוביות משחק!',
                 hotspot: { x: 48, y: 85, w: 22, h: 22 }
+            },
+            {
+                // Blue ball changed to red ball
+                baseImage: 'images/diff_dog_base.png',
+                diffImage: 'images/diff_dog_1.png',
+                name: 'כדור כחול',
+                altName: 'כדור אדום',
+                feedback: 'כל הכבוד! הכדור הכחול של הכלב השתנה לכדור אדום!',
+                hotspot: { x: 44, y: 60, w: 30, h: 26 }
+            },
+            {
+                // Red flower changed to purple flower
+                baseImage: 'images/diff_cat_base.png',
+                diffImage: 'images/diff_cat_1.png',
+                name: 'פרח אדום',
+                altName: 'פרח סגול',
+                feedback: 'כל הכבוד! הפרח האדום ליד החתולה השתנה לפרח סגול!',
+                hotspot: { x: 21, y: 34, w: 24, h: 38 }
+            },
+            {
+                // One butterfly became two butterflies
+                baseImage: 'images/diff_rabbit_base.png',
+                diffImage: 'images/diff_rabbit_1.png',
+                name: 'פרפר אחד',
+                altName: 'שני פרפרים',
+                feedback: 'כל הכבוד! עכשיו יש שני פרפרים ליד הארנב במקום אחד!',
+                hotspot: { x: 75, y: 16, w: 32, h: 34 }
+            },
+            {
+                // Two eggs became three eggs
+                baseImage: 'images/diff_bird_base.png',
+                diffImage: 'images/diff_bird_1.png',
+                name: 'שתי ביצים',
+                altName: 'שלוש ביצים',
+                feedback: 'כל הכבוד! עכשיו יש שלוש ביצים בקן במקום שתיים!',
+                hotspot: { x: 66, y: 55, w: 38, h: 20 }
+            },
+            {
+                // Red balloons changed to green balloons
+                baseImage: 'images/diff_teddy_base.png',
+                diffImage: 'images/diff_teddy_1.png',
+                name: 'בלונים אדומים',
+                altName: 'בלונים ירוקים',
+                feedback: 'כל הכבוד! הבלונים האדומים של הדובי השתנו לבלונים ירוקים!',
+                hotspot: { x: 50, y: 20, w: 78, h: 42 }
             }
         ];
         let diffsceneOrder = [];
-        let diffsceneState = 'memorize'; 
+        let diffsceneState = 'memorize';
         let diffscenePlayable = false;
 
         function initDiffsceneGame() {
             get('active-game-title').textContent = 'מה שונה בתמונה? 🖼️';
-            diffsceneOrder = shuffle([0, 1, 2, 3]);
+            diffsceneOrder = shuffle([0, 1, 2, 3, 4, 5, 6, 7, 8]);
             loadDiffsceneRound();
         }
 
@@ -5540,26 +5586,27 @@
                 </div>
             `;
             
-            // Build transparent hotspots based on diffscenePool coordinates
+            // Build a transparent hotspot for the current round only (avoids
+            // other rounds' hotspots overlapping and stealing clicks)
             let overlay = get('diffscene-items-overlay');
-            diffscenePool.forEach((item, i) => {
-                let hs = item.hotspot;
+            {
+                let hs = data.hotspot;
                 let el = D.createElement('div');
                 el.className = 'diffscene-hotspot';
                 el.style.cssText = `position: absolute; left: ${hs.x}%; top: ${hs.y}%; transform: translate(-50%, -50%); width: ${hs.w}%; height: ${hs.h}%; border-radius: 12px; border: 3px dashed transparent; pointer-events: auto; cursor: pointer; transition: all 0.3s ease;`;
-                el.dataset.index = i;
-                
+                el.dataset.index = roundIdx;
+
                 el.onclick = function(e) {
                     e.stopPropagation();
                     if (diffsceneState === 'memorize') {
                         switchToTestPhase();
                     } else {
-                        onHotspotClicked(i, el);
+                        onHotspotClicked(roundIdx, el);
                     }
                 };
-                
+
                 overlay.appendChild(el);
-            });
+            }
             
             let rBtn = get('diffscene-ready-btn');
             let imgCont = get('diffscene-image-container');
