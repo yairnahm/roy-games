@@ -8,9 +8,17 @@ Fixes:
 - English family names were ALL CAPS (spelled out letter-by-letter) - now proper case with "and".
 - Missing files that previously fell back to unreliable live TTS are now pregenerated:
   coop_turn_roy, tidy instructions/errors per category combo, tower blocks per tower type.
-Run from the project root: python gen_fix_audio.py
+- feelwhen game (questions q1-q8 + emotion labels) pregenerated.
+
+Run from the project root: python gen_fix_audio.py [filter]
+  filter (optional): generate only files whose relative path contains this substring,
+  e.g. `python gen_fix_audio.py feelwhen` regenerates only audio/feelwhen/*.
+
+כלל ברזל: כל הפניה חדשה לקובץ mp3 ב-index.html חייבת ערך כאן + הרצה של הסקריפט.
+קובץ חסר = נפילה ל-TTS של הדפדפן = סיכון לקול גברי (Asaf בווינדוס).
 """
 import os
+import sys
 import time
 from gtts import gTTS
 
@@ -94,6 +102,22 @@ for a_i in range(len(CAT_ORDER)):
         COOP[f"tidy_err_roy_{key}.mp3"] = f"זה מתאים לסל של אבא יאיר! רועי מסדר {roy_str}!"
         COOP[f"tidy_err_aba_{key}.mp3"] = f"זה מתאים לסל של רועי! אבא יאיר מסדר {aba_str}!"
 
+# "מה מרגישים כש..." - questions + emotion answer labels
+FEELWHEN = {
+    "q1.mp3": "הַיְלָדִים מְשַׂחֲקִים יַחַד בַּמַּשָּׂאִית. מָה הֵם מַרְגִּישִׁים?",
+    "q2.mp3": "הַיֶּלֶד גּוֹלֵשׁ בַּמַּגְלֵשָׁה בְּכֵיף. מָה הוּא מַרְגִּישׁ?",
+    "q3.mp3": "אִמָּא מַקְרִיאָה סִפּוּר לַיְלָדִים. מָה הֵם מַרְגִּישִׁים?",
+    "q4.mp3": "לַיֶּלֶד לֹא נִשְׁאַר כְּלוּם מֵהָעוּגִיָּה. מָה הוּא מַרְגִּישׁ?",
+    "q5.mp3": "הֶחָבֵר לֹא נוֹתֵן לַיֶּלֶד לִרְאוֹת בַּטַּאבְּלֶט. מָה מַרְגִּישׁ הַיֶּלֶד שֶׁבַּצַּד?",
+    "q6.mp3": "הַיֶּלֶד לֹא רוֹצֶה לָתֵת אַף קֻבִּיָּה. אֵיךְ הוּא נִרְאֶה?",
+    "q7.mp3": "הַחֲבֵרִים רָבִים עַל הַצְּבָעִים. מָה הֵם מַרְגִּישִׁים?",
+    "q8.mp3": "דּוֹחֲפִים אֶת הַיֶּלֶד עַל הַסֻּלָּם. מָה הוּא מַרְגִּישׁ?",
+    "feel_happy.mp3": "שָׂמֵחַ",
+    "feel_sad.mp3": "עָצוּב",
+    "feel_angry.mp3": "כּוֹעֵס",
+    "feel_scared.mp3": "מְפֻחָד",
+}
+
 # Family faces - Hebrew (from images/manifest.json nameHe)
 FACES_HE = {
     "aba-yair.mp3": "אבא יאיר",
@@ -154,6 +178,8 @@ for f, t in SHARING.items():
     JOBS.append((os.path.join(AUDIO, "sharing", f), t, "iw", False))
 for f, t in COOP.items():
     JOBS.append((os.path.join(AUDIO, "coop", f), t, "iw", False))
+for f, t in FEELWHEN.items():
+    JOBS.append((os.path.join(AUDIO, "feelwhen", f), t, "iw", False))
 for f, t in FACES_HE.items():
     JOBS.append((os.path.join(AUDIO, "he", f), t, "iw", False))
 for f, t in FACES_EN.items():
@@ -161,10 +187,15 @@ for f, t in FACES_EN.items():
 for w in FL_EN_WORDS:
     JOBS.append((os.path.join(AUDIO, "firstletter", "en", f"word-{w}.mp3"), w, "en", True))
 
-os.makedirs(os.path.join(AUDIO, "firstletter", "en"), exist_ok=True)
+FILTER = sys.argv[1] if len(sys.argv) > 1 else None
+if FILTER:
+    JOBS = [j for j in JOBS
+            if FILTER in os.path.relpath(j[0], AUDIO).replace("\\", "/")]
+    print(f"filter '{FILTER}': {len(JOBS)} files")
 
 failed = []
 for path, text, lang, slow in JOBS:
+    os.makedirs(os.path.dirname(path), exist_ok=True)
     rel = os.path.relpath(path, AUDIO)
     for attempt in range(3):
         try:

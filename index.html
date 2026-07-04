@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-07-04-v44-bedtime-toothbrushing -->
+<!DOCTYPE html><!-- build: 2026-07-04-v45-female-voice-guard -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -3656,9 +3656,11 @@
                 return vlang.startsWith(targetLang);
             });
             if (!langVoices.length) return null;
+            // ⛔ קול נשי בלבד: אם כל הקולות בשפה גבריים (למשל Asaf היחיד בעברית בווינדוס)
+            // מחזירים null והקריאה תדולג — שקט עדיף על קול של גבר. אין להחזיר כאן קול גברי לעולם.
             var nonMale = langVoices.filter(function(v) { return !MALE_NAMES.test(v.name); });
-            var pool = nonMale.length ? nonMale : langVoices;
-            return pool.find(function(v) { return FEMALE_NAMES.test(v.name); }) || pool[0];
+            if (!nonMale.length) return null;
+            return nonMale.find(function(v) { return FEMALE_NAMES.test(v.name); }) || nonMale[0];
         }
 
 
@@ -3730,7 +3732,10 @@
                         spoken = true;
                         var voices = speechSynthesis.getVoices();
                         var v = pickFemaleVoice(voices, isHe ? 'he' : 'en');
-                        if (v) u.voice = v;
+                        // ⛔ אין קול נשי מאומת במכשיר? לא מדברים בכלל (ברירת המחדל של
+                        // הדפדפן בעברית היא קול גברי). ממשיכים את המשחק בשקט.
+                        if (!v) { safeOnEnd(); return; }
+                        u.voice = v;
                         speechSynthesis.speak(u);
                     }
 
