@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-07-04-v45-female-voice-guard -->
+<!DOCTYPE html><!-- build: 2026-07-05-v46-calm-mode-bg-fix -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -1839,7 +1839,9 @@
     <script>
         const bgIcons = { 'goodbad': ['👍','👎','❤️','😊'], 'sharing': ['🤝','❤️','🌟','🎁'], 'memory': ['🧠','💭','💡'], 'tracing': ['✏️','🎨','📐'], 'counting': ['🔢','🧮','➕'], 'sequence': ['🔄','✨','🎯'], 'fly': ['🪰','💨'], 'cop': ['🚓','🚨'], 'diff': ['🔎','👀'], 'oddone': ['🍎','🐶','🚗'], 'missing': ['A','B','C'], 'tools': ['🔨','🔧','🔩'], 'context': ['🧩','🖼️','🎨'], 'vparts': ['🚗','✈️','🚂','⛵','🚁'], 'habitat': ['🏠','🌳','🌊'], 'shadow': ['👤','🌑','👀'], 'halfhalf': ['✂️','🎨','🧩'], 'chrono': ['⏳','📅','🔄'], 'bigger': ['⚖️','🐘','🐭','🔢'], 'emotion': ['😄','😢','😡','😱'], 'faces': ['📸','❤️','👨‍👩‍👧‍👦','🤳'], 'mgamish': ['🤸','💪','🌟','🤸‍♂️'], 'firstletter': ['🔡','🔤','📖','✏️'], 'numwar': ['⚔️','🃏','🔢','⭐'], 'towertalk': ['🧱','🏗️','🏢'], 'cooppuzzle': ['🧩','🖼️','🎨','📸'], 'tidyup': ['🧼','🧸','🧺','🧹'], 'patterns': ['🔴','🔵','💛','🟩','🔺','🌟'], 'origins': ['🐄','🥛','🐑','🐔','🐝','🍞'], 'families': ['🐕','🐶','🐈','🐱','🐥','🦁'], 'diffscene': ['🖼️','🔍','👀'], 'diffvideo': ['🎬','🔎','👀'], 'whatneeds': ['🤔','❓','💡','🔍','👁️','🌟'], 'shape': ['🖼️','🧩','❓'] };
         function setAppBackground(theme) {
-            D.body.className = 'bg-' + theme; let bg = get('bg-animations'); bg.innerHTML = '';
+            let wasCalm = D.body.classList.contains('calm-mode');
+            D.body.className = 'bg-' + theme + (wasCalm ? ' calm-mode' : '');
+            let bg = get('bg-animations'); bg.innerHTML = '';
             if(theme !== 'hub' && bgIcons[theme]) {
                 for(let i=0; i<6; i++) {
                     let icon = D.createElement('div'); icon.className = 'bg-floating-icon'; icon.textContent = bgIcons[theme][i % bgIcons[theme].length];
