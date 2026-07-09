@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-07-07-v48-traits-5-6-sharing-scenes -->
+<!DOCTYPE html><!-- build: 2026-07-09-v49-object-assembly -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -1656,7 +1656,7 @@
             <div class="hub-card" onclick="openCategory('emotion','רגשות ואנשים')"><div class="hub-icon">😊</div><div class="hub-title">רגשות ואנשים</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">6 משחקים</div></div>
             <div class="hub-card" onclick="openCategory('numbers','מספרים וסדר')"><div class="hub-icon">🔢</div><div class="hub-title">מספרים וסדר</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">4 משחקים</div></div>
             <div class="hub-card" onclick="openCategory('world','עולם סביבנו')"><div class="hub-icon">🌍</div><div class="hub-title">עולם סביבנו</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">7 משחקים</div></div>
-            <div class="hub-card" onclick="openCategory('create','יצירה וחידות')"><div class="hub-icon">🎨</div><div class="hub-title">יצירה וחידות</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">4 משחקים</div></div>
+            <div class="hub-card" onclick="openCategory('create','יצירה וחידות')"><div class="hub-icon">🎨</div><div class="hub-title">יצירה וחידות</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">5 משחקים</div></div>
             <div class="hub-card" onclick="openCategory('action','משחקי פעולה')"><div class="hub-icon">🎮</div><div class="hub-title">משחקי פעולה</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">2 משחקים</div></div>
         </div>
     </div>
@@ -1687,6 +1687,7 @@
             <div class="hub-card" data-cat="world" style="position:relative;" onclick="openDifficultyScreen('families', '🐕', 'הורה וגור')"><span class="star-badge" data-game="families" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🐕</div><div class="hub-title">הורה וגור</div></div>
             <div class="hub-card" data-cat="create" style="position:relative;" onclick="openDifficultyScreen('shadow', '👤', 'של מי הצללית?')"><div class="hub-icon">👤</div><div class="hub-title">צלליות</div></div>
             <div class="hub-card" data-cat="create" style="position:relative;" onclick="openDifficultyScreen('halfhalf', '✂️', 'השלם את החצי')"><span class="star-badge" data-game="halfhalf" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">✨</span><div class="hub-icon">✂️</div><div class="hub-title">השלם חצי</div></div>
+            <div class="hub-card" data-cat="create" style="position:relative;" onclick="openDifficultyScreen('assemble', '🧩', 'הרכבת חפצים')"><span class="star-badge" data-game="assemble" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🧩</div><div class="hub-title">הרכבת חפצים</div></div>
             <div class="hub-card" data-cat="numbers" style="position:relative;" onclick="openDifficultyScreen('chrono', '⏳', 'מהתחלה לסוף')"><span class="star-badge" data-game="chrono" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">⏳</div><div class="hub-title">רצף כרונולוגי</div></div>
             <div class="hub-card" data-cat="numbers" style="position:relative;" onclick="openDifficultyScreen('numwar', '⚔️', 'מלחמת המספרים')"><span class="star-badge" data-game="numwar" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">⚔️</div><div class="hub-title">מלחמת המספרים</div></div>
             <div id="faces-hub-card" class="hub-card hidden" data-cat="emotion" style="position:relative;" onclick="openFacesLangScreen()"><div class="hub-icon">📸</div><div class="hub-title">מי זה?</div></div>
@@ -2163,7 +2164,8 @@
                                (currentGameMode === 'tidyup' ? 6 :
                                (currentGameMode === 'diffvideo' ? 6 :
                                (currentGameMode === 'routine' ? routineData.length :
-                               ((currentGameMode === 'memory') ? (level === 1 ? 3 : (level === 2 ? 4 : 5)) : 4))))))));
+                               (currentGameMode === 'assemble' ? 3 :
+                               ((currentGameMode === 'memory') ? (level === 1 ? 3 : (level === 2 ? 4 : 5)) : 4)))))))));
 
 
             let pContainer = get('active-progress-container'); pContainer.innerHTML='';
@@ -2209,6 +2211,7 @@
                 else if(currentGameMode === 'sounds') initSoundsGame();
                 else if(currentGameMode === 'routine') initRoutineGame();
                 else if(currentGameMode === 'feelwhen') initFeelwhenGame();
+                else if(currentGameMode === 'assemble') initAssembleGame();
             }, 50);
         }
 
@@ -2220,7 +2223,7 @@
             playClickSound(); hideAllScreens();
             var agc = get('active-game-container');
             if (agc) agc.style.height = '';
-            if(currentGameMode === 'emotion' || currentGameMode === 'emparts' || currentGameMode === 'missing' || currentGameMode === 'mgamish' || currentGameMode === 'firstletter' || currentGameMode === 'sharing' || currentGameMode === 'goodbad' || currentGameMode === 'numwar' || currentGameMode === 'towertalk' || currentGameMode === 'cooppuzzle' || currentGameMode === 'tidyup' || currentGameMode === 'patterns' || currentGameMode === 'origins' || currentGameMode === 'families' || currentGameMode === 'whatneeds' || currentGameMode === 'calm' || currentGameMode === 'sounds' || currentGameMode === 'feelwhen') { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); } else if(currentGameMode === 'faces') { show('faces-mode-screen'); } else { show('unified-diff-screen'); }
+            if(currentGameMode === 'emotion' || currentGameMode === 'emparts' || currentGameMode === 'missing' || currentGameMode === 'mgamish' || currentGameMode === 'firstletter' || currentGameMode === 'sharing' || currentGameMode === 'goodbad' || currentGameMode === 'numwar' || currentGameMode === 'towertalk' || currentGameMode === 'cooppuzzle' || currentGameMode === 'tidyup' || currentGameMode === 'patterns' || currentGameMode === 'origins' || currentGameMode === 'families' || currentGameMode === 'whatneeds' || currentGameMode === 'calm' || currentGameMode === 'sounds' || currentGameMode === 'feelwhen' || currentGameMode === 'assemble') { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); } else if(currentGameMode === 'faces') { show('faces-mode-screen'); } else { show('unified-diff-screen'); }
         }
         function updateProgressUI() { for(let i=0;i<activeGameRounds;i++) { let d = get(`active-progress-container-dot-${i}`); if(d){ if(i < currentStep) d.classList.add('fill'); else d.classList.remove('fill'); } } }
 
@@ -2274,7 +2277,7 @@
             var agc = get('active-game-container');
             if (agc) agc.style.height = '';
             if(currentGameMode==='missing') { show('missing-lang-screen'); }
-            else if(currentGameMode==='emotion' || currentGameMode==='emparts' || currentGameMode==='mgamish' || currentGameMode==='firstletter' || currentGameMode==='sharing' || currentGameMode==='goodbad' || currentGameMode==='numwar' || currentGameMode==='towertalk' || currentGameMode==='cooppuzzle' || currentGameMode==='tidyup' || currentGameMode==='patterns' || currentGameMode==='origins' || currentGameMode==='families' || currentGameMode==='whatneeds' || currentGameMode==='calm' || currentGameMode==='sounds' || currentGameMode==='feelwhen') { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); }
+            else if(currentGameMode==='emotion' || currentGameMode==='emparts' || currentGameMode==='mgamish' || currentGameMode==='firstletter' || currentGameMode==='sharing' || currentGameMode==='goodbad' || currentGameMode==='numwar' || currentGameMode==='towertalk' || currentGameMode==='cooppuzzle' || currentGameMode==='tidyup' || currentGameMode==='patterns' || currentGameMode==='origins' || currentGameMode==='families' || currentGameMode==='whatneeds' || currentGameMode==='calm' || currentGameMode==='sounds' || currentGameMode==='feelwhen' || currentGameMode==='assemble') { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); }
             else if(currentGameMode==='faces') { show('faces-mode-screen'); }
             else {
                 try {
@@ -3198,6 +3201,221 @@
         function initRoutineGame() { chronoActiveData = routineData; get('active-game-title').textContent='סדר יום — מה עושים קודם? 🌅'; get('game-workspace').innerHTML=`<div class="seq-target-area" id="c-targ"></div><div id="c-opts" class="opts-row"></div>`; cOrder=shuffle(createRange(routineData.length)).slice(0,4); loadChronoRound(); }
         function loadChronoRound() { cSelected=[]; let p=chronoActiveData[cOrder[currentStep]]; let tArea=get('c-targ'); tArea.innerHTML=''; for(let i=0;i<p.length;i++){ let d=D.createElement('div'); d.className='chrono-empty'; d.id='c-slot-'+i; tArea.appendChild(d); } let oArea=get('c-opts'); oArea.innerHTML=''; shuffle(p.slice()).forEach((o,i)=>{ let w=D.createElement('div'); w.className='option-wrapper'; let b=D.createElement('button'); b.className='option-btn'; b.style.padding='0'; b.innerHTML=`<img src="${o.img}" alt="${o.desc}" style="width:100%; height:100%; object-fit:contain; background:#fff;" />`; b.onclick=(e)=>{ if(isProcessing || w.classList.contains('hidden')) return; playClickSound(); speakLetter(o.desc, 'he'); w.classList.add('hidden'); cSelected.push({val:o, wrapper:w}); let slot=get('c-slot-'+(cSelected.length-1)); slot.innerHTML=`<img src="${o.img}" alt="${o.desc}" style="width:100%; height:100%; object-fit:contain; background:#fff;" />`; slot.style.border='none'; slot.style.background='white'; slot.style.animation='popIn 0.3s forwards'; if(cSelected.length===p.length){ checkChronoAnswer(); } }; let lbl=D.createElement('div'); lbl.style.fontSize='clamp(14px, 3vw, 22px)'; lbl.style.fontWeight='900'; lbl.style.color='#fff'; lbl.style.marginTop='8px'; lbl.style.background='#4CAF50'; lbl.style.padding='4px 12px'; lbl.style.borderRadius='12px'; lbl.style.boxShadow='0 3px 6px rgba(0,0,0,0.15)'; lbl.textContent=o.desc; w.appendChild(b); w.appendChild(lbl); oArea.appendChild(w); }); }
         function checkChronoAnswer() { let p=chronoActiveData[cOrder[currentStep]]; let correct = cSelected.every((x, idx) => x.val === p[idx]); if(correct){ handleAnswer(true, null, loadChronoRound, null); }else{ handleAnswer(false, null, null, ()=>{ cSelected.forEach(x=>{ x.wrapper.classList.remove('hidden'); }); loadChronoRound(); }, false); } }
+
+        // ==========================================
+        // הרכבת חפצים (Object Assembly Game)
+        // ==========================================
+        const assembleData = [
+            {
+                name: 'icecream',
+                title: 'הרכבת גלידה 🍨',
+                img: 'images/assemble/icecream.png',
+                audioWin: 'יצאה לנו גלידה טעימה! כל הכבוד רועי!',
+                parts: [
+                    { id: 'cone', text: 'המשולש החום', shapeEmoji: '📐', clip: 'polygon(30% 50%, 70% 50%, 50% 90%)' },
+                    { id: 'pink', text: 'העיגול הוורוד', shapeEmoji: '🔴', color: '#ffb7c5', clip: 'circle(20% at 50% 46%)' },
+                    { id: 'yellow', text: 'העיגול הצהוב', shapeEmoji: '🟡', clip: 'circle(16% at 50% 26%)' },
+                    { id: 'cherry', text: 'הדובדבן האדום', shapeEmoji: '🍒', clip: 'circle(7% at 50% 11%)' }
+                ]
+            },
+            {
+                name: 'truck',
+                title: 'הרכבת משאית 🚚',
+                img: 'images/assemble/truck.png',
+                audioWin: 'איזו משאית חזקה! כל הכבוד רועי!',
+                parts: [
+                    { id: 'trailer', text: 'המלבן הצהוב', shapeEmoji: '🟨', clip: 'polygon(35% 25%, 85% 25%, 85% 65%, 35% 65%)' },
+                    { id: 'cabin', text: 'הריבוע הכחול', shapeEmoji: '🟦', clip: 'polygon(15% 35%, 35% 35%, 35% 65%, 15% 65%)' },
+                    { id: 'wheel_front', text: 'הגלגל הקדמי', shapeEmoji: '⚫', clip: 'circle(9% at 27% 72%)' },
+                    { id: 'wheel_back', text: 'הגלגל האחורי', shapeEmoji: '⚫', clip: 'circle(9% at 73% 72%)' }
+                ]
+            },
+            {
+                name: 'plane',
+                title: 'הרכבת מטוס ✈️',
+                img: 'images/assemble/plane.png',
+                audioWin: 'הנה מטוס שטס בשמיים! כל הכבוד רועי!',
+                parts: [
+                    { id: 'body', text: 'גוף המטוס האפור', shapeEmoji: '⬜', clip: 'ellipse(35% 12% at 50% 50%)' },
+                    { id: 'wing', text: 'הכנף הכחולה', shapeEmoji: '📐', clip: 'polygon(35% 50%, 65% 50%, 55% 82%, 35% 82%)' },
+                    { id: 'tail', text: 'זנב המטוס האדום', shapeEmoji: '🔺', clip: 'polygon(70% 50%, 85% 25%, 85% 50%)' },
+                    { id: 'propeller', text: 'הפרופלור הצהוב', shapeEmoji: '❌', clip: 'ellipse(5% 18% at 14% 50%)' }
+                ]
+            }
+        ];
+
+        let assembleOrder = [];
+        let assemblePartIndex = 0;
+
+        function initAssembleGame() {
+            setAppBackground('create');
+            assembleOrder = shuffle(createRange(assembleData.length)).slice(0, 3);
+            loadAssembleRound();
+        }
+
+        function loadAssembleRound() {
+            assemblePartIndex = 0;
+            let roundIdx = assembleOrder[currentStep];
+            let item = assembleData[roundIdx];
+            get('active-game-title').textContent = item.title;
+
+            let ws = get('game-workspace');
+            ws.innerHTML = `
+                <div id="assemble-question" style="font-size:clamp(16px,4vw,24px); font-weight:900; color:#333; text-align:center; direction:rtl; margin-bottom:15px; cursor:pointer;"></div>
+                
+                <!-- Main Board -->
+                <div class="assemble-board" style="position:relative; width:min(75vw, 360px); aspect-ratio:1/1; background:#fcfcfc; border:4px dashed #2196F3; border-radius:24px; box-shadow:inset 0 4px 10px rgba(0,0,0,0.05); margin:0 auto 20px; overflow:hidden;">
+                    <!-- Silhouette blueprint -->
+                    <img id="assemble-silhouette" src="${item.img}" style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:contain; filter:grayscale(1) brightness(0.9) opacity(0.15); pointer-events:none;">
+                    
+                    <!-- Placed parts container -->
+                    <div id="assemble-parts-container" style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none;"></div>
+                </div>
+
+                <!-- Choices Row -->
+                <div id="assemble-choices" class="opts-row" style="display:flex; justify-content:center; gap:15px; margin-top:10px;"></div>
+            `;
+
+            askAssemblePart();
+        }
+
+        function askAssemblePart() {
+            let roundIdx = assembleOrder[currentStep];
+            let item = assembleData[roundIdx];
+            let part = item.parts[assemblePartIndex];
+            
+            let qText = `בחר את ${part.text} והנח אותו בלוח`;
+            let qEl = get('assemble-question');
+            if (qEl) qEl.textContent = qText + ' 🔊';
+            speakLetter(qText, 'he');
+
+            qEl.onclick = () => {
+                speakLetter(qText, 'he');
+            };
+
+            // Render Choices
+            let choicesArea = get('assemble-choices');
+            if (!choicesArea) return;
+            choicesArea.innerHTML = '';
+
+            let distractors = [];
+            item.parts.forEach(p => {
+                if (p.id !== part.id) distractors.push(p);
+            });
+            assembleData.forEach(g => {
+                if (g.name !== item.name) {
+                    g.parts.forEach(p => {
+                        distractors.push(p);
+                    });
+                }
+            });
+
+            distractors = shuffle(distractors).slice(0, 3);
+            let finalChoices = shuffle([part, ...distractors]);
+
+            finalChoices.forEach(ch => {
+                let card = D.createElement('div');
+                card.style.cssText = 'background:#fff; border:4px solid #e0e0e0; border-radius:20px; width:clamp(80px, 20vw, 110px); height:clamp(80px, 20vw, 110px); cursor:pointer; box-shadow:0 4px 10px rgba(0,0,0,0.1); transition:all 0.2s ease; display:flex; flex-direction:column; align-items:center; justify-content:center; overflow:hidden; position:relative;';
+                
+                card.innerHTML = `
+                    <div style="font-size:clamp(32px, 8vw, 44px); line-height:1; margin-bottom:4px;">${ch.shapeEmoji || '❓'}</div>
+                    <div style="font-size:clamp(11px, 2.5vw, 13px); font-weight:bold; color:#555; text-align:center; padding:0 4px; direction:rtl; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; width:100%;">${ch.text}</div>
+                `;
+
+                card.onmouseover = () => { if (!isProcessing) { card.style.transform = 'scale(1.08)'; card.style.borderColor = '#2196F3'; } };
+                card.onmouseout = () => { card.style.transform = 'scale(1)'; card.style.borderColor = '#e0e0e0'; };
+                
+                addTapHandler(card, function(e) {
+                    e.stopPropagation();
+                    if (isProcessing) return;
+                    onAssembleChoiceSelected(ch.id === part.id, card, ch);
+                });
+
+                choicesArea.appendChild(card);
+            });
+        }
+
+        function onAssembleChoiceSelected(isCorrect, card, selectedPart) {
+            if (isProcessing) return;
+
+            let roundIdx = assembleOrder[currentStep];
+            let item = assembleData[roundIdx];
+            let part = item.parts[assemblePartIndex];
+
+            if (isCorrect) {
+                isProcessing = true;
+                playSuccessSound();
+
+                card.style.borderColor = '#4CAF50';
+                card.style.background = '#e8f5e9';
+
+                let container = get('assemble-parts-container');
+                if (container) {
+                    let isCalm = ((window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) || roySettings.calmMode);
+                    let imgEl = D.createElement('img');
+                    imgEl.src = item.img;
+                    if (isCalm) {
+                        imgEl.style.cssText = `position:absolute; top:0; left:0; width:100%; height:100%; object-fit:contain; clip-path:${part.clip};`;
+                    } else {
+                        imgEl.style.cssText = `position:absolute; top:0; left:0; width:100%; height:100%; object-fit:contain; clip-path:${part.clip}; transition: transform 0.4s ease, opacity 0.4s ease; transform: scale(0.6); opacity: 0;`;
+                    }
+                    container.appendChild(imgEl);
+                    if (!isCalm) {
+                        imgEl.offsetHeight; // trigger reflow
+                        imgEl.style.transform = 'scale(1)';
+                        imgEl.style.opacity = '1';
+                    }
+                }
+
+                setTimeout(() => {
+                    assemblePartIndex++;
+                    isProcessing = false;
+                    
+                    if (assemblePartIndex >= item.parts.length) {
+                        isProcessing = true;
+                        let qEl = get('assemble-question');
+                        if (qEl) qEl.textContent = item.audioWin + ' 🎉';
+                        
+                        speakLetter(item.audioWin, 'he', function() {
+                            isProcessing = false;
+                            handleAnswer(true, null, loadAssembleRound, null);
+                        });
+                    } else {
+                        askAssemblePart();
+                    }
+                }, 1000);
+
+            } else {
+                playErrorSound();
+                card.style.borderColor = '#F44336';
+                card.style.background = '#ffebee';
+                card.style.transform = 'scale(0.95)';
+                
+                card.animate([
+                    { transform: 'translateX(0px)' },
+                    { transform: 'translateX(-6px)' },
+                    { transform: 'translateX(6px)' },
+                    { transform: 'translateX(-4px)' },
+                    { transform: 'translateX(4px)' },
+                    { transform: 'translateX(0px)' }
+                ], { duration: 300 });
+
+                isProcessing = true;
+                let fl = get('feedback-layer');
+                fl.innerHTML = `<span>🤔</span><div class="feedback-msg">בוא ננסה שוב, זה לא ${part.text}</div>`;
+                show('feedback-layer');
+                
+                speakLetter(`בוא ננסה שוב, זה לא ${part.text}`, 'he');
+
+                setTimeout(() => {
+                    hide('feedback-layer');
+                    card.style.borderColor = '#e0e0e0';
+                    card.style.background = '#fff';
+                    card.style.transform = 'scale(1)';
+                    isProcessing = false;
+                }, 1500);
+            }
+        }
 
         // ==========================================
         // 16. מה יותר גדול?
