@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-07-09-v50-safari-clip-path -->
+<!DOCTYPE html><!-- build: 2026-07-09-v53-blueprint-ui-upgrade -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -3261,19 +3261,19 @@
 
             let ws = get('game-workspace');
             ws.innerHTML = `
-                <div id="assemble-question" style="font-size:clamp(16px,4vw,24px); font-weight:900; color:#333; text-align:center; direction:rtl; margin-bottom:15px; cursor:pointer;"></div>
+                <div id="assemble-question" style="font-size:clamp(18px,4.5vw,26px); font-weight:900; color:#37474f; text-align:center; direction:rtl; margin-bottom:15px; cursor:pointer; text-shadow:0 1px 2px rgba(255,255,255,0.8);"></div>
                 
                 <!-- Main Board -->
-                <div class="assemble-board" style="position:relative; width:min(75vw, 360px); aspect-ratio:1/1; background:#fcfcfc; border:4px dashed #2196F3; border-radius:24px; box-shadow:inset 0 4px 10px rgba(0,0,0,0.05); margin:0 auto 20px; overflow:hidden;">
+                <div class="assemble-board" style="position:relative; width:min(80vw, 380px); aspect-ratio:1/1; background-color:#eef5fb; background-image:radial-gradient(#90caf9 1.5px, transparent 1.5px); background-size:24px 24px; border:4px dashed #2196F3; border-radius:28px; box-shadow:0 12px 28px rgba(33, 150, 243, 0.15), inset 0 4px 10px rgba(0,0,0,0.02); margin:0 auto 20px; overflow:hidden;">
                     <!-- Silhouette blueprint -->
-                    <img id="assemble-silhouette" src="${item.img}" style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:contain; filter:grayscale(1) brightness(0.9) opacity(0.15); pointer-events:none;">
+                    <img id="assemble-silhouette" src="${item.img}" style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:contain; filter:grayscale(1) brightness(0.85) opacity(0.25); pointer-events:none;">
                     
                     <!-- Placed parts container -->
                     <div id="assemble-parts-container" style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none;"></div>
                 </div>
 
                 <!-- Choices Row -->
-                <div id="assemble-choices" class="opts-row" style="display:flex; justify-content:center; gap:15px; margin-top:10px;"></div>
+                <div id="assemble-choices" class="opts-row" style="display:flex; justify-content:center; gap:16px; margin-top:10px; flex-wrap:wrap; padding:10px;"></div>
             `;
 
             askAssemblePart();
@@ -3315,15 +3315,15 @@
 
             finalChoices.forEach(ch => {
                 let card = D.createElement('div');
-                card.style.cssText = 'background:#fff; border:4px solid #e0e0e0; border-radius:20px; width:clamp(80px, 20vw, 110px); height:clamp(80px, 20vw, 110px); cursor:pointer; box-shadow:0 4px 10px rgba(0,0,0,0.1); transition:all 0.2s ease; display:flex; flex-direction:column; align-items:center; justify-content:center; overflow:hidden; position:relative;';
+                card.style.cssText = 'background:#fff; border:4px solid #cfd8dc; border-radius:24px; width:clamp(85px, 22vw, 115px); height:clamp(85px, 22vw, 115px); cursor:pointer; box-shadow:0 6px 14px rgba(0,0,0,0.06); transition:all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275); display:flex; flex-direction:column; align-items:center; justify-content:center; overflow:hidden; position:relative;';
                 
                 card.innerHTML = `
-                    <div style="font-size:clamp(32px, 8vw, 44px); line-height:1; margin-bottom:4px;">${ch.shapeEmoji || '❓'}</div>
-                    <div style="font-size:clamp(11px, 2.5vw, 13px); font-weight:bold; color:#555; text-align:center; padding:0 4px; direction:rtl; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; width:100%;">${ch.text}</div>
+                    <div style="font-size:clamp(34px, 9vw, 48px); line-height:1; margin-bottom:6px; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.1));">${ch.shapeEmoji || '❓'}</div>
+                    <div style="font-size:clamp(12px, 3vw, 14px); font-weight:900; color:#455a64; text-align:center; padding:0 6px; direction:rtl; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; width:100%;">${ch.text}</div>
                 `;
 
-                card.onmouseover = () => { if (!isProcessing) { card.style.transform = 'scale(1.08)'; card.style.borderColor = '#2196F3'; } };
-                card.onmouseout = () => { card.style.transform = 'scale(1)'; card.style.borderColor = '#e0e0e0'; };
+                card.onmouseover = () => { if (!isProcessing) { card.style.transform = 'scale(1.08) translateY(-4px)'; card.style.borderColor = '#2196F3'; card.style.boxShadow = '0 10px 20px rgba(33, 150, 243, 0.15)'; } };
+                card.onmouseout = () => { card.style.transform = 'scale(1)'; card.style.borderColor = '#cfd8dc'; card.style.boxShadow = '0 6px 14px rgba(0,0,0,0.06)'; };
                 
                 addTapHandler(card, function(e) {
                     e.stopPropagation();
@@ -4475,6 +4475,636 @@
                     situation: 'images/sharing_scenes/32_irgun_ishi/matzav_bsisi.webp',
                     badImg:    'images/sharing_scenes/32_irgun_ishi/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/32_irgun_ishi/bechira_tova.webp'
+                },
+                {
+                    question:  'מגדל הקוביות של עומר התמוטט. מה יעשה עומר?',
+                    qAudio:    'sharing/q33.mp3',
+                    fbAudio:   'sharing/fb33.mp3',
+                    speakQ:    'מגדל הקוביות של עומר התמוטט. מה יעשה עומר?',
+                    speakFb:   'כל הכבוד! עומר בונה מחדש עם בסיס רחב יותר!',
+                    situation: 'images/sharing_scenes/33_migdal_mechudash/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/33_migdal_mechudash/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/33_migdal_mechudash/bechira_tova.webp'
+                },
+                {
+                    question:  'לעומר יש פאזל שהוא כבר פתר בעבר. מה יעשה עומר?',
+                    qAudio:    'sharing/q34.mp3',
+                    fbAudio:   'sharing/fb34.mp3',
+                    speakQ:    'לעומר יש פאזל שהוא כבר פתר בעבר. מה יעשה עומר?',
+                    speakFb:   'כל הכבוד! עומר ניגש לפאזל בביטחון, כי הוא כבר הצליח בו!',
+                    situation: 'images/sharing_scenes/34_chida_chozeret/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/34_chida_chozeret/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/34_chida_chozeret/bechira_tova.webp'
+                },
+                {
+                    question:  'עומר ניסה משהו ולא הצליח. מה יגיד עומר לעצמו?',
+                    qAudio:    'sharing/q35.mp3',
+                    fbAudio:   'sharing/fb35.mp3',
+                    speakQ:    'עומר ניסה משהו ולא הצליח. מה יגיד עומר לעצמו?',
+                    speakFb:   'כל הכבוד! עומר אומר לעצמו שהוא יכול להשתפר!',
+                    situation: 'images/sharing_scenes/35_machshava_chiuvit/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/35_machshava_chiuvit/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/35_machshava_chiuvit/bechira_tova.webp'
+                },
+                {
+                    question:  'בלוח על הקיר יש כוכבים וגם איקסים מנסיונות קודמים של עומר. במה יסתכל עומר?',
+                    qAudio:    'sharing/q36.mp3',
+                    fbAudio:   'sharing/fb36.mp3',
+                    speakQ:    'בלוח על הקיר יש כוכבים וגם איקסים מנסיונות קודמים של עומר. במה יסתכל עומר?',
+                    speakFb:   'כל הכבוד! עומר מסתכל על הכוכבים ושמח בהצלחות שלו!',
+                    situation: 'images/sharing_scenes/36_luach_hesegim/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/36_luach_hesegim/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/36_luach_hesegim/bechira_tova.webp'
+                },
+                {
+                    question:  'מונחת לפני עומר חידה חדשה, דומה לקודמת. איך ירגיש עומר?',
+                    qAudio:    'sharing/q37.mp3',
+                    fbAudio:   'sharing/fb37.mp3',
+                    speakQ:    'מונחת לפני עומר חידה חדשה, דומה לקודמת. איך ירגיש עומר?',
+                    speakFb:   'כל הכבוד! עומר מתרגש ומצפה בשמחה לנסות את החידה החדשה!',
+                    situation: 'images/sharing_scenes/37_chida_chadasha_atid/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/37_chida_chadasha_atid/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/37_chida_chadasha_atid/bechira_tova.webp'
+                },
+                {
+                    question:  'קבוצת ילדים משחקת במגרש, ועומר עומד קצת בצד. מה יעשה עומר?',
+                    qAudio:    'sharing/q38.mp3',
+                    fbAudio:   'sharing/fb38.mp3',
+                    speakQ:    'קבוצת ילדים משחקת במגרש, ועומר עומד קצת בצד. מה יעשה עומר?',
+                    speakFb:   'כל הכבוד! עומר מצטרף לקבוצה ושואל אם אפשר לשחק, וכולם שמחים לקבל אותו!',
+                    situation: 'images/sharing_scenes/38_hitztarfut_lakvutza/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/38_hitztarfut_lakvutza/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/38_hitztarfut_lakvutza/bechira_tova.webp'
+                },
+                {
+                    question:  'לחבר של עומר יש שריטה בברך והוא קצת עצוב. מה יעשה עומר?',
+                    qAudio:    'sharing/q39.mp3',
+                    fbAudio:   'sharing/fb39.mp3',
+                    speakQ:    'לחבר של עומר יש שריטה בברך והוא קצת עצוב. מה יעשה עומר?',
+                    speakFb:   'כל הכבוד! עומר ניגש לחבר ושואל אותו אם הוא בסדר!',
+                    situation: 'images/sharing_scenes/39_ezra_lechaver/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/39_ezra_lechaver/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/39_ezra_lechaver/bechira_tova.webp'
+                },
+                {
+                    question:  'עומר וחברו רוצים את אותה משאית בדיוק באותו רגע. מה יעשה עומר?',
+                    qAudio:    'sharing/q40.mp3',
+                    fbAudio:   'sharing/fb40.mp3',
+                    speakQ:    'עומר וחברו רוצים את אותה משאית בדיוק באותו רגע. מה יעשה עומר?',
+                    speakFb:   'כל הכבוד! עומר מציע לעשות תורות עם המשאית!',
+                    situation: 'images/sharing_scenes/40_tor_bamasait/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/40_tor_bamasait/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/40_tor_bamasait/bechira_tova.webp'
+                },
+                {
+                    question:  'חבר שלו בקבוצה טעה ונתן נקודה ליריבה. מה יעשה עומר?',
+                    qAudio:    'sharing/q41.mp3',
+                    fbAudio:   'sharing/fb41.mp3',
+                    speakQ:    'חבר שלו בקבוצה טעה ונתן נקודה ליריבה. מה יעשה עומר?',
+                    speakFb:   'כל הכבוד! עומר מעודד את החבר שלו ואומר לו שבפעם הבאה יצליח!',
+                    situation: 'images/sharing_scenes/41_eedud_chaver/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/41_eedud_chaver/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/41_eedud_chaver/bechira_tova.webp'
+                },
+                {
+                    question:  'שלושה ילדים רוצים את אותו הצעצוע בדיוק. מה יעשה עומר?',
+                    qAudio:    'sharing/q42.mp3',
+                    fbAudio:   'sharing/fb42.mp3',
+                    speakQ:    'שלושה ילדים רוצים את אותו הצעצוע בדיוק. מה יעשה עומר?',
+                    speakFb:   'כל הכבוד! עומר מציע רעיון, מקשיב לחברים, וכולם מוצאים פתרון ביחד!',
+                    situation: 'images/sharing_scenes/42_pitaron_meshutaf/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/42_pitaron_meshutaf/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/42_pitaron_meshutaf/bechira_tova.webp'
+                },
+                {
+                    question:  'על המדף יש צעצוע ישן ומוכר, וגם צעצוע חדש באריזה. באיזה צעצוע יבחר עומר?',
+                    qAudio:    'sharing/q43.mp3',
+                    fbAudio:   'sharing/fb43.mp3',
+                    speakQ:    'על המדף יש צעצוע ישן ומוכר, וגם צעצוע חדש באריזה. באיזה צעצוע יבחר עומר?',
+                    speakFb:   'כל הכבוד! עומר בוחר לנסות את הצעצוע החדש!',
+                    situation: 'images/sharing_scenes/43_tzaatzua_chadash/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/43_tzaatzua_chadash/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/43_tzaatzua_chadash/bechira_tova.webp'
+                },
+                {
+                    question:  'בפינת האמנות יש הדגמה של טכניקת ציור חדשה ומיוחדת. מה יעשה עומר?',
+                    qAudio:    'sharing/q44.mp3',
+                    fbAudio:   'sharing/fb44.mp3',
+                    speakQ:    'בפינת האמנות יש הדגמה של טכניקת ציור חדשה ומיוחדת. מה יעשה עומר?',
+                    speakFb:   'כל הכבוד! עומר מנסה את הטכניקה החדשה ונהנה מאוד!',
+                    situation: 'images/sharing_scenes/44_tichnika_chadasha/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/44_tichnika_chadasha/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/44_tichnika_chadasha/bechira_tova.webp'
+                },
+                {
+                    question:  'עומר יושב במעגל עם ילדים אחרים, ויש לו רעיון למשחק. מה יעשה עומר?',
+                    qAudio:    'sharing/q45.mp3',
+                    fbAudio:   'sharing/fb45.mp3',
+                    speakQ:    'עומר יושב במעגל עם ילדים אחרים, ויש לו רעיון למשחק. מה יעשה עומר?',
+                    speakFb:   'כל הכבוד! עומר מרים יד ומשתף את הרעיון שלו עם כולם!',
+                    situation: 'images/sharing_scenes/45_raayon_bekvutza/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/45_raayon_bekvutza/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/45_raayon_bekvutza/bechira_tova.webp'
+                },
+                {
+                    question:  'על לוח המודעות יש דף הרשמה לתחרות בבית הספר. מה יעשה עומר?',
+                    qAudio:    'sharing/q46.mp3',
+                    fbAudio:   'sharing/fb46.mp3',
+                    speakQ:    'על לוח המודעות יש דף הרשמה לתחרות בבית הספר. מה יעשה עומר?',
+                    speakFb:   'כל הכבוד! עומר נרשם לתחרות בעצמו!',
+                    situation: 'images/sharing_scenes/46_harshama_letacharut/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/46_harshama_letacharut/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/46_harshama_letacharut/bechira_tova.webp'
+                },
+                {
+                    question:  'לעומר יש קופסה עם דש שקשה לפתוח, והוא כבר ניסה קצת. מה יעשה עומר?',
+                    qAudio:    'sharing/q47.mp3',
+                    fbAudio:   'sharing/fb47.mp3',
+                    speakQ:    'לעומר יש קופסה עם דש שקשה לפתוח, והוא כבר ניסה קצת. מה יעשה עומר?',
+                    speakFb:   'כל הכבוד! עומר מבקש עזרה אחרי שניסה בעצמו!',
+                    situation: 'images/sharing_scenes/47_bakashat_ezra/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/47_bakashat_ezra/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/47_bakashat_ezra/bechira_tova.webp'
+                },
+                {
+                    question:  'עומר תקוע בתרגיל בדף העבודה ומתוסכל. מה יעשה עומר?',
+                    qAudio:    'sharing/q48.mp3',
+                    fbAudio:   'sharing/fb48.mp3',
+                    speakQ:    'עומר תקוע בתרגיל בדף העבודה ומתוסכל. מה יעשה עומר?',
+                    speakFb:   'כל הכבוד! עומר מרים יד ומבקש עזרה!',
+                    situation: 'images/sharing_scenes/48_harama_yad_leezra/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/48_harama_yad_leezra/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/48_harama_yad_leezra/bechira_tova.webp'
+                },
+                {
+                    question:  'יש לעומר שאלה בשיעורי בית שהוא לא מבין. מה יבקש עומר?',
+                    qAudio:    'sharing/q49.mp3',
+                    fbAudio:   'sharing/fb49.mp3',
+                    speakQ:    'יש לעומר שאלה בשיעורי בית שהוא לא מבין. מה יבקש עומר?',
+                    speakFb:   'כל הכבוד! עומר מבקש שיסבירו לו איך לפתור, לא רק את התשובה!',
+                    situation: 'images/sharing_scenes/49_havanat_hashita/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/49_havanat_hashita/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/49_havanat_hashita/bechira_tova.webp'
+                },
+                {
+                    question:  'הצעצוע של עומר נשבר, ויש לידו גם אמא וגם אדם זר. ממי יבקש עומר עזרה?',
+                    qAudio:    'sharing/q50.mp3',
+                    fbAudio:   'sharing/fb50.mp3',
+                    speakQ:    'הצעצוע של עומר נשבר, ויש לידו גם אמא וגם אדם זר. ממי יבקש עומר עזרה?',
+                    speakFb:   'כל הכבוד! עומר פונה לאמא שיודעת לעזור לו!',
+                    situation: 'images/sharing_scenes/50_pnia_lamekor_nachon/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/50_pnia_lamekor_nachon/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/50_pnia_lamekor_nachon/bechira_tova.webp'
+                },
+                {
+                    question:  'לעומר ולחברו יש פרויקט משותף להכין. מה יעשו הילדים?',
+                    qAudio:    'sharing/q51.mp3',
+                    fbAudio:   'sharing/fb51.mp3',
+                    speakQ:    'לעומר ולחברו יש פרויקט משותף להכין. מה יעשו הילדים?',
+                    speakFb:   'כל הכבוד! עומר וחברו מחלקים את העבודה ביניהם ועובדים יחד!',
+                    situation: 'images/sharing_scenes/51_avoda_meshutefet/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/51_avoda_meshutefet/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/51_avoda_meshutefet/bechira_tova.webp'
+                },
+                {
+                    question:  'בפינת החדר יש מנורה שמהבהבת. מה ישים לב עומר?',
+                    qAudio:    'sharing/q52.mp3',
+                    fbAudio:   'sharing/fb52.mp3',
+                    speakQ:    'בפינת החדר יש מנורה שמהבהבת. מה ישים לב עומר?',
+                    speakFb:   'כל הכבוד! עומר שם לב למנורה המהבהבת ומסתכל לכיוונה!',
+                    situation: 'images/sharing_scenes/52_menora_mehavhevet/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/52_menora_mehavhevet/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/52_menora_mehavhevet/bechira_tova.webp'
+                },
+                {
+                    question:  'מהמטבח מגיע ריח חדש ומעניין. מה יעשה עומר?',
+                    qAudio:    'sharing/q53.mp3',
+                    fbAudio:   'sharing/fb53.mp3',
+                    speakQ:    'מהמטבח מגיע ריח חדש ומעניין. מה יעשה עומר?',
+                    speakFb:   'כל הכבוד! עומר מריח את הריח ומסתכל לכיוון המטבח!',
+                    situation: 'images/sharing_scenes/53_reach_chadash/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/53_reach_chadash/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/53_reach_chadash/bechira_tova.webp'
+                },
+                {
+                    question:  'משהו קטן זז בקצה החדר בזמן שעומר משחק. מה יעשה עומר?',
+                    qAudio:    'sharing/q54.mp3',
+                    fbAudio:   'sharing/fb54.mp3',
+                    speakQ:    'משהו קטן זז בקצה החדר בזמן שעומר משחק. מה יעשה עומר?',
+                    speakFb:   'כל הכבוד! עומר שם לב לתזוזה ומסתכל לכיוון הזה!',
+                    situation: 'images/sharing_scenes/54_tnua_bakatze/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/54_tnua_bakatze/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/54_tnua_bakatze/bechira_tova.webp'
+                },
+                {
+                    question:  'הרדיו בפינת החדר נהיה חזק יותר ויותר. מה יעשה עומר?',
+                    qAudio:    'sharing/q55.mp3',
+                    fbAudio:   'sharing/fb55.mp3',
+                    speakQ:    'הרדיו בפינת החדר נהיה חזק יותר ויותר. מה יעשה עומר?',
+                    speakFb:   'כל הכבוד! עומר שם לב לשינוי ומסתכל לכיוון הרדיו!',
+                    situation: 'images/sharing_scenes/55_haalaat_kol/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/55_haalaat_kol/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/55_haalaat_kol/bechira_tova.webp'
+                },
+                {
+                    question:  'על השולחן יש קופסה מסתורית וסגורה. מה יעשה עומר?',
+                    qAudio:    'sharing/q56.mp3',
+                    fbAudio:   'sharing/fb56.mp3',
+                    speakQ:    'על השולחן יש קופסה מסתורית וסגורה. מה יעשה עומר?',
+                    speakFb:   'כל הכבוד! עומר מתקרב לשולחן כדי לבדוק את הקופסה!',
+                    situation: 'images/sharing_scenes/56_kufsa_mistorit/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/56_kufsa_mistorit/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/56_kufsa_mistorit/bechira_tova.webp'
+                },
+                {
+                    question:  'יש דלת פתוחה לחדר לא מוכר. מה יעשה עומר?',
+                    qAudio:    'sharing/q57.mp3',
+                    fbAudio:   'sharing/fb57.mp3',
+                    speakQ:    'יש דלת פתוחה לחדר לא מוכר. מה יעשה עומר?',
+                    speakFb:   'כל הכבוד! עומר נכנס לחדר ומסתכל סביבו בסקרנות!',
+                    situation: 'images/sharing_scenes/57_cheder_lo_mukar/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/57_cheder_lo_mukar/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/57_cheder_lo_mukar/bechira_tova.webp'
+                },
+                {
+                    question:  'על שולחן בצד השני של החדר יש מכשיר מוזר שעומר לא מכיר. מה יעשה עומר?',
+                    qAudio:    'sharing/q58.mp3',
+                    fbAudio:   'sharing/fb58.mp3',
+                    speakQ:    'על שולחן בצד השני של החדר יש מכשיר מוזר שעומר לא מכיר. מה יעשה עומר?',
+                    speakFb:   'כל הכבוד! עומר מתקרב לשולחן כדי לבדוק את המכשיר מקרוב!',
+                    situation: 'images/sharing_scenes/58_machshir_lo_mukar/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/58_machshir_lo_mukar/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/58_machshir_lo_mukar/bechira_tova.webp'
+                },
+                {
+                    question:  'יש פינה בגינה שעומר עוד לא חקר. מה יעשה עומר?',
+                    qAudio:    'sharing/q59.mp3',
+                    fbAudio:   'sharing/fb59.mp3',
+                    speakQ:    'יש פינה בגינה שעומר עוד לא חקר. מה יעשה עומר?',
+                    speakFb:   'כל הכבוד! עומר הולך אל הפינה החדשה בגינה כדי לחקור אותה!',
+                    situation: 'images/sharing_scenes/59_pinat_gan_chadasha/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/59_pinat_gan_chadasha/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/59_pinat_gan_chadasha/bechira_tova.webp'
+                },
+                {
+                    question:  'לעומר יש שעון צעצוע עם גלגלי שיניים גלויים. מה יעשה עומר?',
+                    qAudio:    'sharing/q60.mp3',
+                    fbAudio:   'sharing/fb60.mp3',
+                    speakQ:    'לעומר יש שעון צעצוע עם גלגלי שיניים גלויים. מה יעשה עומר?',
+                    speakFb:   'כל הכבוד! עומר בודק ומסובב את הגלגלים בעניין!',
+                    situation: 'images/sharing_scenes/60_shaon_mechani/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/60_shaon_mechani/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/60_shaon_mechani/bechira_tova.webp'
+                },
+                {
+                    question:  'על השולחן יש חפץ עם מרקם מוזר ומיוחד. מה יעשה עומר?',
+                    qAudio:    'sharing/q61.mp3',
+                    fbAudio:   'sharing/fb61.mp3',
+                    speakQ:    'על השולחן יש חפץ עם מרקם מוזר ומיוחד. מה יעשה עומר?',
+                    speakFb:   'כל הכבוד! עומר לוחץ ומותח את החפץ ובודק אותו בעניין!',
+                    situation: 'images/sharing_scenes/61_merkam_meyuchad/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/61_merkam_meyuchad/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/61_merkam_meyuchad/bechira_tova.webp'
+                },
+                {
+                    question:  'לעומר יש צעצוע עם חלקים שזזים. מה יעשה עומר?',
+                    qAudio:    'sharing/q62.mp3',
+                    fbAudio:   'sharing/fb62.mp3',
+                    speakQ:    'לעומר יש צעצוע עם חלקים שזזים. מה יעשה עומר?',
+                    speakFb:   'כל הכבוד! עומר מזיז את החלקים של הצעצוע ובודק איך הם עובדים!',
+                    situation: 'images/sharing_scenes/62_tzaatzua_mifrakim/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/62_tzaatzua_mifrakim/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/62_tzaatzua_mifrakim/bechira_tova.webp'
+                },
+                {
+                    question:  'אחרי הגשם, יש מים שזורמים לתוך הביוב ברחוב. מה יעשה עומר?',
+                    qAudio:    'sharing/q63.mp3',
+                    fbAudio:   'sharing/fb63.mp3',
+                    speakQ:    'אחרי הגשם, יש מים שזורמים לתוך הביוב ברחוב. מה יעשה עומר?',
+                    speakFb:   'כל הכבוד! עומר עוצר ומתכופף לצפות במים הזורמים!',
+                    situation: 'images/sharing_scenes/63_mayim_bebiyev/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/63_mayim_bebiyev/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/63_mayim_bebiyev/bechira_tova.webp'
+                },
+                {
+                    question:  'אבא מתקן שרשרת של אופניים בחצר. מה יעשה עומר?',
+                    qAudio:    'sharing/q64.mp3',
+                    fbAudio:   'sharing/fb64.mp3',
+                    speakQ:    'אבא מתקן שרשרת של אופניים בחצר. מה יעשה עומר?',
+                    speakFb:   'כל הכבוד! עומר עומד ליד אבא וצופה בתיקון בעניין רב!',
+                    situation: 'images/sharing_scenes/64_tikun_ofanaim/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/64_tikun_ofanaim/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/64_tikun_ofanaim/bechira_tova.webp'
+                },
+                {
+                    question:  'יש קן ציפורים בבניה על עץ בחצר. מה יעשה עומר?',
+                    qAudio:    'sharing/q65.mp3',
+                    fbAudio:   'sharing/fb65.mp3',
+                    speakQ:    'יש קן ציפורים בבניה על עץ בחצר. מה יעשה עומר?',
+                    speakFb:   'כל הכבוד! עומר חוזר כל יום כדי לבדוק איך הקן מתקדם!',
+                    situation: 'images/sharing_scenes/65_ken_tzipor/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/65_ken_tzipor/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/65_ken_tzipor/bechira_tova.webp'
+                },
+                {
+                    question:  'עומר מסתכל בשמיים ושואל את עצמו שאלה מעניינת. מה קורה במחשבותיו?',
+                    qAudio:    'sharing/q66.mp3',
+                    fbAudio:   'sharing/fb66.mp3',
+                    speakQ:    'עומר מסתכל בשמיים ושואל את עצמו שאלה מעניינת. מה קורה במחשבותיו?',
+                    speakFb:   'יפה מאוד! עומר חושב על כמה רעיונות שונים לתשובה!',
+                    situation: 'images/sharing_scenes/66_sheela_ptucha/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/66_sheela_ptucha/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/66_sheela_ptucha/bechira_tova.webp'
+                },
+                {
+                    question:  'לעומר יש חידה עם צורה לא רגילה. מה יעשה עומר?',
+                    qAudio:    'sharing/q67.mp3',
+                    fbAudio:   'sharing/fb67.mp3',
+                    speakQ:    'לעומר יש חידה עם צורה לא רגילה. מה יעשה עומר?',
+                    speakFb:   'כל הכבוד! עומר מנסה כמה דרכים שונות ויצירתיות לפתור את החידה!',
+                    situation: 'images/sharing_scenes/67_chida_lo_regila/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/67_chida_lo_regila/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/67_chida_lo_regila/bechira_tova.webp'
+                },
+                {
+                    question:  'עומר סגר ספר עם סוף פתוח. מה קורה במחשבותיו?',
+                    qAudio:    'sharing/q68.mp3',
+                    fbAudio:   'sharing/fb68.mp3',
+                    speakQ:    'עומר סגר ספר עם סוף פתוח. מה קורה במחשבותיו?',
+                    speakFb:   'יפה מאוד! עומר חושב על כמה סופים אפשריים לסיפור!',
+                    situation: 'images/sharing_scenes/68_sof_patuach/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/68_sof_patuach/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/68_sof_patuach/bechira_tova.webp'
+                },
+                {
+                    question:  'לעומר יש קוביות בניה בלי הוראות. מה יבנה עומר?',
+                    qAudio:    'sharing/q69.mp3',
+                    fbAudio:   'sharing/fb69.mp3',
+                    speakQ:    'לעומר יש קוביות בניה בלי הוראות. מה יבנה עומר?',
+                    speakFb:   'כל הכבוד! עומר בונה כמה מבנים שונים ומקוריים!',
+                    situation: 'images/sharing_scenes/69_binyan_yetzirati/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/69_binyan_yetzirati/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/69_binyan_yetzirati/bechira_tova.webp'
+                },
+                {
+                    question:  'אמא מקריאה סיפור לפני השינה, ויש מילה שעומר לא מכיר. מה יעשה עומר?',
+                    qAudio:    'sharing/q70.mp3',
+                    fbAudio:   'sharing/fb70.mp3',
+                    speakQ:    'אמא מקריאה סיפור לפני השינה, ויש מילה שעומר לא מכיר. מה יעשה עומר?',
+                    speakFb:   'כל הכבוד! עומר שואל מה המילה הזאת אומרת!',
+                    situation: 'images/sharing_scenes/70_mila_lo_mukeret/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/70_mila_lo_mukeret/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/70_mila_lo_mukeret/bechira_tova.webp'
+                },
+                {
+                    question:  'עלים נושרים מהעץ בזמן שעומר ואמא מטיילים. מה יעשה עומר?',
+                    qAudio:    'sharing/q71.mp3',
+                    fbAudio:   'sharing/fb71.mp3',
+                    speakQ:    'עלים נושרים מהעץ בזמן שעומר ואמא מטיילים. מה יעשה עומר?',
+                    speakFb:   'כל הכבוד! עומר מצביע על העלים ושואל את אמא למה הם נופלים!',
+                    situation: 'images/sharing_scenes/71_alim_stav/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/71_alim_stav/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/71_alim_stav/bechira_tova.webp'
+                },
+                {
+                    question:  'החבר של עומר מדגים טריק מחיאות כפיים מיוחד. מה יעשה עומר?',
+                    qAudio:    'sharing/q72.mp3',
+                    fbAudio:   'sharing/fb72.mp3',
+                    speakQ:    'החבר של עומר מדגים טריק מחיאות כפיים מיוחד. מה יעשה עומר?',
+                    speakFb:   'כל הכבוד! עומר מתעניין ושואל את החבר איך עושים את זה!',
+                    situation: 'images/sharing_scenes/72_trick_chaver/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/72_trick_chaver/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/72_trick_chaver/bechira_tova.webp'
+                },
+                {
+                    question:  'בטיול יש שלט קטן עם כתוב שעומר לא יודע לקרוא. מה יעשה עומר?',
+                    qAudio:    'sharing/q73.mp3',
+                    fbAudio:   'sharing/fb73.mp3',
+                    speakQ:    'בטיול יש שלט קטן עם כתוב שעומר לא יודע לקרוא. מה יעשה עומר?',
+                    speakFb:   'כל הכבוד! עומר שואל את אמא מה כתוב בשלט!',
+                    situation: 'images/sharing_scenes/73_shelet_tiyul/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/73_shelet_tiyul/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/73_shelet_tiyul/bechira_tova.webp'
+                },
+                {
+                    question:  'בטלוויזיה מופיעה מילה חדשה שעומר לא מכיר. מה יעשה עומר?',
+                    qAudio:    'sharing/q74.mp3',
+                    fbAudio:   'sharing/fb74.mp3',
+                    speakQ:    'בטלוויזיה מופיעה מילה חדשה שעומר לא מכיר. מה יעשה עומר?',
+                    speakFb:   'כל הכבוד! עומר מרים יד ושואל את אמא מה המילה הזאת אומרת!',
+                    situation: 'images/sharing_scenes/74_musag_chadash_tv/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/74_musag_chadash_tv/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/74_musag_chadash_tv/bechira_tova.webp'
+                },
+                {
+                    question:  'בחוג המוזיקה יש כלי נגינה מוזר שעומר לא מכיר. מה יעשה עומר?',
+                    qAudio:    'sharing/q75.mp3',
+                    fbAudio:   'sharing/fb75.mp3',
+                    speakQ:    'בחוג המוזיקה יש כלי נגינה מוזר שעומר לא מכיר. מה יעשה עומר?',
+                    speakFb:   'כל הכבוד! עומר ניגש מיד לכלי הנגינה כדי לנסות אותו!',
+                    situation: 'images/sharing_scenes/75_kli_nagina_chadash/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/75_kli_nagina_chadash/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/75_kli_nagina_chadash/bechira_tova.webp'
+                },
+                {
+                    question:  'הגיעה חבילת הפתעה סגורה לעומר. מה יעשה עומר?',
+                    qAudio:    'sharing/q76.mp3',
+                    fbAudio:   'sharing/fb76.mp3',
+                    speakQ:    'הגיעה חבילת הפתעה סגורה לעומר. מה יעשה עומר?',
+                    speakFb:   'כל הכבוד! עומר פותח את החבילה בהתלהבות!',
+                    situation: 'images/sharing_scenes/76_chavilat_hafta_a/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/76_chavilat_hafta_a/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/76_chavilat_hafta_a/bechira_tova.webp'
+                },
+                {
+                    question:  'בגן השעשועים הותקן מתקן טיפוס חדש ומוזר. מה יעשה עומר?',
+                    qAudio:    'sharing/q77.mp3',
+                    fbAudio:   'sharing/fb77.mp3',
+                    speakQ:    'בגן השעשועים הותקן מתקן טיפוס חדש ומוזר. מה יעשה עומר?',
+                    speakFb:   'כל הכבוד! עומר מטפס מיד על המתקן החדש!',
+                    situation: 'images/sharing_scenes/77_mitkan_tipus_chadash/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/77_mitkan_tipus_chadash/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/77_mitkan_tipus_chadash/bechira_tova.webp'
+                },
+                {
+                    question:  'יש לעומר ערכת ניסויים חדשה שהוא עוד לא פתח. מה יעשה עומר?',
+                    qAudio:    'sharing/q78.mp3',
+                    fbAudio:   'sharing/fb78.mp3',
+                    speakQ:    'יש לעומר ערכת ניסויים חדשה שהוא עוד לא פתח. מה יעשה עומר?',
+                    speakFb:   'כל הכבוד! עומר פותח את הערכה ומתחיל להתנסות בה!',
+                    situation: 'images/sharing_scenes/78_maarechet_nisuyim/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/78_maarechet_nisuyim/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/78_maarechet_nisuyim/bechira_tova.webp'
+                },
+                {
+                    question:  'יש ילד חדש בכיתה של עומר. מה יעשה עומר?',
+                    qAudio:    'sharing/q79.mp3',
+                    fbAudio:   'sharing/fb79.mp3',
+                    speakQ:    'יש ילד חדש בכיתה של עומר. מה יעשה עומר?',
+                    speakFb:   'כל הכבוד! עומר ניגש לילד החדש ומציג את עצמו!',
+                    situation: 'images/sharing_scenes/79_yeled_chadash_bakita/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/79_yeled_chadash_bakita/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/79_yeled_chadash_bakita/bechira_tova.webp'
+                },
+                {
+                    question:  'מורה חדשה ולא מוכרת שואלת שאלה בכיתה. מה יעשה עומר?',
+                    qAudio:    'sharing/q80.mp3',
+                    fbAudio:   'sharing/fb80.mp3',
+                    speakQ:    'מורה חדשה ולא מוכרת שואלת שאלה בכיתה. מה יעשה עומר?',
+                    speakFb:   'כל הכבוד! עומר מרים יד ועונה בביטחון!',
+                    situation: 'images/sharing_scenes/80_mora_machlifa/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/80_mora_machlifa/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/80_mora_machlifa/bechira_tova.webp'
+                },
+                {
+                    question:  'בפארק משחקים ילדים שעומר לא מכיר. מה יעשה עומר?',
+                    qAudio:    'sharing/q81.mp3',
+                    fbAudio:   'sharing/fb81.mp3',
+                    speakQ:    'בפארק משחקים ילדים שעומר לא מכיר. מה יעשה עומר?',
+                    speakFb:   'כל הכבוד! עומר ניגש לקבוצה ושואל אם אפשר להצטרף!',
+                    situation: 'images/sharing_scenes/81_yeladim_lo_mukarim/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/81_yeladim_lo_mukarim/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/81_yeladim_lo_mukarim/bechira_tova.webp'
+                },
+                {
+                    question:  'רופא חדש שעומר לא מכיר ניגש לדבר איתו. מה יעשה עומר?',
+                    qAudio:    'sharing/q82.mp3',
+                    fbAudio:   'sharing/fb82.mp3',
+                    speakQ:    'רופא חדש שעומר לא מכיר ניגש לדבר איתו. מה יעשה עומר?',
+                    speakFb:   'כל הכבוד! עומר מסתכל על הרופא ועונה לו ישירות!',
+                    situation: 'images/sharing_scenes/82_rofe_chadash/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/82_rofe_chadash/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/82_rofe_chadash/bechira_tova.webp'
+                },
+                {
+                    question:  'היום הראשון של עומר בגן. מה יעשה עומר כשאמא נפרדת ממנו?',
+                    qAudio:    'sharing/q83.mp3',
+                    fbAudio:   'sharing/fb83.mp3',
+                    speakQ:    'היום הראשון של עומר בגן. מה יעשה עומר כשאמא נפרדת ממנו?',
+                    speakFb:   'כל הכבוד! עומר מנופף לשלום לאמא והולך לשחק עם הילדים!',
+                    situation: 'images/sharing_scenes/83_yom_rishon_bagan/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/83_yom_rishon_bagan/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/83_yom_rishon_bagan/bechira_tova.webp'
+                },
+                {
+                    question:  'בפארק השעשועים המקורה יש מתקני ניפוח צבעוניים, ואמא יושבת על ספסל. מה יעשה עומר?',
+                    qAudio:    'sharing/q84.mp3',
+                    fbAudio:   'sharing/fb84.mp3',
+                    speakQ:    'בפארק השעשועים המקורה יש מתקני ניפוח צבעוניים, ואמא יושבת על ספסל. מה יעשה עומר?',
+                    speakFb:   'כל הכבוד! עומר רץ לבד לשחק במתקנים!',
+                    situation: 'images/sharing_scenes/84_park_shaashuim_mekura/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/84_park_shaashuim_mekura/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/84_park_shaashuim_mekura/bechira_tova.webp'
+                },
+                {
+                    question:  'עומר נמצא באולם אירועים מקושט, ליד אמא. מה יעשה עומר?',
+                    qAudio:    'sharing/q85.mp3',
+                    fbAudio:   'sharing/fb85.mp3',
+                    speakQ:    'עומר נמצא באולם אירועים מקושט, ליד אמא. מה יעשה עומר?',
+                    speakFb:   'כל הכבוד! עומר מסתובב בין השולחנות בסקרנות!',
+                    situation: 'images/sharing_scenes/85_ulam_eruim/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/85_ulam_eruim/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/85_ulam_eruim/bechira_tova.webp'
+                },
+                {
+                    question:  'עומר ואמא מטיילים בשביל ביער. מה יעשה עומר?',
+                    qAudio:    'sharing/q86.mp3',
+                    fbAudio:   'sharing/fb86.mp3',
+                    speakQ:    'עומר ואמא מטיילים בשביל ביער. מה יעשה עומר?',
+                    speakFb:   'כל הכבוד! עומר צועד כמה צעדים לבד קדימה בשביל!',
+                    situation: 'images/sharing_scenes/86_shvil_yaar/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/86_shvil_yaar/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/86_shvil_yaar/bechira_tova.webp'
+                },
+                {
+                    question:  'האורות בחדר מהבהבים ונדלקים שוב תוך כדי משחק. מה יעשה עומר?',
+                    qAudio:    'sharing/q87.mp3',
+                    fbAudio:   'sharing/fb87.mp3',
+                    speakQ:    'האורות בחדר מהבהבים ונדלקים שוב תוך כדי משחק. מה יעשה עומר?',
+                    speakFb:   'כל הכבוד! עומר מסתכל למעלה לרגע וממשיך לשחק כרגיל!',
+                    situation: 'images/sharing_scenes/87_orot_mehavhevim/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/87_orot_mehavhevim/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/87_orot_mehavhevim/bechira_tova.webp'
+                },
+                {
+                    question:  'חתול קטן מופיע פתאום בחצר ליד עומר. מה יעשה עומר?',
+                    qAudio:    'sharing/q88.mp3',
+                    fbAudio:   'sharing/fb88.mp3',
+                    speakQ:    'חתול קטן מופיע פתאום בחצר ליד עומר. מה יעשה עומר?',
+                    speakFb:   'כל הכבוד! עומר ממשיך לשחק ואפילו מתקרב לחתול בסקרנות!',
+                    situation: 'images/sharing_scenes/88_chatul_bachatzer/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/88_chatul_bachatzer/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/88_chatul_bachatzer/bechira_tova.webp'
+                },
+                {
+                    question:  'מישהו קורא לעומר בשם שלו מכיוון לא צפוי. מה יעשה עומר?',
+                    qAudio:    'sharing/q89.mp3',
+                    fbAudio:   'sharing/fb89.mp3',
+                    speakQ:    'מישהו קורא לעומר בשם שלו מכיוון לא צפוי. מה יעשה עומר?',
+                    speakFb:   'כל הכבוד! עומר מסתובב לכיוון הקול ועונה!',
+                    situation: 'images/sharing_scenes/89_kria_bishmo/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/89_kria_bishmo/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/89_kria_bishmo/bechira_tova.webp'
+                },
+                {
+                    question:  'באמצע משחק קבוצתי, הכלל של המשחק משתנה בפתאומיות. מה יעשה עומר?',
+                    qAudio:    'sharing/q90.mp3',
+                    fbAudio:   'sharing/fb90.mp3',
+                    speakQ:    'באמצע משחק קבוצתי, הכלל של המשחק משתנה בפתאומיות. מה יעשה עומר?',
+                    speakFb:   'כל הכבוד! עומר מתאים את עצמו לכלל החדש וממשיך לשחק!',
+                    situation: 'images/sharing_scenes/90_kelal_mishchak_mishtane/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/90_kelal_mishchak_mishtane/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/90_kelal_mishchak_mishtane/bechira_tova.webp'
+                },
+                {
+                    question:  'יש אורחים לא מוכרים בארוחת הערב המשפחתית. מה יעשה עומר?',
+                    qAudio:    'sharing/q91.mp3',
+                    fbAudio:   'sharing/fb91.mp3',
+                    speakQ:    'יש אורחים לא מוכרים בארוחת הערב המשפחתית. מה יעשה עומר?',
+                    speakFb:   'כל הכבוד! עומר מדבר ומשתתף בשיחה עם האורחים!',
+                    situation: 'images/sharing_scenes/91_orchim_baarucha/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/91_orchim_baarucha/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/91_orchim_baarucha/bechira_tova.webp'
+                },
+                {
+                    question:  'בכיתה חדשה, כל ילד מציג את עצמו בתורו. מה יעשה עומר כשמגיע תורו?',
+                    qAudio:    'sharing/q92.mp3',
+                    fbAudio:   'sharing/fb92.mp3',
+                    speakQ:    'בכיתה חדשה, כל ילד מציג את עצמו בתורו. מה יעשה עומר כשמגיע תורו?',
+                    speakFb:   'כל הכבוד! עומר קם ומספר על עצמו בקול!',
+                    situation: 'images/sharing_scenes/92_hitzagat_atzmi_kita/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/92_hitzagat_atzmi_kita/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/92_hitzagat_atzmi_kita/bechira_tova.webp'
+                },
+                {
+                    question:  'עומר יושב במעגל עם ילדים חדשים בחוג. מה יעשה עומר?',
+                    qAudio:    'sharing/q93.mp3',
+                    fbAudio:   'sharing/fb93.mp3',
+                    speakQ:    'עומר יושב במעגל עם ילדים חדשים בחוג. מה יעשה עומר?',
+                    speakFb:   'כל הכבוד! עומר פונה לילד לידו ומתחיל שיחה!',
+                    situation: 'images/sharing_scenes/93_chug_yeladim_chadashim/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/93_chug_yeladim_chadashim/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/93_chug_yeladim_chadashim/bechira_tova.webp'
+                },
+                {
+                    question:  'יש מפגש משפחתי גדול עם קרובים שעומר לא מכיר כל כך. מה יעשה עומר?',
+                    qAudio:    'sharing/q94.mp3',
+                    fbAudio:   'sharing/fb94.mp3',
+                    speakQ:    'יש מפגש משפחתי גדול עם קרובים שעומר לא מכיר כל כך. מה יעשה עומר?',
+                    speakFb:   'כל הכבוד! עומר ניגש לקרובי המשפחה ומשוחח איתם!',
+                    situation: 'images/sharing_scenes/94_mishpacha_murchevet/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/94_mishpacha_murchevet/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/94_mishpacha_murchevet/bechira_tova.webp'
+                },
+                {
+                    question:  'במהלך סיור מודרך, יש לעומר שאלה למדריכה. מה יעשה עומר?',
+                    qAudio:    'sharing/q95.mp3',
+                    fbAudio:   'sharing/fb95.mp3',
+                    speakQ:    'במהלך סיור מודרך, יש לעומר שאלה למדריכה. מה יעשה עומר?',
+                    speakFb:   'כל הכבוד! עומר מרים יד ושואל את השאלה בקול!',
+                    situation: 'images/sharing_scenes/95_sheela_besiyur/matzav_bsisi.webp',
+                    badImg:    'images/sharing_scenes/95_sheela_besiyur/bechira_raa.webp',
+                    goodImg:   'images/sharing_scenes/95_sheela_besiyur/bechira_tova.webp'
                 }
             ];
             get('active-game-title').textContent = 'לחלוק ולהצליח 🤝';
