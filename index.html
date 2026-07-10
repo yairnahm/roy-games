@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-07-10-v54-sharing-scenes-clarity-fixes -->
+<!DOCTYPE html><!-- build: 2026-07-10-v55-offline-audio-3d-parts -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -1219,6 +1219,7 @@
         let currentGameMode = '', currentDifficulty = 1, currentStep = 0, mistakesInLevel = 0, isProcessing = false, gameErrorTimeout = null;
         let activeGameRounds = 4;
         let sharingOrder = [];
+        let growthOrder = [];
         let userGender = 'boy';
         let globalSuccessCount = 0;
 
@@ -1230,7 +1231,7 @@
         // Games that give a half star (two halves = 1 full):
         const halfStarGames = ['context','oddone','halfhalf','counting',
             'tracing','shadow','bigger','mgamish','fly','cop','faces',
-            'sharing','goodbad','towertalk','cooppuzzle','tidyup','numwar','whatneeds','calm'];
+            'sharing','growth','goodbad','towertalk','cooppuzzle','tidyup','numwar','whatneeds','calm'];
         let starWallet = { full: 0, halves: 0 };
         let awardedStars = {};
         try {
@@ -1693,6 +1694,7 @@
             <div id="faces-hub-card" class="hub-card hidden" data-cat="emotion" style="position:relative;" onclick="openFacesLangScreen()"><div class="hub-icon">📸</div><div class="hub-title">מי זה?</div></div>
             <div class="hub-card" data-cat="emotion" style="position:relative;" onclick="openDifficultyScreen('emparts','👁️','פנים ורגשות')"><div class="hub-icon">👁️</div><div class="hub-title">פנים ורגשות</div></div>
             <div class="hub-card" data-cat="emotion" style="position:relative;" onclick="openDifficultyScreen('sharing','🤝','לחלוק ולהצליח')"><span class="star-badge" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🤝</div><div class="hub-title">לחלוק ולהצליח</div></div>
+            <div class="hub-card" data-cat="emotion" style="position:relative;" onclick="openDifficultyScreen('growth','🌱','לגלות ולצמוח')"><span class="star-badge" data-game="growth" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🌱</div><div class="hub-title">לגלות ולצמוח</div></div>
             <div class="hub-card" data-cat="emotion" style="position:relative;" onclick="openDifficultyScreen('goodbad','👍','טוב או לא טוב?')"><span class="star-badge" data-game="goodbad" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">👍</div><div class="hub-title">טוב או לא טוב?</div></div>
             <div class="hub-card" data-cat="emotion" style="position:relative;" onclick="openDifficultyScreen('towertalk', '🧱', 'מגדל קוביות')"><span class="star-badge" data-game="towertalk" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🧱</div><div class="hub-title">מגדל קוביות</div></div>
             <div class="hub-card" data-cat="emotion" style="position:relative;" onclick="openDifficultyScreen('cooppuzzle', '🧩', 'פאזל משותף')"><span class="star-badge" data-game="cooppuzzle" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🧩</div><div class="hub-title">פאזל משותף</div></div>
@@ -1838,7 +1840,7 @@
     <div id="feedback-layer" class="hidden feedback-icon"></div>
 
     <script>
-        const bgIcons = { 'goodbad': ['👍','👎','❤️','😊'], 'sharing': ['🤝','❤️','🌟','🎁'], 'memory': ['🧠','💭','💡'], 'tracing': ['✏️','🎨','📐'], 'counting': ['🔢','🧮','➕'], 'sequence': ['🔄','✨','🎯'], 'fly': ['🪰','💨'], 'cop': ['🚓','🚨'], 'diff': ['🔎','👀'], 'oddone': ['🍎','🐶','🚗'], 'missing': ['A','B','C'], 'tools': ['🔨','🔧','🔩'], 'context': ['🧩','🖼️','🎨'], 'vparts': ['🚗','✈️','🚂','⛵','🚁'], 'habitat': ['🏠','🌳','🌊'], 'shadow': ['👤','🌑','👀'], 'halfhalf': ['✂️','🎨','🧩'], 'chrono': ['⏳','📅','🔄'], 'bigger': ['⚖️','🐘','🐭','🔢'], 'emotion': ['😄','😢','😡','😱'], 'faces': ['📸','❤️','👨‍👩‍👧‍👦','🤳'], 'mgamish': ['🤸','💪','🌟','🤸‍♂️'], 'firstletter': ['🔡','🔤','📖','✏️'], 'numwar': ['⚔️','🃏','🔢','⭐'], 'towertalk': ['🧱','🏗️','🏢'], 'cooppuzzle': ['🧩','🖼️','🎨','📸'], 'tidyup': ['🧼','🧸','🧺','🧹'], 'patterns': ['🔴','🔵','💛','🟩','🔺','🌟'], 'origins': ['🐄','🥛','🐑','🐔','🐝','🍞'], 'families': ['🐕','🐶','🐈','🐱','🐥','🦁'], 'diffscene': ['🖼️','🔍','👀'], 'diffvideo': ['🎬','🔎','👀'], 'whatneeds': ['🤔','❓','💡','🔍','👁️','🌟'], 'shape': ['🖼️','🧩','❓'] };
+        const bgIcons = { 'goodbad': ['👍','👎','❤️','😊'], 'sharing': ['🤝','❤️','🌟','🎁'], 'growth': ['🌱','🔍','💪','🌟'], 'memory': ['🧠','💭','💡'], 'tracing': ['✏️','🎨','📐'], 'counting': ['🔢','🧮','➕'], 'sequence': ['🔄','✨','🎯'], 'fly': ['🪰','💨'], 'cop': ['🚓','🚨'], 'diff': ['🔎','👀'], 'oddone': ['🍎','🐶','🚗'], 'missing': ['A','B','C'], 'tools': ['🔨','🔧','🔩'], 'context': ['🧩','🖼️','🎨'], 'vparts': ['🚗','✈️','🚂','⛵','🚁'], 'habitat': ['🏠','🌳','🌊'], 'shadow': ['👤','🌑','👀'], 'halfhalf': ['✂️','🎨','🧩'], 'chrono': ['⏳','📅','🔄'], 'bigger': ['⚖️','🐘','🐭','🔢'], 'emotion': ['😄','😢','😡','😱'], 'faces': ['📸','❤️','👨‍👩‍👧‍👦','🤳'], 'mgamish': ['🤸','💪','🌟','🤸‍♂️'], 'firstletter': ['🔡','🔤','📖','✏️'], 'numwar': ['⚔️','🃏','🔢','⭐'], 'towertalk': ['🧱','🏗️','🏢'], 'cooppuzzle': ['🧩','🖼️','🎨','📸'], 'tidyup': ['🧼','🧸','🧺','🧹'], 'patterns': ['🔴','🔵','💛','🟩','🔺','🌟'], 'origins': ['🐄','🥛','🐑','🐔','🐝','🍞'], 'families': ['🐕','🐶','🐈','🐱','🐥','🦁'], 'diffscene': ['🖼️','🔍','👀'], 'diffvideo': ['🎬','🔎','👀'], 'whatneeds': ['🤔','❓','💡','🔍','👁️','🌟'], 'shape': ['🖼️','🧩','❓'] };
         function setAppBackground(theme) {
             let wasCalm = D.body.classList.contains('calm-mode');
             D.body.className = 'bg-' + theme + (wasCalm ? ' calm-mode' : '');
@@ -2114,7 +2116,7 @@
         
         function openDifficultyScreen(gameId, icon, title) {
             playClickSound(); hideAllScreens(); setAppBackground(gameId); currentGameMode = gameId;
-            if(gameId === 'emotion' || gameId === 'emparts' || gameId === 'sharing' || gameId === 'goodbad' || gameId === 'towertalk' || gameId === 'cooppuzzle' || gameId === 'tidyup' || gameId === 'whatneeds' || gameId === 'calm' || gameId === 'sounds' || gameId === 'feelwhen') {
+            if(gameId === 'emotion' || gameId === 'emparts' || gameId === 'sharing' || gameId === 'growth' || gameId === 'goodbad' || gameId === 'towertalk' || gameId === 'cooppuzzle' || gameId === 'tidyup' || gameId === 'whatneeds' || gameId === 'calm' || gameId === 'sounds' || gameId === 'feelwhen') {
                 startGameEngine(1); // עוקף את מסך הרמות
                 return;
             }
@@ -2144,7 +2146,7 @@
             // Force 100svh height for cooperative sharing and turn-taking modes, clear for others
             var agc = get('active-game-container');
             if (agc) {
-                if (currentGameMode === 'sharing' || currentGameMode === 'goodbad' || currentGameMode === 'diffscene' || currentGameMode === 'diffvideo' || currentGameMode === 'numwar' || currentGameMode === 'towertalk' || currentGameMode === 'cooppuzzle' || currentGameMode === 'tidyup') {
+                if (currentGameMode === 'sharing' || currentGameMode === 'growth' || currentGameMode === 'goodbad' || currentGameMode === 'diffscene' || currentGameMode === 'diffvideo' || currentGameMode === 'numwar' || currentGameMode === 'towertalk' || currentGameMode === 'cooppuzzle' || currentGameMode === 'tidyup') {
                     agc.style.height = '100svh';
                 } else {
                     agc.style.height = '';
@@ -2156,7 +2158,8 @@
             get('active-game-title').style.display = '';
             get('active-progress-container').style.display = '';
 
-            activeGameRounds = (currentGameMode === 'sharing') ? 10 : 
+            activeGameRounds = (currentGameMode === 'sharing') ? 10 :
+                               (currentGameMode === 'growth' ? 10 :
                                (currentGameMode === 'goodbad' ? 15 : 
                                (currentGameMode === 'numwar' ? 5 : 
                                (currentGameMode === 'towertalk' ? 5 : 
@@ -2165,7 +2168,7 @@
                                (currentGameMode === 'diffvideo' ? 6 :
                                (currentGameMode === 'routine' ? routineData.length :
                                (currentGameMode === 'assemble' ? 3 :
-                               ((currentGameMode === 'memory') ? (level === 1 ? 3 : (level === 2 ? 4 : 5)) : 4)))))))));
+                               ((currentGameMode === 'memory') ? (level === 1 ? 3 : (level === 2 ? 4 : 5)) : 4))))))))));
 
 
             let pContainer = get('active-progress-container'); pContainer.innerHTML='';
@@ -2195,6 +2198,7 @@
                 else if(currentGameMode === 'mgamish') initMgGame();
                 else if(currentGameMode === 'firstletter') initFirstLetterGame();
                 else if(currentGameMode === 'sharing') initSharingGame();
+                else if(currentGameMode === 'growth') initGrowthGame();
                 else if(currentGameMode === 'goodbad') initGoodBadGame();
                 else if(currentGameMode === 'numwar') initNumwarGame();
                 else if(currentGameMode === 'towertalk') initTowerGame();
@@ -2223,7 +2227,7 @@
             playClickSound(); hideAllScreens();
             var agc = get('active-game-container');
             if (agc) agc.style.height = '';
-            if(currentGameMode === 'emotion' || currentGameMode === 'emparts' || currentGameMode === 'missing' || currentGameMode === 'mgamish' || currentGameMode === 'firstletter' || currentGameMode === 'sharing' || currentGameMode === 'goodbad' || currentGameMode === 'numwar' || currentGameMode === 'towertalk' || currentGameMode === 'cooppuzzle' || currentGameMode === 'tidyup' || currentGameMode === 'patterns' || currentGameMode === 'origins' || currentGameMode === 'families' || currentGameMode === 'whatneeds' || currentGameMode === 'calm' || currentGameMode === 'sounds' || currentGameMode === 'feelwhen' || currentGameMode === 'assemble') { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); } else if(currentGameMode === 'faces') { show('faces-mode-screen'); } else { show('unified-diff-screen'); }
+            if(currentGameMode === 'emotion' || currentGameMode === 'emparts' || currentGameMode === 'missing' || currentGameMode === 'mgamish' || currentGameMode === 'firstletter' || currentGameMode === 'sharing' || currentGameMode === 'growth' || currentGameMode === 'goodbad' || currentGameMode === 'numwar' || currentGameMode === 'towertalk' || currentGameMode === 'cooppuzzle' || currentGameMode === 'tidyup' || currentGameMode === 'patterns' || currentGameMode === 'origins' || currentGameMode === 'families' || currentGameMode === 'whatneeds' || currentGameMode === 'calm' || currentGameMode === 'sounds' || currentGameMode === 'feelwhen' || currentGameMode === 'assemble') { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); } else if(currentGameMode === 'faces') { show('faces-mode-screen'); } else { show('unified-diff-screen'); }
         }
         function updateProgressUI() { for(let i=0;i<activeGameRounds;i++) { let d = get(`active-progress-container-dot-${i}`); if(d){ if(i < currentStep) d.classList.add('fill'); else d.classList.remove('fill'); } } }
 
@@ -2277,7 +2281,7 @@
             var agc = get('active-game-container');
             if (agc) agc.style.height = '';
             if(currentGameMode==='missing') { show('missing-lang-screen'); }
-            else if(currentGameMode==='emotion' || currentGameMode==='emparts' || currentGameMode==='mgamish' || currentGameMode==='firstletter' || currentGameMode==='sharing' || currentGameMode==='goodbad' || currentGameMode==='numwar' || currentGameMode==='towertalk' || currentGameMode==='cooppuzzle' || currentGameMode==='tidyup' || currentGameMode==='patterns' || currentGameMode==='origins' || currentGameMode==='families' || currentGameMode==='whatneeds' || currentGameMode==='calm' || currentGameMode==='sounds' || currentGameMode==='feelwhen' || currentGameMode==='assemble') { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); }
+            else if(currentGameMode==='emotion' || currentGameMode==='emparts' || currentGameMode==='mgamish' || currentGameMode==='firstletter' || currentGameMode==='sharing' || currentGameMode==='growth' || currentGameMode==='goodbad' || currentGameMode==='numwar' || currentGameMode==='towertalk' || currentGameMode==='cooppuzzle' || currentGameMode==='tidyup' || currentGameMode==='patterns' || currentGameMode==='origins' || currentGameMode==='families' || currentGameMode==='whatneeds' || currentGameMode==='calm' || currentGameMode==='sounds' || currentGameMode==='feelwhen' || currentGameMode==='assemble') { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); }
             else if(currentGameMode==='faces') { show('faces-mode-screen'); }
             else {
                 try {
@@ -3210,36 +3214,39 @@
                 name: 'icecream',
                 title: 'הרכבת גלידה 🍨',
                 img: 'images/assemble/icecream.png',
-                audioWin: 'יצאה לנו גלידה טעימה! כל הכבוד רועי!',
+                audioWin: 'assemble/icecream_win.mp3',
+                audioWinText: 'יצאה לנו גלידה טעימה! כל הכבוד רועי!',
                 parts: [
-                    { id: 'cone', text: 'המשולש החום', shapeEmoji: '📐', clip: 'polygon(30% 50%, 70% 50%, 50% 90%)' },
-                    { id: 'pink', text: 'העיגול הוורוד', shapeEmoji: '🔴', color: '#ffb7c5', clip: 'circle(20% at 50% 46%)' },
-                    { id: 'yellow', text: 'העיגול הצהוב', shapeEmoji: '🟡', clip: 'circle(16% at 50% 26%)' },
-                    { id: 'cherry', text: 'הדובדבן האדום', shapeEmoji: '🍒', clip: 'circle(7% at 50% 11%)' }
+                    { id: 'cone', text: 'המשולש החום', img: 'images/assemble/parts/icecream_cone.png', imgFull: 'images/assemble/parts/icecream_cone_full.png', audio: 'assemble/icecream_cone.mp3' },
+                    { id: 'pink', text: 'העיגול הוורוד', img: 'images/assemble/parts/icecream_pink.png', imgFull: 'images/assemble/parts/icecream_pink_full.png', audio: 'assemble/icecream_pink.mp3' },
+                    { id: 'yellow', text: 'העיגול הצהוב', img: 'images/assemble/parts/icecream_yellow.png', imgFull: 'images/assemble/parts/icecream_yellow_full.png', audio: 'assemble/icecream_yellow.mp3' },
+                    { id: 'cherry', text: 'הדובדבן האדום', img: 'images/assemble/parts/icecream_cherry.png', imgFull: 'images/assemble/parts/icecream_cherry_full.png', audio: 'assemble/icecream_cherry.mp3' }
                 ]
             },
             {
                 name: 'truck',
                 title: 'הרכבת משאית 🚚',
                 img: 'images/assemble/truck.png',
-                audioWin: 'איזו משאית חזקה! כל הכבוד רועי!',
+                audioWin: 'assemble/truck_win.mp3',
+                audioWinText: 'איזו משאית חזקה! כל הכבוד רועי!',
                 parts: [
-                    { id: 'trailer', text: 'המלבן הצהוב', shapeEmoji: '🟨', clip: 'polygon(35% 25%, 85% 25%, 85% 65%, 35% 65%)' },
-                    { id: 'cabin', text: 'הריבוע הכחול', shapeEmoji: '🟦', clip: 'polygon(15% 35%, 35% 35%, 35% 65%, 15% 65%)' },
-                    { id: 'wheel_front', text: 'הגלגל הקדמי', shapeEmoji: '⚫', clip: 'circle(9% at 27% 72%)' },
-                    { id: 'wheel_back', text: 'הגלגל האחורי', shapeEmoji: '⚫', clip: 'circle(9% at 73% 72%)' }
+                    { id: 'trailer', text: 'המלבן הצהוב', img: 'images/assemble/parts/truck_trailer.png', imgFull: 'images/assemble/parts/truck_trailer_full.png', audio: 'assemble/truck_trailer.mp3' },
+                    { id: 'cabin', text: 'הריבוע הכחול', img: 'images/assemble/parts/truck_cabin.png', imgFull: 'images/assemble/parts/truck_cabin_full.png', audio: 'assemble/truck_cabin.mp3' },
+                    { id: 'wheel_front', text: 'הגלגל הקדמי', img: 'images/assemble/parts/truck_wheel_front.png', imgFull: 'images/assemble/parts/truck_wheel_front_full.png', audio: 'assemble/truck_wheel_front.mp3' },
+                    { id: 'wheel_back', text: 'הגלגל האחורי', img: 'images/assemble/parts/truck_wheel_back.png', imgFull: 'images/assemble/parts/truck_wheel_back_full.png', audio: 'assemble/truck_wheel_back.mp3' }
                 ]
             },
             {
                 name: 'plane',
                 title: 'הרכבת מטוס ✈️',
                 img: 'images/assemble/plane.png',
-                audioWin: 'הנה מטוס שטס בשמיים! כל הכבוד רועי!',
+                audioWin: 'assemble/plane_win.mp3',
+                audioWinText: 'הנה מטוס שטס בשמיים! כל הכבוד רועי!',
                 parts: [
-                    { id: 'body', text: 'גוף המטוס האפור', shapeEmoji: '⬜', clip: 'ellipse(35% 12% at 50% 50%)' },
-                    { id: 'wing', text: 'הכנף הכחולה', shapeEmoji: '📐', clip: 'polygon(35% 50%, 65% 50%, 55% 82%, 35% 82%)' },
-                    { id: 'tail', text: 'זנב המטוס האדום', shapeEmoji: '🔺', clip: 'polygon(70% 50%, 85% 25%, 85% 50%)' },
-                    { id: 'propeller', text: 'הפרופלור הצהוב', shapeEmoji: '❌', clip: 'ellipse(5% 18% at 14% 50%)' }
+                    { id: 'body', text: 'גוף המטוס האפור', img: 'images/assemble/parts/plane_body.png', imgFull: 'images/assemble/parts/plane_body_full.png', audio: 'assemble/plane_body.mp3' },
+                    { id: 'wing', text: 'הכנף הכחולה', img: 'images/assemble/parts/plane_wing.png', imgFull: 'images/assemble/parts/plane_wing_full.png', audio: 'assemble/plane_wing.mp3' },
+                    { id: 'tail', text: 'זנב המטוס האדום', img: 'images/assemble/parts/plane_tail.png', imgFull: 'images/assemble/parts/plane_tail_full.png', audio: 'assemble/plane_tail.mp3' },
+                    { id: 'propeller', text: 'הפרופלור הצהוב', img: 'images/assemble/parts/plane_propeller.png', imgFull: 'images/assemble/parts/plane_propeller_full.png', audio: 'assemble/plane_propeller.mp3' }
                 ]
             }
         ];
@@ -3287,10 +3294,12 @@
             let qText = `בחר את ${part.text} והנח אותו בלוח`;
             let qEl = get('assemble-question');
             if (qEl) qEl.textContent = qText + ' 🔊';
-            speakLetter(qText, 'he');
+
+            // Play offline/local voice clip with SpeechSynthesis fallback
+            playCoopAudio(part.audio, qText);
 
             qEl.onclick = () => {
-                speakLetter(qText, 'he');
+                playCoopAudio(part.audio, qText);
             };
 
             // Render Choices
@@ -3318,7 +3327,9 @@
                 card.style.cssText = 'background:#fff; border:4px solid #cfd8dc; border-radius:24px; width:clamp(85px, 22vw, 115px); height:clamp(85px, 22vw, 115px); cursor:pointer; box-shadow:0 6px 14px rgba(0,0,0,0.06); transition:all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275); display:flex; flex-direction:column; align-items:center; justify-content:center; overflow:hidden; position:relative;';
                 
                 card.innerHTML = `
-                    <div style="font-size:clamp(34px, 9vw, 48px); line-height:1; margin-bottom:6px; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.1));">${ch.shapeEmoji || '❓'}</div>
+                    <div style="width:clamp(45px, 12vw, 65px); height:clamp(45px, 12vw, 65px); margin-bottom:6px; display:flex; align-items:center; justify-content:center;">
+                        <img src="${ch.img}" alt="${ch.text}" style="max-width:100%; max-height:100%; object-fit:contain; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.1));" />
+                    </div>
                     <div style="font-size:clamp(12px, 3vw, 14px); font-weight:900; color:#455a64; text-align:center; padding:0 6px; direction:rtl; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; width:100%;">${ch.text}</div>
                 `;
 
@@ -3353,11 +3364,11 @@
                 if (container) {
                     let isCalm = ((window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) || roySettings.calmMode);
                     let imgEl = D.createElement('img');
-                    imgEl.src = item.img;
+                    imgEl.src = part.imgFull;
                     if (isCalm) {
-                        imgEl.style.cssText = `position:absolute; top:0; left:0; width:100%; height:100%; object-fit:contain; clip-path:${part.clip}; -webkit-clip-path:${part.clip};`;
+                        imgEl.style.cssText = `position:absolute; top:0; left:0; width:100%; height:100%; object-fit:contain;`;
                     } else {
-                        imgEl.style.cssText = `position:absolute; top:0; left:0; width:100%; height:100%; object-fit:contain; clip-path:${part.clip}; -webkit-clip-path:${part.clip}; transition: transform 0.4s ease, opacity 0.4s ease; transform: scale(0.6); opacity: 0;`;
+                        imgEl.style.cssText = `position:absolute; top:0; left:0; width:100%; height:100%; object-fit:contain; transition: transform 0.4s ease, opacity 0.4s ease; transform: scale(0.6); opacity: 0;`;
                     }
                     container.appendChild(imgEl);
                     if (!isCalm) {
@@ -3374,9 +3385,9 @@
                     if (assemblePartIndex >= item.parts.length) {
                         isProcessing = true;
                         let qEl = get('assemble-question');
-                        if (qEl) qEl.textContent = item.audioWin + ' 🎉';
+                        if (qEl) qEl.textContent = item.audioWinText + ' 🎉';
                         
-                        speakLetter(item.audioWin, 'he', function() {
+                        playCoopAudio(item.audioWin, item.audioWinText, function() {
                             isProcessing = false;
                             handleAnswer(true, null, loadAssembleRound, null);
                         });
@@ -3402,14 +3413,15 @@
 
                 isProcessing = true;
                 let fl = get('feedback-layer');
-                fl.innerHTML = `<span>🤔</span><div class="feedback-msg">בוא ננסה שוב, זה לא ${part.text}</div>`;
+                let errText = `בוא ננסה שוב, זה לא ${part.text}`;
+                fl.innerHTML = `<span>🤔</span><div class="feedback-msg">${errText}</div>`;
                 show('feedback-layer');
                 
-                speakLetter(`בוא ננסה שוב, זה לא ${part.text}`, 'he');
+                speakLetter(errText, 'he');
 
                 setTimeout(() => {
                     hide('feedback-layer');
-                    card.style.borderColor = '#e0e0e0';
+                    card.style.borderColor = '#cfd8dc';
                     card.style.background = '#fff';
                     card.style.transform = 'scale(1)';
                     isProcessing = false;
@@ -4476,6 +4488,116 @@
                     badImg:    'images/sharing_scenes/32_irgun_ishi/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/32_irgun_ishi/bechira_tova.webp'
                 },
+            ];
+            get('active-game-title').textContent = 'לחלוק ולהצליח 🤝';
+            sharingOrder = shuffle(createRange(SCENES.length));
+
+            function playAudioWithCallback(filename, onEnd, speakText) {
+                try {
+                    stopAllSpeech();
+                    var a = new Audio('./audio/' + filename);
+                    _currentAudio = a;
+                    var settled = false;
+                    var onEndCalled = false;
+                    var safeOnEnd = function() {
+                        if (onEndCalled) return;
+                        onEndCalled = true;
+                        if (onEnd) onEnd();
+                    };
+                    var spoken = false;
+                    function useTts() {
+                        if (settled) return;
+                        settled = true;
+                        speakLetter(speakText, 'he', safeOnEnd);
+                    }
+                    if (onEnd) {
+                        var fb = setTimeout(function(){ if(!settled){ settled=true; safeOnEnd(); } }, 8000);
+                        a.onended = function(){ if(!settled){ settled=true; clearTimeout(fb); safeOnEnd(); } };
+                        a.onerror  = function(){ clearTimeout(fb); useTts(); };
+                    } else {
+                        a.onerror = function(){ useTts(); };
+                    }
+                    a.play().catch(function(){ useTts(); });
+                } catch(e) { safeOnEnd(); }
+            }
+
+            function showScene(idx) {
+                if (idx >= SCENES.length) return;
+                var scene = SCENES[sharingOrder[idx]];
+                var goodOnRight = (Math.random() > 0.5);
+                var leftImg  = goodOnRight ? scene.badImg  : scene.goodImg;
+                var rightImg = goodOnRight ? scene.goodImg : scene.badImg;
+
+                var ws = get('game-workspace');
+                ws.innerHTML =
+                    '<div class="sharing-scene">' +
+                    '<p class="sharing-question" id="sh-q">' + scene.question + ' 🔊</p>' +
+                    renderMediaHTML('sh-situation', 'sharing-situation-img', scene.situation) +
+                    '<div class="sharing-img-choices" id="sh-choices">' +
+                    '<button class="sharing-img-btn" id="sh-left">' + renderMediaHTML('', '', leftImg) + '</button>' +
+                    '<button class="sharing-img-btn" id="sh-right">' + renderMediaHTML('', '', rightImg) + '</button>' +
+                    '</div></div>';
+
+                playAudioWithCallback(scene.qAudio, null, scene.speakQ);
+                get('sh-q').onclick = function(){ playAudioWithCallback(scene.qAudio, null, scene.speakQ); };
+
+                function onChoice(isCorrect, clickedBtn) {
+                    if (isProcessing) return;
+                    isProcessing = true;
+                    get('sh-choices').querySelectorAll('button').forEach(function(b){ b.disabled = true; });
+                    if (isCorrect) {
+                        clickedBtn.classList.add('correct-flash');
+                        var sitEl = get('sh-situation');
+                        if (sitEl) {
+                            var newMedia = renderMediaHTML('sh-situation', 'sharing-situation-img', scene.video || scene.goodImg);
+                            sitEl.outerHTML = newMedia;
+                            
+                            var newSitEl = get('sh-situation');
+                            if (newSitEl && newSitEl.tagName === 'VIDEO') {
+                                newSitEl.onerror = function() {
+                                    console.warn('Video failed to load/play, falling back to static success image');
+                                    var imgFallback = renderMediaHTML('sh-situation', 'sharing-situation-img', scene.goodImg);
+                                    var currSit = get('sh-situation');
+                                    if (currSit) currSit.outerHTML = imgFallback;
+                                };
+                                newSitEl.play().catch(function(err) {
+                                    console.warn('Explicit play() failed:', err);
+                                });
+                            }
+                        }
+                        playAudioWithCallback(scene.fbAudio, function(){
+                            isProcessing = false;
+                            handleAnswer(true, null, function(){ showScene(currentStep); }, null);
+                        }, scene.speakFb);
+                    } else {
+                        isProcessing = false;
+                        clickedBtn.classList.add('wrong-flash');
+                        var sitEl = get('sh-situation');
+                        if (sitEl) {
+                            var newMedia = renderMediaHTML('sh-situation', 'sharing-situation-img', scene.badImg);
+                            sitEl.outerHTML = newMedia;
+                        }
+                        handleAnswer(false, clickedBtn, null, function(){
+                            clickedBtn.classList.remove('wrong-flash', 'dimmed');
+                            var sitEl2 = get('sh-situation');
+                            if (sitEl2) {
+                                var basicMedia = renderMediaHTML('sh-situation', 'sharing-situation-img', scene.situation);
+                                sitEl2.outerHTML = basicMedia;
+                            }
+                            get('sh-choices').querySelectorAll('button').forEach(function(b){ b.disabled = false; });
+                        });
+                    }
+                }
+                get('sh-left').onclick  = function(){ onChoice(goodOnRight ? false : true,  get('sh-left')); };
+                get('sh-right').onclick = function(){ onChoice(goodOnRight ? true : false, get('sh-right')); };
+            }
+            showScene(0);
+        }
+
+
+        // ── לגלות ולצמוח ──
+        function initGrowthGame() {
+            const SCENES = [
                 {
                     question:  'מגדל הקוביות של עומר התמוטט. מה יעשה עומר?',
                     qAudio:    'sharing/q33.mp3',
@@ -5107,8 +5229,8 @@
                     goodImg:   'images/sharing_scenes/95_sheela_besiyur/bechira_tova.webp'
                 }
             ];
-            get('active-game-title').textContent = 'לחלוק ולהצליח 🤝';
-            sharingOrder = shuffle(createRange(SCENES.length));
+            get('active-game-title').textContent = 'לגלות ולצמוח 🌱';
+            growthOrder = shuffle(createRange(SCENES.length));
 
             function playAudioWithCallback(filename, onEnd, speakText) {
                 try {
@@ -5141,7 +5263,7 @@
 
             function showScene(idx) {
                 if (idx >= SCENES.length) return;
-                var scene = SCENES[sharingOrder[idx]];
+                var scene = SCENES[growthOrder[idx]];
                 var goodOnRight = (Math.random() > 0.5);
                 var leftImg  = goodOnRight ? scene.badImg  : scene.goodImg;
                 var rightImg = goodOnRight ? scene.goodImg : scene.badImg;
