@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-07-10-v56-split-growth-game -->
+<!DOCTYPE html><!-- build: 2026-07-10-v57-pointer-drag-drop -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -3324,23 +3324,126 @@
 
             finalChoices.forEach(ch => {
                 let card = D.createElement('div');
-                card.style.cssText = 'background:#fff; border:4px solid #cfd8dc; border-radius:24px; width:clamp(85px, 22vw, 115px); height:clamp(85px, 22vw, 115px); cursor:pointer; box-shadow:0 6px 14px rgba(0,0,0,0.06); transition:all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275); display:flex; flex-direction:column; align-items:center; justify-content:center; overflow:hidden; position:relative;';
+                card.style.cssText = 'background:#fff; border:4px solid #cfd8dc; border-radius:24px; width:clamp(85px, 22vw, 115px); height:clamp(85px, 22vw, 115px); cursor:pointer; box-shadow:0 6px 14px rgba(0,0,0,0.06); transition:all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275); display:flex; flex-direction:column; align-items:center; justify-content:center; overflow:hidden; position:relative; touch-action:none;';
                 
                 card.innerHTML = `
-                    <div style="width:clamp(45px, 12vw, 65px); height:clamp(45px, 12vw, 65px); margin-bottom:6px; display:flex; align-items:center; justify-content:center;">
+                    <div style="width:clamp(45px, 12vw, 65px); height:clamp(45px, 12vw, 65px); margin-bottom:6px; display:flex; align-items:center; justify-content:center; pointer-events:none;">
                         <img src="${ch.img}" alt="${ch.text}" style="max-width:100%; max-height:100%; object-fit:contain; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.1));" />
                     </div>
-                    <div style="font-size:clamp(12px, 3vw, 14px); font-weight:900; color:#455a64; text-align:center; padding:0 6px; direction:rtl; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; width:100%;">${ch.text}</div>
+                    <div style="font-size:clamp(12px, 3vw, 14px); font-weight:900; color:#455a64; text-align:center; padding:0 6px; direction:rtl; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; width:100%; pointer-events:none;">${ch.text}</div>
                 `;
 
                 card.onmouseover = () => { if (!isProcessing) { card.style.transform = 'scale(1.08) translateY(-4px)'; card.style.borderColor = '#2196F3'; card.style.boxShadow = '0 10px 20px rgba(33, 150, 243, 0.15)'; } };
                 card.onmouseout = () => { card.style.transform = 'scale(1)'; card.style.borderColor = '#cfd8dc'; card.style.boxShadow = '0 6px 14px rgba(0,0,0,0.06)'; };
-                
-                addTapHandler(card, function(e) {
-                    e.stopPropagation();
+
+                let startX = 0, startY = 0;
+                let currentX = 0, currentY = 0;
+                let hasMoved = false;
+
+                card.onpointerdown = (e) => {
                     if (isProcessing) return;
-                    onAssembleChoiceSelected(ch.id === part.id, card, ch);
-                });
+                    e.preventDefault();
+                    card.setPointerCapture(e.pointerId);
+
+                    startX = e.clientX;
+                    startY = e.clientY;
+                    currentX = 0;
+                    currentY = 0;
+                    hasMoved = false;
+
+                    card.style.transition = 'none';
+                    card.style.zIndex = '1000';
+                    card.style.transform = 'scale(1.1) translate3d(0, 0, 0)';
+                    card.style.boxShadow = '0 15px 30px rgba(33, 150, 243, 0.3)';
+                    card.style.borderColor = '#2196F3';
+
+                    card.onpointermove = (moveEv) => {
+                        currentX = moveEv.clientX - startX;
+                        currentY = moveEv.clientY - startY;
+
+                        if (Math.abs(currentX) > 8 || Math.abs(currentY) > 8) {
+                            hasMoved = true;
+                        }
+
+                        card.style.transform = `scale(1.1) translate3d(${currentX}px, ${currentY}px, 0)`;
+                    };
+
+                    card.onpointerup = (upEv) => {
+                        card.releasePointerCapture(upEv.pointerId);
+                        card.onpointermove = null;
+                        card.onpointerup = null;
+
+                        if (isProcessing) {
+                            card.style.transition = 'all 0.25s ease';
+                            card.style.zIndex = '';
+                            card.style.transform = 'scale(1) translate3d(0,0,0)';
+                            return;
+                        }
+
+                        if (!hasMoved) {
+                            // Simple Click/Tap fallback: trigger placement directly if correct
+                            card.style.transition = 'all 0.25s ease';
+                            card.style.zIndex = '';
+                            card.style.transform = 'scale(1) translate3d(0,0,0)';
+                            onAssembleChoiceSelected(ch.id === part.id, card, ch);
+                        } else {
+                            // Drag-and-drop validation
+                            let board = document.querySelector('.assemble-board');
+                            if (board) {
+                                let rect = board.getBoundingClientRect();
+                                let dropX = upEv.clientX;
+                                let dropY = upEv.clientY;
+
+                                if (dropX >= rect.left && dropX <= rect.right && dropY >= rect.top && dropY <= rect.bottom) {
+                                    if (ch.id === part.id) {
+                                        // CORRECT!
+                                        card.style.transition = 'all 0.25s ease';
+                                        card.style.opacity = '0';
+                                        card.style.transform = `scale(0.5) translate3d(${currentX}px, ${currentY}px, 0)`;
+                                        onAssembleChoiceSelected(true, card, ch);
+                                    } else {
+                                        // WRONG shape dropped inside board!
+                                        playErrorSound();
+                                        card.style.borderColor = '#F44336';
+                                        card.style.background = '#ffebee';
+                                        card.animate([
+                                            { transform: `scale(1.1) translate3d(${currentX}px, ${currentY}px, 0)` },
+                                            { transform: `scale(1.1) translate3d(${currentX - 10}px, ${currentY}px, 0)` },
+                                            { transform: `scale(1.1) translate3d(${currentX + 10}px, ${currentY}px, 0)` },
+                                            { transform: `scale(1.1) translate3d(${currentX - 5}px, ${currentY}px, 0)` },
+                                            { transform: `scale(1.1) translate3d(${currentX + 5}px, ${currentY}px, 0)` },
+                                            { transform: `scale(1.1) translate3d(${currentX}px, ${currentY}px, 0)` }
+                                        ], { duration: 300 });
+
+                                        isProcessing = true;
+                                        let fl = get('feedback-layer');
+                                        let errText = `בוא ננסה שוב, זה לא ${part.text}`;
+                                        fl.innerHTML = `<span>🤔</span><div class="feedback-msg">${errText}</div>`;
+                                        show('feedback-layer');
+                                        
+                                        speakLetter(errText, 'he');
+
+                                        setTimeout(() => {
+                                            hide('feedback-layer');
+                                            card.style.transition = 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                                            card.style.transform = 'scale(1) translate3d(0, 0, 0)';
+                                            card.style.borderColor = '#cfd8dc';
+                                            card.style.background = '#fff';
+                                            card.style.zIndex = '';
+                                            isProcessing = false;
+                                        }, 1500);
+                                    }
+                                } else {
+                                    // Dropped OUTSIDE board: animate home safely (no penalty)
+                                    card.style.transition = 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                                    card.style.transform = 'scale(1) translate3d(0, 0, 0)';
+                                    card.style.borderColor = '#cfd8dc';
+                                    card.style.zIndex = '';
+                                }
+                            }
+                        }
+                    };
+                };
 
                 choicesArea.appendChild(card);
             });
