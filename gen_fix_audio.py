@@ -334,6 +334,26 @@ FACES_EN = {
     "aba-savta-arya.mp3": "Aba, Savta and Arya",
 }
 
+# Object Assembly game - Hebrew phrases
+ASSEMBLE = {
+    "icecream_cone.mp3": "בחר את המשולש החום והנח אותו בלוח",
+    "icecream_pink.mp3": "בחר את העיגול הוורוד והנח אותו בלוח",
+    "icecream_yellow.mp3": "בחר את העיגול הצהוב והנח אותו בלוח",
+    "icecream_cherry.mp3": "בחר את הדובדבן האדום והנח אותו בלוח",
+    "icecream_win.mp3": f"יצאה לנו גלידה טעימה! {KOL} הַכָּבוֹד רוֹעִי!",
+    "truck_trailer.mp3": "בחר את המלבן הצהוב והנח אותו בלוח",
+    "truck_cabin.mp3": "בחר את הריבוע הכחול והנח אותו בלוח",
+    "truck_wheel_front.mp3": "בחר את הגלגל הקדמי והנח אותו בלוח",
+    "truck_wheel_back.mp3": "בחר את הגלגל האחורי והנח אותו בלוח",
+    "truck_win.mp3": f"איזו משאית חזקה! {KOL} הַכָּבוֹד רוֹעִי!",
+    "plane_body.mp3": "בחר את גוף המטוס האפור והנח אותו בלוח",
+    "plane_wing.mp3": "בחר את הכנף הכחולה והנח אותו בלוח",
+    "plane_tail.mp3": "בחר את זנב המטוס האדום והנח אותו בלוח",
+    "plane_propeller.mp3": "בחר את הפרופלור הצהוב והנח אותו בלוח",
+    "plane_win.mp3": f"הנה מטוס שטס בשמיים! {KOL} הַכָּבוֹד רוֹעִי!"
+}
+
+
 # First-letter game - English words (proper case, not ALL CAPS)
 FL_EN_WORDS = [
     "house", "door", "dog", "heart", "car", "snake", "elephant", "train", "horse",
@@ -354,6 +374,8 @@ for f, t in FACES_HE.items():
     JOBS.append((os.path.join(AUDIO, "he", f), t, "iw", False))
 for f, t in FACES_EN.items():
     JOBS.append((os.path.join(AUDIO, "en", f), t, "en", False))
+for f, t in ASSEMBLE.items():
+    JOBS.append((os.path.join(AUDIO, "assemble", f), t, "iw", False))
 for w in FL_EN_WORDS:
     JOBS.append((os.path.join(AUDIO, "firstletter", "en", f"word-{w}.mp3"), w, "en", True))
 
