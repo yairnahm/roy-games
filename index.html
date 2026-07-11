@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-07-11-v74-winners-dragdrop-fixes -->
+<!DOCTYPE html><!-- build: 2026-07-11-v75-detective-game -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -2333,6 +2333,7 @@
                                (currentGameMode === 'freeze' ? 3 :
                                (currentGameMode === 'rescue' ? 3 :
                                (currentGameMode === 'candle' ? 3 :
+                               (currentGameMode === 'detective' ? 3 :
                                (currentGameMode === 'wc_sort' ? 3 :
                                (currentGameMode === 'wc_freeze' ? 3 :
                                (currentGameMode === 'wc_tape' ? 3 :
@@ -2343,7 +2344,7 @@
                                (currentGameMode === 'wc_museum' ? 4 :
                                (currentGameMode === 'wc_bridge' ? 3 :
                                (currentGameMode === 'wc_key' ? 3 :
-                               ((currentGameMode === 'memory') ? (level === 1 ? 3 : (level === 2 ? 4 : 5)) : 4))))))))))))))))))))))));
+                               ((currentGameMode === 'memory') ? (level === 1 ? 3 : (level === 2 ? 4 : 5)) : 4)))))))))))))))))))))))));
 
 
             let pContainer = get('active-progress-container'); pContainer.innerHTML='';
@@ -2395,6 +2396,7 @@
                 else if(currentGameMode === 'freeze') initFreezeGame();
                 else if(currentGameMode === 'rescue') initRescueGame();
                 else if(currentGameMode === 'candle') initCandleGame();
+                else if(currentGameMode === 'detective') initDetectiveGame();
                 else if(currentGameMode === 'wc_sort') initWcSortGame();
                 else if(currentGameMode === 'wc_freeze') initWcFreezeGame();
                 else if(currentGameMode === 'wc_tape') initWcTapeGame();
@@ -2414,6 +2416,7 @@
             if (typeof clearRescueTimers === 'function') clearRescueTimers();
             if (typeof clearCandleTimers === 'function') clearCandleTimers();
             if (typeof clearWcTimers === 'function') clearWcTimers();
+            if (typeof clearDetectiveTimers === 'function') clearDetectiveTimers();
             if (typeof diffvideoTimer1 !== 'undefined' && diffvideoTimer1) clearTimeout(diffvideoTimer1);
             if (typeof diffvideoTimer2 !== 'undefined' && diffvideoTimer2) clearTimeout(diffvideoTimer2);
             if (typeof diffvideoTimerInterval !== 'undefined' && diffvideoTimerInterval) clearInterval(diffvideoTimerInterval);
@@ -5287,6 +5290,406 @@
                 });
             }
         }
+
+        // ==========================================
+        // הבלש רועי (Detective Roy)
+        // ==========================================
+        let detectivePlacedCount = 0;
+        let detectiveTargetCount = 3; // 3 in round 1, 4 in round 2, 5 in round 3
+        
+        function clearDetectiveTimers() {
+            isProcessing = false;
+            detectivePlacedCount = 0;
+        }
+
+        function initDetectiveGame() {
+            setAppBackground('create');
+            clearDetectiveTimers();
+            loadDetectiveRound();
+        }
+
+        function loadDetectiveRound() {
+            clearDetectiveTimers();
+            detectivePlacedCount = 0;
+            isProcessing = false;
+
+            // Puzzles configuration: SVGs and missing piece indices
+            let puzzles = [
+                {
+                    name: 'כלבלב חמוד 🐶',
+                    missing: [0, 4, 8], // 3 pieces missing
+                    audioWin: 'detective/win1.mp3',
+                    audioWinText: 'ראיתי איך ניסית שוב ושוב עד שמצאת את המקום — כל הכבוד על ההתמדה!',
+                    svg: `<svg viewBox="0 0 300 300" style="width:100%; height:100%; display:block;">
+                        <rect width="300" height="300" fill="#fff9c4" rx="15"/>
+                        <circle cx="150" cy="150" r="110" fill="#ffb74d"/>
+                        <ellipse cx="60" cy="120" rx="25" ry="50" fill="#a1887f" transform="rotate(-15, 60, 120)"/>
+                        <ellipse cx="240" cy="120" rx="25" ry="50" fill="#a1887f" transform="rotate(15, 240, 120)"/>
+                        <ellipse cx="150" cy="160" rx="65" ry="55" fill="#d7ccc8"/>
+                        <circle cx="120" cy="125" r="14" fill="#3e2723"/>
+                        <circle cx="120" cy="122" r="5" fill="#fff"/>
+                        <circle cx="180" cy="125" r="14" fill="#3e2723"/>
+                        <circle cx="180" cy="122" r="5" fill="#fff"/>
+                        <polygon points="135,160 165,160 150,175" fill="#3e2723"/>
+                        <path d="M 135 180 Q 150 190 165 180" stroke="#3e2723" stroke-width="4" fill="none" stroke-linecap="round"/>
+                        <path d="M 145 185 Q 150 205 155 185 Z" fill="#ff8a80"/>
+                        <path d="M 110 220 Q 150 235 190 220" stroke="#e53935" stroke-width="12" fill="none" stroke-linecap="round"/>
+                        <circle cx="150" cy="235" r="12" fill="#ffd54f"/>
+                    </svg>`
+                },
+                {
+                    name: 'רכבת מהירה 🚂',
+                    missing: [1, 3, 5, 7], // 4 pieces missing
+                    audioWin: 'detective/win2.mp3',
+                    audioWinText: 'איזה יופי של ריכוז ועבודה יפה! מצאת את כל החלקים בסבלנות רבה!',
+                    svg: `<svg viewBox="0 0 300 300" style="width:100%; height:100%; display:block;">
+                        <rect width="300" height="300" fill="#e0f7fa" rx="15"/>
+                        <circle cx="240" cy="80" r="15" fill="#b2ebf2"/>
+                        <circle cx="210" cy="70" r="10" fill="#b2ebf2"/>
+                        <rect x="40" y="160" width="130" height="70" fill="#ef5350" rx="4"/>
+                        <rect x="170" y="110" width="90" height="120" fill="#29b6f6" rx="6"/>
+                        <rect x="185" y="125" width="60" height="45" fill="#e0f7fa" rx="4"/>
+                        <rect x="65" y="110" width="25" height="50" fill="#37474f"/>
+                        <ellipse cx="77" cy="110" rx="18" ry="6" fill="#ef5350"/>
+                        <polygon points="40,190 20,220 40,220" fill="#ffca28"/>
+                        <circle cx="80" cy="240" r="24" fill="#37474f" stroke="#ffca28" stroke-width="6"/>
+                        <circle cx="80" cy="240" r="8" fill="#fff"/>
+                        <circle cx="140" cy="240" r="24" fill="#37474f" stroke="#ffca28" stroke-width="6"/>
+                        <circle cx="140" cy="240" r="8" fill="#fff"/>
+                        <circle cx="215" cy="240" r="24" fill="#37474f" stroke="#ffca28" stroke-width="6"/>
+                        <circle cx="215" cy="240" r="8" fill="#fff"/>
+                        <rect x="80" y="236" width="135" height="8" fill="#b0bec5" rx="3"/>
+                    </svg>`
+                },
+                {
+                    name: 'טירה קסומה 🏰',
+                    missing: [0, 2, 4, 6, 8], // 5 pieces missing
+                    audioWin: 'detective/win3.mp3',
+                    audioWinText: 'כל הכבוד על ההתמדה, רועי! המשכת לנסות עד שפתרת את כל הפאזל!',
+                    svg: `<svg viewBox="0 0 300 300" style="width:100%; height:100%; display:block;">
+                        <rect width="300" height="300" fill="#e1f5fe" rx="15"/>
+                        <circle cx="50" cy="65" r="22" fill="#ffd54f"/>
+                        <rect x="80" y="150" width="140" height="90" fill="#b0bec5"/>
+                        <rect x="90" y="135" width="20" height="20" fill="#90a4ae"/>
+                        <rect x="140" y="135" width="20" height="20" fill="#90a4ae"/>
+                        <rect x="190" y="135" width="20" height="20" fill="#90a4ae"/>
+                        <rect x="40" y="110" width="40" height="130" fill="#78909c"/>
+                        <polygon points="35,110 85,110 60,70" fill="#ef5350"/>
+                        <rect x="220" y="110" width="40" height="130" fill="#78909c"/>
+                        <polygon points="215,110 265,110 240,70" fill="#ef5350"/>
+                        <line x1="60" y1="70" x2="60" y2="45" stroke="#37474f" stroke-width="4"/>
+                        <polygon points="60,45 85,55 60,65" fill="#ffca28"/>
+                        <line x1="240" y1="70" x2="240" y2="45" stroke="#37474f" stroke-width="4"/>
+                        <polygon points="240,45 265,55 240,65" fill="#ffca28"/>
+                        <path d="M 125 240 L 125 195 A 25 25 0 0 1 175 195 L 175 240 Z" fill="#37474f"/>
+                        <rect x="52" y="135" width="16" height="30" rx="8" fill="#37474f"/>
+                        <rect x="232" y="135" width="16" height="30" rx="8" fill="#37474f"/>
+                    </svg>`
+                }
+            ];
+
+            let roundItem = puzzles[currentStep] || puzzles[0];
+            detectiveTargetCount = roundItem.missing.length;
+
+            let ws = get('game-workspace');
+            ws.innerHTML = `
+                <style>
+                    .detective-board-container {
+                        position: relative; width: 308px; height: 308px;
+                        background: #eceff1; border: 4px solid #78909c; border-radius: 20px;
+                        box-shadow: 0 10px 24px rgba(0,0,0,0.1);
+                        display: grid; grid-template-columns: repeat(3, 100px); grid-template-rows: repeat(3, 100px);
+                        margin: 0 auto 20px; overflow: hidden; gap: 0;
+                        user-select: none; touch-action: none;
+                    }
+                    .detective-cell {
+                        position: relative; width: 100px; height: 100px; box-sizing: border-box;
+                    }
+                    .detective-cell.target-slot {
+                        background: rgba(176, 190, 197, 0.4);
+                        border: 2px dashed #90a4ae;
+                        display: flex; align-items: center; justify-content: center;
+                    }
+                    .detective-cell.target-slot::after {
+                        content: '🔍'; font-size: 24px; opacity: 0.35;
+                    }
+                    .detective-slice-inner {
+                        position: absolute; width: 300px; height: 300px; pointer-events: none;
+                    }
+                    .detective-draggable-piece {
+                        position: relative; width: 96px; height: 96px;
+                        border: 3px solid #ffb74d; border-radius: 12px;
+                        background: #fff; box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+                        overflow: hidden; cursor: grab; z-index: 10;
+                        touch-action: none;
+                    }
+                    .detective-draggable-piece:active {
+                        cursor: grabbing;
+                    }
+                    .detective-tray {
+                        width: 100%; max-width: 460px; min-height: 120px;
+                        background: rgba(255,255,255,0.75); border: 3px solid #cfd8dc; border-radius: 20px;
+                        padding: 12px; box-sizing: border-box; margin: 0 auto;
+                        display: flex; gap: 15px; justify-content: center; align-items: center; flex-wrap: wrap;
+                    }
+                </style>
+
+                <div id="detective-question" style="font-size:clamp(18px,4.5vw,26px); font-weight:900; color:#37474f; text-align:center; direction:rtl; margin-bottom:12px; cursor:pointer; text-shadow:0 1px 2px rgba(255,255,255,0.8);">
+                    הבלש רועי: פותרים את פאזל הכלבלב! 🔍 🔊
+                </div>
+                
+                <div style="font-size:16px; font-weight:bold; text-align:center; color:#546e7a; margin-bottom:15px; direction:rtl;">
+                    השלם את ${detectiveTargetCount} החלקים החסרים בתמונה 🧩
+                </div>
+
+                <div class="detective-board-container" id="detective-board">
+                    <!-- Grid cells populated dynamically -->
+                </div>
+
+                <div class="detective-tray" id="detective-tray">
+                    <!-- Missing draggable pieces rendered here -->
+                </div>
+            `;
+
+            let titleEl = get('detective-question');
+            if (titleEl) {
+                titleEl.textContent = `הבלש רועי: ${roundItem.name} 🔍 🔊`;
+                titleEl.onclick = () => {
+                    playCoopAudio('detective/intro.mp3', 'הבלש רועי. פאזל תמונות מסתורי מחכה לך. גרור את החלקים החסרים למקומם המתאים.');
+                };
+            }
+
+            if (currentStep === 0) {
+                playCoopAudio('detective/intro.mp3', 'הבלש רועי. פאזל תמונות מסתורי מחכה לך. גרור את החלקים החסרים למקומם המתאים.');
+            }
+
+            // Populate the board
+            let board = get('detective-board');
+            let tray = get('detective-tray');
+
+            let draggablePiecesData = [];
+
+            for (let idx = 0; idx < 9; idx++) {
+                let r = Math.floor(idx / 3);
+                let c = idx % 3;
+
+                let cell = D.createElement('div');
+                cell.className = 'detective-cell';
+                cell.id = `detective-cell-${idx}`;
+
+                if (roundItem.missing.includes(idx)) {
+                    // This is a target empty slot
+                    cell.classList.add('target-slot');
+                    
+                    // Create data for the draggable piece
+                    draggablePiecesData.push({
+                        idx: idx,
+                        row: r,
+                        col: c,
+                        svgContent: roundItem.svg
+                    });
+                } else {
+                    // Already placed correctly
+                    cell.innerHTML = `
+                        <div class="detective-slice-inner" style="left: -${c * 100}px; top: -${r * 100}px;">
+                            ${roundItem.svg}
+                        </div>
+                    `;
+                }
+                board.appendChild(cell);
+            }
+
+            // Shuffle tray items
+            draggablePiecesData.sort(() => Math.random() - 0.5);
+
+            // Render tray items
+            draggablePiecesData.forEach(pData => {
+                let piece = D.createElement('div');
+                piece.className = 'detective-draggable-piece';
+                piece.id = `detective-piece-${pData.idx}`;
+                piece.style.width = '96px';
+                piece.style.height = '96px';
+                
+                // Outer scale relative to slot size (100px)
+                // Inside we align the SVG offset scaled by 96/100 = 0.96
+                piece.innerHTML = `
+                    <div style="position:absolute; width:288px; height:288px; left: -${pData.col * 96}px; top: -${pData.row * 96}px; pointer-events:none;">
+                        ${pData.svgContent}
+                    </div>
+                `;
+
+                bindDetectivePieceDrag(piece, pData.idx);
+                tray.appendChild(piece);
+            });
+        }
+
+        function bindDetectivePieceDrag(el, correctIdx) {
+            let startX = 0, startY = 0;
+            let currentX = 0, currentY = 0;
+            let isDragging = false;
+
+            el.addEventListener('pointerdown', function(e) {
+                if (isProcessing) return;
+                e.preventDefault();
+                el.setPointerCapture(e.pointerId);
+
+                // Lift z-index
+                el.style.zIndex = '1000';
+                el.style.position = 'absolute';
+
+                let rect = el.getBoundingClientRect();
+                startX = e.clientX;
+                startY = e.clientY;
+
+                // Position absolutely relative to workspace
+                let ws = get('game-workspace');
+                let wsRect = ws.getBoundingClientRect();
+                
+                currentX = rect.left - wsRect.left;
+                currentY = rect.top - wsRect.top;
+
+                el.style.left = currentX + 'px';
+                el.style.top = currentY + 'px';
+                isDragging = true;
+            });
+
+            el.addEventListener('pointermove', function(e) {
+                if (!isDragging) return;
+                e.preventDefault();
+
+                let dx = e.clientX - startX;
+                let dy = e.clientY - startY;
+
+                startX = e.clientX;
+                startY = e.clientY;
+
+                currentX += dx;
+                currentY += dy;
+
+                el.style.left = currentX + 'px';
+                el.style.top = currentY + 'px';
+            });
+
+            el.addEventListener('pointerup', function(e) {
+                if (!isDragging) return;
+                isDragging = false;
+                el.releasePointerCapture(e.pointerId);
+
+                // Check collision with correct target slot
+                let targetCell = get(`detective-cell-${correctIdx}`);
+                let ws = get('game-workspace');
+                
+                if (targetCell && ws) {
+                    let tRect = targetCell.getBoundingClientRect();
+                    let wsRect = ws.getBoundingClientRect();
+                    
+                    let targetX = tRect.left - wsRect.left;
+                    let targetY = tRect.top - wsRect.top;
+
+                    // Distance check (center snap collision)
+                    let dist = Math.hypot(currentX - targetX, currentY - targetY);
+                    
+                    if (dist < 45) {
+                        // Snap into correct slot!
+                        playClickSound();
+                        
+                        targetCell.innerHTML = '';
+                        targetCell.classList.remove('target-slot');
+                        
+                        // Append child with local coords reset
+                        el.style.position = 'absolute';
+                        el.style.left = '0px';
+                        el.style.top = '0px';
+                        el.style.width = '100px';
+                        el.style.height = '100px';
+                        el.style.border = 'none';
+                        el.style.borderRadius = '0';
+                        el.style.boxShadow = 'none';
+                        el.style.pointerEvents = 'none';
+                        el.style.zIndex = '2';
+                        
+                        let r = Math.floor(correctIdx / 3);
+                        let c = correctIdx % 3;
+                        
+                        let rounds = [
+                            { svg: puzzles => {} }, // populated dynamically based on puzzles data in load
+                        ];
+                        // Get puzzle SVG content from title attribute or global cache
+                        let puzzles = [
+                            `<rect width="300" height="300" fill="#fff9c4" rx="15"/><circle cx="150" cy="150" r="110" fill="#ffb74d"/><ellipse cx="60" cy="120" rx="25" ry="50" fill="#a1887f" transform="rotate(-15, 60, 120)"/><ellipse cx="240" cy="120" rx="25" ry="50" fill="#a1887f" transform="rotate(15, 240, 120)"/><ellipse cx="150" cy="160" rx="65" ry="55" fill="#d7ccc8"/><circle cx="120" cy="125" r="14" fill="#3e2723"/><circle cx="120" cy="122" r="5" fill="#fff"/><circle cx="180" cy="125" r="14" fill="#3e2723"/><circle cx="180" cy="122" r="5" fill="#fff"/><polygon points="135,160 165,160 150,175" fill="#3e2723"/><path d="M 135 180 Q 150 190 165 180" stroke="#3e2723" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M 145 185 Q 150 205 155 185 Z" fill="#ff8a80"/><path d="M 110 220 Q 150 235 190 220" stroke="#e53935" stroke-width="12" fill="none" stroke-linecap="round"/><circle cx="150" cy="235" r="12" fill="#ffd54f"/>`,
+                            `<rect width="300" height="300" fill="#e0f7fa" rx="15"/><circle cx="240" cy="80" r="15" fill="#b2ebf2"/><circle cx="210" cy="70" r="10" fill="#b2ebf2"/><rect x="40" y="160" width="130" height="70" fill="#ef5350" rx="4"/><rect x="170" y="110" width="90" height="120" fill="#29b6f6" rx="6"/><rect x="185" y="125" width="60" height="45" fill="#e0f7fa" rx="4"/><rect x="65" y="110" width="25" height="50" fill="#37474f"/><ellipse cx="77" cy="110" rx="18" ry="6" fill="#ef5350"/><polygon points="40,190 20,220 40,220" fill="#ffca28"/><circle cx="80" cy="240" r="24" fill="#37474f" stroke="#ffca28" stroke-width="6"/><circle cx="80" cy="240" r="8" fill="#fff"/><circle cx="140" cy="240" r="24" fill="#37474f" stroke="#ffca28" stroke-width="6"/><circle cx="140" cy="240" r="8" fill="#fff"/><circle cx="215" cy="240" r="24" fill="#37474f" stroke="#ffca28" stroke-width="6"/><circle cx="215" cy="240" r="8" fill="#fff"/><rect x="80" y="236" width="135" height="8" fill="#b0bec5" rx="3"/>`,
+                            `<rect width="300" height="300" fill="#e1f5fe" rx="15"/><circle cx="50" cy="65" r="22" fill="#ffd54f"/><rect x="80" y="150" width="140" height="90" fill="#b0bec5"/><rect x="90" y="135" width="20" height="20" fill="#90a4ae"/><rect x="140" y="135" width="20" height="20" fill="#90a4ae"/><rect x="190" y="135" width="20" height="20" fill="#90a4ae"/><rect x="40" y="110" width="40" height="130" fill="#78909c"/><polygon points="35,110 85,110 60,70" fill="#ef5350"/><rect x="220" y="110" width="40" height="130" fill="#78909c"/><polygon points="215,110 265,110 240,70" fill="#ef5350"/><line x1="60" y1="70" x2="60" y2="45" stroke="#37474f" stroke-width="4"/><polygon points="60,45 85,55 60,65" fill="#ffca28"/><line x1="240" y1="70" x2="240" y2="45" stroke="#37474f" stroke-width="4"/><polygon points="240,45 265,55 240,65" fill="#ffca28"/><path d="M 125 240 L 125 195 A 25 25 0 0 1 175 195 L 175 240 Z" fill="#37474f"/><rect x="52" y="135" width="16" height="30" rx="8" fill="#37474f"/><rect x="232" y="135" width="16" height="30" rx="8" fill="#37474f"/>`
+                        ];
+                        
+                        let currentSvgContent = puzzles[currentStep] || puzzles[0];
+                        
+                        el.innerHTML = `
+                            <div class="detective-slice-inner" style="left: -${c * 100}px; top: -${r * 100}px;">
+                                <svg viewBox="0 0 300 300" style="width:100%; height:100%; display:block;">
+                                    ${currentSvgContent}
+                                </svg>
+                            </div>
+                        `;
+                        targetCell.appendChild(el);
+                        
+                        detectivePlacedCount++;
+                        checkDetectiveWinState();
+                        return;
+                    }
+                }
+
+                // Shake element and return to tray if incorrect or missed
+                playErrorSound();
+                el.animate([
+                    { transform: 'translate(0, 0)' },
+                    { transform: 'translate(-8px, 0)' },
+                    { transform: 'translate(8px, 0)' },
+                    { transform: 'translate(0, 0)' }
+                ], { duration: 250 });
+
+                // Return to tray layout
+                setTimeout(() => {
+                    el.style.position = '';
+                    el.style.left = '';
+                    el.style.top = '';
+                    el.style.zIndex = '10';
+                    let tray = get('detective-tray');
+                    if (tray) {
+                        tray.appendChild(el);
+                    }
+                }, 260);
+            });
+        }
+
+        function checkDetectiveWinState() {
+            if (detectivePlacedCount >= detectiveTargetCount) {
+                isProcessing = true;
+                playSuccessSound();
+
+                let puzzlesInfo = [
+                    { audioWin: 'detective/win1.mp3', audioWinText: 'ראיתי איך ניסית שוב ושוב עד שמצאת את המקום — כל הכבוד על ההתמדה!' },
+                    { audioWin: 'detective/win2.mp3', audioWinText: 'איזה יופי של ריכוז ועבודה יפה! מצאת את כל החלקים בסבלנות רבה!' },
+                    { audioWin: 'detective/win3.mp3', audioWinText: 'כל הכבוד על ההתמדה, רועי! המשכת לנסות עד שפתרת את כל הפאזל!' }
+                ];
+                let info = puzzlesInfo[currentStep] || puzzlesInfo[0];
+
+                // Fun zoom bounce effect on solved board
+                let board = get('detective-board');
+                if (board) {
+                    board.animate([
+                        { transform: 'scale(1)' },
+                        { transform: 'scale(1.06)' },
+                        { transform: 'scale(1)' }
+                    ], { duration: 600, iterations: 2 });
+                }
+
+                playCoopAudio(info.audioWin, info.audioWinText, () => {
+                    isProcessing = false;
+                    handleAnswer(true, null, loadDetectiveRound, null);
+                });
+            }
+        }
+
 
 
         // ==========================================
