@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-07-11-v72-winners-category -->
+<!DOCTYPE html><!-- build: 2026-07-11-v73-winners-real-photos -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -5584,6 +5584,10 @@
                     מגדל התורות 🗼
                 </div>
                 <div style="width:min(85vw,360px); margin:0 auto; text-align:center;">
+                    <div style="display:flex; justify-content:center; gap:20px; margin-bottom:10px;">
+                        <img id="wc-tower-avatar-roy" src="images/winners/avatar_roy.webp" style="width:64px; height:64px; border-radius:50%; transition: transform 0.2s ease, box-shadow 0.2s ease;" />
+                        <img id="wc-tower-avatar-aba" src="images/winners/avatar_aba.webp" style="width:64px; height:64px; border-radius:50%; transition: transform 0.2s ease, box-shadow 0.2s ease;" />
+                    </div>
                     <div id="wc-tower-status" style="font-size:clamp(18px,4vw,24px); font-weight:bold; color:#37474f; height:32px;"></div>
                     <div id="wc-tower-stack" style="display:flex; flex-direction:column-reverse; align-items:center; min-height:150px; justify-content:flex-start; margin:10px 0;"></div>
                     <button id="wc-tower-btn" style="width:100%; height:clamp(55px,12vw,75px); border-radius:24px; border:none; background:linear-gradient(135deg,#4caf50,#2e7d32); color:#fff; font-size:clamp(20px,5vw,26px); font-weight:900; box-shadow:0 8px 20px rgba(46,125,50,0.3); direction:rtl;">
@@ -5597,6 +5601,11 @@
         function updateWcTowerUI() {
             let statusEl = get('wc-tower-status');
             if (statusEl) statusEl.textContent = wcTowerTurn === 'roy' ? '👦 התור שלך, רועי!' : '👨 התור של אבא...';
+            let royAv = get('wc-tower-avatar-roy'), abaAv = get('wc-tower-avatar-aba');
+            let activeStyle = 'box-shadow:0 0 0 4px #4caf50; transform:scale(1.1);';
+            let idleStyle = 'box-shadow:none; transform:scale(1); opacity:0.55;';
+            if (royAv) royAv.style.cssText += (wcTowerTurn === 'roy' ? activeStyle : idleStyle);
+            if (abaAv) abaAv.style.cssText += (wcTowerTurn === 'aba' ? activeStyle : idleStyle);
         }
         function handleWcTowerTap() {
             if (isProcessing) return;
@@ -5768,8 +5777,11 @@
             let ex = WC_MUSEUM_EXHIBITS[currentStep] || WC_MUSEUM_EXHIBITS[0];
             let ws = get('game-workspace');
             ws.innerHTML = `
-                <div style="font-size:clamp(18px,4.5vw,26px); font-weight:900; color:#37474f; text-align:center; direction:rtl; margin-bottom:10px;">
-                    המוזיאון של רועי 🦖
+                <div style="display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:10px;">
+                    <img src="images/winners/museum_guide_roy.webp" style="width:52px; height:52px; object-fit:cover; object-position:top center; border-radius:50%; box-shadow:0 4px 10px rgba(0,0,0,0.2);" />
+                    <div style="font-size:clamp(18px,4.5vw,26px); font-weight:900; color:#37474f; text-align:center; direction:rtl;">
+                        המוזיאון של רועי 🦖
+                    </div>
                 </div>
                 <div style="width:min(85vw,340px); margin:0 auto; text-align:center;">
                     <img src="${ex.img}" style="width:220px; max-width:70vw; display:block; margin:0 auto 10px; filter:drop-shadow(0 8px 16px rgba(0,0,0,0.2));" />
@@ -5818,6 +5830,7 @@
                 </div>
                 <div style="position:relative; width:min(90vw,400px); margin:0 auto;">
                     <img src="images/winners/bridge_scene.webp" style="width:100%; border-radius:20px; box-shadow:0 10px 24px rgba(0,0,0,0.2); transition: transform 0.3s ease;" id="wc-bridge-img" />
+                    <img id="wc-bridge-roy" src="images/winners/bridge_roy_build.webp" style="width:100px; margin:8px auto 0; display:block;" />
                     <div id="wc-bridge-blocks" style="text-align:center; font-size:28px; margin:10px 0;"></div>
                 </div>
                 <button id="wc-bridge-btn" style="width:min(90vw,400px); display:block; margin:0 auto; height:clamp(55px,12vw,75px); border-radius:24px; border:none; background:linear-gradient(135deg,#8d6e63,#5d4037); color:#fff; font-size:clamp(18px,4.5vw,24px); font-weight:900; box-shadow:0 8px 20px rgba(93,64,55,0.3); direction:rtl;">
@@ -5842,6 +5855,8 @@
                         handleAnswer(true, null, renderWcBridge, null);
                     });
                 } else {
+                    let royImg = get('wc-bridge-roy');
+                    if (royImg) royImg.src = 'images/winners/bridge_roy_win.webp';
                     playCoopAudio('winners/bridge/win.mp3', 'המכונית עברה בהצלחה! איזה גשר חזק בנית!', () => {
                         isProcessing = false;
                         handleAnswer(true, null, renderWcBridge, null);
@@ -5856,7 +5871,7 @@
         const WC_KEY_HELPERS = [
             { img: 'images/winners/key_grandpa.webp', label: 'סבא' },
             { img: 'images/winners/key_teacher.webp', label: 'הגננת' },
-            { img: 'images/winners/key_grandpa.webp', label: 'סבא' },
+            { img: 'images/winners/key_aba_help.webp', label: 'אבא' },
         ];
         function initWcKeyGame() {
             setAppBackground('emotion');
@@ -5873,8 +5888,9 @@
                     המפתח הגבוה 🔑
                 </div>
                 <div style="display:flex; justify-content:space-around; align-items:flex-end; width:min(90vw,380px); margin:0 auto 16px;">
-                    <img src="images/winners/key_chest.webp" style="width:110px;" />
-                    <img id="wc-key-helper" src="${helper.img}" style="width:120px;" />
+                    <img id="wc-key-roy-try" src="images/winners/key_roy_try.webp" style="width:110px; transition: opacity 0.3s ease;" />
+                    <img src="images/winners/key_chest.webp" style="width:100px;" />
+                    <img id="wc-key-helper" src="${helper.img}" style="width:110px; opacity:0.35; filter:grayscale(60%); transition: opacity 0.4s ease, filter 0.4s ease, transform 0.4s ease;" />
                 </div>
                 <div id="wc-key-status" style="text-align:center; font-size:clamp(16px,4vw,20px); color:#555; direction:rtl; margin-bottom:14px; min-height:26px;"></div>
                 <button id="wc-key-try-btn" style="width:min(90vw,380px); display:block; margin:0 auto 10px; height:clamp(50px,11vw,66px); border-radius:20px; border:none; background:linear-gradient(135deg,#4caf50,#2e7d32); color:#fff; font-size:clamp(18px,4.2vw,22px); font-weight:900; box-shadow:0 6px 16px rgba(46,125,50,0.3); direction:rtl;">
@@ -5891,13 +5907,15 @@
                 get('wc-key-status').textContent = 'המפתח גבוה מדי... 😅';
                 get('wc-key-try-btn').classList.add('hidden');
                 get('wc-key-ask-btn').classList.remove('hidden');
+                let royTryImg = get('wc-key-roy-try');
+                if (royTryImg) royTryImg.style.opacity = '0.4';
             };
             get('wc-key-ask-btn').onclick = () => {
                 if (isProcessing) return;
                 isProcessing = true;
                 playCoopAudio('winners/key/ask.mp3', 'אתה יכול בבקשה לעזור לי?', () => {
                     let helperImg = get('wc-key-helper');
-                    if (helperImg) helperImg.style.transform = 'translateY(-10px)';
+                    if (helperImg) { helperImg.style.opacity = '1'; helperImg.style.filter = 'grayscale(0%)'; helperImg.style.transform = 'translateY(-10px)'; }
                     get('wc-key-status').textContent = `${helper.label} עוזר/ת בשמחה! 😊`;
                     playCoopAudio('winners/key/win.mp3', 'קיבלת את המפתח! כל הכבוד על הבקשה המנומסת!', () => {
                         isProcessing = false;
