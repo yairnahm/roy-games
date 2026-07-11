@@ -5718,7 +5718,7 @@
         // "ילדים מצליחים" - 10 new games
         // ==========================================
         let wcHoldTimer = null, wcHoldInterval = null, wcHoldProgress = 0, wcHoldActive = false;
-        let wcFreezeTimer = null, wcFreezeState = 'idle', wcFreezeRemaining = 0;
+        let wcFreezeTimeout = null, wcFreezeTimer = null, wcFreezeState = 'idle', wcFreezeRemaining = 0;
         let wcTowerTurn = 'roy', wcTowerBlocks = 0, wcTowerAutoTimer = null;
         let wcPuzzleTiles = [], wcPuzzleSelected = -1, wcPuzzleImg = '';
         let wcPathStep = 0;
@@ -5727,6 +5727,7 @@
 
         function clearWcTimers() {
             if (wcHoldInterval) { clearInterval(wcHoldInterval); wcHoldInterval = null; }
+            if (wcFreezeTimeout) { clearTimeout(wcFreezeTimeout); wcFreezeTimeout = null; }
             if (wcFreezeTimer) { clearInterval(wcFreezeTimer); wcFreezeTimer = null; }
             if (wcTowerAutoTimer) { clearTimeout(wcTowerAutoTimer); wcTowerAutoTimer = null; }
             wcHoldProgress = 0; wcHoldActive = false; wcFreezeState = 'idle';
@@ -5737,7 +5738,9 @@
             let btn = get(btnId);
             if (!btn) return;
             let start = null;
+            let wcDecayInterval = null;
             function tick() {
+                if (wcDecayInterval) { clearInterval(wcDecayInterval); wcDecayInterval = null; }
                 let elapsed = Date.now() - start;
                 wcHoldProgress = Math.min(100, Math.round((elapsed / holdMs) * 100));
                 onProgress(wcHoldProgress);
@@ -5749,7 +5752,8 @@
             function onDown(e) {
                 e.preventDefault();
                 if (isProcessing) return;
-                wcHoldActive = true; start = Date.now();
+                wcHoldActive = true; start = Date.now() - (wcHoldProgress / 100) * holdMs;
+                if (wcDecayInterval) { clearInterval(wcDecayInterval); wcDecayInterval = null; }
                 if (wcHoldInterval) clearInterval(wcHoldInterval);
                 wcHoldInterval = setInterval(tick, 60);
             }
@@ -5757,9 +5761,15 @@
                 if (!wcHoldActive) return;
                 wcHoldActive = false;
                 if (wcHoldInterval) { clearInterval(wcHoldInterval); wcHoldInterval = null; }
-                // Gentle decay instead of full reset - forgiving for little fingers
-                wcHoldProgress = Math.max(0, wcHoldProgress - 15);
-                onProgress(wcHoldProgress);
+                if (wcDecayInterval) clearInterval(wcDecayInterval);
+                wcDecayInterval = setInterval(() => {
+                    wcHoldProgress = Math.max(0, wcHoldProgress - 4);
+                    onProgress(wcHoldProgress);
+                    if (wcHoldProgress <= 0) {
+                        clearInterval(wcDecayInterval);
+                        wcDecayInterval = null;
+                    }
+                }, 80);
             }
             btn.onpointerdown = onDown;
             btn.onpointerup = onUp;
@@ -5783,6 +5793,10 @@
                 { e: '🧸', ok: true }, { e: '🚗', ok: true }, { e: '🧩', ok: true },
                 { e: '🍎', ok: false }, { e: '🌳', ok: false }, { e: '☀️', ok: false }
             ] },
+            { rule: 'הפירות המתוקים 🍏', items: [
+                { e: '🍎', ok: true }, { e: '🍌', ok: true }, { e: '🍇', ok: true }, { e: '🍍', ok: true },
+                { e: '🚗', ok: false }, { e: '🧸', ok: false }
+            ] },
         ];
         function initWcSortGame() {
             setAppBackground('think');
@@ -5801,7 +5815,7 @@
                     מיינו את ${round.rule}
                 </div>
                 <div style="text-align:center; color:#666; font-size:14px; direction:rtl; margin-bottom:12px;">גררו כל דבר מתאים אל תוך הסל</div>
-                <div id="wc-sort-basket" style="width:120px; height:90px; margin:0 auto 16px; background:linear-gradient(135deg,#a1887f,#795548); border-radius:0 0 24px 24px; border:4px solid #5d4037; display:flex; align-items:center; justify-content:center; font-size:34px; box-shadow:0 8px 16px rgba(0,0,0,0.2);">🧺</div>
+                <div id="wc-sort-basket" style="width:130px; height:100px; margin:0 auto 16px; background:linear-gradient(135deg,#d7ccc8,#8d6e63); border-radius:12px 12px 28px 28px; border:5px solid #5d4037; display:flex; align-items:center; justify-content:center; font-size:45px; box-shadow:0 10px 22px rgba(93,64,55,0.25); transition: transform 0.2s ease;">🧺</div>
                 <div id="wc-sort-grid" style="display:grid; grid-template-columns:repeat(3,1fr); gap:14px; width:min(90vw,420px); margin:0 auto;"></div>
             `;
             let grid = get('wc-sort-grid');
@@ -5816,6 +5830,12 @@
                         if (cell.parentNode) cell.parentNode.removeChild(cell);
                         playClickSound();
                         foundSoFar++;
+                        // Wobble shake animation on basket
+                        if (basket) {
+                            basket.style.transform = 'scale(1.15) rotate(5deg)';
+                            setTimeout(() => { basket.style.transform = 'scale(1.15) rotate(-5deg)'; }, 100);
+                            setTimeout(() => { basket.style.transform = 'none'; }, 200);
+                        }
                         if (foundSoFar >= neededTotal) {
                             isProcessing = true;
                             playCoopAudio('winners/sort/win.mp3', 'כל הכבוד! מיינת הכל נכון!', () => {
@@ -5866,10 +5886,28 @@
             let img = get('wc-freeze-img');
             let btn = get('wc-freeze-btn');
             let statusEl = get('wc-freeze-status');
-            btn.onclick = () => { if (wcFreezeState === 'frozen') { playErrorSound(); img.style.filter = 'brightness(0.85)'; setTimeout(() => { img.style.filter = ''; }, 200); } else { playClickSound(); } };
+            btn.onclick = () => {
+                if (wcFreezeState === 'frozen') {
+                    if (wcFreezeTimer) { clearInterval(wcFreezeTimer); wcFreezeTimer = null; }
+                    wcFreezeState = 'failed';
+                    playErrorSound();
+                    img.style.transition = 'transform 0.4s ease';
+                    img.style.transform = 'translateY(30px) rotate(90deg)';
+                    statusEl.textContent = '😅 אוי, זזנו! ננסה שוב...';
+                    statusEl.style.color = '#c62828';
+                    btn.style.background = '#888';
+                    btn.textContent = 'נטען מחדש...';
+                    setTimeout(() => {
+                        loadWcFreezeRound();
+                    }, 1800);
+                } else if (wcFreezeState === 'dancing') {
+                    playClickSound();
+                }
+            };
 
             let delay = 1500 + rand(0, 2000);
-            wcFreezeTimer = setTimeout(() => {
+            wcFreezeTimeout = setTimeout(() => {
+                if (wcFreezeState === 'failed') return;
                 wcFreezeState = 'frozen';
                 img.src = 'images/winners/teddy_frozen.webp';
                 img.classList.remove('wc-bounce');
@@ -5900,7 +5938,7 @@
         // ------------------------------------------
         // 3. חילוץ החיות 2 (קשב והתמדה)
         // ------------------------------------------
-        const WC_TAPE_ANIMALS = ['🐢', '🐰', '🦔'];
+        const WC_TAPE_ANIMALS = ['🐢', '🦊', '🐸', '🐨'];
         function initWcTapeGame() {
             setAppBackground('world');
             clearWcTimers();
@@ -5931,16 +5969,37 @@
             let bar = get('wc-tape-bar');
             const DRAG_GOAL = 160; // px of horizontal drag needed to fully peel the tape
             let dragging = false, startX = 0;
+            let dragStartTime = 0;
             overlay.onpointerdown = (e) => {
                 e.preventDefault();
                 dragging = true;
                 overlay.setPointerCapture(e.pointerId);
                 startX = e.clientX;
+                dragStartTime = Date.now();
                 overlay.style.cursor = 'grabbing';
             };
             overlay.onpointermove = (e) => {
                 if (!dragging) return;
+                let elapsed = Date.now() - dragStartTime;
                 let dist = Math.max(0, Math.abs(e.clientX - startX));
+                let speed = dist / (elapsed || 1);
+                
+                // Enforce slow and patient drag
+                if (speed > 0.45 && dist > 35) {
+                    dragging = false;
+                    playErrorSound();
+                    let hint = get('wc-tape-hint') || { textContent: '' };
+                    hint.textContent = '⚠️ מהר מדי! הסרט נשמט. נסו שוב לאט...';
+                    hint.style.color = '#c62828';
+                    setTimeout(() => {
+                        let h = get('wc-tape-hint');
+                        if (h) { h.textContent = 'גררו את הסרט הצהוב הצידה, לאט ובסבלנות'; h.style.color = '#666'; }
+                    }, 2000);
+                    
+                    endTapeDrag();
+                    return;
+                }
+
                 let pct = Math.min(100, Math.round((dist / DRAG_GOAL) * 100));
                 overlay.style.transform = `translateX(${e.clientX - startX}px)`;
                 overlay.style.opacity = (1 - pct / 100).toString();
@@ -6104,8 +6163,8 @@
                 <div style="text-align:center; color:#666; font-size:14px; direction:rtl; margin-bottom:10px;">גררו את הקובייה הצבעונית אל המגדל באמצע</div>
                 <div style="display:flex; align-items:flex-end; justify-content:center; gap:14px; width:min(95vw,460px); margin:0 auto;">
                     <div id="wc-tower-card-roy" class="wc-player-card">
-                        <img src="images/winners/avatar_roy.webp" />
-                        <div class="name">רועי 👦</div>
+                        <img src="${userGender === 'girl' ? 'images/winners/avatar_maya.webp' : 'images/winners/avatar_roy.webp'}" onerror="this.src='images/winners/key_roy_try.webp'" />
+                        <div class="name">${userGender === 'girl' ? 'מיה 👧' : 'רועי 👦'}</div>
                         <div class="turn-label" id="wc-tower-label-roy"></div>
                     </div>
                     <div id="wc-tower-zone" style="position:relative; width:150px; height:220px; background:rgba(255,255,255,0.5); border:3px dashed #9e9e9e; border-radius:18px; display:flex; flex-direction:column-reverse; align-items:center; padding-bottom:6px;">
@@ -6131,7 +6190,7 @@
             if (abaCard) abaCard.className = 'wc-player-card ' + (wcTowerTurn === 'aba' ? 'active' : 'idle');
             if (royLabel) royLabel.textContent = wcTowerTurn === 'roy' ? 'התור שלך! ⬇️' : '';
             if (abaLabel) abaLabel.textContent = wcTowerTurn === 'aba' ? 'התור שלך! ⬇️' : '';
-            if (statusEl) statusEl.textContent = wcTowerTurn === 'roy' ? '👦 גררו את הקובייה למגדל, רועי!' : '👨 עכשיו אבא גורר קובייה...';
+            if (statusEl) statusEl.textContent = wcTowerTurn === 'roy' ? `${userGender === 'girl' ? '👧 גררו את הקובייה למגדל, מיה!' : '👦 גררו את הקובייה למגדל, רועי!'}` : '👨 עכשיו אבא גורר קובייה...';
         }
         function spawnWcTowerDragBlock() {
             let holder = get('wc-tower-block-holder');
@@ -6144,7 +6203,14 @@
             block.style.background = color;
             holder.appendChild(block);
             let zone = get('wc-tower-zone');
-            wcMakeDraggable(block, [{ el: zone, key: 'tower' }], () => handleWcTowerDrop(block, color));
+            if (wcTowerTurn === 'roy') {
+                wcMakeDraggable(block, [{ el: zone, key: 'tower' }], () => handleWcTowerDrop(block, color));
+            } else {
+                block.style.opacity = '0.5';
+                block.style.filter = 'grayscale(1)';
+                block.style.cursor = 'not-allowed';
+                block.style.pointerEvents = 'none';
+            }
 
             if (wcTowerTurn === 'aba') {
                 wcTowerAutoTimer = setTimeout(() => {
@@ -6218,9 +6284,23 @@
             grid.innerHTML = '';
             wcPuzzleTiles.forEach((quadrant, slotIdx) => {
                 let tile = D.createElement('div');
-                tile.style.cssText = `background-image:url('${wcPuzzleImg}'); background-size:200% 200%; background-position:${WC_PUZZLE_POS[quadrant]}; cursor:pointer; transition: outline 0.15s ease;`;
+                let isCorrect = quadrant === slotIdx;
+                tile.style.cssText = `background-image:url('${wcPuzzleImg}'); background-size:200% 200%; background-position:${WC_PUZZLE_POS[quadrant]}; cursor:pointer; transition: all 0.2s ease; position:relative;`;
                 tile.dataset.slot = slotIdx;
-                if (slotIdx === wcPuzzleSelected) tile.style.outline = '5px solid #2196F3';
+                if (slotIdx === wcPuzzleSelected) {
+                    tile.style.outline = '5px solid #2196F3';
+                    tile.style.zIndex = '10';
+                } else if (isCorrect) {
+                    tile.style.boxShadow = 'inset 0 0 15px rgba(76,175,80,0.6)';
+                }
+                
+                if (isCorrect) {
+                    let badge = D.createElement('div');
+                    badge.innerHTML = '✓';
+                    badge.style.cssText = 'position:absolute; top:4px; right:4px; width:18px; height:18px; background:#4caf50; color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:bold; box-shadow:0 2px 4px rgba(0,0,0,0.2);';
+                    tile.appendChild(badge);
+                }
+
                 tile.onclick = () => onWcPuzzleTileClick(slotIdx);
                 grid.appendChild(tile);
             });
@@ -6275,31 +6355,69 @@
         function renderWcPath() {
             isProcessing = false;
             let ws = get('game-workspace');
+            
+            // Thematic Map Configurations
+            let themes = [
+                {
+                    title: 'הנתיב המסתורי: יער ההרפתקאות 🌳',
+                    bg: "url('images/winners/adventure_map.webp') center/cover",
+                    dots: [{ x: 14, y: 78 }, { x: 27, y: 62 }, { x: 44, y: 52 }, { x: 60, y: 33 }, { x: 78, y: 17 }],
+                    decor: ''
+                },
+                {
+                    title: 'הנתיב המסתורי: מעמקי הים 🌊',
+                    bg: "linear-gradient(to bottom, #80deea, #0097a7)",
+                    dots: [{ x: 80, y: 80 }, { x: 60, y: 65 }, { x: 40, y: 50 }, { x: 20, y: 35 }, { x: 15, y: 15 }],
+                    decor: '<div style="position:absolute; left:20%; top:25%; font-size:30px; opacity:0.6;">🐠</div><div style="position:absolute; right:15%; top:40%; font-size:25px; opacity:0.5;">🫧</div><div style="position:absolute; left:45%; bottom:20%; font-size:30px; opacity:0.6;">🦀</div>'
+                },
+                {
+                    title: 'הנתיב המסתורי: מסע בחלל 🚀',
+                    bg: "linear-gradient(to bottom, #1a237e, #00000a)",
+                    dots: [{ x: 15, y: 20 }, { x: 35, y: 35 }, { x: 50, y: 55 }, { x: 70, y: 70 }, { x: 85, y: 85 }],
+                    decor: '<div style="position:absolute; right:20%; top:15%; font-size:28px; opacity:0.7;">🛸</div><div style="position:absolute; left:10%; bottom:30%; font-size:20px; opacity:0.6;">⭐</div><div style="position:absolute; right:40%; bottom:15%; font-size:22px; opacity:0.6;">🪐</div>'
+                },
+                {
+                    title: 'הנתיב המסתורי: אי המטמון 🏝️',
+                    bg: "linear-gradient(to bottom, #ffe082, #ffb300)",
+                    dots: [{ x: 10, y: 80 }, { x: 30, y: 70 }, { x: 50, y: 65 }, { x: 70, y: 40 }, { x: 85, y: 20 }],
+                    decor: '<div style="position:absolute; right:10%; top:20%; font-size:32px; opacity:0.7;">🌴</div><div style="position:absolute; left:40%; top:30%; font-size:24px; opacity:0.6;">🐚</div><div style="position:absolute; left:25%; bottom:40%; font-size:28px; opacity:0.7;">🦜</div>'
+                }
+            ];
+            
+            let theme = themes[currentStep] || themes[0];
+            
             ws.innerHTML = `
+                <style>
+                    @keyframes btnPulseOrange {
+                        0% { box-shadow: 0 0 0 0 rgba(255, 111, 0, 0.75); }
+                        100% { box-shadow: 0 0 0 15px rgba(255, 111, 0, 0); }
+                    }
+                </style>
                 <div style="font-size:clamp(18px,4.5vw,26px); font-weight:900; color:#37474f; text-align:center; direction:rtl; margin-bottom:10px;">
-                    הנתיב המסתורי 🗺️
+                    ${theme.title}
                 </div>
-                <div id="wc-path-map" style="position:relative; width:min(90vw,440px); aspect-ratio:16/10; margin:0 auto; border-radius:20px; overflow:hidden; box-shadow:0 10px 24px rgba(0,0,0,0.2); background:url('images/winners/adventure_map.webp') center/cover;">
+                <div id="wc-path-map" style="position:relative; width:min(90vw,440px); aspect-ratio:16/10; margin:0 auto; border-radius:20px; overflow:hidden; box-shadow:0 10px 24px rgba(0,0,0,0.2); background:${theme.bg};">
+                    ${theme.decor}
                 </div>
                 <div style="text-align:center; margin-top:10px; color:#555; direction:rtl;">לחץ על הנקודה הבוערת בדרך</div>
             `;
             let map = get('wc-path-map');
-            WC_PATH_DOTS.forEach((d, idx) => {
+            theme.dots.forEach((d, idx) => {
                 let dot = D.createElement('div');
                 let done = idx < wcPathStep;
                 let active = idx === wcPathStep;
-                dot.style.cssText = `position:absolute; left:${d.x}%; top:${d.y}%; transform:translate(-50%,-50%); width:${active ? 40 : 30}px; height:${active ? 40 : 30}px; border-radius:50%; background:${done ? '#66bb6a' : (active ? '#ffca28' : '#ffffffaa')}; border:3px solid ${active ? '#ff6f00' : '#fff'}; box-shadow:0 4px 10px rgba(0,0,0,0.3); cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:18px; ${active ? 'animation: btnPulseGreen 1s infinite alternate;' : ''}`;
+                dot.style.cssText = `position:absolute; left:${d.x}%; top:${d.y}%; transform:translate(-50%,-50%); width:${active ? 40 : 30}px; height:${active ? 40 : 30}px; border-radius:50%; background:${done ? '#66bb6a' : (active ? '#ffca28' : '#ffffffaa')}; border:3px solid ${active ? '#ff6f00' : '#fff'}; box-shadow:0 4px 10px rgba(0,0,0,0.3); cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:18px; ${active ? 'animation: btnPulseOrange 1s infinite alternate;' : ''}`;
                 dot.textContent = done ? '✓' : (idx + 1);
-                dot.onclick = () => onWcPathDotClick(idx);
+                dot.onclick = () => onWcPathDotClick(idx, theme.dots.length);
                 map.appendChild(dot);
             });
         }
-        function onWcPathDotClick(idx) {
+        function onWcPathDotClick(idx, dotsCount) {
             if (isProcessing) return;
             if (idx !== wcPathStep) { playErrorSound(); return; }
             playClickSound();
             wcPathStep++;
-            if (wcPathStep >= WC_PATH_DOTS.length) {
+            if (wcPathStep >= dotsCount) {
                 isProcessing = true;
                 playCoopAudio('winners/path/win.mp3', 'הגעת עד הטירה! איזו הרפתקה!', () => {
                     isProcessing = false;
@@ -6851,7 +6969,21 @@
                     </div>
                 </div>
                 <div style="width:min(85vw,340px); margin:0 auto; text-align:center;">
-                    <img src="${ex.img}" style="width:220px; max-width:70vw; display:block; margin:0 auto 10px; filter:drop-shadow(0 8px 16px rgba(0,0,0,0.2));" />
+                    <style>
+                        .wc-museum-exhibit-img {
+                            width:220px; max-width:70vw; display:block; margin:0 auto 10px;
+                            filter:drop-shadow(0 8px 16px rgba(0,0,0,0.2));
+                            cursor: pointer;
+                            transition: transform 0.3s ease;
+                        }
+                        .wc-museum-exhibit-img:hover {
+                            transform: scale(1.04);
+                        }
+                        .wc-museum-exhibit-img:active {
+                            transform: scale(0.96) rotate(2deg);
+                        }
+                    </style>
+                    <img src="${ex.img}" class="wc-museum-exhibit-img" id="wc-museum-ex-img" />
                     <div style="font-size:clamp(18px,4vw,22px); font-weight:900; color:#37474f; margin-bottom:10px;">${ex.label}</div>
                     <div style="font-size:clamp(13px,3.2vw,15px); color:#555; direction:rtl; line-height:1.5; margin-bottom:14px; background:#fff; border-radius:14px; padding:10px 14px; box-shadow:0 4px 10px rgba(0,0,0,0.08);">${ex.text}</div>
                     <button id="wc-museum-fact-btn" style="width:100%; height:clamp(50px,11vw,66px); border-radius:20px; border:none; background:linear-gradient(135deg,#ffb74d,#f57c00); color:#fff; font-size:clamp(18px,4.2vw,22px); font-weight:900; box-shadow:0 6px 16px rgba(245,124,0,0.3); direction:rtl; margin-bottom:12px;">
@@ -6864,6 +6996,15 @@
             `;
             playMuseumFx(ex.fx);
             setTimeout(() => playCoopAudio(ex.audio, ex.text), 350);
+            
+            let exImg = get('wc-museum-ex-img');
+            if (exImg) {
+                exImg.onclick = () => {
+                    playMuseumFx(ex.fx);
+                    setTimeout(() => playCoopAudio(ex.audio, ex.text), 350);
+                };
+            }
+            
             get('wc-museum-fact-btn').onclick = () => {
                 playMuseumFx(ex.fx);
                 setTimeout(() => playCoopAudio(ex.audio, ex.text), 350);
@@ -7227,9 +7368,33 @@
                     // First attempt collapses on purpose - failure becomes a fun learning beat
                     let track = get('wc-bridge-track');
                     if (track) track.style.transition = 'transform 0.4s ease'; if (track) track.style.transform = 'rotate(-8deg) translateY(10px)';
+                    // Physical collapse visual effects
+                    let track = get('wc-bridge-track');
+                    if (track) {
+                        track.style.transition = 'transform 0.6s cubic-bezier(0.6, -0.28, 0.735, 0.045)';
+                        track.style.transform = 'rotate(20deg) translateY(60px)';
+                        track.style.opacity = '0.7';
+                    }
+                    let car = get('wc-bridge-car');
+                    if (car) {
+                        car.style.transition = 'all 0.6s ease';
+                        car.style.transform = 'translateY(55px) rotate(45deg)';
+                        car.style.opacity = '0.5';
+                    }
                     playCoopAudio('winners/bridge/collapse.mp3', 'אופס! הגשר נפל! לא נורא, בואו נבנה אותו מחדש וחזק יותר!', () => {
-                        isProcessing = false;
-                        handleAnswer(true, null, renderWcBridge, null);
+                        let tray = get('wc-bridge-tray');
+                        if (tray) {
+                            tray.innerHTML = `
+                                <button id="wc-bridge-retry-btn" style="width:100%; max-width:280px; height:60px; border-radius:20px; border:none; background:linear-gradient(135deg,#ffb74d,#f57c00); color:#fff; font-size:22px; font-weight:900; box-shadow:0 6px 15px rgba(245,124,0,0.3); cursor:pointer;">
+                                    לנסות שוב! 🔨
+                                </button>
+                            `;
+                            get('wc-bridge-retry-btn').onclick = () => {
+                                currentStep = 1;
+                                isProcessing = false;
+                                renderWcBridge();
+                            };
+                        }
                     });
                 } else {
                     let royImg = get('wc-bridge-roy');
@@ -7654,6 +7819,13 @@
                                 
                                 let keyOverlay = get('roy-key-overlay');
                                 if (keyOverlay) keyOverlay.classList.remove('hidden');
+
+                                // Show emotional validation smiley above helper's head (ASD support)
+                                let emoji = D.createElement('div');
+                                emoji.innerHTML = '😊❤️';
+                                emoji.style.cssText = 'position:absolute; left:205px; bottom:125px; font-size:35px; animation: keySparkle 0.8s ease-out; z-index:10; pointer-events:none;';
+                                helper.parentElement.appendChild(emoji);
+                                setTimeout(() => { if (emoji.parentNode) emoji.parentNode.removeChild(emoji); }, 2000);
 
                                 let statusEl = get('key-status');
                                 if (statusEl) {
