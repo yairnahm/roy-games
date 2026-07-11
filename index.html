@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-07-11-v75-detective-game -->
+<!DOCTYPE html><!-- build: 2026-07-11-v76-winners-full-dragdrop -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -5764,7 +5764,7 @@
         ];
         function initWcSortGame() {
             setAppBackground('think');
-            playCoopAudio('winners/sort/intro.mp3', 'בואו נמיין את האוצרות של מקס! מצא ולחץ על כל הדברים שמתאימים לחוק.');
+            playCoopAudio('winners/sort/intro.mp3', 'בואו נמיין את האוצרות של מקס! גררו כל דבר מתאים לתוך הסל.');
             loadWcSortRound();
         }
         function loadWcSortRound() {
@@ -5775,22 +5775,23 @@
             let foundSoFar = 0;
             let ws = get('game-workspace');
             ws.innerHTML = `
-                <div style="font-size:clamp(18px,4.5vw,26px); font-weight:900; color:#37474f; text-align:center; direction:rtl; margin-bottom:15px;">
+                <div style="font-size:clamp(18px,4.5vw,26px); font-weight:900; color:#37474f; text-align:center; direction:rtl; margin-bottom:10px;">
                     מיינו את ${round.rule}
                 </div>
+                <div style="text-align:center; color:#666; font-size:14px; direction:rtl; margin-bottom:12px;">גררו כל דבר מתאים אל תוך הסל</div>
+                <div id="wc-sort-basket" style="width:120px; height:90px; margin:0 auto 16px; background:linear-gradient(135deg,#a1887f,#795548); border-radius:0 0 24px 24px; border:4px solid #5d4037; display:flex; align-items:center; justify-content:center; font-size:34px; box-shadow:0 8px 16px rgba(0,0,0,0.2);">🧺</div>
                 <div id="wc-sort-grid" style="display:grid; grid-template-columns:repeat(3,1fr); gap:14px; width:min(90vw,420px); margin:0 auto;"></div>
             `;
             let grid = get('wc-sort-grid');
-            shuffled.forEach((item, idx) => {
+            let basket = get('wc-sort-basket');
+            shuffled.forEach((item) => {
                 let cell = D.createElement('div');
-                cell.style.cssText = 'aspect-ratio:1; background:#fff; border-radius:20px; display:flex; align-items:center; justify-content:center; font-size:clamp(40px,10vw,60px); box-shadow:0 8px 16px rgba(0,0,0,0.12); cursor:pointer; transition: transform 0.2s ease, opacity 0.3s ease; user-select:none;';
+                cell.style.cssText = 'aspect-ratio:1; background:#fff; border-radius:20px; display:flex; align-items:center; justify-content:center; font-size:clamp(40px,10vw,60px); box-shadow:0 8px 16px rgba(0,0,0,0.12); user-select:none;';
                 cell.textContent = item.e;
-                cell.onclick = () => {
-                    if (isProcessing || cell.dataset.done) return;
+                wcMakeDraggable(cell, [{ el: basket, key: 'basket' }], () => {
+                    if (isProcessing) return;
                     if (item.ok) {
-                        cell.dataset.done = '1';
-                        cell.style.opacity = '0.25';
-                        cell.style.transform = 'scale(0.85)';
+                        if (cell.parentNode) cell.parentNode.removeChild(cell);
                         playClickSound();
                         foundSoFar++;
                         if (foundSoFar >= neededTotal) {
@@ -5802,11 +5803,10 @@
                         }
                     } else {
                         playErrorSound();
-                        cell.style.transform = 'translateX(-6px)';
-                        setTimeout(() => { cell.style.transform = 'translateX(6px)'; }, 100);
-                        setTimeout(() => { cell.style.transform = 'scale(1)'; }, 220);
+                        cell.style.position = ''; cell.style.left = ''; cell.style.top = ''; cell.style.width = ''; cell.style.height = ''; cell.style.zIndex = '';
+                        grid.appendChild(cell);
                     }
-                };
+                });
                 grid.appendChild(cell);
             });
         }
@@ -5891,34 +5891,59 @@
             let animal = WC_TAPE_ANIMALS[currentStep] || WC_TAPE_ANIMALS[0];
             let ws = get('game-workspace');
             ws.innerHTML = `
-                <div style="font-size:clamp(18px,4.5vw,26px); font-weight:900; color:#37474f; text-align:center; direction:rtl; margin-bottom:15px;">
+                <div style="font-size:clamp(18px,4.5vw,26px); font-weight:900; color:#37474f; text-align:center; direction:rtl; margin-bottom:8px;">
                     חילוץ החיות 🐢
                 </div>
+                <div style="text-align:center; color:#666; font-size:14px; direction:rtl; margin-bottom:12px;">גררו את הסרט הצהוב הצידה, לאט ובסבלנות</div>
                 <div style="width:min(85vw,360px); margin:0 auto; text-align:center;">
-                    <div style="position:relative; width:180px; height:180px; margin:0 auto 15px; display:flex; align-items:center; justify-content:center;">
+                    <div style="position:relative; width:180px; height:180px; margin:0 auto 15px; display:flex; align-items:center; justify-content:center; overflow:hidden; border-radius:16px;">
                         <div style="font-size:100px;">${animal}</div>
-                        <div id="wc-tape-overlay" style="position:absolute; inset:0; background:repeating-linear-gradient(45deg,#ffd54f,#ffd54f 10px,#ffca28 10px,#ffca28 20px); border-radius:16px; opacity:1; transition: opacity 0.1s linear;"></div>
+                        <div id="wc-tape-overlay" style="position:absolute; inset:0; background:repeating-linear-gradient(45deg,#ffd54f,#ffd54f 10px,#ffca28 10px,#ffca28 20px); touch-action:none; cursor:grab; opacity:1;"></div>
                     </div>
-                    <div style="width:100%; height:20px; background:#cfd8dc; border-radius:10px; overflow:hidden; border:2px solid #b0bec5; margin-bottom:16px;">
+                    <div style="width:100%; height:20px; background:#cfd8dc; border-radius:10px; overflow:hidden; border:2px solid #b0bec5;">
                         <div id="wc-tape-bar" style="width:0%; height:100%; background:linear-gradient(to right,#66bb6a,#2e7d32); transition: width 0.06s linear;"></div>
                     </div>
-                    <button id="wc-tape-btn" style="width:100%; height:clamp(55px,12vw,75px); border-radius:24px; border:none; background:linear-gradient(135deg,#29b6f6,#0288d1); color:#fff; font-size:clamp(18px,4.5vw,24px); font-weight:900; box-shadow:0 8px 20px rgba(2,136,209,0.3); direction:rtl;">
-                        לחץ לחיצה ארוכה ואיטית 🐾
-                    </button>
                 </div>
             `;
             let overlay = get('wc-tape-overlay');
             let bar = get('wc-tape-bar');
-            bindWcHold('wc-tape-btn', 3200, (pct) => {
-                bar.style.width = pct + '%';
+            const DRAG_GOAL = 160; // px of horizontal drag needed to fully peel the tape
+            let dragging = false, startX = 0;
+            overlay.onpointerdown = (e) => {
+                e.preventDefault();
+                dragging = true;
+                overlay.setPointerCapture(e.pointerId);
+                startX = e.clientX;
+                overlay.style.cursor = 'grabbing';
+            };
+            overlay.onpointermove = (e) => {
+                if (!dragging) return;
+                let dist = Math.max(0, Math.abs(e.clientX - startX));
+                let pct = Math.min(100, Math.round((dist / DRAG_GOAL) * 100));
+                overlay.style.transform = `translateX(${e.clientX - startX}px)`;
                 overlay.style.opacity = (1 - pct / 100).toString();
-            }, () => {
-                isProcessing = true;
-                playCoopAudio('winners/tape/win.mp3', 'הצלת את החיה! איזו סבלנות יפה!', () => {
-                    isProcessing = false;
-                    handleAnswer(true, null, loadWcTapeRound, null);
-                });
-            });
+                bar.style.width = pct + '%';
+                if (pct >= 100 && !isProcessing) {
+                    dragging = false;
+                    isProcessing = true;
+                    playCoopAudio('winners/tape/win.mp3', 'הצלת את החיה! איזו סבלנות יפה!', () => {
+                        isProcessing = false;
+                        handleAnswer(true, null, loadWcTapeRound, null);
+                    });
+                }
+            };
+            function endTapeDrag() {
+                if (!dragging) return;
+                dragging = false;
+                overlay.style.cursor = 'grab';
+                overlay.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+                overlay.style.transform = 'translateX(0)';
+                overlay.style.opacity = '1';
+                bar.style.width = '0%';
+                setTimeout(() => { overlay.style.transition = ''; }, 300);
+            }
+            overlay.onpointerup = endTapeDrag;
+            overlay.onpointercancel = endTapeDrag;
         }
 
         // ------------------------------------------
@@ -5979,30 +6004,33 @@
         function wcMakeDraggable(dragEl, dropZones, onDrop) {
             dragEl.style.touchAction = 'none';
             dragEl.style.cursor = 'grab';
-            let dragging = false, startX, startY, origLeft, origTop, placeholderParent, placeholderNext;
+            let dragging = false, startX, startY, origLeft, origTop;
+            // position:fixed removes the element from flex/grid flow in place (no DOM re-parenting needed),
+            // so sibling layouts (e.g. a row of avatar images) don't reflow and shift the drop target mid-drag.
             dragEl.onpointerdown = (e) => {
                 e.preventDefault();
+                if (dragging) return;
                 dragging = true;
-                dragEl.setPointerCapture(e.pointerId);
+                try { dragEl.setPointerCapture(e.pointerId); } catch (err) {}
                 let rect = dragEl.getBoundingClientRect();
                 origLeft = rect.left; origTop = rect.top;
                 startX = e.clientX; startY = e.clientY;
-                placeholderParent = dragEl.parentNode; placeholderNext = dragEl.nextSibling;
                 dragEl.style.position = 'fixed';
                 dragEl.style.left = origLeft + 'px';
                 dragEl.style.top = origTop + 'px';
-                dragEl.style.width = rect.width + 'px';
-                dragEl.style.height = rect.height + 'px';
                 dragEl.style.zIndex = '9999';
                 dragEl.style.cursor = 'grabbing';
                 dragEl.style.transition = 'none';
-                document.body.appendChild(dragEl);
             };
             dragEl.onpointermove = (e) => {
                 if (!dragging) return;
                 dragEl.style.left = (origLeft + (e.clientX - startX)) + 'px';
                 dragEl.style.top = (origTop + (e.clientY - startY)) + 'px';
             };
+            function resetPosition() {
+                dragEl.style.position = ''; dragEl.style.left = ''; dragEl.style.top = '';
+                dragEl.style.zIndex = ''; dragEl.style.cursor = 'grab'; dragEl.style.transition = '';
+            }
             function endDrag(e) {
                 if (!dragging) return;
                 dragging = false;
@@ -6014,16 +6042,13 @@
                     if (cx >= zr.left && cx <= zr.right && cy >= zr.top && cy <= zr.bottom) { hitZone = z; break; }
                 }
                 if (hitZone) {
+                    resetPosition();
                     onDrop(hitZone.key);
                 } else {
                     dragEl.style.transition = 'left 0.3s ease, top 0.3s ease';
                     dragEl.style.left = origLeft + 'px';
                     dragEl.style.top = origTop + 'px';
-                    setTimeout(() => {
-                        dragEl.style.position = ''; dragEl.style.left = ''; dragEl.style.top = '';
-                        dragEl.style.width = ''; dragEl.style.height = ''; dragEl.style.zIndex = ''; dragEl.style.cursor = 'grab'; dragEl.style.transition = '';
-                        if (placeholderParent) placeholderParent.insertBefore(dragEl, placeholderNext);
-                    }, 300);
+                    setTimeout(resetPosition, 300);
                 }
             }
             dragEl.onpointerup = endDrag;
@@ -6421,45 +6446,45 @@
             let helper = WC_KEY_HELPERS[currentStep] || WC_KEY_HELPERS[0];
             let ws = get('game-workspace');
             ws.innerHTML = `
-                <div style="font-size:clamp(18px,4.5vw,26px); font-weight:900; color:#37474f; text-align:center; direction:rtl; margin-bottom:10px;">
+                <div style="font-size:clamp(18px,4.5vw,26px); font-weight:900; color:#37474f; text-align:center; direction:rtl; margin-bottom:6px;">
                     המפתח הגבוה 🔑
                 </div>
+                <div id="wc-key-status" style="text-align:center; font-size:clamp(16px,4vw,20px); color:#555; direction:rtl; margin-bottom:10px; min-height:26px;">גררו את רועי לנסות להגיע למפתח לבד</div>
                 <div style="display:flex; justify-content:space-around; align-items:flex-end; width:min(90vw,380px); margin:0 auto 16px;">
-                    <img id="wc-key-roy-try" src="images/winners/key_roy_try.webp" style="width:110px; transition: opacity 0.3s ease;" />
-                    <img src="images/winners/key_chest.webp" style="width:100px;" />
+                    <img id="wc-key-roy-try" src="images/winners/key_roy_try.webp" style="width:100px; touch-action:none; cursor:grab;" />
+                    <img id="wc-key-chest" src="images/winners/key_chest.webp" style="width:100px;" />
                     <img id="wc-key-helper" src="${helper.img}" style="width:110px; opacity:0.35; filter:grayscale(60%); transition: opacity 0.4s ease, filter 0.4s ease, transform 0.4s ease;" />
                 </div>
-                <div id="wc-key-status" style="text-align:center; font-size:clamp(16px,4vw,20px); color:#555; direction:rtl; margin-bottom:14px; min-height:26px;"></div>
-                <button id="wc-key-try-btn" style="width:min(90vw,380px); display:block; margin:0 auto 10px; height:clamp(50px,11vw,66px); border-radius:20px; border:none; background:linear-gradient(135deg,#4caf50,#2e7d32); color:#fff; font-size:clamp(18px,4.2vw,22px); font-weight:900; box-shadow:0 6px 16px rgba(46,125,50,0.3); direction:rtl;">
-                    🙋 נסה לבד
-                </button>
-                <button id="wc-key-ask-btn" class="hidden" style="width:min(90vw,380px); display:block; margin:0 auto; height:clamp(50px,11vw,66px); border-radius:20px; border:none; background:linear-gradient(135deg,#42a5f5,#1565c0); color:#fff; font-size:clamp(18px,4.2vw,22px); font-weight:900; box-shadow:0 6px 16px rgba(21,101,192,0.3); direction:rtl;">
-                    🙏 בקש עזרה בנימוס
-                </button>
+                <div id="wc-key-ask-holder" class="hidden" style="display:flex; justify-content:center; min-height:70px;">
+                    <div id="wc-key-ask-icon" style="width:60px; height:60px; border-radius:50%; background:linear-gradient(135deg,#42a5f5,#1565c0); display:flex; align-items:center; justify-content:center; font-size:30px; box-shadow:0 6px 14px rgba(21,101,192,0.35); touch-action:none; cursor:grab;">🙏</div>
+                </div>
+                <div style="text-align:center; color:#666; font-size:13px; direction:rtl; margin-top:4px;" id="wc-key-hint">גררו את רועי אל המפתח</div>
             `;
-            get('wc-key-try-btn').onclick = () => {
-                if (isProcessing || wcKeyTried) return;
+            let royTry = get('wc-key-roy-try');
+            let chest = get('wc-key-chest');
+            wcMakeDraggable(royTry, [{ el: chest, key: 'chest' }], () => {
+                // Roy can never reach alone - always bounces back with a gentle explanation
+                if (wcKeyTried || isProcessing) return;
                 wcKeyTried = true;
                 playErrorSound();
-                get('wc-key-status').textContent = 'המפתח גבוה מדי... 😅';
-                get('wc-key-try-btn').classList.add('hidden');
-                get('wc-key-ask-btn').classList.remove('hidden');
-                let royTryImg = get('wc-key-roy-try');
-                if (royTryImg) royTryImg.style.opacity = '0.4';
-            };
-            get('wc-key-ask-btn').onclick = () => {
-                if (isProcessing) return;
-                isProcessing = true;
-                playCoopAudio('winners/key/ask.mp3', 'אתה יכול בבקשה לעזור לי?', () => {
-                    let helperImg = get('wc-key-helper');
-                    if (helperImg) { helperImg.style.opacity = '1'; helperImg.style.filter = 'grayscale(0%)'; helperImg.style.transform = 'translateY(-10px)'; }
-                    get('wc-key-status').textContent = `${helper.label} עוזר/ת בשמחה! 😊`;
-                    playCoopAudio('winners/key/win.mp3', 'קיבלת את המפתח! כל הכבוד על הבקשה המנומסת!', () => {
-                        isProcessing = false;
-                        handleAnswer(true, null, loadWcKeyRound, null);
+                get('wc-key-status').textContent = 'המפתח גבוה מדי... 😅 בואו נבקש עזרה בנימוס';
+                get('wc-key-hint').textContent = 'גררו את הבקשה 🙏 אל העוזר/ת';
+                get('wc-key-ask-holder').classList.remove('hidden');
+                let askIcon = document.getElementById('wc-key-ask-icon');
+                let helperImg = get('wc-key-helper');
+                wcMakeDraggable(askIcon, [{ el: helperImg, key: 'helper' }], () => {
+                    if (isProcessing) return;
+                    isProcessing = true;
+                    playCoopAudio('winners/key/ask.mp3', 'אתה יכול בבקשה לעזור לי?', () => {
+                        if (helperImg) { helperImg.style.opacity = '1'; helperImg.style.filter = 'grayscale(0%)'; helperImg.style.transform = 'translateY(-10px)'; }
+                        get('wc-key-status').textContent = `${helper.label} עוזר/ת בשמחה! 😊`;
+                        playCoopAudio('winners/key/win.mp3', 'קיבלת את המפתח! כל הכבוד על הבקשה המנומסת!', () => {
+                            isProcessing = false;
+                            handleAnswer(true, null, loadWcKeyRound, null);
+                        });
                     });
                 });
-            };
+            });
         }
 
 
