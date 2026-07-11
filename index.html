@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-07-11-v76-winners-full-dragdrop -->
+<!DOCTYPE html><!-- build: 2026-07-11-v78-winners-restored -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -6263,7 +6263,53 @@
             isProcessing = false;
         }
 
-        function initWcPathGame() { initPathGame(); }
+        const WC_PATH_DOTS = [
+            { x: 14, y: 78 }, { x: 27, y: 62 }, { x: 44, y: 52 }, { x: 60, y: 33 }, { x: 78, y: 17 }
+        ];
+        function initWcPathGame() {
+            setAppBackground('world');
+            wcPathStep = 0;
+            playCoopAudio('winners/path/intro.mp3', 'הנתיב המסתורי! עקוב אחרי הדרך מהיער ועד הטירה.');
+            renderWcPath();
+        }
+        function renderWcPath() {
+            isProcessing = false;
+            let ws = get('game-workspace');
+            ws.innerHTML = `
+                <div style="font-size:clamp(18px,4.5vw,26px); font-weight:900; color:#37474f; text-align:center; direction:rtl; margin-bottom:10px;">
+                    הנתיב המסתורי 🗺️
+                </div>
+                <div id="wc-path-map" style="position:relative; width:min(90vw,440px); aspect-ratio:16/10; margin:0 auto; border-radius:20px; overflow:hidden; box-shadow:0 10px 24px rgba(0,0,0,0.2); background:url('images/winners/adventure_map.webp') center/cover;">
+                </div>
+                <div style="text-align:center; margin-top:10px; color:#555; direction:rtl;">לחץ על הנקודה הבוערת בדרך</div>
+            `;
+            let map = get('wc-path-map');
+            WC_PATH_DOTS.forEach((d, idx) => {
+                let dot = D.createElement('div');
+                let done = idx < wcPathStep;
+                let active = idx === wcPathStep;
+                dot.style.cssText = `position:absolute; left:${d.x}%; top:${d.y}%; transform:translate(-50%,-50%); width:${active ? 40 : 30}px; height:${active ? 40 : 30}px; border-radius:50%; background:${done ? '#66bb6a' : (active ? '#ffca28' : '#ffffffaa')}; border:3px solid ${active ? '#ff6f00' : '#fff'}; box-shadow:0 4px 10px rgba(0,0,0,0.3); cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:18px; ${active ? 'animation: btnPulseGreen 1s infinite alternate;' : ''}`;
+                dot.textContent = done ? '✓' : (idx + 1);
+                dot.onclick = () => onWcPathDotClick(idx);
+                map.appendChild(dot);
+            });
+        }
+        function onWcPathDotClick(idx) {
+            if (isProcessing) return;
+            if (idx !== wcPathStep) { playErrorSound(); return; }
+            playClickSound();
+            wcPathStep++;
+            if (wcPathStep >= WC_PATH_DOTS.length) {
+                isProcessing = true;
+                playCoopAudio('winners/path/win.mp3', 'הגעת עד הטירה! איזו הרפתקה!', () => {
+                    isProcessing = false;
+                    handleAnswer(true, null, () => { wcPathStep = 0; renderWcPath(); }, null);
+                });
+            } else {
+                renderWcPath();
+            }
+        }
+
         function initPathGame() {
             setAppBackground('world');
             clearPathTimers();
@@ -6695,7 +6741,55 @@
             isProcessing = false;
         }
 
-        function initWcMuseumGame() { initMuseumGame(); }
+        const WC_MUSEUM_EXHIBITS = [
+            { img: 'images/winners/museum_dino.webp', audio: 'winners/museum/fact_dino.mp3', text: 'הטירנוזאור היה דינוזאור ענק וחזק שחי לפני מיליוני שנים!', label: 'דינוזאור 🦖' },
+            { img: 'images/winners/museum_rocket.webp', audio: 'winners/museum/fact_rocket.mp3', text: 'רקטות טסות לחלל במהירות עצומה, כמו טילים ענקיים!', label: 'רקטה 🚀' },
+            { img: 'images/winners/museum_car.webp', audio: 'winners/museum/fact_car.mp3', text: 'מכוניות מירוץ יכולות לנסוע ממש ממש מהר!', label: 'מכונית מירוץ 🏎️' },
+            { img: 'images/winners/museum_animals.webp', audio: 'winners/museum/fact_animals.mp3', text: 'אריה, פיל וג\'ירפה הם חברים שחיים יחד בסוואנה באפריקה!', label: 'חיות סוואנה 🦁' },
+        ];
+        function initWcMuseumGame() {
+            setAppBackground('world');
+            playCoopAudio('winners/museum/intro.mp3', 'ברוך הבא למוזיאון של רועי! לחץ על כל תערוכה כדי ללמוד עליה.');
+            loadWcMuseumRound();
+        }
+        function loadWcMuseumRound() {
+            isProcessing = false;
+            let ex = WC_MUSEUM_EXHIBITS[currentStep] || WC_MUSEUM_EXHIBITS[0];
+            let ws = get('game-workspace');
+            ws.innerHTML = `
+                <div style="display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:10px;">
+                    <img src="images/winners/museum_guide_roy.webp" style="width:52px; height:52px; object-fit:cover; object-position:top center; border-radius:50%; box-shadow:0 4px 10px rgba(0,0,0,0.2);" />
+                    <div style="font-size:clamp(18px,4.5vw,26px); font-weight:900; color:#37474f; text-align:center; direction:rtl;">
+                        המוזיאון של רועי 🦖
+                    </div>
+                </div>
+                <div style="width:min(85vw,340px); margin:0 auto; text-align:center;">
+                    <img src="${ex.img}" style="width:220px; max-width:70vw; display:block; margin:0 auto 10px; filter:drop-shadow(0 8px 16px rgba(0,0,0,0.2));" />
+                    <div style="font-size:clamp(18px,4vw,22px); font-weight:900; color:#37474f; margin-bottom:14px;">${ex.label}</div>
+                    <button id="wc-museum-fact-btn" style="width:100%; height:clamp(50px,11vw,66px); border-radius:20px; border:none; background:linear-gradient(135deg,#ffb74d,#f57c00); color:#fff; font-size:clamp(18px,4.2vw,22px); font-weight:900; box-shadow:0 6px 16px rgba(245,124,0,0.3); direction:rtl; margin-bottom:12px;">
+                        🔊 מה זה?
+                    </button>
+                    <button id="wc-museum-next-btn" style="width:100%; height:clamp(50px,11vw,66px); border-radius:20px; border:none; background:linear-gradient(135deg,#4caf50,#2e7d32); color:#fff; font-size:clamp(18px,4.2vw,22px); font-weight:900; box-shadow:0 6px 16px rgba(46,125,50,0.3); direction:rtl;">
+                        המשך ➜
+                    </button>
+                </div>
+            `;
+            get('wc-museum-fact-btn').onclick = () => playCoopAudio(ex.audio, ex.text);
+            get('wc-museum-next-btn').onclick = () => {
+                if (isProcessing) return;
+                isProcessing = true;
+                let isFinal = currentStep >= (activeGameRounds - 1);
+                if (isFinal) {
+                    playCoopAudio('winners/museum/win.mp3', 'למדת על כל התערוכות! אתה מומחה אמיתי!', () => {
+                        isProcessing = false;
+                        handleAnswer(true, null, loadWcMuseumRound, null);
+                    });
+                } else {
+                    isProcessing = false;
+                    handleAnswer(true, null, loadWcMuseumRound, null);
+                }
+            };
+        }
         function initMuseumGame() {
             setAppBackground('world');
             clearMuseumTimers();
@@ -6917,7 +7011,100 @@
             isProcessing = false;
         }
 
-        function initWcBridgeGame() { initBridgeGame(); }
+        const WC_BRIDGE_PLANK_COLORS = ['#ffb74d', '#4fc3f7', '#81c784'];
+        function initWcBridgeGame() {
+            setAppBackground('world');
+            wcBridgeBlocks = 0;
+            playCoopAudio('winners/bridge/intro.mp3', 'בונים מחדש! גררו כל קרש למקום הריק שמהבהב על הגשר.');
+            renderWcBridge();
+        }
+        function renderWcBridge() {
+            isProcessing = false;
+            wcBridgeBlocks = 0;
+            let ws = get('game-workspace');
+            ws.innerHTML = `
+                <style>
+                    .wc-bridge-slot { width:64px; height:26px; border-radius:6px; border:3px dashed #a1887f; background:rgba(255,255,255,0.4); }
+                    .wc-bridge-slot.next { border-color:#ff6f00; box-shadow:0 0 0 4px rgba(255,111,0,0.25); animation: btnPulseGreen 1s infinite alternate; }
+                    .wc-bridge-slot.filled { border-style:solid; }
+                    .wc-bridge-plank { width:56px; height:56px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:26px; box-shadow:0 6px 14px rgba(0,0,0,0.3); }
+                </style>
+                <div style="font-size:clamp(18px,4.5vw,26px); font-weight:900; color:#37474f; text-align:center; direction:rtl; margin-bottom:6px;">
+                    בונים מחדש 🌉
+                </div>
+                <div style="text-align:center; color:#666; font-size:14px; direction:rtl; margin-bottom:10px;">גררו כל קרש למקום המהבהב על הגשר</div>
+                <div style="position:relative; width:min(90vw,400px); margin:0 auto; display:flex; align-items:center; justify-content:center; gap:6px; background:linear-gradient(180deg,#e1f5fe,#4fc3f7 70%); border-radius:20px; padding:20px 10px; box-shadow:0 10px 24px rgba(0,0,0,0.15);">
+                    <div style="font-size:34px;">🌳</div>
+                    <div id="wc-bridge-track" style="display:flex; gap:8px; align-items:center; background:#8d6e63; padding:10px; border-radius:10px;">
+                        <div class="wc-bridge-slot" data-slot="0"></div>
+                        <div class="wc-bridge-slot" data-slot="1"></div>
+                        <div class="wc-bridge-slot" data-slot="2"></div>
+                    </div>
+                    <div style="font-size:34px;">🌳</div>
+                    <div id="wc-bridge-car" style="position:absolute; right:14px; bottom:14px; font-size:30px; transition: left 1.2s ease, right 1.2s ease;">🚗</div>
+                </div>
+                <img id="wc-bridge-roy" src="images/winners/bridge_roy_build.webp" style="width:90px; margin:10px auto 0; display:block;" />
+                <div id="wc-bridge-tray" style="display:flex; justify-content:center; min-height:80px; margin-top:6px;"></div>
+            `;
+            spawnWcBridgePlank();
+        }
+        function spawnWcBridgePlank() {
+            let tray = get('wc-bridge-tray');
+            if (!tray) return;
+            tray.innerHTML = '';
+            let color = WC_BRIDGE_PLANK_COLORS[wcBridgeBlocks % WC_BRIDGE_PLANK_COLORS.length];
+            let plank = D.createElement('div');
+            plank.className = 'wc-bridge-plank';
+            plank.textContent = '🟫';
+            plank.style.background = color;
+            tray.appendChild(plank);
+
+            let nextSlot = document.querySelector(`.wc-bridge-slot[data-slot="${wcBridgeBlocks}"]`);
+            if (nextSlot) nextSlot.classList.add('next');
+
+            let zones = [0, 1, 2].map(i => ({ el: document.querySelector(`.wc-bridge-slot[data-slot="${i}"]`), key: i }))
+                .filter(z => z.el && !z.el.classList.contains('filled'));
+            wcMakeDraggable(plank, zones, (slotKey) => {
+                if (slotKey !== wcBridgeBlocks) { spawnWcBridgePlank(); return; } // only accept the next slot in order
+                handleWcBridgePlace(plank, color);
+            });
+        }
+        function handleWcBridgePlace(plankEl, color) {
+            if (isProcessing) return;
+            isProcessing = true;
+            playClickSound();
+            let slot = document.querySelector(`.wc-bridge-slot[data-slot="${wcBridgeBlocks}"]`);
+            if (plankEl.parentNode) plankEl.parentNode.removeChild(plankEl);
+            if (slot) {
+                slot.classList.remove('next');
+                slot.classList.add('filled');
+                slot.style.background = color;
+            }
+            wcBridgeBlocks++;
+            if (wcBridgeBlocks >= 3) {
+                if (currentStep === 0) {
+                    // First attempt collapses on purpose - failure becomes a fun learning beat
+                    let track = get('wc-bridge-track');
+                    if (track) track.style.transition = 'transform 0.4s ease'; if (track) track.style.transform = 'rotate(-8deg) translateY(10px)';
+                    playCoopAudio('winners/bridge/collapse.mp3', 'אופס! הגשר נפל! לא נורא, בואו נבנה אותו מחדש וחזק יותר!', () => {
+                        isProcessing = false;
+                        handleAnswer(true, null, renderWcBridge, null);
+                    });
+                } else {
+                    let royImg = get('wc-bridge-roy');
+                    if (royImg) royImg.src = 'images/winners/bridge_roy_win.webp';
+                    let car = get('wc-bridge-car');
+                    if (car) { car.style.right = 'calc(100% - 44px)'; }
+                    playCoopAudio('winners/bridge/win.mp3', 'המכונית עברה בהצלחה! איזה גשר חזק בנית!', () => {
+                        isProcessing = false;
+                        handleAnswer(true, null, renderWcBridge, null);
+                    });
+                }
+                return;
+            }
+            isProcessing = false;
+            spawnWcBridgePlank();
+        }
         function initBridgeGame() {
             setAppBackground('world');
             clearBridgeTimers();
