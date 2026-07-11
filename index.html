@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-07-11-v79-museum-real-photos -->
+<!DOCTYPE html><!-- build: 2026-07-11-v80-museum-7-exhibits-quiz -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -2351,7 +2351,7 @@
                                (currentGameMode === 'wc_tower' ? 5 :
                                (currentGameMode === 'wc_puzzle' ? 4 :
                                (currentGameMode === 'wc_path' ? 5 :
-                               (currentGameMode === 'wc_museum' ? 4 :
+                               (currentGameMode === 'wc_museum' ? 7 :
                                (currentGameMode === 'wc_bridge' ? 3 :
                                (currentGameMode === 'wc_key' ? 3 :
                                ((currentGameMode === 'memory') ? (level === 1 ? 3 : (level === 2 ? 4 : 5)) : 4))))))))))))))))))))))))))))));
@@ -6742,42 +6742,105 @@
         }
 
         const WC_MUSEUM_EXHIBITS = [
-            { img: 'images/winners/museum_dino.webp', audio: 'winners/museum/fact_dino.mp3', text: 'הטירנוזאור היה דינוזאור ענק וחזק שחי לפני מיליוני שנים!', label: 'דינוזאור 🦖', fx: 'dino' },
-            { img: 'images/winners/museum_rocket.webp', audio: 'winners/museum/fact_rocket.mp3', text: 'רקטות טסות לחלל במהירות עצומה, כמו טילים ענקיים!', label: 'רקטה 🚀', fx: 'rocket' },
-            { img: 'images/winners/museum_car.webp', audio: 'winners/museum/fact_car.mp3', text: 'מכוניות מירוץ יכולות לנסוע ממש ממש מהר!', label: 'מכונית מירוץ 🏎️', fx: 'car' },
-            { img: 'images/winners/museum_animals.webp', audio: 'winners/museum/fact_animals.mp3', text: 'אריה, פיל וג\'ירפה הם חברים שחיים יחד בסוואנה באפריקה!', label: 'חיות סוואנה 🦁', fx: 'animals' },
+            { img: 'images/winners/museum_dino.webp', audio: 'winners/museum/fact_dino.mp3', label: 'דינוזאור 🦖', fx: 'dino',
+              text: 'הטירנוזאור היה אחד הדינוזאורים הכי גדולים וחזקים שחיו על כדור הארץ, לפני יותר ממיליון שנה! היה לו ראש ענק עם שיניים חדות כמו סכינים, אבל הידיים שלו היו קטנות מאוד. הוא אכל בשר של דינוזאורים אחרים.',
+              quiz: [
+                { q: 'מה הטירנוזאור אכל?', opts: [['בשר', true], ['עלים ירוקים', false]] },
+                { q: 'איך היו הידיים שלו?', opts: [['קטנות מאוד', true], ['ענקיות', false]] },
+                { q: 'מתי חי הטירנוזאור?', opts: [['לפני מיליוני שנים', true], ['השבוע', false]] },
+                { q: 'איך היו השיניים שלו?', opts: [['חדות כמו סכין', true], ['רכות כמו כרית', false]] },
+              ] },
+            { img: 'images/winners/museum_rocket.webp', audio: 'winners/museum/fact_rocket.mp3', label: 'רקטה 🚀', fx: 'rocket',
+              text: 'רקטות הן כלי הטיס הכי חזקים שיש! הן טסות כל כך מהר, שהן יכולות לצאת מכדור הארץ ולהגיע לחלל תוך דקות ספורות. בפנים הרקטה יש מקום למדענים אמיצים שנקראים אסטרונאוטים.',
+              quiz: [
+                { q: 'לאן טסה הרקטה?', opts: [['לחלל', true], ['למים', false]] },
+                { q: 'איך קוראים לאנשים שטסים ברקטה?', opts: [['אסטרונאוטים', true], ['דייגים', false]] },
+                { q: 'איך הרקטה טסה?', opts: [['מהר מאוד', true], ['לאט לאט', false]] },
+                { q: 'מאיפה הרקטה יוצאת?', opts: [['מכדור הארץ', true], ['מהבית', false]] },
+              ] },
+            { img: 'images/winners/museum_car.webp', audio: 'winners/museum/fact_car.mp3', label: 'מכונית מירוץ 🏎️', fx: 'car',
+              text: 'מכוניות מירוץ בנויות במיוחד כדי לנסוע הכי מהר שאפשר! יש להן מנוע חזק וגלגלים מיוחדים שנדבקים חזק לכביש. נהגי מירוץ מתאמנים המון שנים כדי לדעת לנהוג בהן בבטחה.',
+              quiz: [
+                { q: 'מה מיוחד במכונית מירוץ?', opts: [['היא מהירה מאוד', true], ['היא איטית', false]] },
+                { q: 'מה עוזר לגלגלים להידבק לכביש?', opts: [['גלגלים מיוחדים', true], ['דבק', false]] },
+                { q: 'מי נוהג במכונית מירוץ?', opts: [['נהג מירוץ מאומן', true], ['ילד קטן', false]] },
+                { q: 'כמה זמן מתאמן נהג מירוץ?', opts: [['שנים רבות', true], ['יום אחד', false]] },
+              ] },
+            { img: 'images/winners/museum_animals.webp', audio: 'winners/museum/fact_animals.mp3', label: 'חיות סוואנה 🦁', fx: 'animals',
+              text: 'אריה, פיל וג\'ירפה הם חברים שחיים יחד בסוואנה הגדולה באפריקה. האריה הוא המלך של החיות כי הוא חזק ואמיץ. לפיל יש חדק ארוך שעוזר לו לשתות מים ולאכול. ולג\'ירפה יש צוואר הכי ארוך בעולם, כדי להגיע לעלים הגבוהים בעצים!',
+              quiz: [
+                { q: 'איפה חיים האריה, הפיל והג\'ירפה?', opts: [['בסוואנה באפריקה', true], ['בקוטב הצפוני', false]] },
+                { q: 'למה יש לפיל חדק?', opts: [['לשתות ולאכול', true], ['לעוף', false]] },
+                { q: 'למה לג\'ירפה צוואר ארוך?', opts: [['להגיע לעלים גבוהים', true], ['לשחות מהר', false]] },
+                { q: 'איך קוראים לאריה?', opts: [['מלך החיות', true], ['הכי קטן', false]] },
+              ] },
+            { img: 'images/winners/museum_ocean.webp', audio: 'winners/museum/fact_ocean.mp3', label: 'חיות ים 🐋', fx: 'ocean',
+              text: 'בים הגדול חיים המון יצורים מדהימים! הלוויתן הוא בעל החיים הכי גדול בעולם, גדול אפילו יותר מדינוזאור! הדולפינים חכמים מאוד ואוהבים לשחק. ולצב ים יש שריון קשה שמגן עליו, והוא יכול לחיות מאות שנים!',
+              quiz: [
+                { q: 'מי הכי גדול בים?', opts: [['הלוויתן', true], ['הדג הקטן', false]] },
+                { q: 'מי אוהב לשחק בים?', opts: [['הדולפין', true], ['הסלע', false]] },
+                { q: 'מה מגן על צב הים?', opts: [['השריון הקשה', true], ['הצבע', false]] },
+                { q: 'כמה זמן יכול צב ים לחיות?', opts: [['מאות שנים', true], ['יום אחד', false]] },
+              ] },
+            { img: 'images/winners/museum_egypt.webp', audio: 'winners/museum/fact_egypt.mp3', label: 'מצרים העתיקה 🏺', fx: 'egypt',
+              text: 'לפני אלפי שנים, במצרים בנו אנשים פירמידות ענקיות מאבנים כבדות מאוד. הפירמידות היו קברים מיוחדים למלכים שנקראו פרעונים. זה לקח המון המון שנים לבנות פירמידה אחת, וזה עדיין אחד הדברים הכי מרשימים שאנשים בנו!',
+              quiz: [
+                { q: 'ממה בנויות הפירמידות?', opts: [['אבנים כבדות', true], ['עץ רך', false]] },
+                { q: 'איך קראו למלכים במצרים?', opts: [['פרעונים', true], ['דובים', false]] },
+                { q: 'איפה נבנו הפירמידות?', opts: [['במצרים', true], ['בירח', false]] },
+                { q: 'מתי נבנו הפירמידות?', opts: [['לפני אלפי שנים', true], ['אתמול', false]] },
+              ] },
+            { img: 'images/winners/museum_insects.webp', audio: 'winners/museum/fact_insects.mp3', label: 'פרפרים וחרקים 🦋', fx: 'insects',
+              text: 'פרפר מתחיל את החיים כזחל קטן וזוחל, ואז נכנס לגולם ומשתנה לגמרי! אחרי כמה שבועות הוא יוצא מהגולם עם כנפיים צבעוניות ויפות ויכול לעוף. פרות משה רבנו הן חיפושיות קטנות עם נקודות שעוזרות להן להסתתר מאויבים.',
+              quiz: [
+                { q: 'איך מתחיל פרפר את חייו?', opts: [['כזחל קטן', true], ['כציפור', false]] },
+                { q: 'מה קורה בגולם?', opts: [['הזחל משתנה', true], ['הוא ישן בלבד', false]] },
+                { q: 'מה יש לפרפר שיוצא מהגולם?', opts: [['כנפיים צבעוניות', true], ['זנב ארוך', false]] },
+                { q: 'למה יש נקודות לפרת משה רבנו?', opts: [['להסתתר מאויבים', true], ['לקישוט בלבד', false]] },
+              ] },
         ];
+        let wcMuseumQuizIdx = -1;
         // Tiny synthesized "sound sketches" per exhibit, built on the existing playTone() engine -
         // no external audio files, so each exhibit gets a distinct playful flourish instantly and offline.
         function playMuseumFx(kind) {
             if (kind === 'dino') {
-                // low double "stomp/roar" - two heavy low tones
                 playTone(85, 'sawtooth', 0.22, 0, 0.16);
                 playTone(65, 'sawtooth', 0.32, 0.2, 0.16);
             } else if (kind === 'rocket') {
-                // rising launch whoosh - a quick ascending sweep of short tones
-                for (let i = 0; i < 10; i++) {
-                    playTone(220 + i * 70, 'sine', 0.09, i * 0.035, 0.08);
-                }
+                for (let i = 0; i < 10; i++) playTone(220 + i * 70, 'sine', 0.09, i * 0.035, 0.08);
             } else if (kind === 'car') {
-                // engine rev - quick low alternating buzzes
                 playTone(110, 'sawtooth', 0.09, 0, 0.12);
                 playTone(150, 'sawtooth', 0.09, 0.09, 0.12);
                 playTone(110, 'sawtooth', 0.16, 0.18, 0.12);
             } else if (kind === 'animals') {
-                // bright three-note chime, like a cheerful little fanfare
                 playTone(392, 'sine', 0.16, 0, 0.1);
                 playTone(494, 'sine', 0.16, 0.13, 0.1);
                 playTone(587, 'sine', 0.26, 0.26, 0.1);
+            } else if (kind === 'ocean') {
+                // gentle descending bubbly swoosh
+                playTone(600, 'sine', 0.12, 0, 0.08);
+                playTone(500, 'sine', 0.12, 0.1, 0.08);
+                playTone(400, 'sine', 0.2, 0.2, 0.08);
+            } else if (kind === 'egypt') {
+                // mysterious low ancient resonance
+                playTone(200, 'triangle', 0.4, 0, 0.14);
+                playTone(150, 'triangle', 0.5, 0.25, 0.14);
+            } else if (kind === 'insects') {
+                // light fluttering high chirps
+                playTone(800, 'square', 0.05, 0, 0.06);
+                playTone(900, 'square', 0.05, 0.06, 0.06);
+                playTone(1000, 'square', 0.08, 0.12, 0.06);
             }
         }
         function initWcMuseumGame() {
             setAppBackground('world');
-            playCoopAudio('winners/museum/intro.mp3', 'ברוך הבא למוזיאון של רועי! לחץ על כל תערוכה כדי ללמוד עליה.');
+            wcMuseumQuizIdx = -1;
+            playCoopAudio('winners/museum/intro.mp3', 'ברוך הבא למוזיאון של רועי! לחץ על כל תערוכה כדי ללמוד עליה, ואז ענה על השאלות.');
             loadWcMuseumRound();
         }
         function loadWcMuseumRound() {
             isProcessing = false;
+            wcMuseumQuizIdx = -1;
             let ex = WC_MUSEUM_EXHIBITS[currentStep] || WC_MUSEUM_EXHIBITS[0];
             let ws = get('game-workspace');
             ws.innerHTML = `
@@ -6789,33 +6852,84 @@
                 </div>
                 <div style="width:min(85vw,340px); margin:0 auto; text-align:center;">
                     <img src="${ex.img}" style="width:220px; max-width:70vw; display:block; margin:0 auto 10px; filter:drop-shadow(0 8px 16px rgba(0,0,0,0.2));" />
-                    <div style="font-size:clamp(18px,4vw,22px); font-weight:900; color:#37474f; margin-bottom:14px;">${ex.label}</div>
+                    <div style="font-size:clamp(18px,4vw,22px); font-weight:900; color:#37474f; margin-bottom:10px;">${ex.label}</div>
+                    <div style="font-size:clamp(13px,3.2vw,15px); color:#555; direction:rtl; line-height:1.5; margin-bottom:14px; background:#fff; border-radius:14px; padding:10px 14px; box-shadow:0 4px 10px rgba(0,0,0,0.08);">${ex.text}</div>
                     <button id="wc-museum-fact-btn" style="width:100%; height:clamp(50px,11vw,66px); border-radius:20px; border:none; background:linear-gradient(135deg,#ffb74d,#f57c00); color:#fff; font-size:clamp(18px,4.2vw,22px); font-weight:900; box-shadow:0 6px 16px rgba(245,124,0,0.3); direction:rtl; margin-bottom:12px;">
-                        🔊 מה זה?
+                        🔊 שמע שוב
                     </button>
                     <button id="wc-museum-next-btn" style="width:100%; height:clamp(50px,11vw,66px); border-radius:20px; border:none; background:linear-gradient(135deg,#4caf50,#2e7d32); color:#fff; font-size:clamp(18px,4.2vw,22px); font-weight:900; box-shadow:0 6px 16px rgba(46,125,50,0.3); direction:rtl;">
-                        המשך ➜
+                        המשך לשאלות ➜
                     </button>
                 </div>
             `;
+            playMuseumFx(ex.fx);
+            setTimeout(() => playCoopAudio(ex.audio, ex.text), 350);
             get('wc-museum-fact-btn').onclick = () => {
                 playMuseumFx(ex.fx);
                 setTimeout(() => playCoopAudio(ex.audio, ex.text), 350);
             };
             get('wc-museum-next-btn').onclick = () => {
                 if (isProcessing) return;
-                isProcessing = true;
-                let isFinal = currentStep >= (activeGameRounds - 1);
-                if (isFinal) {
-                    playCoopAudio('winners/museum/win.mp3', 'למדת על כל התערוכות! אתה מומחה אמיתי!', () => {
-                        isProcessing = false;
-                        handleAnswer(true, null, loadWcMuseumRound, null);
-                    });
-                } else {
-                    isProcessing = false;
-                    handleAnswer(true, null, loadWcMuseumRound, null);
-                }
+                wcMuseumQuizIdx = 0;
+                renderWcMuseumQuiz();
             };
+        }
+        function renderWcMuseumQuiz() {
+            isProcessing = false;
+            let ex = WC_MUSEUM_EXHIBITS[currentStep] || WC_MUSEUM_EXHIBITS[0];
+            let question = ex.quiz[wcMuseumQuizIdx];
+            let ws = get('game-workspace');
+            let opts = shuffle(question.opts);
+            ws.innerHTML = `
+                <div style="display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:10px;">
+                    <img src="${ex.img}" style="width:60px; height:60px; object-fit:cover; border-radius:14px; box-shadow:0 4px 10px rgba(0,0,0,0.15);" />
+                    <div style="font-size:clamp(15px,4vw,18px); font-weight:900; color:#37474f;">${ex.label}</div>
+                </div>
+                <div style="text-align:center; color:#888; font-size:13px; margin-bottom:8px;">שאלה ${wcMuseumQuizIdx + 1} מתוך ${ex.quiz.length}</div>
+                <div style="font-size:clamp(17px,4.2vw,22px); font-weight:900; color:#37474f; text-align:center; direction:rtl; margin-bottom:16px;">
+                    ${question.q}
+                </div>
+                <div id="wc-museum-quiz-opts" style="display:flex; flex-direction:column; gap:12px; width:min(85vw,340px); margin:0 auto;"></div>
+            `;
+            let optsEl = get('wc-museum-quiz-opts');
+            opts.forEach(([label, correct]) => {
+                let btn = D.createElement('button');
+                btn.textContent = label;
+                btn.style.cssText = 'width:100%; height:clamp(55px,12vw,70px); border-radius:20px; border:none; background:linear-gradient(135deg,#42a5f5,#1565c0); color:#fff; font-size:clamp(16px,4vw,20px); font-weight:900; box-shadow:0 6px 16px rgba(21,101,192,0.3); direction:rtl;';
+                btn.onclick = () => {
+                    if (isProcessing) return;
+                    if (correct) {
+                        isProcessing = true;
+                        playSuccessSound();
+                        btn.style.background = 'linear-gradient(135deg,#66bb6a,#2e7d32)';
+                        setTimeout(() => {
+                            isProcessing = false;
+                            wcMuseumQuizIdx++;
+                            if (wcMuseumQuizIdx >= ex.quiz.length) {
+                                let isFinal = currentStep >= (activeGameRounds - 1);
+                                isProcessing = true;
+                                if (isFinal) {
+                                    playCoopAudio('winners/museum/win.mp3', 'למדת על כל התערוכות! אתה מומחה אמיתי!', () => {
+                                        isProcessing = false;
+                                        handleAnswer(true, null, loadWcMuseumRound, null);
+                                    });
+                                } else {
+                                    isProcessing = false;
+                                    handleAnswer(true, null, loadWcMuseumRound, null);
+                                }
+                            } else {
+                                renderWcMuseumQuiz();
+                            }
+                        }, 700);
+                    } else {
+                        playErrorSound();
+                        btn.style.transform = 'translateX(-6px)';
+                        setTimeout(() => { btn.style.transform = 'translateX(6px)'; }, 100);
+                        setTimeout(() => { btn.style.transform = 'scale(1)'; }, 220);
+                    }
+                };
+                optsEl.appendChild(btn);
+            });
         }
         function initMuseumGame() {
             setAppBackground('world');
