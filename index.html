@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-07-11-v73-winners-real-photos -->
+<!DOCTYPE html><!-- build: 2026-07-11-v74-winners-dragdrop-fixes -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -5569,72 +5569,162 @@
         // ------------------------------------------
         // 5. מגדל התורות (חיבור חברתי)
         // ------------------------------------------
+        const WC_TOWER_COLORS = ['#ef5350','#ffca28','#66bb6a','#42a5f5','#ab47bc'];
+
+        // Generic pointer-based drag helper: dragEl can be dropped onto any el in dropZones.
+        // onDrop(zoneKey) fires when released inside a zone; snaps back otherwise.
+        function wcMakeDraggable(dragEl, dropZones, onDrop) {
+            dragEl.style.touchAction = 'none';
+            dragEl.style.cursor = 'grab';
+            let dragging = false, startX, startY, origLeft, origTop, placeholderParent, placeholderNext;
+            dragEl.onpointerdown = (e) => {
+                e.preventDefault();
+                dragging = true;
+                dragEl.setPointerCapture(e.pointerId);
+                let rect = dragEl.getBoundingClientRect();
+                origLeft = rect.left; origTop = rect.top;
+                startX = e.clientX; startY = e.clientY;
+                placeholderParent = dragEl.parentNode; placeholderNext = dragEl.nextSibling;
+                dragEl.style.position = 'fixed';
+                dragEl.style.left = origLeft + 'px';
+                dragEl.style.top = origTop + 'px';
+                dragEl.style.width = rect.width + 'px';
+                dragEl.style.height = rect.height + 'px';
+                dragEl.style.zIndex = '9999';
+                dragEl.style.cursor = 'grabbing';
+                dragEl.style.transition = 'none';
+                document.body.appendChild(dragEl);
+            };
+            dragEl.onpointermove = (e) => {
+                if (!dragging) return;
+                dragEl.style.left = (origLeft + (e.clientX - startX)) + 'px';
+                dragEl.style.top = (origTop + (e.clientY - startY)) + 'px';
+            };
+            function endDrag(e) {
+                if (!dragging) return;
+                dragging = false;
+                let elRect = dragEl.getBoundingClientRect();
+                let cx = elRect.left + elRect.width / 2, cy = elRect.top + elRect.height / 2;
+                let hitZone = null;
+                for (const z of dropZones) {
+                    let zr = z.el.getBoundingClientRect();
+                    if (cx >= zr.left && cx <= zr.right && cy >= zr.top && cy <= zr.bottom) { hitZone = z; break; }
+                }
+                if (hitZone) {
+                    onDrop(hitZone.key);
+                } else {
+                    dragEl.style.transition = 'left 0.3s ease, top 0.3s ease';
+                    dragEl.style.left = origLeft + 'px';
+                    dragEl.style.top = origTop + 'px';
+                    setTimeout(() => {
+                        dragEl.style.position = ''; dragEl.style.left = ''; dragEl.style.top = '';
+                        dragEl.style.width = ''; dragEl.style.height = ''; dragEl.style.zIndex = ''; dragEl.style.cursor = 'grab'; dragEl.style.transition = '';
+                        if (placeholderParent) placeholderParent.insertBefore(dragEl, placeholderNext);
+                    }, 300);
+                }
+            }
+            dragEl.onpointerup = endDrag;
+            dragEl.onpointercancel = endDrag;
+        }
+
         function initWcTowerGame() {
             setAppBackground('emotion');
             clearWcTimers();
             wcTowerTurn = 'roy'; wcTowerBlocks = 0;
-            playCoopAudio('winners/tower/intro.mp3', 'מגדל התורות! שימו קובייה רק כשזה התור שלכם.');
+            playCoopAudio('winners/tower/intro.mp3', 'מגדל התורות! גררו קובייה למגדל באמצע, רק כשזה התור שלכם.');
             renderWcTower();
         }
         function renderWcTower() {
             isProcessing = false;
             let ws = get('game-workspace');
             ws.innerHTML = `
-                <div style="font-size:clamp(18px,4.5vw,26px); font-weight:900; color:#37474f; text-align:center; direction:rtl; margin-bottom:15px;">
+                <style>
+                    .wc-player-card { width:110px; border-radius:20px; padding:10px 6px; text-align:center; transition: all 0.25s ease; border:4px solid transparent; }
+                    .wc-player-card.active { background:rgba(76,175,80,0.15); border-color:#4caf50; box-shadow:0 0 16px rgba(76,175,80,0.3); }
+                    .wc-player-card.idle { opacity:0.5; }
+                    .wc-player-card img { width:64px; height:64px; border-radius:50%; display:block; margin:0 auto 6px; }
+                    .wc-player-card .name { font-weight:900; font-size:15px; color:#37474f; }
+                    .wc-player-card .turn-label { font-size:12px; font-weight:bold; color:#2e7d32; min-height:16px; }
+                    .wc-tower-block { width:80px; height:34px; border-radius:8px; box-shadow:0 3px 8px rgba(0,0,0,0.25); border:2px solid rgba(0,0,0,0.15); }
+                    .wc-drag-block { width:70px; height:70px; border-radius:16px; display:flex; align-items:center; justify-content:center; font-size:32px; box-shadow:0 6px 14px rgba(0,0,0,0.3); margin:10px auto 0; }
+                </style>
+                <div style="font-size:clamp(18px,4.5vw,26px); font-weight:900; color:#37474f; text-align:center; direction:rtl; margin-bottom:6px;">
                     מגדל התורות 🗼
                 </div>
-                <div style="width:min(85vw,360px); margin:0 auto; text-align:center;">
-                    <div style="display:flex; justify-content:center; gap:20px; margin-bottom:10px;">
-                        <img id="wc-tower-avatar-roy" src="images/winners/avatar_roy.webp" style="width:64px; height:64px; border-radius:50%; transition: transform 0.2s ease, box-shadow 0.2s ease;" />
-                        <img id="wc-tower-avatar-aba" src="images/winners/avatar_aba.webp" style="width:64px; height:64px; border-radius:50%; transition: transform 0.2s ease, box-shadow 0.2s ease;" />
+                <div style="text-align:center; color:#666; font-size:14px; direction:rtl; margin-bottom:10px;">גררו את הקובייה הצבעונית אל המגדל באמצע</div>
+                <div style="display:flex; align-items:flex-end; justify-content:center; gap:14px; width:min(95vw,460px); margin:0 auto;">
+                    <div id="wc-tower-card-roy" class="wc-player-card">
+                        <img src="images/winners/avatar_roy.webp" />
+                        <div class="name">רועי 👦</div>
+                        <div class="turn-label" id="wc-tower-label-roy"></div>
                     </div>
-                    <div id="wc-tower-status" style="font-size:clamp(18px,4vw,24px); font-weight:bold; color:#37474f; height:32px;"></div>
-                    <div id="wc-tower-stack" style="display:flex; flex-direction:column-reverse; align-items:center; min-height:150px; justify-content:flex-start; margin:10px 0;"></div>
-                    <button id="wc-tower-btn" style="width:100%; height:clamp(55px,12vw,75px); border-radius:24px; border:none; background:linear-gradient(135deg,#4caf50,#2e7d32); color:#fff; font-size:clamp(20px,5vw,26px); font-weight:900; box-shadow:0 8px 20px rgba(46,125,50,0.3); direction:rtl;">
-                        🧱 הנח קובייה
-                    </button>
+                    <div id="wc-tower-zone" style="position:relative; width:150px; height:220px; background:rgba(255,255,255,0.5); border:3px dashed #9e9e9e; border-radius:18px; display:flex; flex-direction:column-reverse; align-items:center; padding-bottom:6px;">
+                        <div style="position:absolute; bottom:0; left:50%; transform:translateX(-50%); width:100px; height:10px; background:#78909c; border-radius:4px 4px 0 0;"></div>
+                    </div>
+                    <div id="wc-tower-card-aba" class="wc-player-card">
+                        <img src="images/winners/avatar_aba.webp" />
+                        <div class="name">אבא 👨</div>
+                        <div class="turn-label" id="wc-tower-label-aba"></div>
+                    </div>
                 </div>
+                <div id="wc-tower-block-holder" style="display:flex; justify-content:center; min-height:90px;"></div>
+                <div id="wc-tower-status" style="text-align:center; font-size:clamp(16px,4vw,20px); font-weight:bold; color:#37474f; margin-top:6px;"></div>
             `;
             updateWcTowerUI();
-            get('wc-tower-btn').onclick = handleWcTowerTap;
+            spawnWcTowerDragBlock();
         }
         function updateWcTowerUI() {
+            let royCard = get('wc-tower-card-roy'), abaCard = get('wc-tower-card-aba');
+            let royLabel = get('wc-tower-label-roy'), abaLabel = get('wc-tower-label-aba');
             let statusEl = get('wc-tower-status');
-            if (statusEl) statusEl.textContent = wcTowerTurn === 'roy' ? '👦 התור שלך, רועי!' : '👨 התור של אבא...';
-            let royAv = get('wc-tower-avatar-roy'), abaAv = get('wc-tower-avatar-aba');
-            let activeStyle = 'box-shadow:0 0 0 4px #4caf50; transform:scale(1.1);';
-            let idleStyle = 'box-shadow:none; transform:scale(1); opacity:0.55;';
-            if (royAv) royAv.style.cssText += (wcTowerTurn === 'roy' ? activeStyle : idleStyle);
-            if (abaAv) abaAv.style.cssText += (wcTowerTurn === 'aba' ? activeStyle : idleStyle);
+            if (royCard) royCard.className = 'wc-player-card ' + (wcTowerTurn === 'roy' ? 'active' : 'idle');
+            if (abaCard) abaCard.className = 'wc-player-card ' + (wcTowerTurn === 'aba' ? 'active' : 'idle');
+            if (royLabel) royLabel.textContent = wcTowerTurn === 'roy' ? 'התור שלך! ⬇️' : '';
+            if (abaLabel) abaLabel.textContent = wcTowerTurn === 'aba' ? 'התור שלך! ⬇️' : '';
+            if (statusEl) statusEl.textContent = wcTowerTurn === 'roy' ? '👦 גררו את הקובייה למגדל, רועי!' : '👨 עכשיו אבא גורר קובייה...';
         }
-        function handleWcTowerTap() {
-            if (isProcessing) return;
-            if (wcTowerTurn !== 'roy') {
-                playErrorSound();
-                playCoopAudio('coop/towertalk_err_aba.mp3', 'רגע, עכשיו תור אבא');
-                return;
-            }
-            playClickSound();
-            wcTowerBlocks++;
-            let stack = get('wc-tower-stack');
+        function spawnWcTowerDragBlock() {
+            let holder = get('wc-tower-block-holder');
+            if (!holder) return;
+            holder.innerHTML = '';
+            let color = WC_TOWER_COLORS[wcTowerBlocks % WC_TOWER_COLORS.length];
             let block = D.createElement('div');
+            block.className = 'wc-drag-block';
             block.textContent = '🧱';
-            block.style.cssText = 'font-size:40px; animation: superPop 0.3s ease-out;';
-            stack.appendChild(block);
+            block.style.background = color;
+            holder.appendChild(block);
+            let zone = get('wc-tower-zone');
+            wcMakeDraggable(block, [{ el: zone, key: 'tower' }], () => handleWcTowerDrop(block, color));
+
+            if (wcTowerTurn === 'aba') {
+                wcTowerAutoTimer = setTimeout(() => {
+                    if (block.isConnected) handleWcTowerDrop(block, color);
+                }, 1600);
+            }
+        }
+        function handleWcTowerDrop(blockEl, color) {
+            if (isProcessing) return;
+            isProcessing = true;
+            playClickSound();
+            if (blockEl.parentNode) blockEl.parentNode.removeChild(blockEl);
+            wcTowerBlocks++;
+            let zone = get('wc-tower-zone');
+            let stacked = D.createElement('div');
+            stacked.className = 'wc-tower-block';
+            stacked.style.background = color;
+            stacked.style.animation = 'superPop 0.3s ease-out';
+            zone.appendChild(stacked);
             if (wcTowerBlocks >= 5) {
-                isProcessing = true;
                 playCoopAudio('winners/tower/win.mp3', 'בנינו מגדל מדהים ביחד!', () => {
                     isProcessing = false;
                     handleAnswer(true, null, () => { wcTowerBlocks = 0; wcTowerTurn = 'roy'; renderWcTower(); }, null);
                 });
                 return;
             }
-            wcTowerTurn = 'aba';
+            wcTowerTurn = (wcTowerTurn === 'roy') ? 'aba' : 'roy';
             updateWcTowerUI();
-            wcTowerAutoTimer = setTimeout(() => {
-                wcTowerTurn = 'roy';
-                updateWcTowerUI();
-            }, 1400);
+            isProcessing = false;
+            spawnWcTowerDragBlock();
         }
 
         // ------------------------------------------
@@ -5814,10 +5904,11 @@
         // ------------------------------------------
         // 9. בונים מחדש (התמדה)
         // ------------------------------------------
+        const WC_BRIDGE_PLANK_COLORS = ['#ffb74d', '#4fc3f7', '#81c784'];
         function initWcBridgeGame() {
             setAppBackground('world');
             wcBridgeBlocks = 0;
-            playCoopAudio('winners/bridge/intro.mp3', 'בונים מחדש! בנה גשר כדי שהמכונית תוכל לעבור.');
+            playCoopAudio('winners/bridge/intro.mp3', 'בונים מחדש! גררו כל קרש למקום הריק שמהבהב על הגשר.');
             renderWcBridge();
         }
         function renderWcBridge() {
@@ -5825,31 +5916,69 @@
             wcBridgeBlocks = 0;
             let ws = get('game-workspace');
             ws.innerHTML = `
-                <div style="font-size:clamp(18px,4.5vw,26px); font-weight:900; color:#37474f; text-align:center; direction:rtl; margin-bottom:10px;">
+                <style>
+                    .wc-bridge-slot { width:64px; height:26px; border-radius:6px; border:3px dashed #a1887f; background:rgba(255,255,255,0.4); }
+                    .wc-bridge-slot.next { border-color:#ff6f00; box-shadow:0 0 0 4px rgba(255,111,0,0.25); animation: btnPulseGreen 1s infinite alternate; }
+                    .wc-bridge-slot.filled { border-style:solid; }
+                    .wc-bridge-plank { width:56px; height:56px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:26px; box-shadow:0 6px 14px rgba(0,0,0,0.3); }
+                </style>
+                <div style="font-size:clamp(18px,4.5vw,26px); font-weight:900; color:#37474f; text-align:center; direction:rtl; margin-bottom:6px;">
                     בונים מחדש 🌉
                 </div>
-                <div style="position:relative; width:min(90vw,400px); margin:0 auto;">
-                    <img src="images/winners/bridge_scene.webp" style="width:100%; border-radius:20px; box-shadow:0 10px 24px rgba(0,0,0,0.2); transition: transform 0.3s ease;" id="wc-bridge-img" />
-                    <img id="wc-bridge-roy" src="images/winners/bridge_roy_build.webp" style="width:100px; margin:8px auto 0; display:block;" />
-                    <div id="wc-bridge-blocks" style="text-align:center; font-size:28px; margin:10px 0;"></div>
+                <div style="text-align:center; color:#666; font-size:14px; direction:rtl; margin-bottom:10px;">גררו כל קרש למקום המהבהב על הגשר</div>
+                <div style="position:relative; width:min(90vw,400px); margin:0 auto; display:flex; align-items:center; justify-content:center; gap:6px; background:linear-gradient(180deg,#e1f5fe,#4fc3f7 70%); border-radius:20px; padding:20px 10px; box-shadow:0 10px 24px rgba(0,0,0,0.15);">
+                    <div style="font-size:34px;">🌳</div>
+                    <div id="wc-bridge-track" style="display:flex; gap:8px; align-items:center; background:#8d6e63; padding:10px; border-radius:10px;">
+                        <div class="wc-bridge-slot" data-slot="0"></div>
+                        <div class="wc-bridge-slot" data-slot="1"></div>
+                        <div class="wc-bridge-slot" data-slot="2"></div>
+                    </div>
+                    <div style="font-size:34px;">🌳</div>
+                    <div id="wc-bridge-car" style="position:absolute; right:14px; bottom:14px; font-size:30px; transition: left 1.2s ease, right 1.2s ease;">🚗</div>
                 </div>
-                <button id="wc-bridge-btn" style="width:min(90vw,400px); display:block; margin:0 auto; height:clamp(55px,12vw,75px); border-radius:24px; border:none; background:linear-gradient(135deg,#8d6e63,#5d4037); color:#fff; font-size:clamp(18px,4.5vw,24px); font-weight:900; box-shadow:0 8px 20px rgba(93,64,55,0.3); direction:rtl;">
-                    🧱 הנח קובייה
-                </button>
+                <img id="wc-bridge-roy" src="images/winners/bridge_roy_build.webp" style="width:90px; margin:10px auto 0; display:block;" />
+                <div id="wc-bridge-tray" style="display:flex; justify-content:center; min-height:80px; margin-top:6px;"></div>
             `;
-            get('wc-bridge-btn').onclick = handleWcBridgeTap;
+            spawnWcBridgePlank();
         }
-        function handleWcBridgeTap() {
+        function spawnWcBridgePlank() {
+            let tray = get('wc-bridge-tray');
+            if (!tray) return;
+            tray.innerHTML = '';
+            let color = WC_BRIDGE_PLANK_COLORS[wcBridgeBlocks % WC_BRIDGE_PLANK_COLORS.length];
+            let plank = D.createElement('div');
+            plank.className = 'wc-bridge-plank';
+            plank.textContent = '🟫';
+            plank.style.background = color;
+            tray.appendChild(plank);
+
+            let nextSlot = document.querySelector(`.wc-bridge-slot[data-slot="${wcBridgeBlocks}"]`);
+            if (nextSlot) nextSlot.classList.add('next');
+
+            let zones = [0, 1, 2].map(i => ({ el: document.querySelector(`.wc-bridge-slot[data-slot="${i}"]`), key: i }))
+                .filter(z => z.el && !z.el.classList.contains('filled'));
+            wcMakeDraggable(plank, zones, (slotKey) => {
+                if (slotKey !== wcBridgeBlocks) { spawnWcBridgePlank(); return; } // only accept the next slot in order
+                handleWcBridgePlace(plank, color);
+            });
+        }
+        function handleWcBridgePlace(plankEl, color) {
             if (isProcessing) return;
+            isProcessing = true;
             playClickSound();
+            let slot = document.querySelector(`.wc-bridge-slot[data-slot="${wcBridgeBlocks}"]`);
+            if (plankEl.parentNode) plankEl.parentNode.removeChild(plankEl);
+            if (slot) {
+                slot.classList.remove('next');
+                slot.classList.add('filled');
+                slot.style.background = color;
+            }
             wcBridgeBlocks++;
-            get('wc-bridge-blocks').textContent = '🧱'.repeat(wcBridgeBlocks);
             if (wcBridgeBlocks >= 3) {
-                isProcessing = true;
                 if (currentStep === 0) {
                     // First attempt collapses on purpose - failure becomes a fun learning beat
-                    let img = get('wc-bridge-img');
-                    img.style.transform = 'rotate(-4deg) translateY(6px)';
+                    let track = get('wc-bridge-track');
+                    if (track) track.style.transition = 'transform 0.4s ease'; if (track) track.style.transform = 'rotate(-8deg) translateY(10px)';
                     playCoopAudio('winners/bridge/collapse.mp3', 'אופס! הגשר נפל! לא נורא, בואו נבנה אותו מחדש וחזק יותר!', () => {
                         isProcessing = false;
                         handleAnswer(true, null, renderWcBridge, null);
@@ -5857,12 +5986,17 @@
                 } else {
                     let royImg = get('wc-bridge-roy');
                     if (royImg) royImg.src = 'images/winners/bridge_roy_win.webp';
+                    let car = get('wc-bridge-car');
+                    if (car) { car.style.right = 'calc(100% - 44px)'; }
                     playCoopAudio('winners/bridge/win.mp3', 'המכונית עברה בהצלחה! איזה גשר חזק בנית!', () => {
                         isProcessing = false;
                         handleAnswer(true, null, renderWcBridge, null);
                     });
                 }
+                return;
             }
+            isProcessing = false;
+            spawnWcBridgePlank();
         }
 
         // ------------------------------------------

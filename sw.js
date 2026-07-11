@@ -1,4 +1,4 @@
-const CACHE_NAME = 'roy-games-v73';
+const CACHE_NAME = 'roy-games-v74';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
