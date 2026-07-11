@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-07-11-v65-store-teddy-fix -->
+<!DOCTYPE html><!-- build: 2026-07-11-v66-store-clarity-fix -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -3716,7 +3716,7 @@
                 ],
                 tasks: [
                     { type: 'sort', key: 'color', val: 'red', text: 'שים על המדף את כל הדברים האדומים', audio: 'store/sort_red.mp3' },
-                    { type: 'sort', key: 'size', val: 'big', text: 'עכשיו, שים על המדף את כל הדברים הגדולים', audio: 'store/sort_big.mp3' },
+                    { type: 'sort', key: 'color', val: 'yellow', text: 'עכשיו, שים על המדף את כל הדברים הצהובים', audio: 'store/sort_yellow.mp3' },
                     { type: 'count', key: 'cat', val: 'fruit', countVal: 6, text: 'כמה פירות יש בסך הכל בחנות? לחץ על המספר', audio: 'store/count_fruits.mp3', options: [4, 5, 6] }
                 ],
                 audioWin: 'store/win.mp3',
@@ -3798,14 +3798,18 @@
 
             // Render basket items
             let basket = get('store-basket');
-            basket.innerHTML = `<div style="position:absolute; top:6px; right:12px; font-size:11px; font-weight:bold; color:#795548; opacity:0.6; direction:rtl;">סלסלת הבלאגן 🧺</div>`;
+            if (basket) {
+                basket.style.opacity = '1';
+                basket.style.display = 'flex';
+                basket.innerHTML = `<div style="position:absolute; top:6px; right:12px; font-size:11px; font-weight:bold; color:#795548; opacity:0.6; direction:rtl;">סלסלת הבלאגן 🧺</div>`;
+            }
             item.items.forEach(it => {
                 let token = D.createElement('div');
                 token.id = `store-item-${it.id}`;
                 token.className = 'store-item-token';
                 
-                let sizePx = it.size === 'big' ? 'clamp(60px, 14vw, 75px)' : 'clamp(42px, 10vw, 52px)';
-                let fontPx = it.size === 'big' ? 'clamp(32px, 7vw, 42px)' : 'clamp(22px, 5vw, 28px)';
+                let sizePx = 'clamp(56px, 13vw, 70px)';
+                let fontPx = 'clamp(30px, 7vw, 40px)';
                 
                 token.style.cssText = `
                     width: ${sizePx};
@@ -3827,7 +3831,9 @@
                 token.textContent = it.emoji;
                 
                 bindStoreDrag(token, it);
-                basket.appendChild(token);
+                if (basket) {
+                    basket.appendChild(token);
+                }
             });
 
             askStoreTask();
@@ -3850,9 +3856,9 @@
             playCoopAudio(task.audio, task.text);
 
             if (task.type === 'count') {
-                // Dim the basket, show choice buttons
+                // Hide the basket, show choice buttons
                 let basket = get('store-basket');
-                if (basket) basket.style.opacity = '0.35';
+                if (basket) basket.style.display = 'none';
 
                 let optionsDiv = get('store-count-options');
                 if (optionsDiv) {
