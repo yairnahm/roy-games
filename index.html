@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-07-10-v57-pointer-drag-drop -->
+<!DOCTYPE html><!-- build: 2026-07-11-v59-toy-shelf-star-shop -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -1163,8 +1163,109 @@
     .switch input:checked + .slider {
         background-color: #4CAF50;
     }
-    .switch input:checked + .slider:before {
-        transform: translateX(26px);
+    
+    /* Toy Shelf styles */
+    .toy-shelf-bg {
+        background: #efebe9;
+        background-image: radial-gradient(#d7ccc8 1px, transparent 1px);
+        background-size: 20px 20px;
+    }
+    .wooden-shelf {
+        background: linear-gradient(to bottom, #a1887f 0%, #8d6e63 15%, #795548 100%);
+        border-radius: 8px;
+        box-shadow: 0 8px 16px rgba(0,0,0,0.15), inset 0 2px 4px rgba(255,255,255,0.2);
+        height: 18px;
+        width: 100%;
+        margin-top: 5px;
+        position: relative;
+    }
+    .wooden-shelf::after {
+        content: '';
+        position: absolute;
+        bottom: -6px;
+        left: 5%;
+        width: 90%;
+        height: 6px;
+        background: rgba(0,0,0,0.1);
+        border-radius: 50%;
+        filter: blur(2px);
+    }
+    .toy-slot {
+        background: rgba(255,255,255,0.4);
+        border: 4px dashed #bcaaa4;
+        border-radius: 20px;
+        aspect-ratio: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        cursor: pointer;
+        transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .toy-slot:hover {
+        background: rgba(255,255,255,0.6);
+        border-color: #8d6e63;
+        transform: translateY(-2px);
+    }
+    .toy-slot.locked {
+        background: rgba(0,0,0,0.03);
+    }
+    .toy-emoji {
+        font-size: clamp(38px, 9vw, 55px);
+        line-height: 1;
+        transition: transform 0.15s;
+    }
+    .locked .toy-emoji {
+        filter: grayscale(1) opacity(0.3);
+    }
+    /* Toy micro-animations */
+    .toy-anim-float { animation: toyFloat 1.2s ease-in-out; }
+    .toy-anim-beep { animation: toyBeep 0.8s ease-in-out; }
+    .toy-anim-growl { animation: toyGrowl 0.8s ease-in-out; }
+    .toy-anim-drive { animation: toyDrive 0.8s ease-in-out; }
+    .toy-anim-sparkle { animation: toySparkle 1.0s ease-in-out; }
+    .toy-anim-shine { animation: toyShine 0.9s ease-in-out; }
+    .toy-anim-hug { animation: toyHug 0.8s ease-in-out; }
+    .toy-anim-sail { animation: toySail 1.2s ease-in-out; }
+
+    @keyframes toyFloat {
+        0%, 100% { transform: translateY(0) scale(1); }
+        50% { transform: translateY(-15px) scale(1.15); }
+    }
+    @keyframes toyBeep {
+        0%, 100% { transform: scale(1) rotate(0); filter: drop-shadow(0 0 0 transparent); }
+        20%, 60% { transform: scale(1.1) rotate(5deg); filter: drop-shadow(0 0 12px #ffd166); }
+        40%, 80% { transform: scale(1.1) rotate(-5deg); filter: drop-shadow(0 0 12px #ffd166); }
+    }
+    @keyframes toyGrowl {
+        0%, 100% { transform: scale(1); }
+        20%, 60% { transform: scale(1.2) rotate(-8deg); }
+        40%, 80% { transform: scale(1.2) rotate(8deg); }
+    }
+    @keyframes toyDrive {
+        0%, 100% { transform: translateX(0); }
+        30% { transform: translateX(-15px) rotate(-4deg); }
+        70% { transform: translateX(15px) rotate(4deg); }
+    }
+    @keyframes toySparkle {
+        0%, 100% { transform: scale(1); filter: brightness(1); }
+        50% { transform: scale(1.2) rotate(12deg); filter: brightness(1.3) drop-shadow(0 0 15px #e040fb); }
+    }
+    @keyframes toyShine {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.1); filter: drop-shadow(0 0 15px #ffd166) brightness(1.15); }
+    }
+    @keyframes toyHug {
+        0%, 100% { transform: scale(1); }
+        30% { transform: scale(1.2, 0.85); }
+        50% { transform: scale(0.9, 1.15) translateY(-8px); }
+        70% { transform: scale(1.05, 0.95); }
+    }
+    @keyframes toySail {
+        0%, 100% { transform: rotate(0) translateY(0); }
+        33% { transform: rotate(6deg) translateY(2px); }
+        66% { transform: rotate(-6deg) translateY(-2px); }
     }
     </style>
 </head>
@@ -1618,6 +1719,10 @@
                     <circle cx="50%" cy="50%" r="calc(50% - 3px)" fill="none" stroke="#2196F3" stroke-width="5" stroke-dasharray="1000" stroke-dashoffset="1000" id="settings-lock-ring" style="transition: stroke-dashoffset 0.1s linear;"></circle>
                 </svg>
             </button>
+            <!-- Toy Shelf button -->
+            <button id="toy-shelf-btn" class="icon-tooltip" data-tip="מדף הצעצועים שלי 🧸" onclick="openToyShelf()" style="position:relative; width:clamp(55px,12vw,70px); height:clamp(55px,12vw,70px); background:rgba(255,255,255,0.9); border:4px solid #ff9800; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; padding:0; box-shadow:0 4px 10px rgba(0,0,0,0.1); outline:none; transition: transform 0.15s; margin-left:5px;">
+                <span style="font-size:clamp(24px,5vw,36px); line-height:1; display:inline-block;">🧸</span>
+            </button>
             <!-- Wallet / Purse shape (Max-Stock bag) -->
             <div id="star-wallet-purse" class="icon-tooltip" data-tip="שקית הפרסים של מקס סטוק" style="position:relative; width:clamp(70px,16vw,110px); height:clamp(70px,16vw,110px); display:flex; align-items:center; justify-content:center;">
                 <img id="max-stock-bag-img" src="images/max_stock_bag.png" style="width:100%; height:100%; object-fit:contain; filter:drop-shadow(0 4px 8px rgba(0,0,0,0.15));" />
@@ -1838,6 +1943,43 @@
         </div>
     </div>
     <div id="feedback-layer" class="hidden feedback-icon"></div>
+
+    <!-- Toy Shelf Overlay (v57) -->
+    <div id="toy-shelf-overlay" class="hidden" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); display:flex; align-items:center; justify-content:center; z-index:250; backdrop-filter:blur(8px);">
+        <div class="toy-shelf-bg" style="width:min(90vw, 550px); max-height:85vh; border:8px solid #8d6e63; border-radius:32px; box-shadow:0 20px 50px rgba(0,0,0,0.3); overflow:hidden; display:flex; flex-direction:column; direction:rtl;">
+            <!-- Header -->
+            <div style="background:#a1887f; padding:15px; display:flex; justify-content:space-between; align-items:center; border-bottom:4px solid #8d6e63;">
+                <h2 style="margin:0; font-size:clamp(20px, 4.5vw, 28px); font-weight:900; color:#fff; text-shadow:0 2px 4px rgba(0,0,0,0.2);">🧸 מדף הצעצועים של רועי</h2>
+                <div id="shelf-star-count" style="background:#fff; border:3px solid #ffb74d; border-radius:16px; padding:4px 12px; font-weight:900; color:#ff9800; font-size:clamp(16px, 3.5vw, 22px); display:flex; align-items:center; gap:4px;">
+                    0 ⭐
+                </div>
+            </div>
+            <!-- Scrollable Content -->
+            <div style="flex:1; overflow-y:auto; padding:20px; display:flex; flex-direction:column; gap:25px;">
+                <!-- Shelves container -->
+                <div id="toys-grid" style="display:grid; grid-template-columns:repeat(2, 1fr); gap:20px 25px; padding:10px 0;">
+                    <!-- Dynamically populated slots -->
+                </div>
+            </div>
+            <!-- Bottom exit -->
+            <div style="background:#d7ccc8; padding:15px; text-align:center; border-top:4px solid #8d6e63;">
+                <button class="action-btn" onclick="closeToyShelf()" style="background:#4CAF50; border-color:#388E3C; padding:10px 30px; font-size:18px; margin:0;">חזרה למשחקים ➜</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Unlock Modal (Inner overlay) -->
+    <div id="toy-confirm-overlay" class="hidden" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; z-index:300; backdrop-filter:blur(4px);">
+        <div class="modal-box" style="width:min(80vw, 320px); border:4px solid #ffd166; padding:20px;">
+            <h2 id="confirm-toy-title" style="font-size:22px; margin-bottom:15px; direction:rtl;">לפתוח את הצעצוע?</h2>
+            <div style="font-size:60px; margin-bottom:15px;" id="confirm-toy-emoji">🚀</div>
+            <div style="font-size:18px; font-weight:900; color:#e65100; margin-bottom:20px;" id="confirm-toy-cost">עולה 5 כוכבים ⭐</div>
+            <div style="display:flex; justify-content:center; gap:15px;">
+                <button class="action-btn" id="confirm-toy-yes" style="background:#4CAF50; border-color:#388E3C; margin:0; padding:8px 24px;">כן! 👍</button>
+                <button class="action-btn" onclick="hide('toy-confirm-overlay')" style="background:#F44336; border-color:#D32F2F; margin:0; padding:8px 24px;">לא 👎</button>
+            </div>
+        </div>
+    </div>
 
     <script>
         const bgIcons = { 'goodbad': ['👍','👎','❤️','😊'], 'sharing': ['🤝','❤️','🌟','🎁'], 'growth': ['🌱','🔍','💪','🌟'], 'memory': ['🧠','💭','💡'], 'tracing': ['✏️','🎨','📐'], 'counting': ['🔢','🧮','➕'], 'sequence': ['🔄','✨','🎯'], 'fly': ['🪰','💨'], 'cop': ['🚓','🚨'], 'diff': ['🔎','👀'], 'oddone': ['🍎','🐶','🚗'], 'missing': ['A','B','C'], 'tools': ['🔨','🔧','🔩'], 'context': ['🧩','🖼️','🎨'], 'vparts': ['🚗','✈️','🚂','⛵','🚁'], 'habitat': ['🏠','🌳','🌊'], 'shadow': ['👤','🌑','👀'], 'halfhalf': ['✂️','🎨','🧩'], 'chrono': ['⏳','📅','🔄'], 'bigger': ['⚖️','🐘','🐭','🔢'], 'emotion': ['😄','😢','😡','😱'], 'faces': ['📸','❤️','👨‍👩‍👧‍👦','🤳'], 'mgamish': ['🤸','💪','🌟','🤸‍♂️'], 'firstletter': ['🔡','🔤','📖','✏️'], 'numwar': ['⚔️','🃏','🔢','⭐'], 'towertalk': ['🧱','🏗️','🏢'], 'cooppuzzle': ['🧩','🖼️','🎨','📸'], 'tidyup': ['🧼','🧸','🧺','🧹'], 'patterns': ['🔴','🔵','💛','🟩','🔺','🌟'], 'origins': ['🐄','🥛','🐑','🐔','🐝','🍞'], 'families': ['🐕','🐶','🐈','🐱','🐥','🦁'], 'diffscene': ['🖼️','🔍','👀'], 'diffvideo': ['🎬','🔎','👀'], 'whatneeds': ['🤔','❓','💡','🔍','👁️','🌟'], 'shape': ['🖼️','🧩','❓'] };
@@ -2100,7 +2242,7 @@
             updateWalletDisplay();
         }
 
-        function hideAllScreens() { ['start-screen', 'gender-screen', 'category-screen', 'settings-screen', 'hub-screen', 'unified-diff-screen', 'active-game-container', 'level-complete-overlay', 'missing-lang-screen', 'firstletter-lang-screen', 'faces-lang-screen', 'faces-mode-screen', 'faces-summary-screen'].forEach(hide); }
+        function hideAllScreens() { ['start-screen', 'gender-screen', 'category-screen', 'settings-screen', 'hub-screen', 'unified-diff-screen', 'active-game-container', 'level-complete-overlay', 'missing-lang-screen', 'firstletter-lang-screen', 'faces-lang-screen', 'faces-mode-screen', 'faces-summary-screen', 'toy-shelf-overlay', 'toy-confirm-overlay'].forEach(hide); }
 
         function backToHub() { playClickSound(); hideAllScreens(); setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); }
         function backToCategories() { playClickSound(); hideAllScreens(); setAppBackground('hub'); show('category-screen'); updateWalletDisplay(); }
@@ -9406,6 +9548,135 @@
             }
             playCoopAudio('calm/calm_intro.mp3', 'בוא ננשום יחד לאט לאט. הסתכל על העיגול.');
             calmTimers.push(setTimeout(runCalmCycle, 5200));
+        }
+
+        // ===== TOY SHELF / STAR SHOP SYSTEM (v57) =====
+        const toysData = [
+            { id: 'spaceship', name: 'חללית', emoji: '🚀', cost: 5, anim: 'toy-anim-float', audio: 'toys/spaceship.mp3' },
+            { id: 'dino', name: 'דינוזאור', emoji: '🦖', cost: 10, anim: 'toy-anim-growl', audio: 'toys/dino.mp3' },
+            { id: 'racecar', name: 'מכונית מרוץ', emoji: '🏎️', cost: 15, anim: 'toy-anim-drive', audio: 'toys/racecar.mp3' },
+            { id: 'robot', name: 'רובוט', emoji: '🤖', cost: 20, anim: 'toy-anim-beep', audio: 'toys/robot.mp3' },
+            { id: 'unicorn', name: 'חד קרן', emoji: '🦄', cost: 25, anim: 'toy-anim-sparkle', audio: 'toys/unicorn.mp3' },
+            { id: 'castle', name: 'טירה', emoji: '🏰', cost: 30, anim: 'toy-anim-shine', audio: 'toys/castle.mp3' },
+            { id: 'teddy', name: 'דובי חמוד', emoji: '🧸', cost: 35, anim: 'toy-anim-hug', audio: 'toys/teddy.mp3' },
+            { id: 'sailboat', name: 'סירת מפרש', emoji: '⛵', cost: 40, anim: 'toy-anim-sail', audio: 'toys/sailboat.mp3' }
+        ];
+
+        let unlockedToys = [];
+        try {
+            let saved = localStorage.getItem('unlockedToys');
+            if (saved) unlockedToys = JSON.parse(saved);
+        } catch(e) {
+            console.error('Error loading unlocked toys:', e);
+        }
+
+        function saveUnlockedToys() {
+            localStorage.setItem('unlockedToys', JSON.stringify(unlockedToys));
+        }
+
+        function openToyShelf() {
+            playClickSound();
+            renderToyShelf();
+            show('toy-shelf-overlay');
+        }
+
+        function closeToyShelf() {
+            playClickSound();
+            hide('toy-shelf-overlay');
+            updateWalletDisplay();
+        }
+
+        function renderToyShelf() {
+            let grid = get('toys-grid');
+            if (!grid) return;
+            grid.innerHTML = '';
+
+            let stars = getTotalStars();
+            let countEl = get('shelf-star-count');
+            if (countEl) countEl.textContent = stars + ' ⭐';
+
+            toysData.forEach((toy, idx) => {
+                let isUnlocked = unlockedToys.includes(toy.id);
+                let slot = D.createElement('div');
+                slot.className = 'toy-slot' + (isUnlocked ? '' : ' locked');
+                
+                if (isUnlocked) {
+                    slot.innerHTML = `
+                        <div class="toy-emoji" id="toy-el-${toy.id}">${toy.emoji}</div>
+                        <div style="font-size:clamp(12px, 3vw, 15px); font-weight:900; color:#5d4037; margin-top:5px; direction:rtl; text-align:center;">${toy.name}</div>
+                        <div class="wooden-shelf"></div>
+                    `;
+                    slot.onclick = () => {
+                        let el = get(`toy-el-${toy.id}`);
+                        if (el) {
+                            el.classList.remove(toy.anim);
+                            el.offsetHeight; // trigger reflow
+                            el.classList.add(toy.anim);
+                        }
+                        playCoopAudio(toy.audio, toy.name);
+                    };
+                } else {
+                    slot.innerHTML = `
+                        <div class="toy-emoji">${toy.emoji}</div>
+                        <div style="font-size:clamp(12px, 3vw, 15px); font-weight:900; color:#78909c; margin-top:5px; direction:rtl; text-align:center;">${toy.name}</div>
+                        <div style="background:#ff9800; color:#fff; font-weight:900; border-radius:12px; padding:2px 10px; font-size:13px; margin-top:4px; display:flex; align-items:center; gap:2px; direction:rtl;">
+                            <span>🔒</span> ${toy.cost} ⭐
+                        </div>
+                        <div class="wooden-shelf" style="opacity: 0.5;"></div>
+                    `;
+                    slot.onclick = () => {
+                        promptUnlockToy(toy);
+                    };
+                }
+
+                grid.appendChild(slot);
+            });
+        }
+
+        function promptUnlockToy(toy) {
+            let stars = getTotalStars();
+            if (stars < toy.cost) {
+                playCoopAudio('toys/not_enough.mp3', 'אין מספיק כוכבים, נסה להשיג עוד!');
+                let countEl = get('shelf-star-count');
+                if (countEl) {
+                    countEl.animate([
+                        { transform: 'translateX(0)' },
+                        { transform: 'translateX(-6px)' },
+                        { transform: 'translateX(6px)' },
+                        { transform: 'translateX(0)' }
+                    ], { duration: 250 });
+                }
+                return;
+            }
+
+            get('confirm-toy-title').textContent = `לפתוח את ה-${toy.name}?`;
+            get('confirm-toy-emoji').textContent = toy.emoji;
+            get('confirm-toy-cost').textContent = `עולה ${toy.cost} כוכבים ⭐`;
+
+            playCoopAudio('toys/unlock_prompt.mp3', 'רוצה לפתוח את הצעצוע הזה?');
+
+            let yesBtn = get('confirm-toy-yes');
+            yesBtn.onclick = () => {
+                let remainingToDeduct = toy.cost;
+                if (starWallet.full >= remainingToDeduct) {
+                    starWallet.full -= remainingToDeduct;
+                } else {
+                    remainingToDeduct -= starWallet.full;
+                    starWallet.full = 0;
+                    starWallet.halves -= remainingToDeduct * 2;
+                }
+                if (starWallet.halves < 0) starWallet.halves = 0;
+
+                localStorage.setItem('starWallet', JSON.stringify(starWallet));
+                unlockedToys.push(toy.id);
+                saveUnlockedToys();
+
+                playCoopAudio('toys/unlock_success.mp3', 'איזה יופי! צעצוע חדש!');
+                hide('toy-confirm-overlay');
+                renderToyShelf();
+            };
+
+            show('toy-confirm-overlay');
         }
 
         // Register Service Worker for PWA offline support

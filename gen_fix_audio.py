@@ -353,6 +353,21 @@ ASSEMBLE = {
     "plane_win.mp3": f"הנה מטוס שטס בשמיים! {KOL} הַכָּבוֹד רוֹעִי!"
 }
 
+# Toy Shelf / Star Shop game - Hebrew phrases
+TOYS_AUDIO = {
+    "toys/spaceship.mp3": "חללית",
+    "toys/dino.mp3": "דינוזאור",
+    "toys/racecar.mp3": "מכונית מרוץ",
+    "toys/robot.mp3": "רובוט",
+    "toys/unicorn.mp3": "חד קרן",
+    "toys/castle.mp3": "טירה",
+    "toys/teddy.mp3": "דובי",
+    "toys/sailboat.mp3": "סירת מפרש",
+    "toys/unlock_prompt.mp3": "רוצה לפתוח את הצעצוע הזה?",
+    "toys/unlock_success.mp3": "איזה יופי! צעצוע חדש!",
+    "toys/not_enough.mp3": "אין מספיק כוכבים, נסה להשיג עוד!"
+}
+
 
 # First-letter game - English words (proper case, not ALL CAPS)
 FL_EN_WORDS = [
@@ -376,6 +391,8 @@ for f, t in FACES_EN.items():
     JOBS.append((os.path.join(AUDIO, "en", f), t, "en", False))
 for f, t in ASSEMBLE.items():
     JOBS.append((os.path.join(AUDIO, "assemble", f), t, "iw", False))
+for f, t in TOYS_AUDIO.items():
+    JOBS.append((os.path.join(AUDIO, f), t, "iw", False))
 for w in FL_EN_WORDS:
     JOBS.append((os.path.join(AUDIO, "firstletter", "en", f"word-{w}.mp3"), w, "en", True))
 
