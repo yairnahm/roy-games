@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-07-11-v71-tower-turns -->
+<!DOCTYPE html><!-- build: 2026-07-11-v72-winners-category -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -1319,6 +1319,7 @@
         let isDrawing = false; 
         let currentGameMode = '', currentDifficulty = 1, currentStep = 0, mistakesInLevel = 0, isProcessing = false, gameErrorTimeout = null;
         let activeGameRounds = 4;
+        const WINNERS_GAMES = ['wc_sort','wc_freeze','wc_tape','wc_candle','wc_tower','wc_puzzle','wc_path','wc_museum','wc_bridge','wc_key'];
         let sharingOrder = [];
         let growthOrder = [];
         let userGender = 'boy';
@@ -1328,7 +1329,8 @@
         // Games that give a full star (⭐):
         const fullStarGames = ['sequence','memory','missing','diff','chrono',
             'patterns','shape','diffscene','diffvideo','firstletter',
-            'tools','vparts','habitat','origins','families','emotion','emparts','sounds','routine','feelwhen','assemble','store','freeze','rescue','candle'];
+            'tools','vparts','habitat','origins','families','emotion','emparts','sounds','routine','feelwhen','assemble','store','freeze','rescue','candle','detective',
+            'wc_sort','wc_freeze','wc_tape','wc_candle','wc_tower','wc_puzzle','wc_path','wc_museum','wc_bridge','wc_key'];
         // Games that give a half star (two halves = 1 full):
         const halfStarGames = ['context','oddone','halfhalf','counting',
             'tracing','shadow','bigger','mgamish','fly','cop','faces',
@@ -1764,7 +1766,8 @@
             <div class="hub-card" onclick="openCategory('world','עולם סביבנו')"><div class="hub-icon">🌍</div><div class="hub-title">עולם סביבנו</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">7 משחקים</div></div>
             <div class="hub-card" onclick="openCategory('create','יצירה וחידות')"><div class="hub-icon">🎨</div><div class="hub-title">יצירה וחידות</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">5 משחקים</div></div>
             <div class="hub-card" onclick="openCategory('action','משחקי פעולה')"><div class="hub-icon">🎮</div><div class="hub-title">משחקי פעולה</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">2 משחקים</div></div>
-            <div class="hub-card" onclick="openCategory('success','סיפורי הצלחה')"><div class="hub-icon">🏪</div><div class="hub-title">סיפורי הצלחה</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">4 משחקים</div></div>
+            <div class="hub-card" onclick="openCategory('success','סיפורי הצלחה')"><div class="hub-icon">🏪</div><div class="hub-title">סיפורי הצלחה</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">5 משחקים</div></div>
+            <div class="hub-card" onclick="openCategory('winners','ילדים מצליחים')"><div class="hub-icon">🌟</div><div class="hub-title">ילדים מצליחים</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">10 משחקים</div></div>
         </div>
     </div>
 
@@ -1818,6 +1821,17 @@
             <div class="hub-card" data-cat="success" style="position:relative;" onclick="openDifficultyScreen('freeze', '🕺', 'ריקוד הפסלים')"><span class="star-badge" data-game="freeze" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🕺</div><div class="hub-title">ריקוד הפסלים</div></div>
             <div class="hub-card" data-cat="success" style="position:relative;" onclick="openDifficultyScreen('rescue', '🐢', 'חילוץ החיות')"><span class="star-badge" data-game="rescue" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🐢</div><div class="hub-title">חילוץ החיות</div></div>
             <div class="hub-card" data-cat="success" style="position:relative;" onclick="openDifficultyScreen('candle', '🕯️', 'לכבות את הנר')"><span class="star-badge" data-game="candle" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🕯️</div><div class="hub-title">לכבות את הנר</div></div>
+            <div class="hub-card" data-cat="success" style="position:relative;" onclick="openDifficultyScreen('detective', '🔍', 'הבלש רועי')"><span class="star-badge" data-game="detective" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🔍</div><div class="hub-title">הבלש רועי</div></div>
+            <div class="hub-card" data-cat="winners" style="position:relative;" onclick="openDifficultyScreen('wc_sort', '📦', 'האוצרות של מקס')"><span class="star-badge" data-game="wc_sort" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">📦</div><div class="hub-title">האוצרות של מקס</div></div>
+            <div class="hub-card" data-cat="winners" style="position:relative;" onclick="openDifficultyScreen('wc_freeze', '🕺', 'ריקוד הפסלים 2')"><span class="star-badge" data-game="wc_freeze" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🕺</div><div class="hub-title">ריקוד הפסלים 2</div></div>
+            <div class="hub-card" data-cat="winners" style="position:relative;" onclick="openDifficultyScreen('wc_tape', '🐢', 'חילוץ החיות 2')"><span class="star-badge" data-game="wc_tape" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🐢</div><div class="hub-title">חילוץ החיות 2</div></div>
+            <div class="hub-card" data-cat="winners" style="position:relative;" onclick="openDifficultyScreen('wc_candle', '🕯️', 'לכבות את הנר 2')"><span class="star-badge" data-game="wc_candle" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🕯️</div><div class="hub-title">לכבות את הנר 2</div></div>
+            <div class="hub-card" data-cat="winners" style="position:relative;" onclick="openDifficultyScreen('wc_tower', '🗼', 'מגדל התורות')"><span class="star-badge" data-game="wc_tower" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🗼</div><div class="hub-title">מגדל התורות</div></div>
+            <div class="hub-card" data-cat="winners" style="position:relative;" onclick="openDifficultyScreen('wc_puzzle', '🔍', 'הבלש הפותר')"><span class="star-badge" data-game="wc_puzzle" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🔍</div><div class="hub-title">הבלש הפותר</div></div>
+            <div class="hub-card" data-cat="winners" style="position:relative;" onclick="openDifficultyScreen('wc_path', '🗺️', 'הנתיב המסתורי')"><span class="star-badge" data-game="wc_path" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🗺️</div><div class="hub-title">הנתיב המסתורי</div></div>
+            <div class="hub-card" data-cat="winners" style="position:relative;" onclick="openDifficultyScreen('wc_museum', '🦖', 'המוזיאון של רועי')"><span class="star-badge" data-game="wc_museum" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🦖</div><div class="hub-title">המוזיאון של רועי</div></div>
+            <div class="hub-card" data-cat="winners" style="position:relative;" onclick="openDifficultyScreen('wc_bridge', '🌉', 'בונים מחדש')"><span class="star-badge" data-game="wc_bridge" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🌉</div><div class="hub-title">בונים מחדש</div></div>
+            <div class="hub-card" data-cat="winners" style="position:relative;" onclick="openDifficultyScreen('wc_key', '🔑', 'המפתח הגבוה')"><span class="star-badge" data-game="wc_key" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🔑</div><div class="hub-title">המפתח הגבוה</div></div>
         </div>
     </div>
 
@@ -2263,7 +2277,7 @@
         
         function openDifficultyScreen(gameId, icon, title) {
             playClickSound(); hideAllScreens(); setAppBackground(gameId); currentGameMode = gameId;
-            if(gameId === 'emotion' || gameId === 'emparts' || gameId === 'sharing' || gameId === 'growth' || gameId === 'goodbad' || gameId === 'towertalk' || gameId === 'cooppuzzle' || gameId === 'tidyup' || gameId === 'whatneeds' || gameId === 'calm' || gameId === 'sounds' || gameId === 'feelwhen' || gameId === 'store' || gameId === 'freeze' || gameId === 'rescue' || gameId === 'candle') {
+            if(gameId === 'emotion' || gameId === 'emparts' || gameId === 'sharing' || gameId === 'growth' || gameId === 'goodbad' || gameId === 'towertalk' || gameId === 'cooppuzzle' || gameId === 'tidyup' || gameId === 'whatneeds' || gameId === 'calm' || gameId === 'sounds' || gameId === 'feelwhen' || gameId === 'store' || gameId === 'freeze' || gameId === 'rescue' || gameId === 'candle' || gameId === 'detective' || WINNERS_GAMES.indexOf(gameId) > -1) {
                 startGameEngine(1); // עוקף את מסך הרמות
                 return;
             }
@@ -2293,7 +2307,7 @@
             // Force 100svh height for cooperative sharing and turn-taking modes, clear for others
             var agc = get('active-game-container');
             if (agc) {
-                if (currentGameMode === 'sharing' || currentGameMode === 'growth' || currentGameMode === 'goodbad' || currentGameMode === 'diffscene' || currentGameMode === 'diffvideo' || currentGameMode === 'numwar' || currentGameMode === 'towertalk' || currentGameMode === 'cooppuzzle' || currentGameMode === 'tidyup') {
+                if (currentGameMode === 'sharing' || currentGameMode === 'growth' || currentGameMode === 'goodbad' || currentGameMode === 'diffscene' || currentGameMode === 'diffvideo' || currentGameMode === 'numwar' || currentGameMode === 'towertalk' || currentGameMode === 'cooppuzzle' || currentGameMode === 'tidyup' || currentGameMode === 'wc_tower') {
                     agc.style.height = '100svh';
                 } else {
                     agc.style.height = '';
@@ -2319,7 +2333,17 @@
                                (currentGameMode === 'freeze' ? 3 :
                                (currentGameMode === 'rescue' ? 3 :
                                (currentGameMode === 'candle' ? 3 :
-                               ((currentGameMode === 'memory') ? (level === 1 ? 3 : (level === 2 ? 4 : 5)) : 4))))))))))))));
+                               (currentGameMode === 'wc_sort' ? 3 :
+                               (currentGameMode === 'wc_freeze' ? 3 :
+                               (currentGameMode === 'wc_tape' ? 3 :
+                               (currentGameMode === 'wc_candle' ? 3 :
+                               (currentGameMode === 'wc_tower' ? 5 :
+                               (currentGameMode === 'wc_puzzle' ? 4 :
+                               (currentGameMode === 'wc_path' ? 5 :
+                               (currentGameMode === 'wc_museum' ? 4 :
+                               (currentGameMode === 'wc_bridge' ? 3 :
+                               (currentGameMode === 'wc_key' ? 3 :
+                               ((currentGameMode === 'memory') ? (level === 1 ? 3 : (level === 2 ? 4 : 5)) : 4))))))))))))))))))))))));
 
 
             let pContainer = get('active-progress-container'); pContainer.innerHTML='';
@@ -2371,6 +2395,16 @@
                 else if(currentGameMode === 'freeze') initFreezeGame();
                 else if(currentGameMode === 'rescue') initRescueGame();
                 else if(currentGameMode === 'candle') initCandleGame();
+                else if(currentGameMode === 'wc_sort') initWcSortGame();
+                else if(currentGameMode === 'wc_freeze') initWcFreezeGame();
+                else if(currentGameMode === 'wc_tape') initWcTapeGame();
+                else if(currentGameMode === 'wc_candle') initWcCandleGame();
+                else if(currentGameMode === 'wc_tower') initWcTowerGame();
+                else if(currentGameMode === 'wc_puzzle') initWcPuzzleGame();
+                else if(currentGameMode === 'wc_path') initWcPathGame();
+                else if(currentGameMode === 'wc_museum') initWcMuseumGame();
+                else if(currentGameMode === 'wc_bridge') initWcBridgeGame();
+                else if(currentGameMode === 'wc_key') initWcKeyGame();
             }, 50);
         }
 
@@ -2379,13 +2413,14 @@
             if (typeof clearFreezeTimers === 'function') clearFreezeTimers();
             if (typeof clearRescueTimers === 'function') clearRescueTimers();
             if (typeof clearCandleTimers === 'function') clearCandleTimers();
+            if (typeof clearWcTimers === 'function') clearWcTimers();
             if (typeof diffvideoTimer1 !== 'undefined' && diffvideoTimer1) clearTimeout(diffvideoTimer1);
             if (typeof diffvideoTimer2 !== 'undefined' && diffvideoTimer2) clearTimeout(diffvideoTimer2);
             if (typeof diffvideoTimerInterval !== 'undefined' && diffvideoTimerInterval) clearInterval(diffvideoTimerInterval);
             playClickSound(); hideAllScreens();
             var agc = get('active-game-container');
             if (agc) agc.style.height = '';
-            if(currentGameMode === 'emotion' || currentGameMode === 'emparts' || currentGameMode === 'missing' || currentGameMode === 'mgamish' || currentGameMode === 'firstletter' || currentGameMode === 'sharing' || currentGameMode === 'growth' || currentGameMode === 'goodbad' || currentGameMode === 'numwar' || currentGameMode === 'towertalk' || currentGameMode === 'cooppuzzle' || currentGameMode === 'tidyup' || currentGameMode === 'patterns' || currentGameMode === 'origins' || currentGameMode === 'families' || currentGameMode === 'whatneeds' || currentGameMode === 'calm' || currentGameMode === 'sounds' || currentGameMode === 'feelwhen' || currentGameMode === 'assemble' || currentGameMode === 'store' || currentGameMode === 'freeze' || currentGameMode === 'rescue' || currentGameMode === 'candle') { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); } else if(currentGameMode === 'faces') { show('faces-mode-screen'); } else { show('unified-diff-screen'); }
+            if(currentGameMode === 'emotion' || currentGameMode === 'emparts' || currentGameMode === 'missing' || currentGameMode === 'mgamish' || currentGameMode === 'firstletter' || currentGameMode === 'sharing' || currentGameMode === 'growth' || currentGameMode === 'goodbad' || currentGameMode === 'numwar' || currentGameMode === 'towertalk' || currentGameMode === 'cooppuzzle' || currentGameMode === 'tidyup' || currentGameMode === 'patterns' || currentGameMode === 'origins' || currentGameMode === 'families' || currentGameMode === 'whatneeds' || currentGameMode === 'calm' || currentGameMode === 'sounds' || currentGameMode === 'feelwhen' || currentGameMode === 'assemble' || currentGameMode === 'store' || currentGameMode === 'freeze' || currentGameMode === 'rescue' || currentGameMode === 'candle' || currentGameMode === 'detective' || WINNERS_GAMES.indexOf(currentGameMode) > -1) { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); } else if(currentGameMode === 'faces') { show('faces-mode-screen'); } else { show('unified-diff-screen'); }
         }
         function updateProgressUI() { for(let i=0;i<activeGameRounds;i++) { let d = get(`active-progress-container-dot-${i}`); if(d){ if(i < currentStep) d.classList.add('fill'); else d.classList.remove('fill'); } } }
 
@@ -2439,7 +2474,7 @@
             var agc = get('active-game-container');
             if (agc) agc.style.height = '';
             if(currentGameMode==='missing') { show('missing-lang-screen'); }
-            else if(currentGameMode==='emotion' || currentGameMode==='emparts' || currentGameMode==='mgamish' || currentGameMode==='firstletter' || currentGameMode==='sharing' || currentGameMode==='growth' || currentGameMode==='goodbad' || currentGameMode==='numwar' || currentGameMode==='towertalk' || currentGameMode==='cooppuzzle' || currentGameMode==='tidyup' || currentGameMode==='patterns' || currentGameMode==='origins' || currentGameMode==='families' || currentGameMode==='whatneeds' || currentGameMode==='calm' || currentGameMode==='sounds' || currentGameMode==='feelwhen' || currentGameMode==='assemble') { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); }
+            else if(currentGameMode==='emotion' || currentGameMode==='emparts' || currentGameMode==='mgamish' || currentGameMode==='firstletter' || currentGameMode==='sharing' || currentGameMode==='growth' || currentGameMode==='goodbad' || currentGameMode==='numwar' || currentGameMode==='towertalk' || currentGameMode==='cooppuzzle' || currentGameMode==='tidyup' || currentGameMode==='patterns' || currentGameMode==='origins' || currentGameMode==='families' || currentGameMode==='whatneeds' || currentGameMode==='calm' || currentGameMode==='sounds' || currentGameMode==='feelwhen' || currentGameMode==='assemble' || currentGameMode==='store' || currentGameMode==='freeze' || currentGameMode==='rescue' || currentGameMode==='candle' || currentGameMode==='detective' || WINNERS_GAMES.indexOf(currentGameMode) > -1) { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); }
             else if(currentGameMode==='faces') { show('faces-mode-screen'); }
             else {
                 try {
@@ -5253,6 +5288,624 @@
             }
         }
 
+
+        // ==========================================
+        // "ילדים מצליחים" - 10 new games
+        // ==========================================
+        let wcHoldTimer = null, wcHoldInterval = null, wcHoldProgress = 0, wcHoldActive = false;
+        let wcFreezeTimer = null, wcFreezeState = 'idle', wcFreezeRemaining = 0;
+        let wcTowerTurn = 'roy', wcTowerBlocks = 0, wcTowerAutoTimer = null;
+        let wcPuzzleTiles = [], wcPuzzleSelected = -1, wcPuzzleImg = '';
+        let wcPathStep = 0;
+        let wcBridgeBlocks = 0;
+        let wcKeyTried = false;
+
+        function clearWcTimers() {
+            if (wcHoldInterval) { clearInterval(wcHoldInterval); wcHoldInterval = null; }
+            if (wcFreezeTimer) { clearInterval(wcFreezeTimer); wcFreezeTimer = null; }
+            if (wcTowerAutoTimer) { clearTimeout(wcTowerAutoTimer); wcTowerAutoTimer = null; }
+            wcHoldProgress = 0; wcHoldActive = false; wcFreezeState = 'idle';
+        }
+
+        // Shared press-and-hold mechanic used by wc_tape and wc_candle
+        function bindWcHold(btnId, holdMs, onProgress, onComplete) {
+            let btn = get(btnId);
+            if (!btn) return;
+            let start = null;
+            function tick() {
+                let elapsed = Date.now() - start;
+                wcHoldProgress = Math.min(100, Math.round((elapsed / holdMs) * 100));
+                onProgress(wcHoldProgress);
+                if (wcHoldProgress >= 100) {
+                    clearInterval(wcHoldInterval); wcHoldInterval = null; wcHoldActive = false;
+                    onComplete();
+                }
+            }
+            function onDown(e) {
+                e.preventDefault();
+                if (isProcessing) return;
+                wcHoldActive = true; start = Date.now();
+                if (wcHoldInterval) clearInterval(wcHoldInterval);
+                wcHoldInterval = setInterval(tick, 60);
+            }
+            function onUp() {
+                if (!wcHoldActive) return;
+                wcHoldActive = false;
+                if (wcHoldInterval) { clearInterval(wcHoldInterval); wcHoldInterval = null; }
+                // Gentle decay instead of full reset - forgiving for little fingers
+                wcHoldProgress = Math.max(0, wcHoldProgress - 15);
+                onProgress(wcHoldProgress);
+            }
+            btn.onpointerdown = onDown;
+            btn.onpointerup = onUp;
+            btn.onpointerleave = onUp;
+            btn.onpointercancel = onUp;
+        }
+
+        // ------------------------------------------
+        // 1. האוצרות של מקס (מיון קוגניטיבי)
+        // ------------------------------------------
+        const WC_SORT_ROUNDS = [
+            { rule: 'הדברים האדומים 🔴', items: [
+                { e: '🍎', ok: true }, { e: '🍓', ok: true }, { e: '🚗', ok: true }, { e: '🎈', ok: true },
+                { e: '🍌', ok: false }, { e: '🐸', ok: false }
+            ] },
+            { rule: 'החיות הגדולות 🐘', items: [
+                { e: '🐘', ok: true }, { e: '🦒', ok: true }, { e: '🐻', ok: true },
+                { e: '🐭', ok: false }, { e: '🐹', ok: false }, { e: '🐰', ok: false }
+            ] },
+            { rule: 'כל הצעצועים 🧸', items: [
+                { e: '🧸', ok: true }, { e: '🚗', ok: true }, { e: '🧩', ok: true },
+                { e: '🍎', ok: false }, { e: '🌳', ok: false }, { e: '☀️', ok: false }
+            ] },
+        ];
+        function initWcSortGame() {
+            setAppBackground('think');
+            playCoopAudio('winners/sort/intro.mp3', 'בואו נמיין את האוצרות של מקס! מצא ולחץ על כל הדברים שמתאימים לחוק.');
+            loadWcSortRound();
+        }
+        function loadWcSortRound() {
+            isProcessing = false;
+            let round = WC_SORT_ROUNDS[currentStep] || WC_SORT_ROUNDS[0];
+            let shuffled = shuffle(round.items);
+            let neededTotal = shuffled.filter(i => i.ok).length;
+            let foundSoFar = 0;
+            let ws = get('game-workspace');
+            ws.innerHTML = `
+                <div style="font-size:clamp(18px,4.5vw,26px); font-weight:900; color:#37474f; text-align:center; direction:rtl; margin-bottom:15px;">
+                    מיינו את ${round.rule}
+                </div>
+                <div id="wc-sort-grid" style="display:grid; grid-template-columns:repeat(3,1fr); gap:14px; width:min(90vw,420px); margin:0 auto;"></div>
+            `;
+            let grid = get('wc-sort-grid');
+            shuffled.forEach((item, idx) => {
+                let cell = D.createElement('div');
+                cell.style.cssText = 'aspect-ratio:1; background:#fff; border-radius:20px; display:flex; align-items:center; justify-content:center; font-size:clamp(40px,10vw,60px); box-shadow:0 8px 16px rgba(0,0,0,0.12); cursor:pointer; transition: transform 0.2s ease, opacity 0.3s ease; user-select:none;';
+                cell.textContent = item.e;
+                cell.onclick = () => {
+                    if (isProcessing || cell.dataset.done) return;
+                    if (item.ok) {
+                        cell.dataset.done = '1';
+                        cell.style.opacity = '0.25';
+                        cell.style.transform = 'scale(0.85)';
+                        playClickSound();
+                        foundSoFar++;
+                        if (foundSoFar >= neededTotal) {
+                            isProcessing = true;
+                            playCoopAudio('winners/sort/win.mp3', 'כל הכבוד! מיינת הכל נכון!', () => {
+                                isProcessing = false;
+                                handleAnswer(true, null, loadWcSortRound, null);
+                            });
+                        }
+                    } else {
+                        playErrorSound();
+                        cell.style.transform = 'translateX(-6px)';
+                        setTimeout(() => { cell.style.transform = 'translateX(6px)'; }, 100);
+                        setTimeout(() => { cell.style.transform = 'scale(1)'; }, 220);
+                    }
+                };
+                grid.appendChild(cell);
+            });
+        }
+
+        // ------------------------------------------
+        // 2. ריקוד הפסלים 2 (שליטה עצמית)
+        // ------------------------------------------
+        function initWcFreezeGame() {
+            setAppBackground('create');
+            clearWcTimers();
+            playCoopAudio('winners/freeze/intro.mp3', 'ריקוד הפסלים! לחץ שוב ושוב כדי לגרום לדובי לרקוד, אבל כשהוא קופא – תפסיק מיד!');
+            loadWcFreezeRound();
+        }
+        function loadWcFreezeRound() {
+            clearWcTimers();
+            isProcessing = false;
+            wcFreezeState = 'dancing';
+            let ws = get('game-workspace');
+            ws.innerHTML = `
+                <style>
+                    .wc-bounce { animation: wcBounce 0.4s ease-in-out infinite alternate; }
+                    @keyframes wcBounce { 0% { transform: translateY(0) rotate(-3deg); } 100% { transform: translateY(-14px) rotate(3deg); } }
+                </style>
+                <div style="font-size:clamp(18px,4.5vw,26px); font-weight:900; color:#37474f; text-align:center; direction:rtl; margin-bottom:15px;">
+                    ריקוד הפסלים 🕺
+                </div>
+                <div style="width:min(85vw,360px); margin:0 auto; text-align:center;">
+                    <div id="wc-freeze-status" style="font-size:clamp(18px,4vw,24px); font-weight:bold; color:#2e7d32; height:34px;">🕺 רוקדים!</div>
+                    <img id="wc-freeze-img" src="images/winners/teddy_dancing.webp" class="wc-bounce" style="width:clamp(140px,32vw,190px); margin:12px auto; display:block;" />
+                    <button id="wc-freeze-btn" style="width:100%; height:clamp(55px,12vw,75px); border-radius:24px; border:none; background:linear-gradient(135deg,#4caf50,#2e7d32); color:#fff; font-size:clamp(20px,5vw,26px); font-weight:900; box-shadow:0 8px 20px rgba(46,125,50,0.3); direction:rtl;">
+                        ריקוד! 💃
+                    </button>
+                </div>
+            `;
+            let img = get('wc-freeze-img');
+            let btn = get('wc-freeze-btn');
+            let statusEl = get('wc-freeze-status');
+            btn.onclick = () => { if (wcFreezeState === 'frozen') { playErrorSound(); img.style.filter = 'brightness(0.85)'; setTimeout(() => { img.style.filter = ''; }, 200); } else { playClickSound(); } };
+
+            let delay = 1500 + rand(0, 2000);
+            wcFreezeTimer = setTimeout(() => {
+                wcFreezeState = 'frozen';
+                img.src = 'images/winners/teddy_frozen.webp';
+                img.classList.remove('wc-bounce');
+                statusEl.textContent = '🧊 פסל! אל תיגע!';
+                statusEl.style.color = '#c62828';
+                btn.style.background = 'linear-gradient(135deg,#f44336,#c62828)';
+                btn.textContent = 'לעצור! 🛑';
+                playCoopAudio('winners/freeze/freeze.mp3', 'פסלים!');
+
+                let durations = [2, 4, 6];
+                wcFreezeRemaining = durations[currentStep] || 4;
+                wcFreezeTimer = setInterval(() => {
+                    wcFreezeRemaining--;
+                    if (wcFreezeRemaining <= 0) {
+                        clearInterval(wcFreezeTimer); wcFreezeTimer = null;
+                        isProcessing = true;
+                        statusEl.textContent = '🎉 כל הכבוד!';
+                        statusEl.style.color = '#2e7d32';
+                        playCoopAudio('winners/freeze/win.mp3', 'איזה איפוק נהדר! כל הכבוד!', () => {
+                            isProcessing = false;
+                            handleAnswer(true, null, loadWcFreezeRound, null);
+                        });
+                    }
+                }, 1000);
+            }, delay);
+        }
+
+        // ------------------------------------------
+        // 3. חילוץ החיות 2 (קשב והתמדה)
+        // ------------------------------------------
+        const WC_TAPE_ANIMALS = ['🐢', '🐰', '🦔'];
+        function initWcTapeGame() {
+            setAppBackground('world');
+            clearWcTimers();
+            playCoopAudio('winners/tape/intro.mp3', 'חילוץ החיות! לחץ לחיצה ארוכה ואיטית כדי לקלף את הסרט ולשחרר את החיה.');
+            loadWcTapeRound();
+        }
+        function loadWcTapeRound() {
+            clearWcTimers();
+            isProcessing = false;
+            let animal = WC_TAPE_ANIMALS[currentStep] || WC_TAPE_ANIMALS[0];
+            let ws = get('game-workspace');
+            ws.innerHTML = `
+                <div style="font-size:clamp(18px,4.5vw,26px); font-weight:900; color:#37474f; text-align:center; direction:rtl; margin-bottom:15px;">
+                    חילוץ החיות 🐢
+                </div>
+                <div style="width:min(85vw,360px); margin:0 auto; text-align:center;">
+                    <div style="position:relative; width:180px; height:180px; margin:0 auto 15px; display:flex; align-items:center; justify-content:center;">
+                        <div style="font-size:100px;">${animal}</div>
+                        <div id="wc-tape-overlay" style="position:absolute; inset:0; background:repeating-linear-gradient(45deg,#ffd54f,#ffd54f 10px,#ffca28 10px,#ffca28 20px); border-radius:16px; opacity:1; transition: opacity 0.1s linear;"></div>
+                    </div>
+                    <div style="width:100%; height:20px; background:#cfd8dc; border-radius:10px; overflow:hidden; border:2px solid #b0bec5; margin-bottom:16px;">
+                        <div id="wc-tape-bar" style="width:0%; height:100%; background:linear-gradient(to right,#66bb6a,#2e7d32); transition: width 0.06s linear;"></div>
+                    </div>
+                    <button id="wc-tape-btn" style="width:100%; height:clamp(55px,12vw,75px); border-radius:24px; border:none; background:linear-gradient(135deg,#29b6f6,#0288d1); color:#fff; font-size:clamp(18px,4.5vw,24px); font-weight:900; box-shadow:0 8px 20px rgba(2,136,209,0.3); direction:rtl;">
+                        לחץ לחיצה ארוכה ואיטית 🐾
+                    </button>
+                </div>
+            `;
+            let overlay = get('wc-tape-overlay');
+            let bar = get('wc-tape-bar');
+            bindWcHold('wc-tape-btn', 3200, (pct) => {
+                bar.style.width = pct + '%';
+                overlay.style.opacity = (1 - pct / 100).toString();
+            }, () => {
+                isProcessing = true;
+                playCoopAudio('winners/tape/win.mp3', 'הצלת את החיה! איזו סבלנות יפה!', () => {
+                    isProcessing = false;
+                    handleAnswer(true, null, loadWcTapeRound, null);
+                });
+            });
+        }
+
+        // ------------------------------------------
+        // 4. לכבות את הנר 2 (בריאות רגשית)
+        // ------------------------------------------
+        const WC_CANDLE_FRIENDS = ['🐻', '🐶', '🐱'];
+        function initWcCandleGame() {
+            setAppBackground('calm');
+            clearWcTimers();
+            playCoopAudio('winners/candle/intro.mp3', 'בוא נעזור לחבר להירגע! לחץ לחיצה ארוכה ונשוף על הנר לאט.');
+            loadWcCandleRound();
+        }
+        function loadWcCandleRound() {
+            clearWcTimers();
+            isProcessing = false;
+            let friend = WC_CANDLE_FRIENDS[currentStep] || WC_CANDLE_FRIENDS[0];
+            let ws = get('game-workspace');
+            ws.innerHTML = `
+                <div style="font-size:clamp(18px,4.5vw,26px); font-weight:900; color:#37474f; text-align:center; direction:rtl; margin-bottom:15px;">
+                    לכבות את הנר 🕯️
+                </div>
+                <div style="width:min(85vw,360px); margin:0 auto; text-align:center;">
+                    <div style="font-size:80px; margin-bottom:6px;">${friend}</div>
+                    <div style="position:relative; width:36px; height:110px; margin:0 auto 16px; background:linear-gradient(to right,#ff8a80,#ff5252); border-radius:6px;">
+                        <div id="wc-candle-flame" style="position:absolute; left:50%; transform:translateX(-50%); bottom:100%; width:26px; height:40px; background:radial-gradient(circle,#fff 15%,#ffeb3b 45%,#ff5722 75%,transparent 100%); border-radius:50% 50% 20% 20%; transition: transform 0.1s linear, opacity 0.1s linear;"></div>
+                    </div>
+                    <div style="width:100%; height:20px; background:#cfd8dc; border-radius:10px; overflow:hidden; border:2px solid #b0bec5; margin-bottom:16px;">
+                        <div id="wc-candle-bar" style="width:0%; height:100%; background:linear-gradient(to right,#29b6f6,#0288d1); transition: width 0.06s linear;"></div>
+                    </div>
+                    <button id="wc-candle-btn" style="width:100%; height:clamp(55px,12vw,75px); border-radius:24px; border:none; background:linear-gradient(135deg,#29b6f6,#0288d1); color:#fff; font-size:clamp(18px,4.5vw,24px); font-weight:900; box-shadow:0 8px 20px rgba(2,136,209,0.3); direction:rtl;">
+                        לחץ ונשוף לאט 🌬️
+                    </button>
+                </div>
+            `;
+            let flame = get('wc-candle-flame');
+            let bar = get('wc-candle-bar');
+            bindWcHold('wc-candle-btn', 3200, (pct) => {
+                bar.style.width = pct + '%';
+                let scale = Math.max(0.05, 1 - pct / 100);
+                flame.style.transform = `translateX(-50%) scale(${scale})`;
+                flame.style.opacity = scale.toString();
+            }, () => {
+                isProcessing = true;
+                playCoopAudio('winners/candle/win.mp3', 'הוא רגוע ושמח עכשיו! כל הכבוד!', () => {
+                    isProcessing = false;
+                    handleAnswer(true, null, loadWcCandleRound, null);
+                });
+            });
+        }
+
+        // ------------------------------------------
+        // 5. מגדל התורות (חיבור חברתי)
+        // ------------------------------------------
+        function initWcTowerGame() {
+            setAppBackground('emotion');
+            clearWcTimers();
+            wcTowerTurn = 'roy'; wcTowerBlocks = 0;
+            playCoopAudio('winners/tower/intro.mp3', 'מגדל התורות! שימו קובייה רק כשזה התור שלכם.');
+            renderWcTower();
+        }
+        function renderWcTower() {
+            isProcessing = false;
+            let ws = get('game-workspace');
+            ws.innerHTML = `
+                <div style="font-size:clamp(18px,4.5vw,26px); font-weight:900; color:#37474f; text-align:center; direction:rtl; margin-bottom:15px;">
+                    מגדל התורות 🗼
+                </div>
+                <div style="width:min(85vw,360px); margin:0 auto; text-align:center;">
+                    <div id="wc-tower-status" style="font-size:clamp(18px,4vw,24px); font-weight:bold; color:#37474f; height:32px;"></div>
+                    <div id="wc-tower-stack" style="display:flex; flex-direction:column-reverse; align-items:center; min-height:150px; justify-content:flex-start; margin:10px 0;"></div>
+                    <button id="wc-tower-btn" style="width:100%; height:clamp(55px,12vw,75px); border-radius:24px; border:none; background:linear-gradient(135deg,#4caf50,#2e7d32); color:#fff; font-size:clamp(20px,5vw,26px); font-weight:900; box-shadow:0 8px 20px rgba(46,125,50,0.3); direction:rtl;">
+                        🧱 הנח קובייה
+                    </button>
+                </div>
+            `;
+            updateWcTowerUI();
+            get('wc-tower-btn').onclick = handleWcTowerTap;
+        }
+        function updateWcTowerUI() {
+            let statusEl = get('wc-tower-status');
+            if (statusEl) statusEl.textContent = wcTowerTurn === 'roy' ? '👦 התור שלך, רועי!' : '👨 התור של אבא...';
+        }
+        function handleWcTowerTap() {
+            if (isProcessing) return;
+            if (wcTowerTurn !== 'roy') {
+                playErrorSound();
+                playCoopAudio('coop/towertalk_err_aba.mp3', 'רגע, עכשיו תור אבא');
+                return;
+            }
+            playClickSound();
+            wcTowerBlocks++;
+            let stack = get('wc-tower-stack');
+            let block = D.createElement('div');
+            block.textContent = '🧱';
+            block.style.cssText = 'font-size:40px; animation: superPop 0.3s ease-out;';
+            stack.appendChild(block);
+            if (wcTowerBlocks >= 5) {
+                isProcessing = true;
+                playCoopAudio('winners/tower/win.mp3', 'בנינו מגדל מדהים ביחד!', () => {
+                    isProcessing = false;
+                    handleAnswer(true, null, () => { wcTowerBlocks = 0; wcTowerTurn = 'roy'; renderWcTower(); }, null);
+                });
+                return;
+            }
+            wcTowerTurn = 'aba';
+            updateWcTowerUI();
+            wcTowerAutoTimer = setTimeout(() => {
+                wcTowerTurn = 'roy';
+                updateWcTowerUI();
+            }, 1400);
+        }
+
+        // ------------------------------------------
+        // 6. הבלש הפותר (אמונה עצמית - תמונות אמיתיות)
+        // ------------------------------------------
+        const WC_PUZZLE_IMAGES = [
+            'images/winners/puzzle_roy_happy.webp',
+            'images/winners/puzzle_roy_tie.webp',
+            'images/winners/puzzle_roy_firetruck.webp',
+            'images/winners/puzzle_roy_savta.webp',
+        ];
+        const WC_PUZZLE_POS = ['0% 0%', '100% 0%', '0% 100%', '100% 100%'];
+        function initWcPuzzleGame() {
+            setAppBackground('think');
+            playCoopAudio('winners/puzzle/intro.mp3', 'הבלש הפותר! מצא את המקום הנכון לכל חלק בתמונה.');
+            loadWcPuzzleRound();
+        }
+        function loadWcPuzzleRound() {
+            isProcessing = false;
+            wcPuzzleSelected = -1;
+            wcPuzzleImg = WC_PUZZLE_IMAGES[currentStep] || WC_PUZZLE_IMAGES[0];
+            // order[i] = which quadrant image is currently shown in slot i. Solved = [0,1,2,3]
+            wcPuzzleTiles = [0, 1, 2, 3];
+            let swapsNeeded = currentStep === 0 ? 1 : (currentStep === 1 ? 2 : 3);
+            for (let s = 0; s < swapsNeeded; s++) {
+                let a = rand(0, 3), b = rand(0, 3);
+                [wcPuzzleTiles[a], wcPuzzleTiles[b]] = [wcPuzzleTiles[b], wcPuzzleTiles[a]];
+            }
+            let ws = get('game-workspace');
+            ws.innerHTML = `
+                <div style="font-size:clamp(18px,4.5vw,26px); font-weight:900; color:#37474f; text-align:center; direction:rtl; margin-bottom:15px;">
+                    הבלש הפותר 🔍
+                </div>
+                <div id="wc-puzzle-grid" style="display:grid; grid-template-columns:repeat(2,1fr); gap:4px; width:min(80vw,320px); aspect-ratio:1; margin:0 auto; border-radius:20px; overflow:hidden; box-shadow:0 10px 24px rgba(0,0,0,0.25);"></div>
+                <div style="text-align:center; margin-top:14px; color:#555; direction:rtl;">לחץ על שני חלקים כדי להחליף ביניהם</div>
+            `;
+            renderWcPuzzleTiles();
+        }
+        function renderWcPuzzleTiles() {
+            let grid = get('wc-puzzle-grid');
+            grid.innerHTML = '';
+            wcPuzzleTiles.forEach((quadrant, slotIdx) => {
+                let tile = D.createElement('div');
+                tile.style.cssText = `background-image:url('${wcPuzzleImg}'); background-size:200% 200%; background-position:${WC_PUZZLE_POS[quadrant]}; cursor:pointer; transition: outline 0.15s ease;`;
+                tile.dataset.slot = slotIdx;
+                if (slotIdx === wcPuzzleSelected) tile.style.outline = '5px solid #2196F3';
+                tile.onclick = () => onWcPuzzleTileClick(slotIdx);
+                grid.appendChild(tile);
+            });
+        }
+        function onWcPuzzleTileClick(slotIdx) {
+            if (isProcessing) return;
+            if (wcPuzzleSelected === -1) {
+                wcPuzzleSelected = slotIdx;
+                playClickSound();
+                renderWcPuzzleTiles();
+                return;
+            }
+            if (wcPuzzleSelected === slotIdx) { wcPuzzleSelected = -1; renderWcPuzzleTiles(); return; }
+            [wcPuzzleTiles[wcPuzzleSelected], wcPuzzleTiles[slotIdx]] = [wcPuzzleTiles[slotIdx], wcPuzzleTiles[wcPuzzleSelected]];
+            wcPuzzleSelected = -1;
+            playClickSound();
+            renderWcPuzzleTiles();
+            let solved = wcPuzzleTiles.every((v, i) => v === i);
+            if (solved) {
+                isProcessing = true;
+                playCoopAudio('winners/puzzle/win.mp3', 'מצאת את כל החלקים! איזו התמדה!', () => {
+                    isProcessing = false;
+                    handleAnswer(true, null, loadWcPuzzleRound, null);
+                });
+            }
+        }
+
+        // ------------------------------------------
+        // 7. הנתיב המסתורי (אתגר מדורג)
+        // ------------------------------------------
+        const WC_PATH_DOTS = [
+            { x: 14, y: 78 }, { x: 27, y: 62 }, { x: 44, y: 52 }, { x: 60, y: 33 }, { x: 78, y: 17 }
+        ];
+        function initWcPathGame() {
+            setAppBackground('world');
+            wcPathStep = 0;
+            playCoopAudio('winners/path/intro.mp3', 'הנתיב המסתורי! עקוב אחרי הדרך מהיער ועד הטירה.');
+            renderWcPath();
+        }
+        function renderWcPath() {
+            isProcessing = false;
+            let ws = get('game-workspace');
+            ws.innerHTML = `
+                <div style="font-size:clamp(18px,4.5vw,26px); font-weight:900; color:#37474f; text-align:center; direction:rtl; margin-bottom:10px;">
+                    הנתיב המסתורי 🗺️
+                </div>
+                <div id="wc-path-map" style="position:relative; width:min(90vw,440px); aspect-ratio:16/10; margin:0 auto; border-radius:20px; overflow:hidden; box-shadow:0 10px 24px rgba(0,0,0,0.2); background:url('images/winners/adventure_map.webp') center/cover;">
+                </div>
+                <div style="text-align:center; margin-top:10px; color:#555; direction:rtl;">לחץ על הנקודה הבוערת בדרך</div>
+            `;
+            let map = get('wc-path-map');
+            WC_PATH_DOTS.forEach((d, idx) => {
+                let dot = D.createElement('div');
+                let done = idx < wcPathStep;
+                let active = idx === wcPathStep;
+                dot.style.cssText = `position:absolute; left:${d.x}%; top:${d.y}%; transform:translate(-50%,-50%); width:${active ? 40 : 30}px; height:${active ? 40 : 30}px; border-radius:50%; background:${done ? '#66bb6a' : (active ? '#ffca28' : '#ffffffaa')}; border:3px solid ${active ? '#ff6f00' : '#fff'}; box-shadow:0 4px 10px rgba(0,0,0,0.3); cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:18px; ${active ? 'animation: btnPulseGreen 1s infinite alternate;' : ''}`;
+                dot.textContent = done ? '✓' : (idx + 1);
+                dot.onclick = () => onWcPathDotClick(idx);
+                map.appendChild(dot);
+            });
+        }
+        function onWcPathDotClick(idx) {
+            if (isProcessing) return;
+            if (idx !== wcPathStep) { playErrorSound(); return; }
+            playClickSound();
+            wcPathStep++;
+            if (wcPathStep >= WC_PATH_DOTS.length) {
+                isProcessing = true;
+                playCoopAudio('winners/path/win.mp3', 'הגעת עד הטירה! איזו הרפתקה!', () => {
+                    isProcessing = false;
+                    handleAnswer(true, null, () => { wcPathStep = 0; renderWcPath(); }, null);
+                });
+            } else {
+                renderWcPath();
+            }
+        }
+
+        // ------------------------------------------
+        // 8. המוזיאון של רועי (עניין עומק)
+        // ------------------------------------------
+        const WC_MUSEUM_EXHIBITS = [
+            { img: 'images/winners/museum_dino.webp', audio: 'winners/museum/fact_dino.mp3', text: 'הטירנוזאור היה דינוזאור ענק וחזק שחי לפני מיליוני שנים!', label: 'דינוזאור 🦖' },
+            { img: 'images/winners/museum_rocket.webp', audio: 'winners/museum/fact_rocket.mp3', text: 'רקטות טסות לחלל במהירות עצומה, כמו טילים ענקיים!', label: 'רקטה 🚀' },
+            { img: 'images/winners/museum_car.webp', audio: 'winners/museum/fact_car.mp3', text: 'מכוניות מירוץ יכולות לנסוע ממש ממש מהר!', label: 'מכונית מירוץ 🏎️' },
+            { img: 'images/winners/museum_animals.webp', audio: 'winners/museum/fact_animals.mp3', text: 'אריה, פיל וג\'ירפה הם חברים שחיים יחד בסוואנה באפריקה!', label: 'חיות סוואנה 🦁' },
+        ];
+        function initWcMuseumGame() {
+            setAppBackground('world');
+            playCoopAudio('winners/museum/intro.mp3', 'ברוך הבא למוזיאון של רועי! לחץ על כל תערוכה כדי ללמוד עליה.');
+            loadWcMuseumRound();
+        }
+        function loadWcMuseumRound() {
+            isProcessing = false;
+            let ex = WC_MUSEUM_EXHIBITS[currentStep] || WC_MUSEUM_EXHIBITS[0];
+            let ws = get('game-workspace');
+            ws.innerHTML = `
+                <div style="font-size:clamp(18px,4.5vw,26px); font-weight:900; color:#37474f; text-align:center; direction:rtl; margin-bottom:10px;">
+                    המוזיאון של רועי 🦖
+                </div>
+                <div style="width:min(85vw,340px); margin:0 auto; text-align:center;">
+                    <img src="${ex.img}" style="width:220px; max-width:70vw; display:block; margin:0 auto 10px; filter:drop-shadow(0 8px 16px rgba(0,0,0,0.2));" />
+                    <div style="font-size:clamp(18px,4vw,22px); font-weight:900; color:#37474f; margin-bottom:14px;">${ex.label}</div>
+                    <button id="wc-museum-fact-btn" style="width:100%; height:clamp(50px,11vw,66px); border-radius:20px; border:none; background:linear-gradient(135deg,#ffb74d,#f57c00); color:#fff; font-size:clamp(18px,4.2vw,22px); font-weight:900; box-shadow:0 6px 16px rgba(245,124,0,0.3); direction:rtl; margin-bottom:12px;">
+                        🔊 מה זה?
+                    </button>
+                    <button id="wc-museum-next-btn" style="width:100%; height:clamp(50px,11vw,66px); border-radius:20px; border:none; background:linear-gradient(135deg,#4caf50,#2e7d32); color:#fff; font-size:clamp(18px,4.2vw,22px); font-weight:900; box-shadow:0 6px 16px rgba(46,125,50,0.3); direction:rtl;">
+                        המשך ➜
+                    </button>
+                </div>
+            `;
+            get('wc-museum-fact-btn').onclick = () => playCoopAudio(ex.audio, ex.text);
+            get('wc-museum-next-btn').onclick = () => {
+                if (isProcessing) return;
+                isProcessing = true;
+                let isFinal = currentStep >= (activeGameRounds - 1);
+                if (isFinal) {
+                    playCoopAudio('winners/museum/win.mp3', 'למדת על כל התערוכות! אתה מומחה אמיתי!', () => {
+                        isProcessing = false;
+                        handleAnswer(true, null, loadWcMuseumRound, null);
+                    });
+                } else {
+                    isProcessing = false;
+                    handleAnswer(true, null, loadWcMuseumRound, null);
+                }
+            };
+        }
+
+        // ------------------------------------------
+        // 9. בונים מחדש (התמדה)
+        // ------------------------------------------
+        function initWcBridgeGame() {
+            setAppBackground('world');
+            wcBridgeBlocks = 0;
+            playCoopAudio('winners/bridge/intro.mp3', 'בונים מחדש! בנה גשר כדי שהמכונית תוכל לעבור.');
+            renderWcBridge();
+        }
+        function renderWcBridge() {
+            isProcessing = false;
+            wcBridgeBlocks = 0;
+            let ws = get('game-workspace');
+            ws.innerHTML = `
+                <div style="font-size:clamp(18px,4.5vw,26px); font-weight:900; color:#37474f; text-align:center; direction:rtl; margin-bottom:10px;">
+                    בונים מחדש 🌉
+                </div>
+                <div style="position:relative; width:min(90vw,400px); margin:0 auto;">
+                    <img src="images/winners/bridge_scene.webp" style="width:100%; border-radius:20px; box-shadow:0 10px 24px rgba(0,0,0,0.2); transition: transform 0.3s ease;" id="wc-bridge-img" />
+                    <div id="wc-bridge-blocks" style="text-align:center; font-size:28px; margin:10px 0;"></div>
+                </div>
+                <button id="wc-bridge-btn" style="width:min(90vw,400px); display:block; margin:0 auto; height:clamp(55px,12vw,75px); border-radius:24px; border:none; background:linear-gradient(135deg,#8d6e63,#5d4037); color:#fff; font-size:clamp(18px,4.5vw,24px); font-weight:900; box-shadow:0 8px 20px rgba(93,64,55,0.3); direction:rtl;">
+                    🧱 הנח קובייה
+                </button>
+            `;
+            get('wc-bridge-btn').onclick = handleWcBridgeTap;
+        }
+        function handleWcBridgeTap() {
+            if (isProcessing) return;
+            playClickSound();
+            wcBridgeBlocks++;
+            get('wc-bridge-blocks').textContent = '🧱'.repeat(wcBridgeBlocks);
+            if (wcBridgeBlocks >= 3) {
+                isProcessing = true;
+                if (currentStep === 0) {
+                    // First attempt collapses on purpose - failure becomes a fun learning beat
+                    let img = get('wc-bridge-img');
+                    img.style.transform = 'rotate(-4deg) translateY(6px)';
+                    playCoopAudio('winners/bridge/collapse.mp3', 'אופס! הגשר נפל! לא נורא, בואו נבנה אותו מחדש וחזק יותר!', () => {
+                        isProcessing = false;
+                        handleAnswer(true, null, renderWcBridge, null);
+                    });
+                } else {
+                    playCoopAudio('winners/bridge/win.mp3', 'המכונית עברה בהצלחה! איזה גשר חזק בנית!', () => {
+                        isProcessing = false;
+                        handleAnswer(true, null, renderWcBridge, null);
+                    });
+                }
+            }
+        }
+
+        // ------------------------------------------
+        // 10. המפתח הגבוה (בקשת עזרה)
+        // ------------------------------------------
+        const WC_KEY_HELPERS = [
+            { img: 'images/winners/key_grandpa.webp', label: 'סבא' },
+            { img: 'images/winners/key_teacher.webp', label: 'הגננת' },
+            { img: 'images/winners/key_grandpa.webp', label: 'סבא' },
+        ];
+        function initWcKeyGame() {
+            setAppBackground('emotion');
+            playCoopAudio('winners/key/intro.mp3', 'המפתח הגבוה! נסה להגיע למפתח לבד, ואם לא תצליח – בקש עזרה בנימוס.');
+            loadWcKeyRound();
+        }
+        function loadWcKeyRound() {
+            isProcessing = false;
+            wcKeyTried = false;
+            let helper = WC_KEY_HELPERS[currentStep] || WC_KEY_HELPERS[0];
+            let ws = get('game-workspace');
+            ws.innerHTML = `
+                <div style="font-size:clamp(18px,4.5vw,26px); font-weight:900; color:#37474f; text-align:center; direction:rtl; margin-bottom:10px;">
+                    המפתח הגבוה 🔑
+                </div>
+                <div style="display:flex; justify-content:space-around; align-items:flex-end; width:min(90vw,380px); margin:0 auto 16px;">
+                    <img src="images/winners/key_chest.webp" style="width:110px;" />
+                    <img id="wc-key-helper" src="${helper.img}" style="width:120px;" />
+                </div>
+                <div id="wc-key-status" style="text-align:center; font-size:clamp(16px,4vw,20px); color:#555; direction:rtl; margin-bottom:14px; min-height:26px;"></div>
+                <button id="wc-key-try-btn" style="width:min(90vw,380px); display:block; margin:0 auto 10px; height:clamp(50px,11vw,66px); border-radius:20px; border:none; background:linear-gradient(135deg,#4caf50,#2e7d32); color:#fff; font-size:clamp(18px,4.2vw,22px); font-weight:900; box-shadow:0 6px 16px rgba(46,125,50,0.3); direction:rtl;">
+                    🙋 נסה לבד
+                </button>
+                <button id="wc-key-ask-btn" class="hidden" style="width:min(90vw,380px); display:block; margin:0 auto; height:clamp(50px,11vw,66px); border-radius:20px; border:none; background:linear-gradient(135deg,#42a5f5,#1565c0); color:#fff; font-size:clamp(18px,4.2vw,22px); font-weight:900; box-shadow:0 6px 16px rgba(21,101,192,0.3); direction:rtl;">
+                    🙏 בקש עזרה בנימוס
+                </button>
+            `;
+            get('wc-key-try-btn').onclick = () => {
+                if (isProcessing || wcKeyTried) return;
+                wcKeyTried = true;
+                playErrorSound();
+                get('wc-key-status').textContent = 'המפתח גבוה מדי... 😅';
+                get('wc-key-try-btn').classList.add('hidden');
+                get('wc-key-ask-btn').classList.remove('hidden');
+            };
+            get('wc-key-ask-btn').onclick = () => {
+                if (isProcessing) return;
+                isProcessing = true;
+                playCoopAudio('winners/key/ask.mp3', 'אתה יכול בבקשה לעזור לי?', () => {
+                    let helperImg = get('wc-key-helper');
+                    if (helperImg) helperImg.style.transform = 'translateY(-10px)';
+                    get('wc-key-status').textContent = `${helper.label} עוזר/ת בשמחה! 😊`;
+                    playCoopAudio('winners/key/win.mp3', 'קיבלת את המפתח! כל הכבוד על הבקשה המנומסת!', () => {
+                        isProcessing = false;
+                        handleAnswer(true, null, loadWcKeyRound, null);
+                    });
+                });
+            };
+        }
 
 
         // ==========================================

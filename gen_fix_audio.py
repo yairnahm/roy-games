@@ -411,6 +411,45 @@ TOWER_UPGRADES_AUDIO = {
     "coop/towertalk_fall.mp3": "בום! לא נורא, בונים יחד מחדש!"
 }
 
+# Detective Roy game - Hebrew voice commands
+DETECTIVE_AUDIO = {
+    "detective/intro.mp3": "הבלש רועי. פאזל תמונות מסתורי מחכה לך. גרור את החלקים החסרים למקומם המתאים.",
+    "detective/win1.mp3": "ראיתי איך ניסית שוב ושוב עד שמצאת את המקום — כל הכבוד על ההתמדה!",
+    "detective/win2.mp3": "איזה יופי של ריכוז ועבודה יפה! מצאת את כל החלקים בסבלנות רבה!",
+    "detective/win3.mp3": "כל הכבוד על ההתמדה, רועי! המשכת לנסות עד שפתרת את כל הפאזל!"
+}
+
+
+# "ילדים מצליחים" category - 10 new games, Hebrew voice commands
+WINNERS_AUDIO = {
+    "winners/sort/intro.mp3": "בואו נמיין את האוצרות של מקס! מצא ולחץ על כל הדברים שמתאימים לחוק.",
+    "winners/sort/win.mp3": f"{KOL} הכבוד! מיינת הכל נכון!",
+    "winners/freeze/intro.mp3": "ריקוד הפסלים! לחץ שוב ושוב כדי לגרום לדובי לרקוד, אבל כשהוא קופא – תפסיק מיד!",
+    "winners/freeze/freeze.mp3": "פסלים!",
+    "winners/freeze/win.mp3": f"איזה איפוק נהדר! {KOL} הכבוד!",
+    "winners/tape/intro.mp3": "חילוץ החיות! לחץ לחיצה ארוכה ואיטית כדי לקלף את הסרט ולשחרר את החיה.",
+    "winners/tape/win.mp3": "הצלת את החיה! איזו סבלנות יפה!",
+    "winners/candle/intro.mp3": "בוא נעזור לחבר להירגע! לחץ לחיצה ארוכה ונשוף על הנר לאט.",
+    "winners/candle/win.mp3": f"הוא רגוע ושמח עכשיו! {KOL} הכבוד!",
+    "winners/tower/intro.mp3": "מגדל התורות! שימו קובייה רק כשזה התור שלכם.",
+    "winners/tower/win.mp3": "בנינו מגדל מדהים ביחד!",
+    "winners/puzzle/intro.mp3": "הבלש הפותר! מצא את המקום הנכון לכל חלק בתמונה.",
+    "winners/puzzle/win.mp3": "מצאת את כל החלקים! איזו התמדה!",
+    "winners/path/intro.mp3": "הנתיב המסתורי! עקוב אחרי הדרך מהיער ועד הטירה.",
+    "winners/path/win.mp3": "הגעת עד הטירה! איזו הרפתקה!",
+    "winners/museum/intro.mp3": "ברוך הבא למוזיאון של רועי! לחץ על כל תערוכה כדי ללמוד עליה.",
+    "winners/museum/win.mp3": "למדת על כל התערוכות! אתה מומחה אמיתי!",
+    "winners/museum/fact_dino.mp3": "הטירנוזאור היה דינוזאור ענק וחזק שחי לפני מיליוני שנים!",
+    "winners/museum/fact_rocket.mp3": "רקטות טסות לחלל במהירות עצומה, כמו טילים ענקיים!",
+    "winners/museum/fact_car.mp3": "מכוניות מירוץ יכולות לנסוע ממש ממש מהר!",
+    "winners/museum/fact_animals.mp3": "אריה, פיל וג'ירפה הם חברים שחיים יחד בסוואנה באפריקה!",
+    "winners/bridge/intro.mp3": "בונים מחדש! בנה גשר כדי שהמכונית תוכל לעבור.",
+    "winners/bridge/collapse.mp3": "אופס! הגשר נפל! לא נורא, בואו נבנה אותו מחדש וחזק יותר!",
+    "winners/bridge/win.mp3": "המכונית עברה בהצלחה! איזה גשר חזק בנית!",
+    "winners/key/intro.mp3": "המפתח הגבוה! נסה להגיע למפתח לבד, ואם לא תצליח – בקש עזרה בנימוס.",
+    "winners/key/ask.mp3": "אתה יכול בבקשה לעזור לי?",
+    "winners/key/win.mp3": f"קיבלת את המפתח! {KOL} הכבוד על הבקשה המנומסת!",
+}
 
 # First-letter game - English words (proper case, not ALL CAPS)
 FL_EN_WORDS = [
@@ -445,6 +484,10 @@ for f, t in RESCUE_AUDIO.items():
 for f, t in CANDLE_AUDIO.items():
     JOBS.append((os.path.join(AUDIO, f), t, "iw", False))
 for f, t in TOWER_UPGRADES_AUDIO.items():
+    JOBS.append((os.path.join(AUDIO, f), t, "iw", False))
+for f, t in DETECTIVE_AUDIO.items():
+    JOBS.append((os.path.join(AUDIO, f), t, "iw", False))
+for f, t in WINNERS_AUDIO.items():
     JOBS.append((os.path.join(AUDIO, f), t, "iw", False))
 for w in FL_EN_WORDS:
     JOBS.append((os.path.join(AUDIO, "firstletter", "en", f"word-{w}.mp3"), w, "en", True))
