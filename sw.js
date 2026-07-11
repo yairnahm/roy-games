@@ -1,8 +1,10 @@
-const CACHE_NAME = 'roy-games-v67';
+const CACHE_NAME = 'roy-games-v68';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
-  './images/roys_store_bg.jpg'
+  './images/roys_store_bg.jpg',
+  './images/freeze/teddy_dancing.png',
+  './images/freeze/teddy_frozen.png'
 ];
 
 self.addEventListener('install', (event) => {
