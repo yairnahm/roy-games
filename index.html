@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-07-11-v69-rescue-game -->
+<!DOCTYPE html><!-- build: 2026-07-11-v70-candle-game -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -1328,7 +1328,7 @@
         // Games that give a full star (⭐):
         const fullStarGames = ['sequence','memory','missing','diff','chrono',
             'patterns','shape','diffscene','diffvideo','firstletter',
-            'tools','vparts','habitat','origins','families','emotion','emparts','sounds','routine','feelwhen','assemble','store','freeze','rescue'];
+            'tools','vparts','habitat','origins','families','emotion','emparts','sounds','routine','feelwhen','assemble','store','freeze','rescue','candle'];
         // Games that give a half star (two halves = 1 full):
         const halfStarGames = ['context','oddone','halfhalf','counting',
             'tracing','shadow','bigger','mgamish','fly','cop','faces',
@@ -1764,7 +1764,7 @@
             <div class="hub-card" onclick="openCategory('world','עולם סביבנו')"><div class="hub-icon">🌍</div><div class="hub-title">עולם סביבנו</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">7 משחקים</div></div>
             <div class="hub-card" onclick="openCategory('create','יצירה וחידות')"><div class="hub-icon">🎨</div><div class="hub-title">יצירה וחידות</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">5 משחקים</div></div>
             <div class="hub-card" onclick="openCategory('action','משחקי פעולה')"><div class="hub-icon">🎮</div><div class="hub-title">משחקי פעולה</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">2 משחקים</div></div>
-            <div class="hub-card" onclick="openCategory('success','סיפורי הצלחה')"><div class="hub-icon">🏪</div><div class="hub-title">סיפורי הצלחה</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">3 משחקים</div></div>
+            <div class="hub-card" onclick="openCategory('success','סיפורי הצלחה')"><div class="hub-icon">🏪</div><div class="hub-title">סיפורי הצלחה</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">4 משחקים</div></div>
         </div>
     </div>
 
@@ -1817,6 +1817,7 @@
             <div class="hub-card" data-cat="success" style="position:relative;" onclick="openDifficultyScreen('store', '🏪', 'החנות של רועי')"><span class="star-badge" data-game="store" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🏪</div><div class="hub-title">החנות של רועי</div></div>
             <div class="hub-card" data-cat="success" style="position:relative;" onclick="openDifficultyScreen('freeze', '🕺', 'ריקוד הפסלים')"><span class="star-badge" data-game="freeze" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🕺</div><div class="hub-title">ריקוד הפסלים</div></div>
             <div class="hub-card" data-cat="success" style="position:relative;" onclick="openDifficultyScreen('rescue', '🐢', 'חילוץ החיות')"><span class="star-badge" data-game="rescue" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🐢</div><div class="hub-title">חילוץ החיות</div></div>
+            <div class="hub-card" data-cat="success" style="position:relative;" onclick="openDifficultyScreen('candle', '🕯️', 'לכבות את הנר')"><span class="star-badge" data-game="candle" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🕯️</div><div class="hub-title">לכבות את הנר</div></div>
         </div>
     </div>
 
@@ -2262,7 +2263,7 @@
         
         function openDifficultyScreen(gameId, icon, title) {
             playClickSound(); hideAllScreens(); setAppBackground(gameId); currentGameMode = gameId;
-            if(gameId === 'emotion' || gameId === 'emparts' || gameId === 'sharing' || gameId === 'growth' || gameId === 'goodbad' || gameId === 'towertalk' || gameId === 'cooppuzzle' || gameId === 'tidyup' || gameId === 'whatneeds' || gameId === 'calm' || gameId === 'sounds' || gameId === 'feelwhen' || gameId === 'store' || gameId === 'freeze' || gameId === 'rescue') {
+            if(gameId === 'emotion' || gameId === 'emparts' || gameId === 'sharing' || gameId === 'growth' || gameId === 'goodbad' || gameId === 'towertalk' || gameId === 'cooppuzzle' || gameId === 'tidyup' || gameId === 'whatneeds' || gameId === 'calm' || gameId === 'sounds' || gameId === 'feelwhen' || gameId === 'store' || gameId === 'freeze' || gameId === 'rescue' || gameId === 'candle') {
                 startGameEngine(1); // עוקף את מסך הרמות
                 return;
             }
@@ -2317,7 +2318,8 @@
                                (currentGameMode === 'store' ? 3 :
                                (currentGameMode === 'freeze' ? 3 :
                                (currentGameMode === 'rescue' ? 3 :
-                               ((currentGameMode === 'memory') ? (level === 1 ? 3 : (level === 2 ? 4 : 5)) : 4)))))))))))));
+                               (currentGameMode === 'candle' ? 3 :
+                               ((currentGameMode === 'memory') ? (level === 1 ? 3 : (level === 2 ? 4 : 5)) : 4))))))))))))));
 
 
             let pContainer = get('active-progress-container'); pContainer.innerHTML='';
@@ -2368,6 +2370,7 @@
                 else if(currentGameMode === 'store') initStoreGame();
                 else if(currentGameMode === 'freeze') initFreezeGame();
                 else if(currentGameMode === 'rescue') initRescueGame();
+                else if(currentGameMode === 'candle') initCandleGame();
             }, 50);
         }
 
@@ -2375,13 +2378,14 @@
             if (typeof clearCalmTimers === 'function') clearCalmTimers();
             if (typeof clearFreezeTimers === 'function') clearFreezeTimers();
             if (typeof clearRescueTimers === 'function') clearRescueTimers();
+            if (typeof clearCandleTimers === 'function') clearCandleTimers();
             if (typeof diffvideoTimer1 !== 'undefined' && diffvideoTimer1) clearTimeout(diffvideoTimer1);
             if (typeof diffvideoTimer2 !== 'undefined' && diffvideoTimer2) clearTimeout(diffvideoTimer2);
             if (typeof diffvideoTimerInterval !== 'undefined' && diffvideoTimerInterval) clearInterval(diffvideoTimerInterval);
             playClickSound(); hideAllScreens();
             var agc = get('active-game-container');
             if (agc) agc.style.height = '';
-            if(currentGameMode === 'emotion' || currentGameMode === 'emparts' || currentGameMode === 'missing' || currentGameMode === 'mgamish' || currentGameMode === 'firstletter' || currentGameMode === 'sharing' || currentGameMode === 'growth' || currentGameMode === 'goodbad' || currentGameMode === 'numwar' || currentGameMode === 'towertalk' || currentGameMode === 'cooppuzzle' || currentGameMode === 'tidyup' || currentGameMode === 'patterns' || currentGameMode === 'origins' || currentGameMode === 'families' || currentGameMode === 'whatneeds' || currentGameMode === 'calm' || currentGameMode === 'sounds' || currentGameMode === 'feelwhen' || currentGameMode === 'assemble' || currentGameMode === 'store' || currentGameMode === 'freeze' || currentGameMode === 'rescue') { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); } else if(currentGameMode === 'faces') { show('faces-mode-screen'); } else { show('unified-diff-screen'); }
+            if(currentGameMode === 'emotion' || currentGameMode === 'emparts' || currentGameMode === 'missing' || currentGameMode === 'mgamish' || currentGameMode === 'firstletter' || currentGameMode === 'sharing' || currentGameMode === 'growth' || currentGameMode === 'goodbad' || currentGameMode === 'numwar' || currentGameMode === 'towertalk' || currentGameMode === 'cooppuzzle' || currentGameMode === 'tidyup' || currentGameMode === 'patterns' || currentGameMode === 'origins' || currentGameMode === 'families' || currentGameMode === 'whatneeds' || currentGameMode === 'calm' || currentGameMode === 'sounds' || currentGameMode === 'feelwhen' || currentGameMode === 'assemble' || currentGameMode === 'store' || currentGameMode === 'freeze' || currentGameMode === 'rescue' || currentGameMode === 'candle') { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); } else if(currentGameMode === 'faces') { show('faces-mode-screen'); } else { show('unified-diff-screen'); }
         }
         function updateProgressUI() { for(let i=0;i<activeGameRounds;i++) { let d = get(`active-progress-container-dot-${i}`); if(d){ if(i < currentStep) d.classList.add('fill'); else d.classList.remove('fill'); } } }
 
@@ -4853,6 +4857,402 @@
                 handleAnswer(true, null, loadRescueRound, null);
             });
         }
+
+        // ==========================================
+        // לכבות את הנר (Blow out the Candle)
+        // ==========================================
+        let candleBreathsCount = 0; // Number of successful breaths in current round (0..3)
+        let candleBreathTimer = null; // Tracks hold time
+        let candleBreathDuration = 0; // Cumulative duration in ms (target: 2200)
+        let candleProgressTimer = null; // Ticks visual progress
+        
+        // Wind breath synthesizer variables
+        let windNode = null;
+        let windFilter = null;
+        let windGain = null;
+
+        function startWindSynth() {
+            if (!audioCtx) return;
+            try {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                let bufferSize = 2 * audioCtx.sampleRate;
+                let noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                let output = noiseBuffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    output[i] = Math.random() * 2 - 1;
+                }
+                
+                let whiteNoise = audioCtx.createBufferSource();
+                whiteNoise.buffer = noiseBuffer;
+                whiteNoise.loop = true;
+                
+                let filter = audioCtx.createBiquadFilter();
+                filter.type = 'bandpass';
+                filter.frequency.value = 350; // Wind whistle frequency
+                filter.Q.value = 1.5;
+                
+                let gain = audioCtx.createGain();
+                let finalVol = 0.15 * (roySettings.muted ? 0.0 : roySettings.volume);
+                gain.gain.setValueAtTime(0, audioCtx.currentTime);
+                gain.gain.linearRampToValueAtTime(finalVol, audioCtx.currentTime + 0.3);
+                
+                whiteNoise.connect(filter);
+                filter.connect(gain);
+                gain.connect(audioCtx.destination);
+                whiteNoise.start();
+                
+                windNode = whiteNoise;
+                windFilter = filter;
+                windGain = gain;
+            } catch(e) {}
+        }
+        
+        function stopWindSynth() {
+            if (windNode) {
+                try {
+                    windGain.gain.setValueAtTime(windGain.gain.value, audioCtx.currentTime);
+                    windGain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.15);
+                    let nodeToStop = windNode;
+                    setTimeout(() => { nodeToStop.stop(); }, 200);
+                } catch(e){}
+                windNode = null;
+            }
+        }
+
+        function clearCandleTimers() {
+            stopWindSynth();
+            if (candleBreathTimer) { clearTimeout(candleBreathTimer); candleBreathTimer = null; }
+            if (candleProgressTimer) { clearInterval(candleProgressTimer); candleProgressTimer = null; }
+            candleBreathsCount = 0;
+            candleBreathDuration = 0;
+            isProcessing = false;
+        }
+
+        function initCandleGame() {
+            setAppBackground('calm');
+            clearCandleTimers();
+            loadCandleRound();
+        }
+
+        function loadCandleRound() {
+            clearCandleTimers();
+            candleBreathsCount = 0;
+            candleBreathDuration = 0;
+            isProcessing = false;
+
+            // Rounds configuration: Animals and emotional transitions
+            let rounds = [
+                { animal: '🐻', name: 'דובי', desc: 'הדובי כועס', audioIntro: 'candle/intro_angry.mp3', audioIntroText: 'הדובי כועס. בוא נעזור לו להירגע. לחץ לחיצה ארוכה על כפתור הנשיפה, ונשוף על הנר לאט ובסבלנות.', emotions: ['😡', '😐', '😊'] },
+                { animal: '🐶', name: 'כלבלב', desc: 'הכלבלב מפוחד', audioIntro: 'candle/intro_scared.mp3', audioIntroText: 'הכלבלב מפוחד. בוא נעזור לו להירגע. לחץ לחיצה ארוכה על כפתור הנשיפה, ונשוף על הנר לאט ובסבלנות.', emotions: ['😨', '😐', '😊'] },
+                { animal: '🐱', name: 'חתלתול', desc: 'החתלתול עצוב', audioIntro: 'candle/intro_sad.mp3', audioIntroText: 'החתלתול עצוב. בוא נעזור לו להירגע. לחץ לחיצה ארוכה על כפתור הנשיפה, ונשוף על הנר לאט ובסבלנות.', emotions: ['😢', '😐', '😊'] }
+            ];
+
+            let roundItem = rounds[currentStep] || rounds[0];
+
+            let ws = get('game-workspace');
+            ws.innerHTML = `
+                <style>
+                    .candle-container {
+                        position: relative; width: min(90vw, 440px); aspect-ratio: 1.1/1;
+                        background: radial-gradient(circle, #fff9c4, #fff59d);
+                        border: 8px solid #fbc02d; border-radius: 30px;
+                        box-shadow: 0 12px 28px rgba(251,192,45,0.15);
+                        margin: 0 auto 20px; overflow: hidden;
+                        display: flex; flex-direction: column; align-items: center;
+                        justify-content: space-between; padding: 15px; box-sizing: border-box;
+                        user-select: none; touch-action: none;
+                    }
+                    .candle-character-box {
+                        position: relative; width: 140px; height: 140px;
+                        display: flex; align-items: center; justify-content: center;
+                    }
+                    .candle-animal-emoji {
+                        font-size: 85px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+                    }
+                    .candle-emotion-emoji {
+                        font-size: 55px; position: absolute; top: -10px; right: -10px;
+                        filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15));
+                        transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                    }
+                    .candle-body {
+                        position: relative; width: 35px; height: 100px;
+                        background: linear-gradient(to right, #ff8a80, #ff5252, #ff1744);
+                        border-radius: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+                        margin-top: 15px; display: flex; flex-direction: column; align-items: center;
+                    }
+                    .candle-wick {
+                        width: 4px; height: 12px; background: #37474f;
+                        position: absolute; top: -12px;
+                    }
+                    .candle-flame-element {
+                        width: 28px; height: 42px;
+                        background: radial-gradient(circle, #fff 15%, #ffeb3b 45%, #ff5722 75%, rgba(0,0,0,0) 100%);
+                        border-radius: 50% 50% 20% 20%;
+                        position: absolute; top: -52px;
+                        box-shadow: 0 0 16px #ff9800, 0 0 30px #ff5722;
+                        transform-origin: bottom center;
+                        animation: flameFlicker 0.12s ease-in-out infinite alternate;
+                        transition: transform 0.2s ease, opacity 0.2s ease;
+                    }
+                    @keyframes flameFlicker {
+                        0% { transform: scale(1) rotate(-2deg); }
+                        100% { transform: scale(0.96) rotate(2deg); }
+                    }
+                    .candle-pulse-btn {
+                        animation: btnPulseBreath 1.6s infinite alternate;
+                    }
+                    @keyframes btnPulseBreath {
+                        0% { box-shadow: 0 0 0 0 rgba(3,169,244, 0.6); }
+                        100% { box-shadow: 0 0 0 15px rgba(3,169,244, 0); }
+                    }
+                </style>
+
+                <div id="candle-question" style="font-size:clamp(18px,4.5vw,26px); font-weight:900; color:#37474f; text-align:center; direction:rtl; margin-bottom:12px; cursor:pointer; text-shadow:0 1px 2px rgba(255,255,255,0.8);">
+                    בריאות רגשית: לכבות את הנר 🕯️ 🔊
+                </div>
+
+                <div class="candle-container" id="candle-stage-box">
+                    
+                    <div id="candle-status" style="font-size:clamp(17px,3.8vw,22px); font-weight:bold; color:#d84315; direction:rtl; text-align:center; height:30px; line-height:30px; text-shadow:0 1px 0 #fff;">
+                        ${roundItem.desc}! נעזור לו להירגע 🌬️
+                    </div>
+
+                    <!-- Split visual: Character on left, Candle on right -->
+                    <div style="display:flex; justify-content:space-around; align-items:center; width:100%; height:160px; margin: 10px 0;">
+                        
+                        <!-- Character with emotion -->
+                        <div class="candle-character-box" id="candle-char-box">
+                            <div class="candle-animal-emoji">${roundItem.animal}</div>
+                            <div class="candle-emotion-emoji" id="candle-emotion">${roundItem.emotions[0]}</div>
+                        </div>
+
+                        <!-- Candle -->
+                        <div style="position:relative; width:60px; height:130px; display:flex; justify-content:center;">
+                            <div class="candle-body">
+                                <div class="candle-wick"></div>
+                                <div class="candle-flame-element" id="candle-flame"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Visual Breath Progress Bar -->
+                    <div style="width:100%; max-width:320px; height:20px; background:#cfd8dc; border-radius:10px; overflow:hidden; border:2px solid #b0bec5; box-sizing:border-box;">
+                        <div id="candle-progress-bar" style="width:0%; height:100%; background:linear-gradient(to right, #29b6f6, #0288d1); transition: width 0.05s linear;"></div>
+                    </div>
+
+                    <!-- Blow / Breath button -->
+                    <button id="candle-action-btn" class="candle-pulse-btn" style="width:100%; max-width:320px; height:clamp(55px, 12vw, 75px); border-radius:24px; border:none; background:linear-gradient(135deg, #29b6f6, #0288d1); color:#fff; font-size:clamp(20px, 5.2vw, 26px); font-weight:900; cursor:pointer; box-shadow:0 8px 20px rgba(2,136,209,0.3); transition: all 0.2s ease; outline:none; direction:rtl;">
+                        לחץ לחיצה ארוכה ונשוף! 🌬️💨
+                    </button>
+                </div>
+            `;
+
+            let qEl = get('candle-question');
+            if (qEl) {
+                qEl.onclick = () => {
+                    playCoopAudio(roundItem.audioIntro, roundItem.audioIntroText);
+                };
+            }
+
+            if (currentStep === 0) {
+                playCoopAudio(roundItem.audioIntro, roundItem.audioIntroText);
+            }
+
+            // Bind pointer events on blow button for press & hold interaction
+            let actionBtn = get('candle-action-btn');
+            if (actionBtn) {
+                actionBtn.addEventListener('pointerdown', handleCandlePointerDown);
+                actionBtn.addEventListener('pointerup', handleCandlePointerUp);
+                actionBtn.addEventListener('pointerleave', handleCandlePointerUp);
+                actionBtn.addEventListener('pointercancel', handleCandlePointerUp);
+            }
+        }
+
+        function handleCandlePointerDown(e) {
+            if (isProcessing) return;
+            e.preventDefault();
+
+            initAudio();
+            startWindSynth();
+            
+            candleBreathDuration = 0;
+            updateBreathProgressUI();
+
+            // Animate flame shrinking due to blowing force
+            let flame = get('candle-flame');
+            if (flame) {
+                flame.style.transform = 'scale(0.65) skewX(15deg) rotate(10deg)';
+                flame.style.opacity = '0.8';
+            }
+
+            let actionBtn = get('candle-action-btn');
+            if (actionBtn) {
+                actionBtn.style.transform = 'scale(0.96)';
+            }
+
+            // Start breath timer ticks
+            candleProgressTimer = setInterval(() => {
+                candleBreathDuration += 50;
+                updateBreathProgressUI();
+                
+                // Spawn wind ripples blowing towards candle
+                if (candleBreathDuration % 200 === 0) {
+                    spawnWindRipple();
+                }
+
+                // Dynamically skew the flame based on breath duration for feedback
+                if (flame) {
+                    let skewVal = 10 + Math.sin(candleBreathDuration / 80) * 12;
+                    let scaleVal = 0.65 - (candleBreathDuration / 2200) * 0.35;
+                    flame.style.transform = `scale(${scaleVal}) skewX(${skewVal}deg) rotate(${skewVal/2}deg)`;
+                }
+
+                if (candleBreathDuration >= 2200) {
+                    // Successful breath!
+                    clearInterval(candleProgressTimer);
+                    candleProgressTimer = null;
+                    handleBreathSuccess();
+                }
+            }, 50);
+        }
+
+        function handleCandlePointerUp(e) {
+            if (candleProgressTimer) {
+                // Tapped or released too early
+                clearInterval(candleProgressTimer);
+                candleProgressTimer = null;
+            }
+            
+            stopWindSynth();
+            candleBreathDuration = 0;
+            updateBreathProgressUI();
+
+            let flame = get('candle-flame');
+            if (flame && candleBreathsCount < 3) {
+                flame.style.transform = 'none';
+                flame.style.opacity = '1';
+            }
+
+            let actionBtn = get('candle-action-btn');
+            if (actionBtn) {
+                actionBtn.style.transform = 'none';
+            }
+        }
+
+        function spawnWindRipple() {
+            let container = get('candle-stage-box');
+            if (!container) return;
+            
+            let w = D.createElement('div');
+            w.style.position = 'absolute';
+            w.style.fontSize = '26px';
+            w.style.pointerEvents = 'none';
+            w.style.bottom = '80px';
+            w.style.left = '50%';
+            w.style.opacity = '0.8';
+            w.style.zIndex = '12';
+            w.style.transform = 'translateX(-50%)';
+            w.style.transition = 'all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1)';
+            w.textContent = '💨';
+            container.appendChild(w);
+            
+            requestAnimationFrame(() => {
+                w.style.transform = 'translate(-40px, -145px) scale(1.4)';
+                w.style.opacity = '0';
+            });
+            
+            setTimeout(() => { w.remove(); }, 650);
+        }
+
+        function updateBreathProgressUI() {
+            let bar = get('candle-progress-bar');
+            if (bar) {
+                let p = Math.min(100, (candleBreathDuration / 2200) * 100);
+                bar.style.width = `${p}%`;
+            }
+        }
+
+        function handleBreathSuccess() {
+            stopWindSynth();
+            isProcessing = true;
+            
+            candleBreathsCount++;
+            
+            let flame = get('candle-flame');
+            if (flame) {
+                // Blow out flame completely
+                flame.style.opacity = '0';
+                flame.style.transform = 'scale(0)';
+            }
+
+            let rounds = [
+                { emotions: ['😡', '😐', '😊'] },
+                { emotions: ['😨', '😐', '😊'] },
+                { emotions: ['😢', '😐', '😊'] }
+            ];
+            let roundItem = rounds[currentStep] || rounds[0];
+
+            // Update character emotion based on breath step
+            let emotionEl = get('candle-emotion');
+            let statusEl = get('candle-status');
+            
+            if (candleBreathsCount === 1) {
+                if (emotionEl) emotionEl.textContent = roundItem.emotions[1]; // 😐 (Neutral)
+                if (statusEl) statusEl.textContent = 'כבר רגוע יותר... עוד נשיפה אחת! 🌬️';
+                
+                playCoopAudio('candle/breath.mp3', 'נשיפה ארוכה ויפה! עוד אחת.', () => {
+                    isProcessing = false;
+                    // Relight candle slightly smaller
+                    if (flame) {
+                        flame.style.opacity = '1';
+                        flame.style.transform = 'scale(0.8)';
+                    }
+                });
+            } else if (candleBreathsCount === 2) {
+                // Calm, heading to smile
+                if (emotionEl) {
+                    emotionEl.textContent = '🙂';
+                    emotionEl.style.transform = 'scale(1.2)';
+                }
+                if (statusEl) statusEl.textContent = 'כמעט נכבה! עוד נשיפה אחרונה! 🌬️';
+                
+                playCoopAudio('candle/breath.mp3', 'נשיפה ארוכה ויפה! עוד אחת.', () => {
+                    isProcessing = false;
+                    if (flame) {
+                        flame.style.opacity = '1';
+                        flame.style.transform = 'scale(0.6)';
+                    }
+                });
+            } else if (candleBreathsCount === 3) {
+                // Completely happy and calm!
+                if (emotionEl) {
+                    emotionEl.textContent = roundItem.emotions[2]; // 😊 (Happy)
+                    emotionEl.style.transform = 'scale(1.4) rotate(360deg)';
+                }
+                
+                let charBox = get('candle-char-box');
+                if (charBox) {
+                    charBox.animate([
+                        { transform: 'translateY(0)' },
+                        { transform: 'translateY(-20px)' },
+                        { transform: 'translateY(0)' }
+                    ], { duration: 600, iterations: 3 });
+                }
+
+                if (statusEl) {
+                    statusEl.textContent = 'הנר כבה! הוא מרגיש נפלא ושמח! 🎉';
+                    statusEl.style.color = '#2e7d32';
+                }
+
+                playSuccessSound();
+
+                playCoopAudio('candle/win.mp3', 'איזה יופי! הוא רגוע ושמח. כל הכבוד רועי!', () => {
+                    isProcessing = false;
+                    handleAnswer(true, null, loadCandleRound, null);
+                });
+            }
+        }
+
 
 
         // ==========================================

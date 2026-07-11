@@ -395,6 +395,15 @@ RESCUE_AUDIO = {
     "rescue/win.mp3": f"איזו התמדה נפלאה! {KOL} הַכָּבוֹד רוֹעִי, חִלַּצְתָּ אֶת הַחַיָּה!"
 }
 
+# Blow out the Candle game - Hebrew voice commands
+CANDLE_AUDIO = {
+    "candle/intro_angry.mp3": "הדובי כועס. בוא נעזור לו להירגע. לחץ לחיצה ארוכה על כפתור הנשיפה, ונשוף על הנר לאט ובסבלנות.",
+    "candle/intro_scared.mp3": "הכלבלב מפוחד. בוא נעזור לו להירגע. לחץ לחיצה ארוכה על כפתור הנשיפה, ונשוף על הנר לאט ובסבלנות.",
+    "candle/intro_sad.mp3": "החתלתול עצוב. בוא נעזור לו להירגע. לחץ לחיצה ארוכה על כפתור הנשיפה, ונשוף על הנר לאט ובסבלנות.",
+    "candle/breath.mp3": "נשיפה ארוכה ויפה! עוד אחת.",
+    "candle/win.mp3": f"איזה יופי! הוא רגוע ושמח. {KOL} הַכָּבוֹד רוֹעִי!"
+}
+
 
 # First-letter game - English words (proper case, not ALL CAPS)
 FL_EN_WORDS = [
@@ -425,6 +434,8 @@ for f, t in STORE_AUDIO.items():
 for f, t in FREEZE_AUDIO.items():
     JOBS.append((os.path.join(AUDIO, f), t, "iw", False))
 for f, t in RESCUE_AUDIO.items():
+    JOBS.append((os.path.join(AUDIO, f), t, "iw", False))
+for f, t in CANDLE_AUDIO.items():
     JOBS.append((os.path.join(AUDIO, f), t, "iw", False))
 for w in FL_EN_WORDS:
     JOBS.append((os.path.join(AUDIO, "firstletter", "en", f"word-{w}.mp3"), w, "en", True))
