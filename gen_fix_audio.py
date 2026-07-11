@@ -368,6 +368,18 @@ TOYS_AUDIO = {
     "toys/not_enough.mp3": "אין מספיק כוכבים, נסה להשיג עוד!"
 }
 
+# Roy's Store game - Hebrew voice commands
+STORE_AUDIO = {
+    "store/sort_red.mp3": "שים על המדף את כל הדברים האדומים",
+    "store/sort_yellow.mp3": "עכשיו, שים על המדף את כל הדברים הצהובים",
+    "store/sort_green.mp3": "עכשיו, שים על המדף את כל הדברים הירוקים",
+    "store/sort_big.mp3": "עכשיו, שים על המדף את כל הדברים הגדולים",
+    "store/sort_toys.mp3": "עכשיו, שים על המדף את כל הצעצועים",
+    "store/count_fruits.mp3": "כמה פירות יש בסך הכל בחנות? לחץ על המספר",
+    "store/count_animals.mp3": "כמה חיות יש בסך הכל בחנות? לחץ על המספר",
+    "store/win.mp3": f"איזה יופי של סדר! {KOL} הַכָּבוֹד רוֹעִי!"
+}
+
 
 # First-letter game - English words (proper case, not ALL CAPS)
 FL_EN_WORDS = [
@@ -392,6 +404,8 @@ for f, t in FACES_EN.items():
 for f, t in ASSEMBLE.items():
     JOBS.append((os.path.join(AUDIO, "assemble", f), t, "iw", False))
 for f, t in TOYS_AUDIO.items():
+    JOBS.append((os.path.join(AUDIO, f), t, "iw", False))
+for f, t in STORE_AUDIO.items():
     JOBS.append((os.path.join(AUDIO, f), t, "iw", False))
 for w in FL_EN_WORDS:
     JOBS.append((os.path.join(AUDIO, "firstletter", "en", f"word-{w}.mp3"), w, "en", True))

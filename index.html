@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-07-11-v63-assemble-ai-art-parts -->
+<!DOCTYPE html><!-- build: 2026-07-11-v64-roys-store-game -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -1328,7 +1328,7 @@
         // Games that give a full star (⭐):
         const fullStarGames = ['sequence','memory','missing','diff','chrono',
             'patterns','shape','diffscene','diffvideo','firstletter',
-            'tools','vparts','habitat','origins','families','emotion','emparts','sounds','routine','feelwhen'];
+            'tools','vparts','habitat','origins','families','emotion','emparts','sounds','routine','feelwhen','assemble','store'];
         // Games that give a half star (two halves = 1 full):
         const halfStarGames = ['context','oddone','halfhalf','counting',
             'tracing','shadow','bigger','mgamish','fly','cop','faces',
@@ -1764,6 +1764,7 @@
             <div class="hub-card" onclick="openCategory('world','עולם סביבנו')"><div class="hub-icon">🌍</div><div class="hub-title">עולם סביבנו</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">7 משחקים</div></div>
             <div class="hub-card" onclick="openCategory('create','יצירה וחידות')"><div class="hub-icon">🎨</div><div class="hub-title">יצירה וחידות</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">5 משחקים</div></div>
             <div class="hub-card" onclick="openCategory('action','משחקי פעולה')"><div class="hub-icon">🎮</div><div class="hub-title">משחקי פעולה</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">2 משחקים</div></div>
+            <div class="hub-card" onclick="openCategory('success','סיפורי הצלחה')"><div class="hub-icon">🏪</div><div class="hub-title">סיפורי הצלחה</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">1 משחקים</div></div>
         </div>
     </div>
 
@@ -1813,6 +1814,7 @@
 
             <div class="hub-card" data-cat="create" style="position:relative;" onclick="openMgGame()"><div class="hub-icon">🤸</div><div class="hub-title">מר גמיש</div></div>
             <div class="hub-card" data-cat="lang" onclick="openFirstLetterLangScreen()"><div class="hub-icon">🔡</div><div class="hub-title">באיזו אות מתחיל?</div></div>
+            <div class="hub-card" data-cat="success" style="position:relative;" onclick="openDifficultyScreen('store', '🏪', 'החנות של רועי')"><span class="star-badge" data-game="store" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🏪</div><div class="hub-title">החנות של רועי</div></div>
         </div>
     </div>
 
@@ -2258,7 +2260,7 @@
         
         function openDifficultyScreen(gameId, icon, title) {
             playClickSound(); hideAllScreens(); setAppBackground(gameId); currentGameMode = gameId;
-            if(gameId === 'emotion' || gameId === 'emparts' || gameId === 'sharing' || gameId === 'growth' || gameId === 'goodbad' || gameId === 'towertalk' || gameId === 'cooppuzzle' || gameId === 'tidyup' || gameId === 'whatneeds' || gameId === 'calm' || gameId === 'sounds' || gameId === 'feelwhen') {
+            if(gameId === 'emotion' || gameId === 'emparts' || gameId === 'sharing' || gameId === 'growth' || gameId === 'goodbad' || gameId === 'towertalk' || gameId === 'cooppuzzle' || gameId === 'tidyup' || gameId === 'whatneeds' || gameId === 'calm' || gameId === 'sounds' || gameId === 'feelwhen' || gameId === 'store') {
                 startGameEngine(1); // עוקף את מסך הרמות
                 return;
             }
@@ -2310,7 +2312,8 @@
                                (currentGameMode === 'diffvideo' ? 6 :
                                (currentGameMode === 'routine' ? routineData.length :
                                (currentGameMode === 'assemble' ? 3 :
-                               ((currentGameMode === 'memory') ? (level === 1 ? 3 : (level === 2 ? 4 : 5)) : 4))))))))));
+                               (currentGameMode === 'store' ? 3 :
+                               ((currentGameMode === 'memory') ? (level === 1 ? 3 : (level === 2 ? 4 : 5)) : 4)))))))))));
 
 
             let pContainer = get('active-progress-container'); pContainer.innerHTML='';
@@ -2358,6 +2361,7 @@
                 else if(currentGameMode === 'routine') initRoutineGame();
                 else if(currentGameMode === 'feelwhen') initFeelwhenGame();
                 else if(currentGameMode === 'assemble') initAssembleGame();
+                else if(currentGameMode === 'store') initStoreGame();
             }, 50);
         }
 
@@ -2369,7 +2373,7 @@
             playClickSound(); hideAllScreens();
             var agc = get('active-game-container');
             if (agc) agc.style.height = '';
-            if(currentGameMode === 'emotion' || currentGameMode === 'emparts' || currentGameMode === 'missing' || currentGameMode === 'mgamish' || currentGameMode === 'firstletter' || currentGameMode === 'sharing' || currentGameMode === 'growth' || currentGameMode === 'goodbad' || currentGameMode === 'numwar' || currentGameMode === 'towertalk' || currentGameMode === 'cooppuzzle' || currentGameMode === 'tidyup' || currentGameMode === 'patterns' || currentGameMode === 'origins' || currentGameMode === 'families' || currentGameMode === 'whatneeds' || currentGameMode === 'calm' || currentGameMode === 'sounds' || currentGameMode === 'feelwhen' || currentGameMode === 'assemble') { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); } else if(currentGameMode === 'faces') { show('faces-mode-screen'); } else { show('unified-diff-screen'); }
+            if(currentGameMode === 'emotion' || currentGameMode === 'emparts' || currentGameMode === 'missing' || currentGameMode === 'mgamish' || currentGameMode === 'firstletter' || currentGameMode === 'sharing' || currentGameMode === 'growth' || currentGameMode === 'goodbad' || currentGameMode === 'numwar' || currentGameMode === 'towertalk' || currentGameMode === 'cooppuzzle' || currentGameMode === 'tidyup' || currentGameMode === 'patterns' || currentGameMode === 'origins' || currentGameMode === 'families' || currentGameMode === 'whatneeds' || currentGameMode === 'calm' || currentGameMode === 'sounds' || currentGameMode === 'feelwhen' || currentGameMode === 'assemble' || currentGameMode === 'store') { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); } else if(currentGameMode === 'faces') { show('faces-mode-screen'); } else { show('unified-diff-screen'); }
         }
         function updateProgressUI() { for(let i=0;i<activeGameRounds;i++) { let d = get(`active-progress-container-dot-${i}`); if(d){ if(i < currentStep) d.classList.add('fill'); else d.classList.remove('fill'); } } }
 
@@ -3694,6 +3698,376 @@
                     isProcessing = false;
                 }, 1500);
             }
+        }
+
+        // ==========================================
+        // החנות של רועי (Roy's Store Game)
+        // ==========================================
+        const storeData = [
+            {
+                title: 'החנות של רועי: פירות וצבעים 🍏',
+                items: [
+                    { id: 'apple_red', text: 'תפוח אדום', emoji: '🍎', color: 'red', size: 'small', cat: 'fruit', bg: 'radial-gradient(circle, #ffebee, #ffcdd2)', shadow: 'rgba(229,57,53,0.2)' },
+                    { id: 'strawberry_red', text: 'תות אדום', emoji: '🍓', color: 'red', size: 'small', cat: 'fruit', bg: 'radial-gradient(circle, #ffebee, #ffcdd2)', shadow: 'rgba(229,57,53,0.2)' },
+                    { id: 'cherry_red', text: 'דובדבן אדום', emoji: '🍒', color: 'red', size: 'small', cat: 'fruit', bg: 'radial-gradient(circle, #ffebee, #ffcdd2)', shadow: 'rgba(229,57,53,0.2)' },
+                    { id: 'banana_yellow', text: 'בננה צהובה', emoji: '🍌', color: 'yellow', size: 'big', cat: 'fruit', bg: 'radial-gradient(circle, #fffde7, #fff9c4)', shadow: 'rgba(251,192,45,0.2)' },
+                    { id: 'pineapple_yellow', text: 'אננס צהוב', emoji: '🍍', color: 'yellow', size: 'big', cat: 'fruit', bg: 'radial-gradient(circle, #fffde7, #fff9c4)', shadow: 'rgba(251,192,45,0.2)' },
+                    { id: 'lemon_yellow', text: 'לימון צהוב', emoji: '🍋', color: 'yellow', size: 'small', cat: 'fruit', bg: 'radial-gradient(circle, #fffde7, #fff9c4)', shadow: 'rgba(251,192,45,0.2)' }
+                ],
+                tasks: [
+                    { type: 'sort', key: 'color', val: 'red', text: 'שים על המדף את כל הדברים האדומים', audio: 'store/sort_red.mp3' },
+                    { type: 'sort', key: 'size', val: 'big', text: 'עכשיו, שים על המדף את כל הדברים הגדולים', audio: 'store/sort_big.mp3' },
+                    { type: 'count', key: 'cat', val: 'fruit', countVal: 6, text: 'כמה פירות יש בסך הכל בחנות? לחץ על המספר', audio: 'store/count_fruits.mp3', options: [4, 5, 6] }
+                ],
+                audioWin: 'store/win.mp3',
+                audioWinText: 'איזה יופי של סדר! כל הכבוד רועי!'
+            },
+            {
+                title: 'החנות של רועי: צעצועים וחיות 🧸',
+                items: [
+                    { id: 'teddy_blue', text: 'דובי כחול', emoji: '🧸', color: 'blue', size: 'big', cat: 'toy', bg: 'radial-gradient(circle, #e3f2fd, #bbdefb)', shadow: 'rgba(30,136,229,0.2)' },
+                    { id: 'ball_blue', text: 'כדור כחול', emoji: '⚽', color: 'blue', size: 'small', cat: 'toy', bg: 'radial-gradient(circle, #e3f2fd, #bbdefb)', shadow: 'rgba(30,136,229,0.2)' },
+                    { id: 'robot_blue', text: 'רובוט כחול', emoji: '🤖', color: 'blue', size: 'big', cat: 'toy', bg: 'radial-gradient(circle, #e3f2fd, #bbdefb)', shadow: 'rgba(30,136,229,0.2)' },
+                    { id: 'car_red', text: 'מכונית אדומה', emoji: '🚗', color: 'red', size: 'big', cat: 'toy', bg: 'radial-gradient(circle, #ffebee, #ffcdd2)', shadow: 'rgba(229,57,53,0.2)' },
+                    { id: 'balloon_red', text: 'בלון אדום', emoji: '🎈', color: 'red', size: 'small', cat: 'toy', bg: 'radial-gradient(circle, #ffebee, #ffcdd2)', shadow: 'rgba(229,57,53,0.2)' },
+                    { id: 'dino_green', text: 'דינוזאור ירוק', emoji: '🦖', color: 'green', size: 'big', cat: 'animal', bg: 'radial-gradient(circle, #e8f5e9, #c8e6c9)', shadow: 'rgba(67,160,71,0.2)' }
+                ],
+                tasks: [
+                    { type: 'sort', key: 'cat', val: 'toy', text: 'שים על המדף את כל הצעצועים', audio: 'store/sort_toys.mp3' },
+                    { type: 'sort', key: 'size', val: 'big', text: 'עכשיו, שים על המדף את כל הדברים הגדולים', audio: 'store/sort_big.mp3' },
+                    { type: 'count', key: 'cat', val: 'animal', countVal: 1, text: 'כמה חיות יש בסך הכל בחנות? לחץ על המספר', audio: 'store/count_animals.mp3', options: [1, 2, 3] }
+                ],
+                audioWin: 'store/win.mp3',
+                audioWinText: 'איזה יופי של סדר! כל הכבוד רועי!'
+            },
+            {
+                title: 'החנות של רועי: חיות וצבעים 🦁',
+                items: [
+                    { id: 'lion_yellow', text: 'אריה צהוב', emoji: '🦁', color: 'yellow', size: 'big', cat: 'animal', bg: 'radial-gradient(circle, #fffde7, #fff9c4)', shadow: 'rgba(251,192,45,0.2)' },
+                    { id: 'duck_yellow', text: 'ברווז צהוב', emoji: '🦆', color: 'yellow', size: 'small', cat: 'animal', bg: 'radial-gradient(circle, #fffde7, #fff9c4)', shadow: 'rgba(251,192,45,0.2)' },
+                    { id: 'bee_yellow', text: 'דבורה צהובה', emoji: '🐝', color: 'yellow', size: 'small', cat: 'animal', bg: 'radial-gradient(circle, #fffde7, #fff9c4)', shadow: 'rgba(251,192,45,0.2)' },
+                    { id: 'frog_green', text: 'צפרדע ירוקה', emoji: '🐸', color: 'green', size: 'small', cat: 'animal', bg: 'radial-gradient(circle, #e8f5e9, #c8e6c9)', shadow: 'rgba(67,160,71,0.2)' },
+                    { id: 'turtle_green', text: 'צב ירוק', emoji: '🐢', color: 'green', size: 'small', cat: 'animal', bg: 'radial-gradient(circle, #e8f5e9, #c8e6c9)', shadow: 'rgba(67,160,71,0.2)' },
+                    { id: 'pear_green', text: 'אגס ירוק', emoji: '🍐', color: 'green', size: 'small', cat: 'fruit', bg: 'radial-gradient(circle, #e8f5e9, #c8e6c9)', shadow: 'rgba(67,160,71,0.2)' }
+                ],
+                tasks: [
+                    { type: 'sort', key: 'color', val: 'yellow', text: 'שים על המדף את כל הדברים הצהובים', audio: 'store/sort_yellow.mp3' },
+                    { type: 'sort', key: 'color', val: 'green', text: 'עכשיו, שים על המדף את כל הדברים הירוקים', audio: 'store/sort_green.mp3' },
+                    { type: 'count', key: 'cat', val: 'animal', countVal: 5, text: 'כמה חיות יש בסך הכל בחנות? לחץ על המספר', audio: 'store/count_animals.mp3', options: [3, 5, 6] }
+                ],
+                audioWin: 'store/win.mp3',
+                audioWinText: 'איזה יופי של סדר! כל הכבוד רועי!'
+            }
+        ];
+
+        let storeOrder = [];
+        let storeTaskIndex = 0;
+
+        function initStoreGame() {
+            setAppBackground('create');
+            storeOrder = shuffle(createRange(storeData.length));
+            loadStoreRound();
+        }
+
+        function loadStoreRound() {
+            storeTaskIndex = 0;
+            let roundIdx = storeOrder[currentStep];
+            let item = storeData[roundIdx];
+            get('active-game-title').textContent = item.title;
+
+            let ws = get('game-workspace');
+            ws.innerHTML = `
+                <div id="store-question" style="font-size:clamp(18px,4.5vw,26px); font-weight:900; color:#37474f; text-align:center; direction:rtl; margin-bottom:15px; cursor:pointer; text-shadow:0 1px 2px rgba(255,255,255,0.8);"></div>
+                
+                <!-- Cabinet Container -->
+                <div class="store-cabinet" style="position:relative; width:min(90vw, 420px); aspect-ratio:1.2/1; background:#8d6e63; border:8px solid #5d4037; border-radius:24px; box-shadow:0 12px 28px rgba(0,0,0,0.2), inset 0 4px 10px rgba(0,0,0,0.1); margin:0 auto 20px; overflow:hidden; display:flex; flex-direction:column; justify-content:space-around; padding:15px 10px;">
+                    <!-- Placed Items Shelf (Drop Target) -->
+                    <div id="store-shelf" class="store-shelf-zone" style="position:relative; width:100%; height:45%; background:#a1887f; border-bottom:10px solid #4e342e; border-radius:8px; display:flex; align-items:flex-end; justify-content:center; gap:12px; padding-bottom:8px; box-sizing:border-box; transition: background 0.3s ease;">
+                        <div style="position:absolute; top:8px; right:12px; font-size:12px; font-weight:bold; color:#f5f5f5; opacity:0.6; direction:rtl;">המדף של רועי 🛍️</div>
+                    </div>
+                    
+                    <!-- Basket (Starting Row) -->
+                    <div id="store-basket" style="position:relative; width:100%; height:45%; background:#d7ccc8; border-radius:16px; border:3px dashed #8d6e63; display:flex; align-items:center; justify-content:center; gap:12px; flex-wrap:wrap; padding:8px; box-sizing:border-box; transition: opacity 0.5s ease;">
+                        <div style="position:absolute; top:6px; right:12px; font-size:11px; font-weight:bold; color:#795548; opacity:0.6; direction:rtl;">סלסלת הבלאגן 🧺</div>
+                    </div>
+                </div>
+
+                <!-- Count Options (Hidden initially) -->
+                <div id="store-count-options" style="display:none; justify-content:center; gap:20px; margin-top:10px;"></div>
+            `;
+
+            // Render basket items
+            let basket = get('store-basket');
+            basket.innerHTML = `<div style="position:absolute; top:6px; right:12px; font-size:11px; font-weight:bold; color:#795548; opacity:0.6; direction:rtl;">סלסלת הבלאגן 🧺</div>`;
+            item.items.forEach(it => {
+                let token = D.createElement('div');
+                token.id = `store-item-${it.id}`;
+                token.className = 'store-item-token';
+                
+                let sizePx = it.size === 'big' ? 'clamp(60px, 14vw, 75px)' : 'clamp(42px, 10vw, 52px)';
+                let fontPx = it.size === 'big' ? 'clamp(32px, 7vw, 42px)' : 'clamp(22px, 5vw, 28px)';
+                
+                token.style.cssText = `
+                    width: ${sizePx};
+                    height: ${sizePx};
+                    font-size: ${fontPx};
+                    background: ${it.bg};
+                    border: 4px solid #fff;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                    box-shadow: 0 6px 12px ${it.shadow};
+                    user-select: none;
+                    touch-action: none;
+                    position: relative;
+                    transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.25s ease;
+                `;
+                token.textContent = it.emoji;
+                
+                bindStoreDrag(token, it);
+                basket.appendChild(token);
+            });
+
+            askStoreTask();
+        }
+
+        function askStoreTask() {
+            let roundIdx = storeOrder[currentStep];
+            let roundItem = storeData[roundIdx];
+            let task = roundItem.tasks[storeTaskIndex];
+
+            let qEl = get('store-question');
+            if (qEl) {
+                qEl.textContent = task.text + ' 🔊';
+                qEl.onclick = () => {
+                    playCoopAudio(task.audio, task.text);
+                };
+            }
+
+            // Play voice command
+            playCoopAudio(task.audio, task.text);
+
+            if (task.type === 'count') {
+                // Dim the basket, show choice buttons
+                let basket = get('store-basket');
+                if (basket) basket.style.opacity = '0.35';
+
+                let optionsDiv = get('store-count-options');
+                if (optionsDiv) {
+                    optionsDiv.style.display = 'flex';
+                    optionsDiv.innerHTML = '';
+                    task.options.forEach(opt => {
+                        let btn = D.createElement('button');
+                        btn.className = 'action-btn';
+                        btn.style.cssText = 'font-size:clamp(28px, 6vw, 45px); font-weight:900; width:clamp(65px, 15vw, 90px); height:clamp(65px, 15vw, 90px); border-radius:50%; background:#fff; border:5px solid #ffb300; cursor:pointer; box-shadow:0 6px 14px rgba(255,179,0,0.2); display:flex; align-items:center; justify-content:center; transition:all 0.2s; outline:none;';
+                        btn.textContent = opt;
+
+                        btn.onclick = () => {
+                            if (isProcessing) return;
+                            if (opt === task.countVal) {
+                                playSuccessSound();
+                                btn.style.borderColor = '#4CAF50';
+                                btn.style.background = '#e8f5e9';
+                                isProcessing = true;
+                                setTimeout(() => {
+                                    nextStoreTask();
+                                }, 1200);
+                            } else {
+                                playErrorSound();
+                                btn.style.borderColor = '#F44336';
+                                btn.style.background = '#ffebee';
+                                btn.animate([
+                                    { transform: 'translateX(0px)' },
+                                    { transform: 'translateX(-6px)' },
+                                    { transform: 'translateX(6px)' },
+                                    { transform: 'translateX(0px)' }
+                                ], { duration: 300 });
+                            }
+                        };
+                        optionsDiv.appendChild(btn);
+                    });
+                }
+            }
+        }
+
+        function getStoreCorrectRemaining(task, roundItem) {
+            let correctIds = [];
+            roundItem.items.forEach(it => {
+                let el = get(`store-item-${it.id}`);
+                if (el && el.parentElement && el.parentElement.id === 'store-basket') {
+                    if (it[task.key] === task.val) {
+                        correctIds.push(it.id);
+                    }
+                }
+            });
+            return correctIds;
+        }
+
+        function bindStoreDrag(token, it) {
+            let startX = 0, startY = 0;
+            let currentX = 0, currentY = 0;
+            let hasMoved = false;
+
+            token.onpointerdown = (e) => {
+                if (isProcessing) return;
+                let parent = token.parentElement;
+                if (parent && parent.id === 'store-shelf') return;
+
+                e.preventDefault();
+                token.setPointerCapture(e.pointerId);
+
+                startX = e.clientX;
+                startY = e.clientY;
+                currentX = 0;
+                currentY = 0;
+                hasMoved = false;
+
+                token.style.transition = 'none';
+                token.style.zIndex = '1000';
+                token.style.transform = 'scale(1.15) translate3d(0, 0, 0)';
+
+                token.onpointermove = (moveEv) => {
+                    currentX = moveEv.clientX - startX;
+                    currentY = moveEv.clientY - startY;
+
+                    if (Math.abs(currentX) > 8 || Math.abs(currentY) > 8) {
+                        hasMoved = true;
+                    }
+                    token.style.transform = `scale(1.15) translate3d(${currentX}px, ${currentY}px, 0)`;
+                };
+
+                token.onpointerup = (upEv) => {
+                    token.releasePointerCapture(upEv.pointerId);
+                    token.onpointermove = null;
+                    token.onpointerup = null;
+
+                    token.style.zIndex = '';
+                    
+                    let roundIdx = storeOrder[currentStep];
+                    let roundItem = storeData[roundIdx];
+                    let task = roundItem.tasks[storeTaskIndex];
+
+                    if (isProcessing) {
+                        token.style.transition = 'all 0.25s ease';
+                        token.style.transform = 'scale(1) translate3d(0,0,0)';
+                        return;
+                    }
+
+                    if (!hasMoved) {
+                        // Click/Tap fallback
+                        let isCorrect = (it[task.key] === task.val);
+                        handleStoreSelection(isCorrect, token, it, roundItem);
+                    } else {
+                        // Drag validation
+                        let shelf = get('store-shelf');
+                        if (shelf) {
+                            let rect = shelf.getBoundingClientRect();
+                            let dropX = upEv.clientX;
+                            let dropY = upEv.clientY;
+
+                            if (dropX >= rect.left && dropX <= rect.right && dropY >= rect.top && dropY <= rect.bottom) {
+                                let isCorrect = (it[task.key] === task.val);
+                                handleStoreSelection(isCorrect, token, it, roundItem);
+                            } else {
+                                // Slide back home
+                                token.style.transition = 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                                token.style.transform = 'scale(1) translate3d(0,0,0)';
+                            }
+                        }
+                    }
+                };
+            };
+        }
+
+        function handleStoreSelection(isCorrect, token, it, roundItem) {
+            let task = roundItem.tasks[storeTaskIndex];
+            if (isCorrect) {
+                playSuccessSound();
+                
+                // Append to shelf
+                let shelf = get('store-shelf');
+                if (shelf) {
+                    shelf.appendChild(token);
+                }
+                token.style.transition = 'none';
+                token.style.transform = 'none';
+                token.style.cursor = 'default';
+                token.style.pointerEvents = 'none';
+                
+                // Pop animation
+                token.animate([
+                    { transform: 'scale(0.8)' },
+                    { transform: 'scale(1.15)' },
+                    { transform: 'scale(1)' }
+                ], { duration: 300, easing: 'ease-out' });
+
+                // Check if all correct items are placed
+                let correctLeft = getStoreCorrectRemaining(task, roundItem);
+                if (correctLeft.length === 0) {
+                    isProcessing = true;
+                    setTimeout(() => {
+                        isProcessing = false;
+                        nextStoreTask();
+                    }, 1200);
+                }
+            } else {
+                playErrorSound();
+                token.style.borderColor = '#F44336';
+                token.style.background = '#ffebee';
+                token.animate([
+                    { transform: 'scale(1.15) translate3d(0, 0, 0)' },
+                    { transform: 'scale(1.15) translate3d(-10px, 0, 0)' },
+                    { transform: 'scale(1.15) translate3d(10px, 0, 0)' },
+                    { transform: 'scale(1.15) translate3d(-5px, 0, 0)' },
+                    { transform: 'scale(1.15) translate3d(5px, 0, 0)' },
+                    { transform: 'scale(1.15) translate3d(0, 0, 0)' }
+                ], { duration: 300 });
+
+                isProcessing = true;
+                let fl = get('feedback-layer');
+                let errText = `בוא ננסה שוב, זה לא מתאים לחוק`;
+                fl.innerHTML = `<span>🤔</span><div class="feedback-msg">${errText}</div>`;
+                show('feedback-layer');
+                
+                speakLetter(errText, 'he');
+
+                setTimeout(() => {
+                    hide('feedback-layer');
+                    token.style.transition = 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                    token.style.transform = 'scale(1) translate3d(0,0,0)';
+                    token.style.borderColor = '#fff';
+                    token.style.background = it.bg;
+                    isProcessing = false;
+                }, 1500);
+            }
+        }
+
+        function nextStoreTask() {
+            let roundIdx = storeOrder[currentStep];
+            let roundItem = storeData[roundIdx];
+            
+            storeTaskIndex++;
+            if (storeTaskIndex >= roundItem.tasks.length) {
+                endStoreRound();
+            } else {
+                askStoreTask();
+            }
+        }
+
+        function endStoreRound() {
+            isProcessing = true;
+            let roundIdx = storeOrder[currentStep];
+            let roundItem = storeData[roundIdx];
+            
+            let qEl = get('store-question');
+            if (qEl) qEl.textContent = roundItem.audioWinText + ' 🎉';
+            
+            playCoopAudio(roundItem.audioWin, roundItem.audioWinText, function() {
+                isProcessing = false;
+                handleAnswer(true, null, loadStoreRound, null);
+            });
         }
 
         // ==========================================
