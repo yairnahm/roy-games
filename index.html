@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-07-11-v70-candle-game -->
+<!DOCTYPE html><!-- build: 2026-07-11-v71-tower-turns -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -7554,7 +7554,7 @@
         }
 
         function initTowerGame() {
-            get('active-game-title').textContent = 'מגדל קוביות משותף 🧱';
+            get('active-game-title').textContent = 'מגדל התורות 🧱';
             
             let royScore = 0;
             let abaScore = 0;
@@ -7564,54 +7564,127 @@
             let abaBlocks = [];
             let royPlayed = [false, false, false];
             let abaPlayed = [false, false];
+            let collapsedOnce = false; // Tracks if the tower has collapsed on 4th block
 
             function updateScoreboard() {
                 var sb = get('towertalk-score');
                 if (sb) {
                     sb.innerHTML = `
-                        <div class="numwar-score-item aba">
-                             <span>אבא יאיר:</span>
-                             <span class="numwar-score-val" id="score-aba">${abaScore}</span>
+                        <div class="numwar-score-item aba" style="background:#e8f5e9; border-radius:15px; padding:6px 12px;">
+                             <span>אבא או אמא:</span>
+                             <span class="numwar-score-val" id="score-aba" style="color:#2e7d32; font-weight:bold;">${abaScore}</span>
                         </div>
-                        <div class="numwar-score-val" style="background:#e8f5e9;color:#2e7d32;font-weight:900;">גובה: ${stackedBlocks.length}/5</div>
-                        <div class="numwar-score-item roy">
+                        <div class="numwar-score-val" style="background:#fff3cd; color:#856404; font-weight:900; border-radius:15px; padding:6px 16px;">
+                            גובה מגדל: ${stackedBlocks.length}/5
+                        </div>
+                        <div class="numwar-score-item roy" style="background:#e3f2fd; border-radius:15px; padding:6px 12px;">
                              <span>רועי:</span>
-                             <span class="numwar-score-val" id="score-roy">${royScore}</span>
+                             <span class="numwar-score-val" id="score-roy" style="color:#1565c0; font-weight:bold;">${royScore}</span>
                         </div>
                     `;
                 }
             }
 
+            function showTurnWarning(player, text) {
+                let sideEl = document.querySelector(player === 'roy' ? '#roy-side-box' : '#aba-side-box');
+                if (!sideEl) return;
+                
+                // Soft red flash effect on the inactive side
+                sideEl.style.backgroundColor = 'rgba(239, 83, 80, 0.25)';
+                setTimeout(() => {
+                    sideEl.style.backgroundColor = '';
+                }, 350);
+                
+                // Spawn a bubble tip
+                let bubble = D.createElement('div');
+                bubble.style.position = 'absolute';
+                bubble.style.bottom = '100px';
+                bubble.style.left = '50%';
+                bubble.style.transform = 'translateX(-50%) translateY(0)';
+                bubble.style.background = '#fff3cd';
+                bubble.style.color = '#856404';
+                bubble.style.border = '2px solid #ffeeba';
+                bubble.style.borderRadius = '16px';
+                bubble.style.padding = '8px 14px';
+                bubble.style.fontSize = '14px';
+                bubble.style.fontWeight = 'bold';
+                bubble.style.zIndex = '100';
+                bubble.style.boxShadow = '0 6px 12px rgba(0,0,0,0.1)';
+                bubble.style.pointerEvents = 'none';
+                bubble.style.transition = 'all 0.7s cubic-bezier(0.19, 1, 0.22, 1)';
+                bubble.style.whiteSpace = 'nowrap';
+                bubble.textContent = text;
+                
+                sideEl.appendChild(bubble);
+                requestAnimationFrame(() => {
+                    bubble.style.transform = 'translateX(-50%) translateY(-35px)';
+                    bubble.style.opacity = '0';
+                });
+                
+                setTimeout(() => { bubble.remove(); }, 750);
+            }
+
             function drawLayout() {
                 var ws = get('game-workspace');
                 ws.innerHTML = `
+                    <style>
+                        .numwar-side-container {
+                            position: relative; transition: all 0.3s ease; border-radius: 24px;
+                            padding: 15px; border: 4px solid transparent;
+                        }
+                        .numwar-side-container.active-turn {
+                            background: rgba(255, 235, 59, 0.12) !important;
+                            border-color: #fbc02d !important;
+                            box-shadow: 0 0 20px rgba(251,192,45,0.2);
+                        }
+                        .numwar-side-container.inactive-turn {
+                            opacity: 0.5;
+                        }
+                        .swaying-tower {
+                            transform-origin: bottom center;
+                            animation: towerSway 2s ease-in-out infinite alternate;
+                        }
+                        @keyframes towerSway {
+                            0% { transform: rotate(calc(-1 * var(--sway-angle, 0deg))); }
+                            100% { transform: rotate(var(--sway-angle, 0deg)); }
+                        }
+                        .build-opt-card:hover {
+                            transform: scale(1.06);
+                            box-shadow: 0 6px 16px rgba(0,0,0,0.15) !important;
+                        }
+                    </style>
+
                     <div class="numwar-scoreboard" id="towertalk-score"></div>
                     <div class="numwar-layout">
-                        <!-- Aba Side (Renders on Right in RTL) -->
-                        <div class="numwar-side">
-                            <img class="numwar-avatar" src="images/aba_sunglasses.jpg" alt="אבא יאיר">
-                            <div class="numwar-name">אבא יאיר</div>
+                        
+                        <!-- Aba Side (Mom/Dad) - Right in RTL -->
+                        <div class="numwar-side numwar-side-container ${currentTurn === 'aba' ? 'active-turn' : 'inactive-turn'}" id="aba-side-box">
+                            <img class="numwar-avatar" src="images/aba_sunglasses.jpg" alt="אבא או אמא" style="border: 4px solid #4caf50;">
+                            <div class="numwar-name" style="color:#2e7d32;">אבא או אמא 👨‍👩‍👦</div>
+                            <div style="font-size:12px; color:#555; margin-bottom:8px; font-weight:bold;">
+                                ${currentTurn === 'aba' ? '🌟 התור שלך לשים! 🌟' : 'רגע, מחכים לרועי...'}
+                            </div>
                             <div class="numwar-cards-container" id="aba-blocks"></div>
                         </div>
 
-                        <!-- Arena (Center) -->
-                        <div class="numwar-arena">
-                            <div class="numwar-pendulum-wrap">
-                                <div class="numwar-pendulum-arm to-roy" id="numwar-pendulum">
-                                    <div class="numwar-pendulum-weight">⚖️</div>
-                                </div>
+                        <!-- Arena (Center Tower Platform) -->
+                        <div class="numwar-arena" style="position:relative;">
+                            <div class="numwar-arena-title" id="arena-status" style="font-size:clamp(16px, 3.5vw, 21px); font-weight:900; background:#e8f5e9; border:2px solid #81c784; border-radius:15px; padding:6px 12px; margin-bottom:15px; direction:rtl;">
+                                תור רועי לשים קובייה! ⏳
                             </div>
-                            <div class="numwar-arena-title" id="arena-status">תור רועי לשים קובייה! 🧱</div>
                             
-                            <div class="numwar-tower-container" id="tower-container">
-                                <div class="numwar-block-platform"></div>
+                            <div class="numwar-tower-container" id="tower-container" style="position:relative; width:100%; height:280px; background:rgba(255,255,255,0.4); border-radius:20px; border:2px dashed #b0bec5; overflow:hidden;">
+                                <div class="numwar-block-platform" style="position:absolute; bottom:0; left:50%; transform:translateX(-50%); width:180px; height:12px; background:#78909c; border-radius:4px 4px 0 0;"></div>
                             </div>
                         </div>
 
-                        <!-- Roy Side (Renders on Left in RTL) -->
-                        <div class="numwar-side">
-                            <img class="numwar-avatar" src="images/roy_sunglasses.jpg" alt="רועי">
-                            <div class="numwar-name">רועי</div>
+                        <!-- Roy Side - Left in RTL -->
+                        <div class="numwar-side numwar-side-container ${currentTurn === 'roy' ? 'active-turn' : 'inactive-turn'}" id="roy-side-box">
+                            <img class="numwar-avatar" src="images/roy_sunglasses.jpg" alt="רועי" style="border: 4px solid #2196f3;">
+                            <div class="numwar-name" style="color:#1565c0;">רועי 👦</div>
+                            <div style="font-size:12px; color:#555; margin-bottom:8px; font-weight:bold;">
+                                ${currentTurn === 'roy' ? '🌟 התור שלך לשים! 🌟' : 'רגע, מחכים לאבא...'}
+                            </div>
                             <div class="numwar-cards-container" id="roy-blocks"></div>
                         </div>
                     </div>
@@ -7634,6 +7707,7 @@
                         card.style.color = '#fff';
                         card.style.fontSize = 'clamp(14px, 2.5vw, 18px)';
                         card.style.textShadow = '0 1px 3px rgba(0,0,0,0.3)';
+                        card.style.cursor = 'pointer';
                         card.innerHTML = `
                             <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; width:100%; gap:4px; padding:4px;">
                                 <img src="${block.image}" style="width:clamp(40px, 8vh, 60px); height:clamp(30px, 6vh, 45px); object-fit:contain;" />
@@ -7645,12 +7719,18 @@
                             card.classList.add('disabled');
                             card.style.background = '#ccc';
                             card.style.borderColor = '#aaa';
-                        } else if (currentTurn === 'roy' && !isProcessing) {
+                            card.style.cursor = 'default';
+                        } else {
                             card.onclick = function() {
+                                if (currentTurn !== 'roy') {
+                                    playErrorSound();
+                                    showTurnWarning('roy', 'רגע, עכשיו תור אבא 😊');
+                                    playCoopAudio('coop/towertalk_err_aba.mp3', 'רגע, עכשיו תור אבא');
+                                    return;
+                                }
+                                if (isProcessing) return;
                                 placeBlock('roy', idx);
                             };
-                        } else {
-                            card.classList.add('disabled');
                         }
                         royContainer.appendChild(card);
                     });
@@ -7668,6 +7748,7 @@
                         card.style.color = '#fff';
                         card.style.fontSize = 'clamp(14px, 2.5vw, 18px)';
                         card.style.textShadow = '0 1px 3px rgba(0,0,0,0.3)';
+                        card.style.cursor = 'pointer';
                         card.innerHTML = `
                             <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; width:100%; gap:4px; padding:4px;">
                                 <img src="${block.image}" style="width:clamp(40px, 8vh, 60px); height:clamp(30px, 6vh, 45px); object-fit:contain;" />
@@ -7679,12 +7760,18 @@
                             card.classList.add('disabled');
                             card.style.background = '#ccc';
                             card.style.borderColor = '#aaa';
-                        } else if (currentTurn === 'aba' && !isProcessing) {
+                            card.style.cursor = 'default';
+                        } else {
                             card.onclick = function() {
+                                if (currentTurn !== 'aba') {
+                                    playErrorSound();
+                                    showTurnWarning('aba', 'רגע, עכשיו תור רועי 😊');
+                                    playCoopAudio('coop/towertalk_err_roy.mp3', 'רגע, עכשיו תור רועי');
+                                    return;
+                                }
+                                if (isProcessing) return;
                                 placeBlock('aba', idx);
                             };
-                        } else {
-                            card.classList.add('disabled');
                         }
                         abaContainer.appendChild(card);
                     });
@@ -7710,22 +7797,43 @@
                 var container = get('tower-container');
                 var el = D.createElement('div');
                 el.className = 'numwar-block-stacked';
+                el.id = `stacked-block-el-${stackedBlocks.length}`;
                 el.style.width = 'clamp(100px, 20vw, 160px)';
                 el.style.height = 'clamp(40px, 6.5vh, 52px)';
+                el.style.position = 'absolute';
+                el.style.left = '50%';
+                el.style.transform = 'translateX(-50%)';
                 
                 let stackedCount = stackedBlocks.length;
                 el.style.bottom = `calc(12px + ${stackedCount} * clamp(40px, 6.5vh, 52px))`;
                 el.style.background = 'transparent';
                 el.style.border = 'none';
                 el.style.boxShadow = 'none';
+                el.style.transition = 'all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
                 el.innerHTML = `<img src="${block.image}" style="width:100%; height:100%; object-fit:contain; animation: blockDrop 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;" />`;
                 
                 container.appendChild(el);
                 stackedBlocks.push(block);
 
+                // Add dynamic physical swaying based on tower height
+                container.classList.add('swaying-tower');
+                container.style.setProperty('--sway-angle', (stackedBlocks.length * 0.9) + 'deg');
+                container.style.animationDuration = (1.8 - stackedBlocks.length * 0.15) + 's';
+
                 updateScoreboard();
 
-                // Speak the block order name (per tower type)
+                // Check for Collapse trigger (on block 4, on first attempt only!)
+                if (stackedBlocks.length === 4 && !collapsedOnce) {
+                    // Say block text, then collapse!
+                    playCoopAudio('coop/towertalk_' + towertalkType + '_block' + block.id + '.mp3', block.text, () => {
+                        setTimeout(() => {
+                            triggerTowerCollapse();
+                        }, 500);
+                    });
+                    return;
+                }
+
+                // Normal progression
                 playCoopAudio('coop/towertalk_' + towertalkType + '_block' + block.id + '.mp3', block.text);
 
                 setTimeout(() => {
@@ -7742,17 +7850,28 @@
 
                         setTimeout(() => {
                             isProcessing = false;
-                            currentStep = 4; // match completion target
+                            currentStep = 4; // Target index
                             handleAnswer(true, null, null, null);
                         }, 2500);
                     } else {
                         // Switch turn
                         currentTurn = player === 'roy' ? 'aba' : 'roy';
-                        var pend = get('numwar-pendulum');
-                        if (pend) pend.className = 'numwar-pendulum-arm to-' + currentTurn;
-                        
-                        let nameStr = currentTurn === 'roy' ? 'רועי' : 'אבא יאיר';
+                        let nameStr = currentTurn === 'roy' ? 'רועי' : 'אבא או אמא';
                         get('arena-status').textContent = `תור ${nameStr} לשים קובייה! ⏳`;
+                        
+                        // Update active state visual
+                        let abaSide = get('aba-side-box');
+                        let roySide = get('roy-side-box');
+                        if (abaSide && roySide) {
+                            if (currentTurn === 'aba') {
+                                abaSide.className = 'numwar-side numwar-side-container active-turn';
+                                roySide.className = 'numwar-side numwar-side-container inactive-turn';
+                            } else {
+                                abaSide.className = 'numwar-side numwar-side-container inactive-turn';
+                                roySide.className = 'numwar-side numwar-side-container active-turn';
+                            }
+                        }
+
                         playCoopAudio('coop/towertalk_turn_' + currentTurn + '.mp3', `תור ${nameStr}`);
                         
                         isProcessing = false;
@@ -7761,32 +7880,96 @@
                 }, 1600);
             }
 
+            function triggerTowerCollapse() {
+                playErrorSound();
+                
+                // Shake the arena
+                let container = get('tower-container');
+                if (container) {
+                    container.classList.remove('swaying-tower');
+                    container.animate([
+                        { transform: 'translate(2px, 1px) rotate(0deg)' },
+                        { transform: 'translate(-2px, -3px) rotate(-2deg)' },
+                        { transform: 'translate(-5px, 0px) rotate(2deg)' },
+                        { transform: 'translate(0px, 3px) rotate(0deg)' },
+                        { transform: 'translate(2px, -2px) rotate(2deg)' },
+                        { transform: 'translate(0px, 0px) rotate(0deg)' }
+                    ], { duration: 400 });
+                }
+
+                // Crash animation on stacked blocks
+                stackedBlocks.forEach((_, sIdx) => {
+                    let bEl = get(`stacked-block-el-${sIdx}`);
+                    if (bEl) {
+                        let randX = rand(-120, 120);
+                        let randRot = rand(-95, 95);
+                        bEl.style.transform = `translate(${randX}px, 450px) rotate(${randRot}deg)`;
+                        bEl.style.opacity = '0';
+                    }
+                });
+
+                let statusEl = get('arena-status');
+                if (statusEl) {
+                    statusEl.textContent = 'בום! 💥 המגדל נפל!';
+                    statusEl.style.color = '#d32f2f';
+                }
+
+                playCoopAudio('coop/towertalk_fall.mp3', 'בום! לא נורא, בונים יחד מחדש!', () => {
+                    setTimeout(() => {
+                        // Reset blocks back to hands
+                        stackedBlocks = [];
+                        royPlayed = [false, false, false];
+                        abaPlayed = [false, false];
+                        collapsedOnce = true;
+                        currentTurn = 'roy';
+                        currentStep = 0;
+                        updateProgressUI();
+                        
+                        if (container) {
+                            container.innerHTML = `<div class="numwar-block-platform" style="position:absolute; bottom:0; left:50%; transform:translateX(-50%); width:180px; height:12px; background:#78909c; border-radius:4px 4px 0 0;"></div>`;
+                        }
+
+                        if (statusEl) {
+                            statusEl.textContent = 'בונים מחדש! תור רועי להתחיל... 🧱';
+                            statusEl.style.color = '';
+                        }
+
+                        let abaSide = get('aba-side-box');
+                        let roySide = get('roy-side-box');
+                        if (abaSide && roySide) {
+                            abaSide.className = 'numwar-side numwar-side-container inactive-turn';
+                            roySide.className = 'numwar-side numwar-side-container active-turn';
+                        }
+
+                        playCoopAudio('coop/towertalk_turn_roy.mp3', 'תור רועי לשים קובייה');
+
+                        isProcessing = false;
+                        renderHands();
+                        updateScoreboard();
+                    }, 800);
+                });
+            }
+
             // Draw Choice overlay
             get('game-workspace').innerHTML = `
                 <div style="display:flex; flex-direction:column; align-items:center; gap:20px; width:100%; max-width:600px; margin:40px auto; padding:25px; background:rgba(255,255,255,0.9); border-radius:24px; box-shadow:0 8px 32px rgba(0,0,0,0.15); border:3px solid #fff;">
                     <h2 style="font-size:clamp(22px, 4.5vw, 32px); font-weight:900; color:#333; text-align:center; margin:0; direction:rtl;">מה נרצה לבנות היום? 🧱</h2>
                     <div style="display:flex; flex-direction:row; gap:16px; justify-content:center; flex-wrap:wrap; width:100%;">
-                        <div class="build-opt-card" onclick="startTowerBuild('castle')" style="cursor:pointer; flex:1; min-width:130px; max-width:160px; padding:16px; border:4px solid #ffc107; border-radius:20px; background:#fff; text-align:center; box-shadow:0 4px 10px rgba(0,0,0,0.1); transition:transform 0.2s;">
+                        <div class="build-opt-card" onclick="startTowerBuild('castle')" style="cursor:pointer; flex:1; min-width:130px; max-width:160px; padding:16px; border:4px solid #ffc107; border-radius:20px; background:#fff; text-align:center; box-shadow:0 4px 10px rgba(0,0,0,0.1); transition:all 0.2s;">
                             <div style="font-size:clamp(40px, 8vw, 55px); margin-bottom:8px;">🏰</div>
                             <div style="font-size:clamp(16px, 3vw, 20px); font-weight:bold; color:#ff9800;">טירה</div>
                         </div>
-                        <div class="build-opt-card" onclick="startTowerBuild('building')" style="cursor:pointer; flex:1; min-width:130px; max-width:160px; padding:16px; border:4px solid #4caf50; border-radius:20px; background:#fff; text-align:center; box-shadow:0 4px 10px rgba(0,0,0,0.1); transition:transform 0.2s;">
+                        <div class="build-opt-card" onclick="startTowerBuild('building')" style="cursor:pointer; flex:1; min-width:130px; max-width:160px; padding:16px; border:4px solid #4caf50; border-radius:20px; background:#fff; text-align:center; box-shadow:0 4px 10px rgba(0,0,0,0.1); transition:all 0.2s;">
                             <div style="font-size:clamp(40px, 8vw, 55px); margin-bottom:8px;">🏢</div>
                             <div style="font-size:clamp(16px, 3vw, 20px); font-weight:bold; color:#388e3c;">בניינים</div>
                         </div>
-                        <div class="build-opt-card" onclick="startTowerBuild('spaceship')" style="cursor:pointer; flex:1; min-width:130px; max-width:160px; padding:16px; border:4px solid #2196f3; border-radius:20px; background:#fff; text-align:center; box-shadow:0 4px 10px rgba(0,0,0,0.1); transition:transform 0.2s;">
+                        <div class="build-opt-card" onclick="startTowerBuild('spaceship')" style="cursor:pointer; flex:1; min-width:130px; max-width:160px; padding:16px; border:4px solid #2196f3; border-radius:20px; background:#fff; text-align:center; box-shadow:0 4px 10px rgba(0,0,0,0.1); transition:all 0.2s;">
                             <div style="font-size:clamp(40px, 8vw, 55px); margin-bottom:8px;">🚀</div>
                             <div style="font-size:clamp(16px, 3vw, 20px); font-weight:bold; color:#1976d2;">חללית</div>
                         </div>
                     </div>
                 </div>
             `;
-
-            // Add hover transitions programmatically
-            D.querySelectorAll('.build-opt-card').forEach(el => {
-                el.onmouseover = () => { el.style.transform = 'scale(1.06)'; el.style.boxShadow = '0 6px 16px rgba(0,0,0,0.15)'; };
-                el.onmouseout = () => { el.style.transform = 'scale(1)'; el.style.boxShadow = '0 4px 10px rgba(0,0,0,0.1)'; };
-            });
 
             window.startTowerBuild = function(type) {
                 towertalkType = type;

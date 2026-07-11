@@ -404,6 +404,13 @@ CANDLE_AUDIO = {
     "candle/win.mp3": f"איזה יופי! הוא רגוע ושמח. {KOL} הַכָּבוֹד רוֹעִי!"
 }
 
+# Tower of Turns game upgrades - Hebrew voice commands
+TOWER_UPGRADES_AUDIO = {
+    "coop/towertalk_err_aba.mp3": "רגע, עכשיו תור אבא",
+    "coop/towertalk_err_roy.mp3": "רגע, עכשיו תור רועי",
+    "coop/towertalk_fall.mp3": "בום! לא נורא, בונים יחד מחדש!"
+}
+
 
 # First-letter game - English words (proper case, not ALL CAPS)
 FL_EN_WORDS = [
@@ -436,6 +443,8 @@ for f, t in FREEZE_AUDIO.items():
 for f, t in RESCUE_AUDIO.items():
     JOBS.append((os.path.join(AUDIO, f), t, "iw", False))
 for f, t in CANDLE_AUDIO.items():
+    JOBS.append((os.path.join(AUDIO, f), t, "iw", False))
+for f, t in TOWER_UPGRADES_AUDIO.items():
     JOBS.append((os.path.join(AUDIO, f), t, "iw", False))
 for w in FL_EN_WORDS:
     JOBS.append((os.path.join(AUDIO, "firstletter", "en", f"word-{w}.mp3"), w, "en", True))
