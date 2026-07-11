@@ -7157,21 +7157,21 @@
             isProcessing = false;
         }
 
-        function initWcKeyGame() { initKeyGame(); }
-        function initKeyGame() {
+        function initKeyGame() { initWcKeyGame(); }
+        function initWcKeyGame() {
             setAppBackground('emotion');
             clearKeyTimers();
-            loadKeyRound();
+            loadWcKeyRound();
         }
 
-        function loadKeyRound() {
+        function loadWcKeyRound() {
             isProcessing = false;
-            keyTriedAlone = false;
+            wcKeyTried = false;
 
             let helpers = [
-                { name: 'סבא 👴', icon: '👴', audio: 'winners/key/ask.mp3', label: 'סבא' },
-                { name: 'הגננת 👩‍🏫', icon: '👩‍🏫', audio: 'winners/key/ask.mp3', label: 'הגננת' },
-                { name: 'אבא 👨', icon: '👨', audio: 'winners/key/ask.mp3', label: 'אבא' }
+                { name: 'סבא', img: 'images/winners/key_grandpa.webp', audio: 'winners/key/ask.mp3', label: 'סבא' },
+                { name: 'הגננת', img: 'images/winners/key_teacher.webp', audio: 'winners/key/ask.mp3', label: 'הגננת' },
+                { name: 'אבא', img: 'images/winners/key_aba_help.webp', audio: 'winners/key/ask.mp3', label: 'אבא' }
             ];
             let helper = helpers[currentStep] || helpers[0];
 
@@ -7179,11 +7179,11 @@
             ws.innerHTML = `
                 <style>
                     .key-helper-character {
-                        font-size: 65px; cursor: pointer; transition: all 0.3s ease;
-                        position: relative;
+                        transition: left 0.8s ease, opacity 0.4s ease, filter 0.4s ease, transform 0.4s ease;
+                        cursor: pointer;
                     }
                     .key-helper-character:hover {
-                        transform: scale(1.08);
+                        transform: scale(1.05);
                     }
                     .key-ask-btn {
                         animation: keyPulseAsk 1.5s infinite alternate;
@@ -7192,25 +7192,42 @@
                         0% { box-shadow: 0 0 0 0 rgba(33,150,243,0.7); }
                         100% { box-shadow: 0 0 0 12px rgba(33,150,243,0); }
                     }
+                    @keyframes keySparkle {
+                        0% { transform: scale(0.9) rotate(0deg); opacity: 0.8; }
+                        100% { transform: scale(1.2) rotate(15deg); opacity: 1; }
+                    }
                 </style>
 
-                <div id="key-question" style="font-size:clamp(18px,4.5vw,26px); font-weight:900; color:#37474f; text-align:center; direction:rtl; margin-bottom:12px; cursor:pointer;">
+                <div id="key-question" style="font-size:clamp(18px,4.5vw,26px); font-weight:900; color:#37474f; text-align:center; direction:rtl; margin-bottom:6px; cursor:pointer;">
                     המפתח הגבוה: מחפשים את האוצר! 🔑 🔊
                 </div>
 
-                <div id="key-status" style="font-size:16px; font-weight:bold; color:#455a64; text-align:center; direction:rtl; margin-bottom:15px; min-height:24px;">
+                <div id="key-status" style="font-size:17px; font-weight:bold; color:#455a64; text-align:center; direction:rtl; margin-bottom:12px; min-height:24px; transition: color 0.3s ease;">
                     נסו להגיע למפתח התלוי למעלה! 🔑
                 </div>
 
-                <div style="position:relative; width:min(90vw, 420px); height:220px; background:#fff9c4; border:6px solid #fbc02d; border-radius:24px; box-shadow:0 8px 20px rgba(0,0,0,0.15); margin:0 auto 20px; overflow:hidden;">
-                    <div id="key-hanging" style="position:absolute; left:40px; top:20px; font-size:45px; transition: all 0.8s ease;">🔑</div>
-                    <div style="position:absolute; left:62px; top:0; width:3px; height:20px; background:#8d6e63;"></div>
-                    <div id="key-chest" style="position:absolute; right:30px; bottom:20px; font-size:55px;">🔒🧰</div>
-                    <div id="key-helper" class="key-helper-character" style="position:absolute; right:150px; bottom:20px; opacity:0.65; filter:grayscale(60%);" onclick="handleKeyHelperClick()">
-                        ${helper.icon}
-                    </div>
-                    <div id="key-roy" style="position:absolute; left:40px; bottom:20px; font-size:50px; cursor:pointer; transition: all 0.5s ease;" onclick="handleKeyRoyJump()">
-                        👦
+                <div style="position:relative; width:min(90vw, 420px); height:220px; background:#fff9c4; border:6px solid #fbc02d; border-radius:24px; box-shadow:0 8px 20px rgba(0,0,0,0.15); margin:0 auto 15px; overflow:hidden;">
+                    <!-- Hanging Line -->
+                    <div style="position:absolute; left:70px; top:0; width:4px; height:25px; background:linear-gradient(to bottom, #8d6e63, #5d4037); border-radius:2px; z-index:2;"></div>
+                    
+                    <!-- Hanging Key SVG -->
+                    <svg id="key-hanging" viewBox="0 0 24 24" style="position:absolute; left:52px; top:25px; width:40px; height:40px; transition: all 0.8s ease; filter: drop-shadow(0 4px 6px rgba(251,192,45,0.6)); z-index:3;">
+                        <path fill="#ffd54f" stroke="#ffb300" stroke-width="1.5" d="M7 2a4 4 0 0 0-4 4 4 4 0 0 0 3.25 3.92L6 18a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-2h2a1 1 0 0 0 1-1v-2H9.83A4 4 0 0 0 7 2zm0 2a2 2 0 1 1 0 4 2 2 0 0 1 0-4z"/>
+                    </svg>
+
+                    <!-- Chest Image -->
+                    <img id="key-chest" src="images/winners/key_chest.webp" style="position:absolute; left:300px; bottom:15px; width:90px; height:90px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15)); z-index:2;" />
+
+                    <!-- Helper Image -->
+                    <img id="key-helper" class="key-helper-character" src="${helper.img}" style="position:absolute; left:175px; bottom:15px; width:95px; height:110px; opacity:0.35; filter:grayscale(80%); z-index:2;" onclick="handleKeyHelperClick()" />
+
+                    <!-- Roy / Maya Image and Container -->
+                    <div id="key-roy" style="position:absolute; left:30px; bottom:15px; width:85px; height:95px; cursor:pointer; transition: transform 0.5s ease, bottom 0.5s ease; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; z-index:4;" onclick="handleKeyRoyJump()">
+                        <!-- Key Overlay on Roy -->
+                        <svg id="roy-key-overlay" viewBox="0 0 24 24" class="hidden" style="position:absolute; right:-10px; top:15px; width:35px; height:35px; filter: drop-shadow(0 3px 5px rgba(251,192,45,0.8)); z-index: 5;">
+                            <path fill="#ffd54f" stroke="#ffb300" stroke-width="1.5" d="M7 2a4 4 0 0 0-4 4 4 4 0 0 0 3.25 3.92L6 18a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-2h2a1 1 0 0 0 1-1v-2H9.83A4 4 0 0 0 7 2zm0 2a2 2 0 1 1 0 4 2 2 0 0 1 0-4z"/>
+                        </svg>
+                        <img id="key-roy-img" src="${userGender === 'girl' ? 'images/winners/avatar_maya.webp' : 'images/winners/avatar_roy.webp'}" style="width:100%; height:auto;" onerror="this.src='images/winners/key_roy_try.webp'" />
                     </div>
                 </div>
 
@@ -7230,83 +7247,89 @@
         }
 
         window.handleKeyRoyJump = function() {
-            if (isProcessing) return;
+            if (isProcessing || wcKeyTried) return;
             let roy = get('key-roy');
             if (!roy) return;
 
             isProcessing = true;
             playClickSound();
 
-            roy.animate([
-                { bottom: '20px' },
-                { bottom: '90px' },
-                { bottom: '20px' }
-            ], { duration: 600, ease: 'ease-out' });
+            roy.style.transition = 'transform 0.3s ease-out';
+            roy.style.transform = 'translateY(-75px)';
 
             setTimeout(() => {
-                keyTriedAlone = true;
-                playErrorSound();
+                roy.style.transition = 'transform 0.35s ease-in';
+                roy.style.transform = 'translateY(0px)';
                 
-                let statusEl = get('key-status');
-                if (statusEl) {
-                    statusEl.innerHTML = `המפתח גבוה מדי... 😅 לחצו על הדמות ליד כדי לבקש עזרה!`;
-                    statusEl.style.color = '#c62828';
-                }
+                setTimeout(() => {
+                    wcKeyTried = true;
+                    playErrorSound();
+                    
+                    let statusEl = get('key-status');
+                    if (statusEl) {
+                        statusEl.innerHTML = `המפתח גבוה מדי... 😅 לחצו על הדמות ליד כדי לבקש עזרה!`;
+                        statusEl.style.color = '#c62828';
+                    }
 
-                let helper = get('key-helper');
-                if (helper) {
-                    helper.style.opacity = '1';
-                    helper.style.filter = 'none';
-                    helper.style.transform = 'scale(1.1)';
-                    setTimeout(() => { helper.style.transform = 'none'; }, 300);
-                }
+                    let helperImg = get('key-helper');
+                    if (helperImg) {
+                        helperImg.style.opacity = '1';
+                        helperImg.style.filter = 'none';
+                        helperImg.style.transform = 'scale(1.1)';
+                        setTimeout(() => { helperImg.style.transform = 'none'; }, 300);
+                    }
 
-                isProcessing = false;
-            }, 600);
+                    let askArea = get('key-ask-area');
+                    if (askArea && askArea.innerHTML === '') {
+                        askArea.innerHTML = `
+                            <button class="key-ask-btn" style="width:100%; max-width:280px; height:60px; border-radius:20px; border:none; background:linear-gradient(135deg,#2196f3,#1565c0); color:#fff; font-size:22px; font-weight:900; box-shadow:0 6px 15px rgba(21,101,192,0.3); cursor:pointer;" onclick="triggerKeyAskRequest()">
+                                לבקש עזרה 🙏
+                            </button>
+                        `;
+                    }
+
+                    isProcessing = false;
+                }, 350);
+            }, 300);
         };
 
         window.handleKeyHelperClick = function() {
-            if (isProcessing || !keyTriedAlone) return;
-            
-            let askArea = get('key-ask-area');
-            if (askArea && askArea.innerHTML === '') {
-                playClickSound();
-                askArea.innerHTML = `
-                    <button class="key-ask-btn" style="width:100%; max-width:280px; height:60px; border-radius:20px; border:none; background:linear-gradient(135deg,#2196f3,#1565c0); color:#fff; font-size:22px; font-weight:900; box-shadow:0 6px 15px rgba(21,101,192,0.3); cursor:pointer;" onclick="triggerKeyAskRequest()">
-                        לבקש עזרה 🙏
-                    </button>
-                `;
-            }
+            if (isProcessing || !wcKeyTried) return;
+            triggerKeyAskRequest();
         };
 
         window.triggerKeyAskRequest = function() {
             if (isProcessing) return;
             isProcessing = true;
+            playClickSound();
+
+            let askArea = get('key-ask-area');
+            if (askArea) askArea.innerHTML = ''; // Hide button
 
             playCoopAudio('winners/key/ask.mp3', 'אתה יכול בבקשה לעזור לי?', () => {
                 let key = get('key-hanging');
                 let helper = get('key-helper');
-                let roy = get('key-roy');
                 
                 if (helper && key) {
-                    helper.style.transition = 'left 0.8s ease';
-                    helper.style.left = '40px'; 
+                    helper.style.left = '45px'; // Move under the key
                     
                     setTimeout(() => {
-                        key.style.top = '100px'; 
+                        key.style.top = '110px'; // Lower the key
                         
                         setTimeout(() => {
-                            helper.style.left = '100px';
-                            key.style.left = '60px'; 
+                            helper.style.left = '110px';
+                            key.style.left = '70px'; // Pass to Roy
                             
                             setTimeout(() => {
-                                helper.style.left = '180px';
-                                key.style.display = 'none'; 
-                                if (roy) roy.textContent = '👦🔑';
+                                helper.style.left = '175px'; // Helper returns
+                                key.style.display = 'none'; // Key is taken
+                                
+                                let keyOverlay = get('roy-key-overlay');
+                                if (keyOverlay) keyOverlay.classList.remove('hidden');
 
                                 let statusEl = get('key-status');
                                 if (statusEl) {
-                                    statusEl.textContent = 'המפתח אצלך! גרור את המפתח לפתוח את התיבה! 🔓';
+                                    statusEl.textContent = 'המפתח אצלך! גררו את רועי עם המפתח לפתוח את התיבה! 🔓';
                                     statusEl.style.color = '#2e7d32';
                                 }
 
@@ -7321,69 +7344,31 @@
 
         function bindKeyToChestDrag() {
             let roy = get('key-roy');
-            if (!roy) return;
+            let chest = get('key-chest');
+            if (!roy || !chest) return;
 
-            let startX = 0, startY = 0;
-            let currentX = 0, currentY = 0;
-            let isDragging = false;
+            wcMakeDraggable(roy, [{ el: chest, key: 'chest' }], (zoneKey) => {
+                if (zoneKey === 'chest') {
+                    isProcessing = true;
+                    playSuccessSound();
 
-            roy.addEventListener('pointerdown', function(e) {
-                if (isProcessing) return;
-                e.preventDefault();
-                roy.setPointerCapture(e.pointerId);
-                roy.style.zIndex = '1000';
-                startX = e.clientX;
-                startY = e.clientY;
-                currentX = 0;
-                currentY = 0;
-                isDragging = true;
-            });
+                    let keyOverlay = get('roy-key-overlay');
+                    if (keyOverlay) keyOverlay.classList.add('hidden');
 
-            roy.addEventListener('pointermove', function(e) {
-                if (!isDragging) return;
-                e.preventDefault();
-                currentX = e.clientX - startX;
-                currentY = e.clientY - startY;
-                roy.style.transform = `translate(${currentX}px, ${currentY}px)`;
-            });
+                    // Open chest animation and sparkles
+                    let sparkles = D.createElement('div');
+                    sparkles.innerHTML = '✨🔓💎🔓✨';
+                    sparkles.style.cssText = 'position:absolute; left:300px; bottom:80px; font-size:35px; animation: keySparkle 0.8s infinite alternate; z-index:10;';
+                    chest.parentElement.appendChild(sparkles);
 
-            roy.addEventListener('pointerup', function(e) {
-                if (!isDragging) return;
-                isDragging = false;
-                roy.releasePointerCapture(e.pointerId);
-
-                let chest = get('key-chest');
-                if (chest) {
-                    let cRect = chest.getBoundingClientRect();
-                    let pRect = roy.getBoundingClientRect();
-                    
-                    let cCenterX = cRect.left + cRect.width / 2;
-                    let cCenterY = cRect.top + cRect.height / 2;
-                    let pCenterX = pRect.left + pRect.width / 2;
-                    let pCenterY = pRect.top + pRect.height / 2;
-                    
-                    let dist = Math.hypot(cCenterX - pCenterX, cCenterY - pCenterY);
-
-                    if (dist < 60) {
-                        isProcessing = true;
-                        playSuccessSound();
-                        chest.textContent = '🔓💎';
-                        roy.textContent = '👦';
-
-                        playCoopAudio('winners/key/win.mp3', 'קיבלת את המפתח! כל הכבוד על הבקשה המנומסת!', () => {
-                            isProcessing = false;
-                            handleAnswer(true, null, loadKeyRound, null);
-                        });
-                        return;
-                    }
+                    playCoopAudio('winners/key/win.mp3', 'קיבלת את המפתח! כל הכבוד על הבקשה המנומסת!', () => {
+                        if (sparkles.parentNode) sparkles.parentNode.removeChild(sparkles);
+                        isProcessing = false;
+                        handleAnswer(true, null, loadWcKeyRound, null);
+                    });
                 }
-
-                roy.style.transition = 'transform 0.3s ease';
-                roy.style.transform = 'translate(0px,0px)';
-                setTimeout(() => { roy.style.zIndex = '10'; roy.style.transition = 'none'; }, 300);
             });
         }
-
 
         // ==========================================
         // 16. מה יותר גדול?
