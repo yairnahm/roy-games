@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-07-11-v78-winners-restored -->
+<!DOCTYPE html><!-- build: 2026-07-11-v79-museum-real-photos -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -6742,11 +6742,35 @@
         }
 
         const WC_MUSEUM_EXHIBITS = [
-            { img: 'images/winners/museum_dino.webp', audio: 'winners/museum/fact_dino.mp3', text: 'הטירנוזאור היה דינוזאור ענק וחזק שחי לפני מיליוני שנים!', label: 'דינוזאור 🦖' },
-            { img: 'images/winners/museum_rocket.webp', audio: 'winners/museum/fact_rocket.mp3', text: 'רקטות טסות לחלל במהירות עצומה, כמו טילים ענקיים!', label: 'רקטה 🚀' },
-            { img: 'images/winners/museum_car.webp', audio: 'winners/museum/fact_car.mp3', text: 'מכוניות מירוץ יכולות לנסוע ממש ממש מהר!', label: 'מכונית מירוץ 🏎️' },
-            { img: 'images/winners/museum_animals.webp', audio: 'winners/museum/fact_animals.mp3', text: 'אריה, פיל וג\'ירפה הם חברים שחיים יחד בסוואנה באפריקה!', label: 'חיות סוואנה 🦁' },
+            { img: 'images/winners/museum_dino.webp', audio: 'winners/museum/fact_dino.mp3', text: 'הטירנוזאור היה דינוזאור ענק וחזק שחי לפני מיליוני שנים!', label: 'דינוזאור 🦖', fx: 'dino' },
+            { img: 'images/winners/museum_rocket.webp', audio: 'winners/museum/fact_rocket.mp3', text: 'רקטות טסות לחלל במהירות עצומה, כמו טילים ענקיים!', label: 'רקטה 🚀', fx: 'rocket' },
+            { img: 'images/winners/museum_car.webp', audio: 'winners/museum/fact_car.mp3', text: 'מכוניות מירוץ יכולות לנסוע ממש ממש מהר!', label: 'מכונית מירוץ 🏎️', fx: 'car' },
+            { img: 'images/winners/museum_animals.webp', audio: 'winners/museum/fact_animals.mp3', text: 'אריה, פיל וג\'ירפה הם חברים שחיים יחד בסוואנה באפריקה!', label: 'חיות סוואנה 🦁', fx: 'animals' },
         ];
+        // Tiny synthesized "sound sketches" per exhibit, built on the existing playTone() engine -
+        // no external audio files, so each exhibit gets a distinct playful flourish instantly and offline.
+        function playMuseumFx(kind) {
+            if (kind === 'dino') {
+                // low double "stomp/roar" - two heavy low tones
+                playTone(85, 'sawtooth', 0.22, 0, 0.16);
+                playTone(65, 'sawtooth', 0.32, 0.2, 0.16);
+            } else if (kind === 'rocket') {
+                // rising launch whoosh - a quick ascending sweep of short tones
+                for (let i = 0; i < 10; i++) {
+                    playTone(220 + i * 70, 'sine', 0.09, i * 0.035, 0.08);
+                }
+            } else if (kind === 'car') {
+                // engine rev - quick low alternating buzzes
+                playTone(110, 'sawtooth', 0.09, 0, 0.12);
+                playTone(150, 'sawtooth', 0.09, 0.09, 0.12);
+                playTone(110, 'sawtooth', 0.16, 0.18, 0.12);
+            } else if (kind === 'animals') {
+                // bright three-note chime, like a cheerful little fanfare
+                playTone(392, 'sine', 0.16, 0, 0.1);
+                playTone(494, 'sine', 0.16, 0.13, 0.1);
+                playTone(587, 'sine', 0.26, 0.26, 0.1);
+            }
+        }
         function initWcMuseumGame() {
             setAppBackground('world');
             playCoopAudio('winners/museum/intro.mp3', 'ברוך הבא למוזיאון של רועי! לחץ על כל תערוכה כדי ללמוד עליה.');
@@ -6774,7 +6798,10 @@
                     </button>
                 </div>
             `;
-            get('wc-museum-fact-btn').onclick = () => playCoopAudio(ex.audio, ex.text);
+            get('wc-museum-fact-btn').onclick = () => {
+                playMuseumFx(ex.fx);
+                setTimeout(() => playCoopAudio(ex.audio, ex.text), 350);
+            };
             get('wc-museum-next-btn').onclick = () => {
                 if (isProcessing) return;
                 isProcessing = true;
