@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-07-11-v68-freeze-dance -->
+<!DOCTYPE html><!-- build: 2026-07-11-v69-rescue-game -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -1328,7 +1328,7 @@
         // Games that give a full star (⭐):
         const fullStarGames = ['sequence','memory','missing','diff','chrono',
             'patterns','shape','diffscene','diffvideo','firstletter',
-            'tools','vparts','habitat','origins','families','emotion','emparts','sounds','routine','feelwhen','assemble','store','freeze'];
+            'tools','vparts','habitat','origins','families','emotion','emparts','sounds','routine','feelwhen','assemble','store','freeze','rescue'];
         // Games that give a half star (two halves = 1 full):
         const halfStarGames = ['context','oddone','halfhalf','counting',
             'tracing','shadow','bigger','mgamish','fly','cop','faces',
@@ -1764,7 +1764,7 @@
             <div class="hub-card" onclick="openCategory('world','עולם סביבנו')"><div class="hub-icon">🌍</div><div class="hub-title">עולם סביבנו</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">7 משחקים</div></div>
             <div class="hub-card" onclick="openCategory('create','יצירה וחידות')"><div class="hub-icon">🎨</div><div class="hub-title">יצירה וחידות</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">5 משחקים</div></div>
             <div class="hub-card" onclick="openCategory('action','משחקי פעולה')"><div class="hub-icon">🎮</div><div class="hub-title">משחקי פעולה</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">2 משחקים</div></div>
-            <div class="hub-card" onclick="openCategory('success','סיפורי הצלחה')"><div class="hub-icon">🏪</div><div class="hub-title">סיפורי הצלחה</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">2 משחקים</div></div>
+            <div class="hub-card" onclick="openCategory('success','סיפורי הצלחה')"><div class="hub-icon">🏪</div><div class="hub-title">סיפורי הצלחה</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">3 משחקים</div></div>
         </div>
     </div>
 
@@ -1816,6 +1816,7 @@
             <div class="hub-card" data-cat="lang" onclick="openFirstLetterLangScreen()"><div class="hub-icon">🔡</div><div class="hub-title">באיזו אות מתחיל?</div></div>
             <div class="hub-card" data-cat="success" style="position:relative;" onclick="openDifficultyScreen('store', '🏪', 'החנות של רועי')"><span class="star-badge" data-game="store" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🏪</div><div class="hub-title">החנות של רועי</div></div>
             <div class="hub-card" data-cat="success" style="position:relative;" onclick="openDifficultyScreen('freeze', '🕺', 'ריקוד הפסלים')"><span class="star-badge" data-game="freeze" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🕺</div><div class="hub-title">ריקוד הפסלים</div></div>
+            <div class="hub-card" data-cat="success" style="position:relative;" onclick="openDifficultyScreen('rescue', '🐢', 'חילוץ החיות')"><span class="star-badge" data-game="rescue" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🐢</div><div class="hub-title">חילוץ החיות</div></div>
         </div>
     </div>
 
@@ -2261,7 +2262,7 @@
         
         function openDifficultyScreen(gameId, icon, title) {
             playClickSound(); hideAllScreens(); setAppBackground(gameId); currentGameMode = gameId;
-            if(gameId === 'emotion' || gameId === 'emparts' || gameId === 'sharing' || gameId === 'growth' || gameId === 'goodbad' || gameId === 'towertalk' || gameId === 'cooppuzzle' || gameId === 'tidyup' || gameId === 'whatneeds' || gameId === 'calm' || gameId === 'sounds' || gameId === 'feelwhen' || gameId === 'store' || gameId === 'freeze') {
+            if(gameId === 'emotion' || gameId === 'emparts' || gameId === 'sharing' || gameId === 'growth' || gameId === 'goodbad' || gameId === 'towertalk' || gameId === 'cooppuzzle' || gameId === 'tidyup' || gameId === 'whatneeds' || gameId === 'calm' || gameId === 'sounds' || gameId === 'feelwhen' || gameId === 'store' || gameId === 'freeze' || gameId === 'rescue') {
                 startGameEngine(1); // עוקף את מסך הרמות
                 return;
             }
@@ -2315,7 +2316,8 @@
                                (currentGameMode === 'assemble' ? 3 :
                                (currentGameMode === 'store' ? 3 :
                                (currentGameMode === 'freeze' ? 3 :
-                               ((currentGameMode === 'memory') ? (level === 1 ? 3 : (level === 2 ? 4 : 5)) : 4))))))))))));
+                               (currentGameMode === 'rescue' ? 3 :
+                               ((currentGameMode === 'memory') ? (level === 1 ? 3 : (level === 2 ? 4 : 5)) : 4)))))))))))));
 
 
             let pContainer = get('active-progress-container'); pContainer.innerHTML='';
@@ -2365,19 +2367,21 @@
                 else if(currentGameMode === 'assemble') initAssembleGame();
                 else if(currentGameMode === 'store') initStoreGame();
                 else if(currentGameMode === 'freeze') initFreezeGame();
+                else if(currentGameMode === 'rescue') initRescueGame();
             }, 50);
         }
 
         function quitActiveGame() {
             if (typeof clearCalmTimers === 'function') clearCalmTimers();
             if (typeof clearFreezeTimers === 'function') clearFreezeTimers();
+            if (typeof clearRescueTimers === 'function') clearRescueTimers();
             if (typeof diffvideoTimer1 !== 'undefined' && diffvideoTimer1) clearTimeout(diffvideoTimer1);
             if (typeof diffvideoTimer2 !== 'undefined' && diffvideoTimer2) clearTimeout(diffvideoTimer2);
             if (typeof diffvideoTimerInterval !== 'undefined' && diffvideoTimerInterval) clearInterval(diffvideoTimerInterval);
             playClickSound(); hideAllScreens();
             var agc = get('active-game-container');
             if (agc) agc.style.height = '';
-            if(currentGameMode === 'emotion' || currentGameMode === 'emparts' || currentGameMode === 'missing' || currentGameMode === 'mgamish' || currentGameMode === 'firstletter' || currentGameMode === 'sharing' || currentGameMode === 'growth' || currentGameMode === 'goodbad' || currentGameMode === 'numwar' || currentGameMode === 'towertalk' || currentGameMode === 'cooppuzzle' || currentGameMode === 'tidyup' || currentGameMode === 'patterns' || currentGameMode === 'origins' || currentGameMode === 'families' || currentGameMode === 'whatneeds' || currentGameMode === 'calm' || currentGameMode === 'sounds' || currentGameMode === 'feelwhen' || currentGameMode === 'assemble' || currentGameMode === 'store' || currentGameMode === 'freeze') { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); } else if(currentGameMode === 'faces') { show('faces-mode-screen'); } else { show('unified-diff-screen'); }
+            if(currentGameMode === 'emotion' || currentGameMode === 'emparts' || currentGameMode === 'missing' || currentGameMode === 'mgamish' || currentGameMode === 'firstletter' || currentGameMode === 'sharing' || currentGameMode === 'growth' || currentGameMode === 'goodbad' || currentGameMode === 'numwar' || currentGameMode === 'towertalk' || currentGameMode === 'cooppuzzle' || currentGameMode === 'tidyup' || currentGameMode === 'patterns' || currentGameMode === 'origins' || currentGameMode === 'families' || currentGameMode === 'whatneeds' || currentGameMode === 'calm' || currentGameMode === 'sounds' || currentGameMode === 'feelwhen' || currentGameMode === 'assemble' || currentGameMode === 'store' || currentGameMode === 'freeze' || currentGameMode === 'rescue') { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); } else if(currentGameMode === 'faces') { show('faces-mode-screen'); } else { show('unified-diff-screen'); }
         }
         function updateProgressUI() { for(let i=0;i<activeGameRounds;i++) { let d = get(`active-progress-container-dot-${i}`); if(d){ if(i < currentStep) d.classList.add('fill'); else d.classList.remove('fill'); } } }
 
@@ -4088,109 +4092,136 @@
         let freezeRemainingSeconds = 0; // Countdown display
         let freezeDanceDurationTimer = null; // Duration of dance phase
         let synthInterval = null; // Web Audio synth loop interval
-        // Using global audioCtx
+        let freezeTaps = 0; // Count taps in active dance phase
+        let freezeStarted = false; // Has the child clicked "Start"?
+        let nextNoteIndex = 0;
+        let scaleNotes = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25]; // C major scale
 
-        function startSynthBeat() {
-            if (synthInterval) clearInterval(synthInterval);
+        function playDanceSynth() {
+            if (!audioCtx) return;
             try {
-                if (!audioCtx) {
-                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                }
-                if (audioCtx.state === 'suspended') {
-                    audioCtx.resume();
-                }
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                let t = audioCtx.currentTime;
+                let osc = audioCtx.createOscillator();
+                let gain = audioCtx.createGain();
                 
-                let beatCount = 0;
-                synthInterval = setInterval(() => {
-                    if (freezeActive || !audioCtx) return;
-                    
-                    let t = audioCtx.currentTime;
-                    let osc = audioCtx.createOscillator();
-                    let gain = audioCtx.createGain();
-                    
-                    osc.connect(gain);
-                    gain.connect(audioCtx.destination);
-                    
-                    if (beatCount % 2 === 0) {
-                        osc.type = 'triangle';
-                        osc.frequency.setValueAtTime(120, t);
-                        osc.frequency.exponentialRampToValueAtTime(40, t + 0.15);
-                        gain.gain.setValueAtTime(0.15, t);
-                        gain.gain.exponentialRampToValueAtTime(0.01, t + 0.15);
-                        osc.start(t);
-                        osc.stop(t + 0.15);
-                    } else {
-                        osc.type = 'sine';
-                        let freqs = [329.63, 392.00, 440.00, 523.25];
-                        let f = freqs[Math.floor(Math.random() * freqs.length)];
-                        osc.frequency.setValueAtTime(f, t);
-                        gain.gain.setValueAtTime(0.06, t);
-                        gain.gain.exponentialRampToValueAtTime(0.005, t + 0.12);
-                        osc.start(t);
-                        osc.stop(t + 0.12);
-                    }
-                    beatCount++;
-                }, 250);
-            } catch (e) {
-                print("AudioContext synth not supported:", e)
-            }
-        }
-
-        function stopSynthBeat() {
-            if (synthInterval) {
-                clearInterval(synthInterval);
-                synthInterval = null;
-            }
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                osc.type = 'triangle';
+                let freq = scaleNotes[nextNoteIndex];
+                osc.frequency.setValueAtTime(freq, t);
+                osc.frequency.exponentialRampToValueAtTime(freq * 1.5, t + 0.08);
+                
+                let finalVol = 0.12 * (roySettings.muted ? 0.0 : roySettings.volume);
+                gain.gain.setValueAtTime(finalVol, t);
+                gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.18);
+                
+                osc.start(t);
+                osc.stop(t + 0.18);
+                
+                nextNoteIndex = (nextNoteIndex + 1) % scaleNotes.length;
+            } catch(e) {}
         }
 
         function clearFreezeTimers() {
-            stopSynthBeat();
-            if (freezeTimer) {
-                clearInterval(freezeTimer);
-                freezeTimer = null;
-            }
-            if (freezeTimeout) {
-                clearTimeout(freezeTimeout);
-                freezeTimeout = null;
-            }
-            if (freezeDanceDurationTimer) {
-                clearTimeout(freezeDanceDurationTimer);
-                freezeDanceDurationTimer = null;
-            }
+            if (freezeTimer) { clearInterval(freezeTimer); freezeTimer = null; }
+            if (freezeTimeout) { clearTimeout(freezeTimeout); freezeTimeout = null; }
+            if (freezeDanceDurationTimer) { clearTimeout(freezeDanceDurationTimer); freezeDanceDurationTimer = null; }
             freezeActive = false;
         }
 
         function initFreezeGame() {
             setAppBackground('create');
             clearFreezeTimers();
+            freezeStarted = false;
+            freezeTaps = 0;
             loadFreezeRound();
         }
 
         function loadFreezeRound() {
             clearFreezeTimers();
             isProcessing = false;
+            freezeActive = false;
+            freezeTaps = 0;
             
-            let durations = [2, 5, 8];
-            let currentDuration = durations[currentStep] || 5;
-
             let ws = get('game-workspace');
+            
+            // Build the stage layout
             ws.innerHTML = `
+                <style>
+                    .freeze-stage {
+                        position:relative; width:min(90vw, 440px); aspect-ratio:1.1/1; 
+                        background: linear-gradient(135deg, #fffde7, #fff59d); 
+                        border:8px solid #fbc02d; border-radius:30px; 
+                        box-shadow:0 12px 28px rgba(251,192,45,0.2); 
+                        margin:0 auto 20px; overflow:hidden; 
+                        display:flex; flex-direction:column; align-items:center; 
+                        justify-content:space-between; padding:20px; box-sizing:border-box;
+                        transition: background 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
+                    }
+                    .freeze-stage.frozen {
+                        background: linear-gradient(135deg, #e0f7fa, #80deea) !important;
+                        border-color: #00acc1 !important;
+                        box-shadow: 0 12px 28px rgba(0,172,193,0.3) !important;
+                    }
+                    .ice-overlay {
+                        position: absolute; top:0; left:0; width:100%; height:100%;
+                        background: rgba(128, 222, 234, 0.2);
+                        backdrop-filter: blur(1px);
+                        pointer-events: none;
+                        opacity: 0;
+                        transition: opacity 0.4s ease;
+                        display: flex; align-items: center; justify-content: center;
+                        font-size: 80px;
+                        z-index: 5;
+                    }
+                    .freeze-stage.frozen .ice-overlay {
+                        opacity: 1;
+                    }
+                    .pulse-green {
+                        animation: btnPulseGreen 1.5s infinite alternate;
+                    }
+                    @keyframes btnPulseGreen {
+                        0% { box-shadow: 0 0 0 0 rgba(76,175,80, 0.7); }
+                        100% { box-shadow: 0 0 0 15px rgba(76,175,80, 0); }
+                    }
+                    .shaking {
+                        animation: shakeImg 0.4s ease-in-out infinite alternate;
+                    }
+                    @keyframes shakeImg {
+                        0% { transform: translate(2px, 1px) rotate(0deg); }
+                        10% { transform: translate(-1px, -2px) rotate(-1deg); }
+                        20% { transform: translate(-3px, 0px) rotate(1deg); }
+                        30% { transform: translate(0px, 2px) rotate(0deg); }
+                        40% { transform: translate(1px, -1px) rotate(1deg); }
+                        55% { transform: translate(-1px, 2px) rotate(-1deg); }
+                        70% { transform: translate(-3px, 1px) rotate(0deg); }
+                        85% { transform: translate(2px, 1px) rotate(-1deg); }
+                        100% { transform: translate(1px, -2px) rotate(0deg); }
+                    }
+                </style>
+
                 <div id="freeze-question" style="font-size:clamp(18px,4.5vw,26px); font-weight:900; color:#37474f; text-align:center; direction:rtl; margin-bottom:15px; cursor:pointer; text-shadow:0 1px 2px rgba(255,255,255,0.8);">
                     שליטה עצמית: ריקוד הפסלים 🕺 🔊
                 </div>
 
-                <div class="freeze-stage" style="position:relative; width:min(90vw, 440px); aspect-ratio:1.2/1; background:radial-gradient(circle, #e0f7fa, #b2ebf2); border:8px solid #00acc1; border-radius:30px; box-shadow:0 12px 28px rgba(0,172,193,0.15); margin:0 auto 20px; overflow:hidden; display:flex; flex-direction:column; align-items:center; justify-content:space-between; padding:20px; box-sizing:border-box;">
-                    
-                    <div id="freeze-status" style="font-size:clamp(18px,4vw,24px); font-weight:bold; color:#006064; text-shadow:0 1px 1px #fff; direction:rtl; text-align:center; height:35px; line-height:35px;">
-                        לחץ על הכפתור הירוק כדי להרקיד! 🔊
+                <div id="freeze-stage-box" class="freeze-stage">
+                    <div class="ice-overlay">🧊</div>
+
+                    <!-- Timer countdown / Status bar -->
+                    <div id="freeze-status" style="font-size:clamp(18px,4vw,24px); font-weight:bold; color:#006064; text-shadow:0 1px 1px #fff; direction:rtl; text-align:center; height:35px; line-height:35px; transition: color 0.3s ease;">
+                        מוכן? לחץ על הכפתור למטה כדי להתחיל!
                     </div>
 
+                    <!-- Character container -->
                     <div id="freeze-character-box" style="position:relative; width:clamp(150px, 35vw, 190px); height:clamp(150px, 35vw, 190px); display:flex; align-items:center; justify-content:center; margin:10px 0;">
-                        <img id="freeze-character" src="images/freeze/teddy_frozen.png" style="width:100%; height:100%; object-fit:contain; transition: transform 0.15s ease, filter 0.3s ease;" />
+                        <img id="freeze-character" src="images/freeze/teddy_frozen.png" style="width:100%; height:100%; object-fit:contain; transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.5s ease;" />
                     </div>
 
-                    <button id="freeze-action-btn" style="width:100%; max-width:320px; height:clamp(55px, 12vw, 75px); border-radius:24px; border:none; background:linear-gradient(135deg, #4caf50, #2e7d32); color:#fff; font-size:clamp(22px, 5.5vw, 30px); font-weight:900; cursor:pointer; box-shadow:0 8px 20px rgba(46,125,50,0.3); transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); outline:none; direction:rtl;">
-                        תרקוד! 🕺✨
+                    <!-- Giant dancing trigger button -->
+                    <button id="freeze-action-btn" class="pulse-green" style="width:100%; max-width:320px; height:clamp(55px, 12vw, 75px); border-radius:24px; border:none; background:linear-gradient(135deg, #4caf50, #2e7d32); color:#fff; font-size:clamp(22px, 5.5vw, 30px); font-weight:900; cursor:pointer; box-shadow:0 8px 20px rgba(46,125,50,0.3); transition: all 0.3s ease; outline:none; direction:rtl;">
+                        התחל לרקוד! 🟢
                     </button>
                 </div>
             `;
@@ -4202,7 +4233,7 @@
                 };
             }
 
-            if (currentStep === 0) {
+            if (currentStep === 0 && !freezeStarted) {
                 playCoopAudio('freeze/intro.mp3', 'ריקוד הפסלים. לחץ על הכפתור כדי להרקיד את הדובי, אבל כשהמוזיקה נעצרת – עצור מיד ואל תלחץ!');
             }
 
@@ -4210,71 +4241,100 @@
             if (actionBtn) {
                 actionBtn.onpointerdown = (e) => {
                     e.preventDefault();
-                    handleFreezeClick();
+                    if (!freezeStarted) {
+                        // Start the game!
+                        freezeStarted = true;
+                        initAudio();
+                        if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+                        playClickSound();
+                        startDancePhase();
+                    } else {
+                        handleFreezeClick();
+                    }
                 };
             }
-
-            setFreezeState(true); 
-            freezeTimeout = setTimeout(() => {
-                startDancePhase();
-            }, 2500);
         }
 
         function setFreezeState(isFrozen) {
+            let stageBox = get('freeze-stage-box');
             let charEl = get('freeze-character');
             let statusEl = get('freeze-status');
             let actionBtn = get('freeze-action-btn');
             
             if (isFrozen) {
                 freezeActive = true;
-                stopSynthBeat();
+                if (stageBox) stageBox.classList.add('frozen');
                 
                 if (charEl) {
                     charEl.src = 'images/freeze/teddy_frozen.png';
                     charEl.style.transform = 'none';
-                    charEl.style.filter = 'grayscale(35%) contrast(90%)';
+                    charEl.style.filter = 'grayscale(100%) contrast(80%) brightness(95%)';
                 }
                 
                 if (statusEl) {
-                    statusEl.innerHTML = `פסלים! 🧊 להפסיק ללחוץ!`;
-                    statusEl.style.color = '#d32f2f';
+                    statusEl.innerHTML = `🧊 פסל! להפסיק ללחוץ! 🧊`;
+                    statusEl.style.color = '#c62828';
                 }
                 
                 if (actionBtn) {
+                    actionBtn.className = '';
                     actionBtn.style.background = 'linear-gradient(135deg, #f44336, #c62828)';
-                    actionBtn.style.boxShadow = '0 8px 20px rgba(198,40,40,0.3)';
-                    actionBtn.textContent = 'לעצור! 🛑';
+                    actionBtn.style.boxShadow = '0 8px 20px rgba(198,40,40,0.4)';
+                    actionBtn.textContent = 'לעצור! אל תלחץ! 🛑';
                 }
             } else {
                 freezeActive = false;
+                if (stageBox) stageBox.classList.remove('frozen');
+                
                 if (charEl) {
                     charEl.src = 'images/freeze/teddy_dancing.png';
                     charEl.style.filter = 'none';
                 }
                 
                 if (statusEl) {
-                    statusEl.innerHTML = `רוקדים! 🕺 לחץ מהר! ⚡`;
+                    statusEl.innerHTML = `🕺 רוקדים! ללחוץ מהר! ⚡`;
                     statusEl.style.color = '#2e7d32';
                 }
                 
                 if (actionBtn) {
+                    actionBtn.className = 'pulse-green';
                     actionBtn.style.background = 'linear-gradient(135deg, #4caf50, #2e7d32)';
                     actionBtn.style.boxShadow = '0 8px 20px rgba(46,125,50,0.3)';
-                    actionBtn.textContent = 'תרקוד! 🕺✨';
+                    actionBtn.textContent = 'ללחוץ מהר! ⚡🕺';
                 }
             }
         }
 
         function startDancePhase() {
             if (isProcessing) return;
+            freezeTaps = 0;
             setFreezeState(false);
-            startSynthBeat();
+        }
+
+        function spawnMusicParticle() {
+            let container = get('freeze-character-box');
+            if (!container) return;
             
-            let danceDuration = rand(4000, 6000);
+            let p = D.createElement('div');
+            p.style.position = 'absolute';
+            p.style.fontSize = '32px';
+            p.style.pointerEvents = 'none';
+            p.style.left = (35 + Math.random() * 30) + '%';
+            p.style.top = '50%';
+            p.style.opacity = '1';
+            p.style.zIndex = '10';
+            p.style.transition = 'all 0.8s cubic-bezier(0.19, 1, 0.22, 1)';
             
-            freezeDanceDurationTimer = setTimeout(() => {
-                triggerFreezeState();
-            }, danceDuration);
+            let symbols = ['🎵', '🎶', '✨', '⭐', '🎈'];
+            p.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+            container.appendChild(p);
+            
+            requestAnimationFrame(() => {
+                p.style.transform = `translateY(-90px) scale(1.4) rotate(${rand(-40, 40)}deg)`;
+                p.style.opacity = '0';
+            });
+            
+            setTimeout(() => { p.remove(); }, 850);
         }
 
         function triggerFreezeState() {
@@ -4313,48 +4373,57 @@
             let actionBtn = get('freeze-action-btn');
 
             if (!freezeActive) {
+                // Dance phase: Clicking is good and makes character dance
+                freezeTaps++;
+                playDanceSynth();
+                spawnMusicParticle();
+                
+                //snappy character pop animation
                 if (charEl) {
-                    let randRot = rand(-15, 15);
-                    let randScale = 1.1 + Math.random() * 0.1;
-                    charEl.style.transform = `scale(${randScale}) rotate(${randRot}deg)`;
-                    setTimeout(() => {
-                        charEl.style.transform = 'scale(1) rotate(0deg)';
-                    }, 120);
+                    let randRot = rand(-12, 12);
+                    charEl.style.transform = `scale(1.25) translateY(-18px) rotate(${randRot}deg)`;
+                    
+                    if (charEl.timeout) clearTimeout(charEl.timeout);
+                    charEl.timeout = setTimeout(() => {
+                        charEl.style.transform = 'scale(1) translateY(0) rotate(0deg)';
+                    }, 140);
                 }
                 
-                if (audioCtx) {
-                    try {
-                        let t = audioCtx.currentTime;
-                        let osc = audioCtx.createOscillator();
-                        let gain = audioCtx.createGain();
-                        osc.connect(gain);
-                        gain.connect(audioCtx.destination);
-                        osc.frequency.setValueAtTime(523.25, t);
-                        gain.gain.setValueAtTime(0.08, t);
-                        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.1);
-                        osc.start(t);
-                        osc.stop(t + 0.1);
-                    } catch(e){}
-                }
-
+                // Tap bounce effect on button
                 if (actionBtn) {
                     actionBtn.animate([
                         { transform: 'scale(0.95)' },
                         { transform: 'scale(1)' }
                     ], { duration: 100 });
                 }
+
+                // Transition to freeze after exactly 10 taps to build motor impulse
+                if (freezeTaps >= 10) {
+                    triggerFreezeState();
+                }
             } else {
+                // Freeze phase: Clicking is bad (impulse control failure!)
                 clearFreezeTimers();
                 playErrorSound();
                 
                 if (charEl) {
                     charEl.animate([
-                        { transform: 'translateX(-10px)' },
-                        { transform: 'translateX(10px)' },
-                        { transform: 'translateX(-5px)' },
-                        { transform: 'translateX(5px)' },
+                        { transform: 'translateX(-12px)' },
+                        { transform: 'translateX(12px)' },
+                        { transform: 'translateX(-8px)' },
+                        { transform: 'translateX(8px)' },
                         { transform: 'translateX(0)' }
                     ], { duration: 300 });
+                }
+
+                let stageBox = get('freeze-stage-box');
+                if (stageBox) {
+                    stageBox.animate([
+                        { transform: 'translate(0px, 0px) rotate(0deg)' },
+                        { transform: 'translate(-2px, -3px) rotate(-1deg)' },
+                        { transform: 'translate(3px, 2px) rotate(1deg)' },
+                        { transform: 'translate(0px, 0px) rotate(0deg)' }
+                    ], { duration: 250 });
                 }
 
                 isProcessing = true;
@@ -4385,7 +4454,7 @@
 
             let charEl = get('freeze-character');
             if (charEl) {
-                charEl.style.transform = 'scale(1.2)';
+                charEl.style.transform = 'scale(1.3) rotate(360deg)';
                 charEl.style.filter = 'none';
             }
 
@@ -4395,6 +4464,396 @@
                 handleAnswer(true, null, loadFreezeRound, null);
             });
         }
+
+
+        // ==========================================
+        // חילוץ החיות (Animal Rescue)
+        // ==========================================
+        let activeTapeId = null;
+        let lastClearedCheckpoint = -1;
+        let lastClearTime = 0;
+        let clearedTapesCount = 0;
+        let totalTapesInRound = 0;
+        let tapeData = []; // Array of tape objects for the current round
+        
+        function clearRescueTimers() {
+            isProcessing = false;
+            activeTapeId = null;
+            clearedTapesCount = 0;
+        }
+
+        function initRescueGame() {
+            setAppBackground('world');
+            clearRescueTimers();
+            loadRescueRound();
+        }
+
+        function loadRescueRound() {
+            clearRescueTimers();
+            
+            // Define animal rounds
+            let animals = [
+                { emoji: '🐢', name: 'צב יבשה איטי', desc: 'צב קטן', tapes: 4 },
+                { emoji: '🐰', name: 'ארנבון מהיר', desc: 'ארנב חמוד', tapes: 5 },
+                { emoji: '🐱', name: 'חתלתול שובב', desc: 'חתולון מתוק', tapes: 6 }
+            ];
+            let roundItem = animals[currentStep] || animals[0];
+            totalTapesInRound = roundItem.tapes;
+            clearedTapesCount = 0;
+
+            // Generate tape coordinate configurations relative to the 300x300 container
+            // We use simple structures so we can render checkpoint overlays
+            let possibleTapes = [
+                { id: 0, left: 10, top: 20, width: 80, height: 38, type: 'H', desc: 'אופקי עליון' },
+                { id: 1, left: 10, top: 75, width: 80, height: 38, type: 'H', desc: 'אופקי תחתון' },
+                { id: 2, left: 20, top: 10, width: 38, height: 80, type: 'V', desc: 'אנכי שמאלי' },
+                { id: 3, left: 70, top: 10, width: 38, height: 80, type: 'V', desc: 'אנכי ימני' },
+                { id: 4, left: 15, top: 48, width: 70, height: 38, type: 'H', desc: 'אופקי מרכזי' },
+                { id: 5, left: 45, top: 10, width: 38, height: 80, type: 'V', desc: 'אנכי מרכזי' }
+            ];
+            
+            // Select first N tapes depending on round difficulty
+            tapeData = possibleTapes.slice(0, totalTapesInRound).map(t => {
+                return {
+                    ...t,
+                    cleared: false,
+                    clearedPoints: [] // Tracks indices of cleared checkpoints [0..4]
+                };
+            });
+
+            let ws = get('game-workspace');
+            ws.innerHTML = `
+                <style>
+                    .rescue-container {
+                        position: relative; width: min(90vw, 440px); aspect-ratio: 1.1/1;
+                        background: radial-gradient(circle, #e8f5e9, #c8e6c9);
+                        border: 8px solid #4caf50; border-radius: 30px;
+                        box-shadow: 0 12px 28px rgba(76,175,80,0.15);
+                        margin: 0 auto 20px; overflow: hidden;
+                        display: flex; flex-direction: column; align-items: center;
+                        justify-content: space-between; padding: 15px; box-sizing: border-box;
+                        user-select: none; touch-action: none;
+                    }
+                    .animal-box {
+                        position: relative; width: 280px; height: 280px;
+                        background: #fff; border-radius: 20px;
+                        box-shadow: inset 0 4px 8px rgba(0,0,0,0.05), 0 4px 10px rgba(0,0,0,0.06);
+                        display: flex; align-items: center; justify-content: center;
+                        overflow: hidden; margin: 10px 0;
+                    }
+                    .tape-strip {
+                        position: absolute; opacity: 0.9;
+                        border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+                        cursor: pointer; display: flex; align-items: center; justify-content: center;
+                        box-sizing: border-box;
+                        transition: transform 0.2s ease, opacity 0.3s ease;
+                    }
+                    /* Masking tape texture look */
+                    .tape-strip-h {
+                        background: repeating-linear-gradient(45deg, #fff2cc, #fff2cc 10px, #ffe599 10px, #ffe599 20px);
+                        border: 3px dashed #d6b656;
+                    }
+                    .tape-strip-v {
+                        background: repeating-linear-gradient(135deg, #e6f4ea, #e6f4ea 10px, #d1e7dd 10px, #d1e7dd 20px);
+                        border: 3px dashed #198754;
+                    }
+                    .start-dot {
+                        position: absolute; width: 28px; height: 28px;
+                        border-radius: 50%; background: #4caf50; border: 3px solid #fff;
+                        box-shadow: 0 2px 4px rgba(0,0,0,0.3); display: flex; align-items: center;
+                        justify-content: center; color: #fff; font-size: 14px; font-weight: bold;
+                        z-index: 12;
+                    }
+                    .end-flag {
+                        position: absolute; width: 28px; height: 28px;
+                        display: flex; align-items: center; justify-content: center;
+                        font-size: 20px; z-index: 12;
+                    }
+                    .checkpoint-zone {
+                        position: absolute; width: 36px; height: 36px;
+                        border-radius: 50%;
+                        /* border: 1px dotted red; /* Dev assist: keep transparent in prod */
+                        z-index: 11;
+                    }
+                    .shaking-strip {
+                        animation: shakeTape 0.3s ease-out;
+                    }
+                    @keyframes shakeTape {
+                        0% { transform: scale(1) translate(0, 0); filter: brightness(1.2) sepia(1) saturate(5); }
+                        20% { transform: scale(1.05) translate(-6px, 2px); }
+                        40% { transform: scale(1.05) translate(6px, -2px); }
+                        60% { transform: scale(1.02) translate(-4px, -1px); }
+                        80% { transform: scale(1.02) translate(4px, 1px); }
+                        100% { transform: scale(1) translate(0, 0); }
+                    }
+                </style>
+
+                <div id="rescue-question" style="font-size:clamp(18px,4.5vw,26px); font-weight:900; color:#2e7d32; text-align:center; direction:rtl; margin-bottom:12px; cursor:pointer; text-shadow:0 1px 2px rgba(255,255,255,0.8);">
+                    חילוץ החיות: גרור סרט דבק מ-🟢 אל 🏁 לאט ובסבלנות! 🐢 🔊
+                </div>
+
+                <div class="rescue-container">
+                    <div id="rescue-status" style="font-size:clamp(16px,3.8vw,21px); font-weight:bold; color:#1b5e20; direction:rtl; text-align:center; height:30px; line-height:30px;">
+                        עזור לחלץ את ה${roundItem.desc}! הסר את סרטי הדבק 🐌
+                    </div>
+
+                    <div class="animal-box" id="rescue-animal-box">
+                        <div id="rescue-animal" style="font-size: 140px; user-select: none; pointer-events: none; transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+                            ${roundItem.emoji}
+                        </div>
+
+                        <!-- Render tape strips -->
+                        ${tapeData.map((t, idx) => {
+                            let isH = t.type === 'H';
+                            let styleStr = '';
+                            if (isH) {
+                                styleStr = `left: ${t.left}%; top: ${t.top}%; width: ${t.width}%; height: ${t.height}px;`;
+                            } else {
+                                styleStr = `left: ${t.left}%; top: ${t.top}%; width: ${t.width}px; height: ${t.height}%;`;
+                            }
+                            
+                            // Start circle and end flag coordinates
+                            let startStyle = isH ? 'left: -12px; top: 50%; transform: translateY(-50%);' : 'top: -12px; left: 50%; transform: translateX(-50%);';
+                            let endStyle = isH ? 'right: -12px; top: 50%; transform: translateY(-50%);' : 'bottom: -12px; left: 50%; transform: translateX(-50%);';
+                            
+                            return `
+                                <div id="tape-strip-${idx}" class="tape-strip ${isH ? 'tape-strip-h' : 'tape-strip-v'}" style="${styleStr}" data-index="${idx}">
+                                    <div class="start-dot" style="${startStyle}">🟢</div>
+                                    <div class="end-flag" style="${endStyle}">🏁</div>
+                                    
+                                    <!-- Render 5 checkpoint zones along length -->
+                                    ${[0,1,2,3,4].map(cpIdx => {
+                                        let cpStyle = '';
+                                        let offset = 12 + cpIdx * 19; // Percent offset from start
+                                        if (isH) {
+                                            cpStyle = `left: ${offset}%; top: 50%; transform: translate(-50%, -50%);`;
+                                        } else {
+                                            cpStyle = `top: ${offset}%; left: 50%; transform: translate(-50%, -50%);`;
+                                        }
+                                        return `<div class="checkpoint-zone" id="tape-${idx}-cp-${cpIdx}" style="${cpStyle}" data-cp-index="${cpIdx}"></div>`;
+                                    }).join('')}
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+
+                    <div style="font-size:clamp(12px, 3vw, 15px); color:#558b2f; direction:rtl; text-align:center; font-weight:bold;">
+                        שים לב: גרירה מהירה מדי תקעיר את הסרט!
+                    </div>
+                </div>
+            `;
+
+            let qEl = get('rescue-question');
+            if (qEl) {
+                qEl.onclick = () => {
+                    playCoopAudio('rescue/intro.mp3', 'חילוץ החיות. החיות לכודות מתחת לסרטי הדבק. גרור כל סרט לאט ובסבלנות כדי להסיר אותו. אם תגרור מהר מדי – הסרט ייקרע!');
+                };
+            }
+
+            if (currentStep === 0) {
+                playCoopAudio('rescue/intro.mp3', 'חילוץ החיות. החיות לכודות מתחת לסרטי הדבק. גרור כל סרט לאט ובסבלנות כדי להסיר אותו. אם תגרור מהר מדי – הסרט ייקרע!');
+            }
+
+            // Bind Touch/Pointer drag events
+            let container = document.querySelector('.rescue-container');
+            if (container) {
+                container.addEventListener('pointerdown', handleRescuePointerDown);
+                container.addEventListener('pointermove', handleRescuePointerMove);
+                container.addEventListener('pointerup', handleRescuePointerUp);
+                container.addEventListener('pointercancel', handleRescuePointerUp);
+            }
+        }
+
+        function handleRescuePointerDown(e) {
+            if (isProcessing) return;
+            
+            // Check if starting a peel from the green start button
+            let startBtn = e.target.closest('.start-dot');
+            if (!startBtn) return;
+            
+            let stripEl = startBtn.closest('.tape-strip');
+            if (!stripEl) return;
+            
+            let tapeIdx = parseInt(stripEl.getAttribute('data-index'));
+            let t = tapeData[tapeIdx];
+            if (t.cleared) return;
+            
+            // Activate dragging
+            activeTapeId = tapeIdx;
+            lastClearedCheckpoint = -1;
+            lastClearTime = Date.now();
+            
+            // Highlight active tape
+            stripEl.style.transform = 'scale(1.03)';
+            stripEl.style.opacity = '1';
+        }
+
+        function handleRescuePointerMove(e) {
+            if (activeTapeId === null || isProcessing) return;
+            
+            let t = tapeData[activeTapeId];
+            let stripEl = get(`tape-strip-${activeTapeId}`);
+            
+            // Find which checkpoint element is currently under the pointer
+            let hoverEl = document.elementFromPoint(e.clientX, e.clientY);
+            if (!hoverEl) return;
+            
+            let cpZone = hoverEl.closest('.checkpoint-zone');
+            if (!cpZone) return;
+            
+            // Verify this checkpoint belongs to the currently active tape
+            let cpStrip = cpZone.closest('.tape-strip');
+            if (!cpStrip || parseInt(cpStrip.getAttribute('data-index')) !== activeTapeId) return;
+            
+            let cpIdx = parseInt(cpZone.getAttribute('data-cp-index'));
+            
+            // We must clear checkpoints in order! (0, then 1, then 2...)
+            if (cpIdx === lastClearedCheckpoint + 1) {
+                let now = Date.now();
+                let elapsed = now - lastClearTime;
+                
+                // If they moved too fast (less than 160ms between checkpoints)
+                if (lastClearedCheckpoint !== -1 && elapsed < 160) {
+                    // SNAP THE TAPE!
+                    triggerTapeSnap(activeTapeId);
+                    return;
+                }
+                
+                // Clear checkpoint successfully
+                lastClearedCheckpoint = cpIdx;
+                lastClearTime = now;
+                
+                // Play feedback tick
+                if (audioCtx) {
+                    try {
+                        let acTime = audioCtx.currentTime;
+                        let osc = audioCtx.createOscillator();
+                        let gain = audioCtx.createGain();
+                        osc.connect(gain); gain.connect(audioCtx.destination);
+                        osc.frequency.setValueAtTime(400 + (cpIdx * 60), acTime);
+                        gain.gain.setValueAtTime(0.04, acTime);
+                        gain.gain.exponentialRampToValueAtTime(0.0001, acTime + 0.08);
+                        osc.start(acTime); osc.stop(acTime + 0.08);
+                    } catch(err){}
+                }
+
+                // Peeling visual: inset the clip-path
+                let percentage = (cpIdx + 1) * 20;
+                if (t.type === 'H') {
+                    stripEl.style.clipPath = `inset(0 0 0 ${percentage}%)`;
+                } else {
+                    stripEl.style.clipPath = `inset(${percentage}% 0 0 0)`;
+                }
+
+                // If cleared checkpoint 4, the entire tape is peeled!
+                if (cpIdx === 4) {
+                    t.cleared = true;
+                    activeTapeId = null;
+                    
+                    // Cute pop sound
+                    playSuccessSound();
+                    
+                    // Fade out strip completely
+                    stripEl.style.opacity = '0';
+                    setTimeout(() => {
+                        stripEl.style.display = 'none';
+                    }, 300);
+                    
+                    clearedTapesCount++;
+                    
+                    let statusEl = get('rescue-status');
+                    if (statusEl) {
+                        statusEl.textContent = `נפלא! נשארו עוד ${totalTapesInRound - clearedTapesCount} סרטים! 🐌`;
+                    }
+                    
+                    // Check if all tapes are removed
+                    if (clearedTapesCount >= totalTapesInRound) {
+                        handleRescueSuccess();
+                    }
+                }
+            }
+        }
+
+        function triggerTapeSnap(tapeIdx) {
+            activeTapeId = null;
+            playErrorSound();
+            
+            let stripEl = get(`tape-strip-${tapeIdx}`);
+            let t = tapeData[tapeIdx];
+            
+            if (stripEl) {
+                // Apply shake/error animation
+                stripEl.classList.add('shaking-strip');
+                
+                // Reset visual clip-path to make tape full again
+                setTimeout(() => {
+                    stripEl.style.clipPath = 'none';
+                    stripEl.style.transform = 'none';
+                    stripEl.style.opacity = '0.9';
+                    stripEl.classList.remove('shaking-strip');
+                }, 350);
+            }
+            
+            isProcessing = true;
+            let statusEl = get('rescue-status');
+            if (statusEl) {
+                statusEl.textContent = `אופס! הסרט נקרע! גרור לאט ובסבלנות... 🐌`;
+                statusEl.style.color = '#c62828';
+            }
+
+            // Play gentle voice tip
+            playCoopAudio('rescue/slow_down.mp3', 'לאט לאט, בסבלנות', () => {
+                isProcessing = false;
+                if (statusEl) {
+                    statusEl.textContent = `עזור לחלץ את החיה! גרור סרטים לאט 🐌`;
+                    statusEl.style.color = '#1b5e20';
+                }
+            });
+        }
+
+        function handleRescuePointerUp(e) {
+            if (activeTapeId === null) return;
+            
+            let stripEl = get(`tape-strip-${activeTapeId}`);
+            if (stripEl) {
+                stripEl.style.transform = 'none';
+            }
+            activeTapeId = null;
+        }
+
+        function handleRescueSuccess() {
+            clearRescueTimers();
+            isProcessing = true;
+            playSuccessSound();
+
+            let statusEl = get('rescue-status');
+            if (statusEl) {
+                statusEl.textContent = `הצלחת! החיה חולצה בשלום! 🎉`;
+                statusEl.style.color = '#2e7d32';
+            }
+
+            let animalEl = get('rescue-animal');
+            if (animalEl) {
+                animalEl.style.transform = 'scale(1.4) rotate(360deg)';
+            }
+
+            // Spin animation loop
+            let boxEl = get('rescue-animal-box');
+            if (boxEl) {
+                boxEl.style.background = 'radial-gradient(circle, #e8f5e9, #a5d6a7)';
+                boxEl.animate([
+                    { transform: 'scale(1)' },
+                    { transform: 'scale(1.08)' },
+                    { transform: 'scale(1)' }
+                ], { duration: 800, iterations: Infinity });
+            }
+
+            playCoopAudio('rescue/win.mp3', 'איזו התמדה נפלאה! כל הכבוד רועי, חילצת את החיה!', () => {
+                isProcessing = false;
+                handleAnswer(true, null, loadRescueRound, null);
+            });
+        }
+
 
         // ==========================================
         // 16. מה יותר גדול?

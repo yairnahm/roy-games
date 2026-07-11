@@ -388,6 +388,13 @@ FREEZE_AUDIO = {
     "freeze/win.mp3": f"איזה איפוק! {KOL} הַכָּבוֹד רוֹעִי!"
 }
 
+# Animal Rescue game - Hebrew voice commands
+RESCUE_AUDIO = {
+    "rescue/intro.mp3": "חילוץ החיות. החיות לכודות מתחת לסרטי הדבק. גרור כל סרט לאט ובסבלנות כדי להסיר אותו. אם תגרור מהר מדי – הסרט ייקרע!",
+    "rescue/slow_down.mp3": "לאט לאט, בסבלנות",
+    "rescue/win.mp3": f"איזו התמדה נפלאה! {KOL} הַכָּבוֹד רוֹעִי, חִלַּצְתָּ אֶת הַחַיָּה!"
+}
+
 
 # First-letter game - English words (proper case, not ALL CAPS)
 FL_EN_WORDS = [
@@ -416,6 +423,8 @@ for f, t in TOYS_AUDIO.items():
 for f, t in STORE_AUDIO.items():
     JOBS.append((os.path.join(AUDIO, f), t, "iw", False))
 for f, t in FREEZE_AUDIO.items():
+    JOBS.append((os.path.join(AUDIO, f), t, "iw", False))
+for f, t in RESCUE_AUDIO.items():
     JOBS.append((os.path.join(AUDIO, f), t, "iw", False))
 for w in FL_EN_WORDS:
     JOBS.append((os.path.join(AUDIO, "firstletter", "en", f"word-{w}.mp3"), w, "en", True))
