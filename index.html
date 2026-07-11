@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-07-11-v66-store-clarity-fix -->
+<!DOCTYPE html><!-- build: 2026-07-11-v67-roys-shopkeeper-image -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -3779,17 +3779,16 @@
             ws.innerHTML = `
                 <div id="store-question" style="font-size:clamp(18px,4.5vw,26px); font-weight:900; color:#37474f; text-align:center; direction:rtl; margin-bottom:15px; cursor:pointer; text-shadow:0 1px 2px rgba(255,255,255,0.8);"></div>
                 
-                <!-- Cabinet Container -->
-                <div class="store-cabinet" style="position:relative; width:min(90vw, 420px); aspect-ratio:1.2/1; background:#8d6e63; border:8px solid #5d4037; border-radius:24px; box-shadow:0 12px 28px rgba(0,0,0,0.2), inset 0 4px 10px rgba(0,0,0,0.1); margin:0 auto 20px; overflow:hidden; display:flex; flex-direction:column; justify-content:space-around; padding:15px 10px;">
-                    <!-- Placed Items Shelf (Drop Target) -->
-                    <div id="store-shelf" class="store-shelf-zone" style="position:relative; width:100%; height:45%; background:#a1887f; border-bottom:10px solid #4e342e; border-radius:8px; display:flex; align-items:flex-end; justify-content:center; gap:12px; padding-bottom:8px; box-sizing:border-box; transition: background 0.3s ease;">
-                        <div style="position:absolute; top:8px; right:12px; font-size:12px; font-weight:bold; color:#f5f5f5; opacity:0.6; direction:rtl;">המדף של רועי 🛍️</div>
+                <!-- Cabinet Container (Shopkeeper background image) -->
+                <div class="store-cabinet" style="position:relative; width:min(90vw, 460px); aspect-ratio:1.5/1; background: url('images/roys_store_bg.jpg') center/cover no-repeat; border:6px solid #8d6e63; border-radius:24px; box-shadow:0 12px 28px rgba(0,0,0,0.15); margin:0 auto 15px; overflow:hidden;">
+                    <!-- Placed Items Shelf (Drop Target - positioned on the wooden counter) -->
+                    <div id="store-shelf" class="store-shelf-zone" style="position:absolute; bottom:0; left:0; width:100%; height:32%; display:flex; align-items:center; justify-content:center; gap:12px; padding:0 10px; box-sizing:border-box; z-index:10; transition: background 0.3s ease;">
                     </div>
-                    
-                    <!-- Basket (Starting Row) -->
-                    <div id="store-basket" style="position:relative; width:100%; height:45%; background:#d7ccc8; border-radius:16px; border:3px dashed #8d6e63; display:flex; align-items:center; justify-content:center; gap:12px; flex-wrap:wrap; padding:8px; box-sizing:border-box; transition: opacity 0.5s ease;">
-                        <div style="position:absolute; top:6px; right:12px; font-size:11px; font-weight:bold; color:#795548; opacity:0.6; direction:rtl;">סלסלת הבלאגן 🧺</div>
-                    </div>
+                </div>
+                
+                <!-- Basket (Starting Row - below cabinet) -->
+                <div id="store-basket" style="position:relative; width:min(90vw, 460px); min-height:85px; background:#efebe9; border-radius:20px; border:3px dashed #bcaaa4; display:flex; align-items:center; justify-content:center; gap:12px; flex-wrap:wrap; padding:10px; margin:0 auto 15px; box-sizing:border-box; transition: opacity 0.5s ease, display 0.5s ease;">
+                    <div style="position:absolute; top:6px; right:12px; font-size:11px; font-weight:bold; color:#8d6e63; opacity:0.6; direction:rtl;">סלסלת הבלאגן 🧺</div>
                 </div>
 
                 <!-- Count Options (Hidden initially) -->
@@ -3967,9 +3966,9 @@
                         handleStoreSelection(isCorrect, token, it, roundItem);
                     } else {
                         // Drag validation
-                        let shelf = get('store-shelf');
-                        if (shelf) {
-                            let rect = shelf.getBoundingClientRect();
+                        let cabinet = document.querySelector('.store-cabinet');
+                        if (cabinet) {
+                            let rect = cabinet.getBoundingClientRect();
                             let dropX = upEv.clientX;
                             let dropY = upEv.clientY;
 
