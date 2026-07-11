@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-07-11-v59-toy-shelf-star-shop -->
+<!DOCTYPE html><!-- build: 2026-07-11-v60-svg-puzzle-morph -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -3359,10 +3359,35 @@
                 audioWin: 'assemble/icecream_win.mp3',
                 audioWinText: 'יצאה לנו גלידה טעימה! כל הכבוד רועי!',
                 parts: [
-                    { id: 'cone', text: 'המשולש החום', img: 'images/assemble/parts/icecream_cone.png', imgFull: 'images/assemble/parts/icecream_cone_full.png', audio: 'assemble/icecream_cone.mp3' },
-                    { id: 'pink', text: 'העיגול הוורוד', img: 'images/assemble/parts/icecream_pink.png', imgFull: 'images/assemble/parts/icecream_pink_full.png', audio: 'assemble/icecream_pink.mp3' },
-                    { id: 'yellow', text: 'העיגול הצהוב', img: 'images/assemble/parts/icecream_yellow.png', imgFull: 'images/assemble/parts/icecream_yellow_full.png', audio: 'assemble/icecream_yellow.mp3' },
-                    { id: 'cherry', text: 'הדובדבן האדום', img: 'images/assemble/parts/icecream_cherry.png', imgFull: 'images/assemble/parts/icecream_cherry_full.png', audio: 'assemble/icecream_cherry.mp3' }
+                    { 
+                        id: 'cone', 
+                        text: 'המשולש החום', 
+                        audio: 'assemble/icecream_cone.mp3',
+                        svg: `<path d="M 140 190 L 260 190 L 200 310 Z" fill="#b57c50" stroke="#7d4e2b" stroke-width="4" stroke-linejoin="round" />
+                              <path d="M 160 190 L 200 310 M 180 190 L 200 310 M 200 190 L 200 310 M 220 190 L 200 310 M 240 190 L 200 310" stroke="#905c35" stroke-width="2" stroke-linecap="round" />`
+                    },
+                    { 
+                        id: 'pink', 
+                        text: 'העיגול הוורוד', 
+                        audio: 'assemble/icecream_pink.mp3',
+                        svg: `<circle cx="200" cy="155" r="48" fill="#ffb7c5" stroke="#f06292" stroke-width="4" />
+                              <ellipse cx="180" cy="135" rx="12" ry="6" fill="#fff" opacity="0.4" transform="rotate(-30, 180, 135)" />`
+                    },
+                    { 
+                        id: 'yellow', 
+                        text: 'העיגול הצהוב', 
+                        audio: 'assemble/icecream_yellow.mp3',
+                        svg: `<circle cx="200" cy="95" r="38" fill="#ffe082" stroke="#ffb300" stroke-width="4" />
+                              <ellipse cx="185" cy="80" rx="9" ry="4.5" fill="#fff" opacity="0.4" transform="rotate(-30, 185, 80)" />`
+                    },
+                    { 
+                        id: 'cherry', 
+                        text: 'הדובדבן האדום', 
+                        audio: 'assemble/icecream_cherry.mp3',
+                        svg: `<path d="M 200 50 Q 215 25 230 30" fill="none" stroke="#5d4037" stroke-width="3" stroke-linecap="round" />
+                              <circle cx="200" cy="50" r="14" fill="#e53935" stroke="#b71c1c" stroke-width="3" />
+                              <circle cx="195" cy="45" r="4" fill="#fff" opacity="0.5" />`
+                    }
                 ]
             },
             {
@@ -3372,10 +3397,34 @@
                 audioWin: 'assemble/truck_win.mp3',
                 audioWinText: 'איזו משאית חזקה! כל הכבוד רועי!',
                 parts: [
-                    { id: 'trailer', text: 'המלבן הצהוב', img: 'images/assemble/parts/truck_trailer.png', imgFull: 'images/assemble/parts/truck_trailer_full.png', audio: 'assemble/truck_trailer.mp3' },
-                    { id: 'cabin', text: 'הריבוע הכחול', img: 'images/assemble/parts/truck_cabin.png', imgFull: 'images/assemble/parts/truck_cabin_full.png', audio: 'assemble/truck_cabin.mp3' },
-                    { id: 'wheel_front', text: 'הגלגל הקדמי', img: 'images/assemble/parts/truck_wheel_front.png', imgFull: 'images/assemble/parts/truck_wheel_front_full.png', audio: 'assemble/truck_wheel_front.mp3' },
-                    { id: 'wheel_back', text: 'הגלגל האחורי', img: 'images/assemble/parts/truck_wheel_back.png', imgFull: 'images/assemble/parts/truck_wheel_back_full.png', audio: 'assemble/truck_wheel_back.mp3' }
+                    { 
+                        id: 'trailer', 
+                        text: 'המלבן הצהוב', 
+                        audio: 'assemble/truck_trailer.mp3',
+                        svg: `<rect x="150" y="120" width="180" height="110" rx="8" fill="#ffd54f" stroke="#ffb300" stroke-width="4" />
+                              <path d="M 170 120 L 170 230 M 240 120 L 240 230 M 310 120 L 310 230" stroke="#ffca28" stroke-width="2" />`
+                    },
+                    { 
+                        id: 'cabin', 
+                        text: 'הריבוע הכחול', 
+                        audio: 'assemble/truck_cabin.mp3',
+                        svg: `<rect x="70" y="145" width="80" height="85" rx="8" fill="#64b5f6" stroke="#1e88e5" stroke-width="4" />
+                              <rect x="95" y="155" width="45" height="35" rx="4" fill="#e3f2fd" stroke="#90caf9" stroke-width="2" />`
+                    },
+                    { 
+                        id: 'wheel_front', 
+                        text: 'הגלגל הקדמי', 
+                        audio: 'assemble/truck_wheel_front.mp3',
+                        svg: `<circle cx="120" cy="235" r="24" fill="#424242" stroke="#212121" stroke-width="4" />
+                              <circle cx="120" cy="235" r="10" fill="#9e9e9e" stroke="#757575" stroke-width="3" />`
+                    },
+                    { 
+                        id: 'wheel_back', 
+                        text: 'הגלגל האחורי', 
+                        audio: 'assemble/truck_wheel_back.mp3',
+                        svg: `<circle cx="260" cy="235" r="24" fill="#424242" stroke="#212121" stroke-width="4" />
+                              <circle cx="260" cy="235" r="10" fill="#9e9e9e" stroke="#757575" stroke-width="3" />`
+                    }
                 ]
             },
             {
@@ -3385,10 +3434,33 @@
                 audioWin: 'assemble/plane_win.mp3',
                 audioWinText: 'הנה מטוס שטס בשמיים! כל הכבוד רועי!',
                 parts: [
-                    { id: 'body', text: 'גוף המטוס האפור', img: 'images/assemble/parts/plane_body.png', imgFull: 'images/assemble/parts/plane_body_full.png', audio: 'assemble/plane_body.mp3' },
-                    { id: 'wing', text: 'הכנף הכחולה', img: 'images/assemble/parts/plane_wing.png', imgFull: 'images/assemble/parts/plane_wing_full.png', audio: 'assemble/plane_wing.mp3' },
-                    { id: 'tail', text: 'זנב המטוס האדום', img: 'images/assemble/parts/plane_tail.png', imgFull: 'images/assemble/parts/plane_tail_full.png', audio: 'assemble/plane_tail.mp3' },
-                    { id: 'propeller', text: 'הפרופלור הצהוב', img: 'images/assemble/parts/plane_propeller.png', imgFull: 'images/assemble/parts/plane_propeller_full.png', audio: 'assemble/plane_propeller.mp3' }
+                    { 
+                        id: 'body', 
+                        text: 'גוף המטוס האפור', 
+                        audio: 'assemble/plane_body.mp3',
+                        svg: `<rect x="70" y="165" width="220" height="60" rx="30" fill="#cfd8dc" stroke="#78909c" stroke-width="4" />
+                              <circle cx="110" cy="195" r="10" fill="#e3f2fd" stroke="#90caf9" stroke-width="2" />
+                              <circle cx="150" cy="195" r="10" fill="#e3f2fd" stroke="#90caf9" stroke-width="2" />`
+                    },
+                    { 
+                        id: 'wing', 
+                        text: 'הכנף הכחולה', 
+                        audio: 'assemble/plane_wing.mp3',
+                        svg: `<path d="M 140 215 L 230 215 L 180 280 Z" fill="#64b5f6" stroke="#1e88e5" stroke-width="4" stroke-linejoin="round" />`
+                    },
+                    { 
+                        id: 'tail', 
+                        text: 'זנב המטוס האדום', 
+                        audio: 'assemble/plane_tail.mp3',
+                        svg: `<path d="M 250 180 L 290 100 L 290 200 Z" fill="#e57373" stroke="#e53935" stroke-width="4" stroke-linejoin="round" />`
+                    },
+                    { 
+                        id: 'propeller', 
+                        text: 'הפרופלור הצהוב', 
+                        audio: 'assemble/plane_propeller.mp3',
+                        svg: `<ellipse cx="65" cy="195" rx="10" ry="35" fill="#ffe082" stroke="#ffb300" stroke-width="3" />
+                              <circle cx="65" cy="195" r="8" fill="#78909c" />`
+                    }
                 ]
             }
         ];
@@ -3408,17 +3480,30 @@
             let item = assembleData[roundIdx];
             get('active-game-title').textContent = item.title;
 
+            // Generate blueprint SVG parts layout
+            let blueprintSVG = '';
+            item.parts.forEach(p => {
+                blueprintSVG += `<g id="blueprint-part-${p.id}" opacity="0.12">${p.svg}</g>`;
+            });
+
             let ws = get('game-workspace');
             ws.innerHTML = `
                 <div id="assemble-question" style="font-size:clamp(18px,4.5vw,26px); font-weight:900; color:#37474f; text-align:center; direction:rtl; margin-bottom:15px; cursor:pointer; text-shadow:0 1px 2px rgba(255,255,255,0.8);"></div>
                 
                 <!-- Main Board -->
                 <div class="assemble-board" style="position:relative; width:min(80vw, 380px); aspect-ratio:1/1; background-color:#eef5fb; background-image:radial-gradient(#90caf9 1.5px, transparent 1.5px); background-size:24px 24px; border:4px dashed #2196F3; border-radius:28px; box-shadow:0 12px 28px rgba(33, 150, 243, 0.15), inset 0 4px 10px rgba(0,0,0,0.02); margin:0 auto 20px; overflow:hidden;">
-                    <!-- Silhouette blueprint -->
-                    <img id="assemble-silhouette" src="${item.img}" style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:contain; filter:grayscale(1) brightness(0.85) opacity(0.25); pointer-events:none;">
-                    
-                    <!-- Placed parts container -->
-                    <div id="assemble-parts-container" style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none;"></div>
+                    <!-- SVG Viewport for Vector Assembly -->
+                    <svg id="assemble-svg-viewport" viewBox="0 0 400 400" style="position:absolute; top:0; left:0; width:100%; height:100%; z-index:2; overflow:visible;">
+                        <!-- Blueprint dashes outline -->
+                        <g id="assemble-blueprint-group" stroke-dasharray="5 5" style="transition: opacity 0.8s ease;">
+                            ${blueprintSVG}
+                        </g>
+                        <!-- Placed colored parts -->
+                        <g id="assemble-placed-group" style="transition: opacity 0.8s ease;"></g>
+                    </svg>
+
+                    <!-- 3D Reward Image Overlay -->
+                    <img id="assemble-reward-img" src="${item.img}" style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:contain; opacity:0; transition:opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1); pointer-events:none; z-index:5;">
                 </div>
 
                 <!-- Choices Row -->
@@ -3470,7 +3555,9 @@
                 
                 card.innerHTML = `
                     <div style="width:clamp(45px, 12vw, 65px); height:clamp(45px, 12vw, 65px); margin-bottom:6px; display:flex; align-items:center; justify-content:center; pointer-events:none;">
-                        <img src="${ch.img}" alt="${ch.text}" style="max-width:100%; max-height:100%; object-fit:contain; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.1));" />
+                        <svg viewBox="0 0 400 400" style="width:100%; height:100%; overflow:visible;">
+                            ${ch.svg}
+                        </svg>
                     </div>
                     <div style="font-size:clamp(12px, 3vw, 14px); font-weight:900; color:#455a64; text-align:center; padding:0 6px; direction:rtl; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; width:100%; pointer-events:none;">${ch.text}</div>
                 `;
@@ -3605,22 +3692,13 @@
                 card.style.borderColor = '#4CAF50';
                 card.style.background = '#e8f5e9';
 
-                let container = get('assemble-parts-container');
-                if (container) {
-                    let isCalm = ((window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) || roySettings.calmMode);
-                    let imgEl = D.createElement('img');
-                    imgEl.src = part.imgFull;
-                    if (isCalm) {
-                        imgEl.style.cssText = `position:absolute; top:0; left:0; width:100%; height:100%; object-fit:contain;`;
-                    } else {
-                        imgEl.style.cssText = `position:absolute; top:0; left:0; width:100%; height:100%; object-fit:contain; transition: transform 0.4s ease, opacity 0.4s ease; transform: scale(0.6); opacity: 0;`;
-                    }
-                    container.appendChild(imgEl);
-                    if (!isCalm) {
-                        imgEl.offsetHeight; // trigger reflow
-                        imgEl.style.transform = 'scale(1)';
-                        imgEl.style.opacity = '1';
-                    }
+                // Add to placed SVG group
+                let placedGroup = get('assemble-placed-group');
+                if (placedGroup) {
+                    let g = D.createElementNS('http://www.w3.org/2000/svg', 'g');
+                    g.innerHTML = part.svg;
+                    g.style.cssText = 'transform-origin: 200px 200px; animation: superPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;';
+                    placedGroup.appendChild(g);
                 }
 
                 setTimeout(() => {
@@ -3629,6 +3707,23 @@
                     
                     if (assemblePartIndex >= item.parts.length) {
                         isProcessing = true;
+
+                        // Magic Morph transition: hide vectors, fade-in DALL-E reward illustration
+                        let bp = get('assemble-blueprint-group');
+                        let pg = get('assemble-placed-group');
+                        let rewardImg = get('assemble-reward-img');
+
+                        if (bp) bp.style.opacity = '0';
+                        if (pg) pg.style.opacity = '0';
+                        if (rewardImg) {
+                            rewardImg.style.opacity = '1';
+                            rewardImg.animate([
+                                { transform: 'scale(0.9)', opacity: 0.5 },
+                                { transform: 'scale(1.05)', opacity: 1 },
+                                { transform: 'scale(1)', opacity: 1 }
+                            ], { duration: 600, easing: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)' });
+                        }
+
                         let qEl = get('assemble-question');
                         if (qEl) qEl.textContent = item.audioWinText + ' 🎉';
                         
