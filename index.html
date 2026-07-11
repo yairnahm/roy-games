@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-07-11-v61-assemble-real-art-parts -->
+<!DOCTYPE html><!-- build: 2026-07-11-v62-assemble-gradient-svg -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -3359,34 +3359,49 @@
                 audioWin: 'assemble/icecream_win.mp3',
                 audioWinText: 'יצאה לנו גלידה טעימה! כל הכבוד רועי!',
                 parts: [
-                    { 
-                        id: 'cone', 
-                        text: 'המשולש החום', 
+                    {
+                        id: 'cone',
+                        text: 'המשולש החום',
                         audio: 'assemble/icecream_cone.mp3',
-                        svg: `<path d="M 140 190 L 260 190 L 200 310 Z" fill="#b57c50" stroke="#7d4e2b" stroke-width="4" stroke-linejoin="round" />
-                              <path d="M 160 190 L 200 310 M 180 190 L 200 310 M 200 190 L 200 310 M 220 190 L 200 310 M 240 190 L 200 310" stroke="#905c35" stroke-width="2" stroke-linecap="round" />`
+                        svg: `<defs><linearGradient id="g-ic-cone" x1="0" y1="0" x2="0.5" y2="1">
+                                <stop offset="0%" stop-color="#e0ad7c"/><stop offset="60%" stop-color="#b57c50"/><stop offset="100%" stop-color="#8f5f38"/>
+                              </linearGradient></defs>
+                              <path d="M 140 190 L 260 190 L 200 310 Z" fill="url(#g-ic-cone)" stroke="#7d4e2b" stroke-width="4" stroke-linejoin="round" />
+                              <path d="M 160 190 L 200 310 M 180 190 L 200 310 M 200 190 L 200 310 M 220 190 L 200 310 M 240 190 L 200 310" stroke="#905c35" stroke-width="2" stroke-linecap="round" opacity="0.6" />
+                              <path d="M 152 195 L 172 195" stroke="#f3d3ab" stroke-width="5" stroke-linecap="round" opacity="0.55" />`
                     },
-                    { 
-                        id: 'pink', 
-                        text: 'העיגול הוורוד', 
+                    {
+                        id: 'pink',
+                        text: 'העיגול הוורוד',
                         audio: 'assemble/icecream_pink.mp3',
-                        svg: `<circle cx="200" cy="155" r="48" fill="#ffb7c5" stroke="#f06292" stroke-width="4" />
-                              <ellipse cx="180" cy="135" rx="12" ry="6" fill="#fff" opacity="0.4" transform="rotate(-30, 180, 135)" />`
+                        svg: `<defs><radialGradient id="g-ic-pink" cx="35%" cy="30%" r="75%">
+                                <stop offset="0%" stop-color="#ffe3ea"/><stop offset="55%" stop-color="#ffb7c5"/><stop offset="100%" stop-color="#f0729a"/>
+                              </radialGradient></defs>
+                              <circle cx="200" cy="155" r="48" fill="url(#g-ic-pink)" stroke="#f06292" stroke-width="4" />
+                              <path d="M 165 165 Q 200 185 235 165" stroke="#f0729a" stroke-width="2.5" fill="none" opacity="0.5" stroke-linecap="round" />
+                              <ellipse cx="178" cy="132" rx="14" ry="7" fill="#fff" opacity="0.6" transform="rotate(-30, 178, 132)" />`
                     },
-                    { 
-                        id: 'yellow', 
-                        text: 'העיגול הצהוב', 
+                    {
+                        id: 'yellow',
+                        text: 'העיגול הצהוב',
                         audio: 'assemble/icecream_yellow.mp3',
-                        svg: `<circle cx="200" cy="95" r="38" fill="#ffe082" stroke="#ffb300" stroke-width="4" />
-                              <ellipse cx="185" cy="80" rx="9" ry="4.5" fill="#fff" opacity="0.4" transform="rotate(-30, 185, 80)" />`
+                        svg: `<defs><radialGradient id="g-ic-yellow" cx="35%" cy="30%" r="75%">
+                                <stop offset="0%" stop-color="#fff6df"/><stop offset="55%" stop-color="#ffe082"/><stop offset="100%" stop-color="#ffb300"/>
+                              </radialGradient></defs>
+                              <circle cx="200" cy="95" r="38" fill="url(#g-ic-yellow)" stroke="#ffb300" stroke-width="4" />
+                              <path d="M 172 103 Q 200 118 228 103" stroke="#ffb300" stroke-width="2" fill="none" opacity="0.5" stroke-linecap="round" />
+                              <ellipse cx="183" cy="78" rx="10" ry="5" fill="#fff" opacity="0.6" transform="rotate(-30, 183, 78)" />`
                     },
-                    { 
-                        id: 'cherry', 
-                        text: 'הדובדבן האדום', 
+                    {
+                        id: 'cherry',
+                        text: 'הדובדבן האדום',
                         audio: 'assemble/icecream_cherry.mp3',
-                        svg: `<path d="M 200 50 Q 215 25 230 30" fill="none" stroke="#5d4037" stroke-width="3" stroke-linecap="round" />
-                              <circle cx="200" cy="50" r="14" fill="#e53935" stroke="#b71c1c" stroke-width="3" />
-                              <circle cx="195" cy="45" r="4" fill="#fff" opacity="0.5" />`
+                        svg: `<defs><radialGradient id="g-ic-cherry" cx="35%" cy="30%" r="75%">
+                                <stop offset="0%" stop-color="#ff8a80"/><stop offset="55%" stop-color="#e53935"/><stop offset="100%" stop-color="#a01a1a"/>
+                              </radialGradient></defs>
+                              <path d="M 200 50 Q 215 25 230 30" fill="none" stroke="#5d4037" stroke-width="3" stroke-linecap="round" />
+                              <circle cx="200" cy="50" r="14" fill="url(#g-ic-cherry)" stroke="#b71c1c" stroke-width="3" />
+                              <circle cx="195" cy="45" r="4" fill="#fff" opacity="0.6" />`
                     }
                 ]
             },
@@ -3397,33 +3412,49 @@
                 audioWin: 'assemble/truck_win.mp3',
                 audioWinText: 'איזו משאית חזקה! כל הכבוד רועי!',
                 parts: [
-                    { 
-                        id: 'trailer', 
-                        text: 'המלבן הצהוב', 
+                    {
+                        id: 'trailer',
+                        text: 'המלבן הצהוב',
                         audio: 'assemble/truck_trailer.mp3',
-                        svg: `<rect x="150" y="120" width="180" height="110" rx="8" fill="#ffd54f" stroke="#ffb300" stroke-width="4" />
-                              <path d="M 170 120 L 170 230 M 240 120 L 240 230 M 310 120 L 310 230" stroke="#ffca28" stroke-width="2" />`
+                        svg: `<defs><linearGradient id="g-tr-trailer" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#ffe9a8"/><stop offset="55%" stop-color="#ffd54f"/><stop offset="100%" stop-color="#f0a800"/>
+                              </linearGradient></defs>
+                              <rect x="150" y="120" width="180" height="110" rx="8" fill="url(#g-tr-trailer)" stroke="#ffb300" stroke-width="4" />
+                              <path d="M 170 120 L 170 230 M 240 120 L 240 230 M 310 120 L 310 230" stroke="#ffca28" stroke-width="2" opacity="0.7" />
+                              <rect x="158" y="128" width="40" height="8" rx="4" fill="#fff" opacity="0.35" />`
                     },
-                    { 
-                        id: 'cabin', 
-                        text: 'הריבוע הכחול', 
+                    {
+                        id: 'cabin',
+                        text: 'הריבוע הכחול',
                         audio: 'assemble/truck_cabin.mp3',
-                        svg: `<rect x="70" y="145" width="80" height="85" rx="8" fill="#64b5f6" stroke="#1e88e5" stroke-width="4" />
-                              <rect x="95" y="155" width="45" height="35" rx="4" fill="#e3f2fd" stroke="#90caf9" stroke-width="2" />`
+                        svg: `<defs><linearGradient id="g-tr-cabin" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#a6d4fb"/><stop offset="55%" stop-color="#64b5f6"/><stop offset="100%" stop-color="#2f7fd6"/>
+                              </linearGradient></defs>
+                              <rect x="70" y="145" width="80" height="85" rx="8" fill="url(#g-tr-cabin)" stroke="#1e88e5" stroke-width="4" />
+                              <rect x="95" y="155" width="45" height="35" rx="4" fill="#e3f2fd" stroke="#90caf9" stroke-width="2" />
+                              <rect x="99" y="159" width="18" height="12" rx="3" fill="#fff" opacity="0.5" />`
                     },
-                    { 
-                        id: 'wheel_front', 
-                        text: 'הגלגל הקדמי', 
+                    {
+                        id: 'wheel_front',
+                        text: 'הגלגל הקדמי',
                         audio: 'assemble/truck_wheel_front.mp3',
-                        svg: `<circle cx="120" cy="235" r="24" fill="#424242" stroke="#212121" stroke-width="4" />
-                              <circle cx="120" cy="235" r="10" fill="#9e9e9e" stroke="#757575" stroke-width="3" />`
+                        svg: `<defs><radialGradient id="g-tr-wheel" cx="35%" cy="30%" r="75%">
+                                <stop offset="0%" stop-color="#6b6b6b"/><stop offset="60%" stop-color="#424242"/><stop offset="100%" stop-color="#1a1a1a"/>
+                              </radialGradient></defs>
+                              <circle cx="120" cy="235" r="24" fill="url(#g-tr-wheel)" stroke="#212121" stroke-width="4" />
+                              <circle cx="120" cy="235" r="10" fill="#bdbdbd" stroke="#757575" stroke-width="3" />
+                              <circle cx="114" cy="229" r="3" fill="#fff" opacity="0.5" />`
                     },
-                    { 
-                        id: 'wheel_back', 
-                        text: 'הגלגל האחורי', 
+                    {
+                        id: 'wheel_back',
+                        text: 'הגלגל האחורי',
                         audio: 'assemble/truck_wheel_back.mp3',
-                        svg: `<circle cx="260" cy="235" r="24" fill="#424242" stroke="#212121" stroke-width="4" />
-                              <circle cx="260" cy="235" r="10" fill="#9e9e9e" stroke="#757575" stroke-width="3" />`
+                        svg: `<defs><radialGradient id="g-tr-wheel2" cx="35%" cy="30%" r="75%">
+                                <stop offset="0%" stop-color="#6b6b6b"/><stop offset="60%" stop-color="#424242"/><stop offset="100%" stop-color="#1a1a1a"/>
+                              </radialGradient></defs>
+                              <circle cx="260" cy="235" r="24" fill="url(#g-tr-wheel2)" stroke="#212121" stroke-width="4" />
+                              <circle cx="260" cy="235" r="10" fill="#bdbdbd" stroke="#757575" stroke-width="3" />
+                              <circle cx="254" cy="229" r="3" fill="#fff" opacity="0.5" />`
                     }
                 ]
             },
@@ -3434,32 +3465,46 @@
                 audioWin: 'assemble/plane_win.mp3',
                 audioWinText: 'הנה מטוס שטס בשמיים! כל הכבוד רועי!',
                 parts: [
-                    { 
-                        id: 'body', 
-                        text: 'גוף המטוס האפור', 
+                    {
+                        id: 'body',
+                        text: 'גוף המטוס האפור',
                         audio: 'assemble/plane_body.mp3',
-                        svg: `<rect x="70" y="165" width="220" height="60" rx="30" fill="#cfd8dc" stroke="#78909c" stroke-width="4" />
+                        svg: `<defs><linearGradient id="g-pl-body" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#eef2f4"/><stop offset="55%" stop-color="#cfd8dc"/><stop offset="100%" stop-color="#9aa7ac"/>
+                              </linearGradient></defs>
+                              <rect x="70" y="165" width="220" height="60" rx="30" fill="url(#g-pl-body)" stroke="#78909c" stroke-width="4" />
                               <circle cx="110" cy="195" r="10" fill="#e3f2fd" stroke="#90caf9" stroke-width="2" />
-                              <circle cx="150" cy="195" r="10" fill="#e3f2fd" stroke="#90caf9" stroke-width="2" />`
+                              <circle cx="150" cy="195" r="10" fill="#e3f2fd" stroke="#90caf9" stroke-width="2" />
+                              <rect x="85" y="172" width="60" height="6" rx="3" fill="#fff" opacity="0.5" />`
                     },
-                    { 
-                        id: 'wing', 
-                        text: 'הכנף הכחולה', 
+                    {
+                        id: 'wing',
+                        text: 'הכנף הכחולה',
                         audio: 'assemble/plane_wing.mp3',
-                        svg: `<path d="M 140 215 L 230 215 L 180 280 Z" fill="#64b5f6" stroke="#1e88e5" stroke-width="4" stroke-linejoin="round" />`
+                        svg: `<defs><linearGradient id="g-pl-wing" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%" stop-color="#a6d4fb"/><stop offset="55%" stop-color="#64b5f6"/><stop offset="100%" stop-color="#2f7fd6"/>
+                              </linearGradient></defs>
+                              <path d="M 140 215 L 230 215 L 180 280 Z" fill="url(#g-pl-wing)" stroke="#1e88e5" stroke-width="4" stroke-linejoin="round" />
+                              <path d="M 155 220 L 205 220" stroke="#fff" stroke-width="3" opacity="0.4" stroke-linecap="round" />`
                     },
-                    { 
-                        id: 'tail', 
-                        text: 'זנב המטוס האדום', 
+                    {
+                        id: 'tail',
+                        text: 'זנב המטוס האדום',
                         audio: 'assemble/plane_tail.mp3',
-                        svg: `<path d="M 250 180 L 290 100 L 290 200 Z" fill="#e57373" stroke="#e53935" stroke-width="4" stroke-linejoin="round" />`
+                        svg: `<defs><linearGradient id="g-pl-tail" x1="0" y1="0" x2="1" y2="0">
+                                <stop offset="0%" stop-color="#ffb2ab"/><stop offset="55%" stop-color="#e57373"/><stop offset="100%" stop-color="#c23b34"/>
+                              </linearGradient></defs>
+                              <path d="M 250 180 L 290 100 L 290 200 Z" fill="url(#g-pl-tail)" stroke="#e53935" stroke-width="4" stroke-linejoin="round" />`
                     },
-                    { 
-                        id: 'propeller', 
-                        text: 'הפרופלור הצהוב', 
+                    {
+                        id: 'propeller',
+                        text: 'הפרופלור הצהוב',
                         audio: 'assemble/plane_propeller.mp3',
-                        svg: `<ellipse cx="65" cy="195" rx="10" ry="35" fill="#ffe082" stroke="#ffb300" stroke-width="3" />
-                              <circle cx="65" cy="195" r="8" fill="#78909c" />`
+                        svg: `<defs><linearGradient id="g-pl-prop" x1="0" y1="0" x2="1" y2="0">
+                                <stop offset="0%" stop-color="#fff6df"/><stop offset="55%" stop-color="#ffe082"/><stop offset="100%" stop-color="#ffb300"/>
+                              </linearGradient></defs>
+                              <ellipse cx="65" cy="195" rx="10" ry="35" fill="url(#g-pl-prop)" stroke="#ffb300" stroke-width="3" />
+                              <circle cx="65" cy="195" r="8" fill="#90a4ae" stroke="#78909c" stroke-width="2" />`
                     }
                 ]
             }
@@ -3480,10 +3525,10 @@
             let item = assembleData[roundIdx];
             get('active-game-title').textContent = item.title;
 
-            // Ghost blueprint layer: faint real artwork per part, so the hint already looks like the piece
-            let blueprintImgs = '';
+            // Generate blueprint SVG parts layout (faint outline of the same gradient shape used later)
+            let blueprintSVG = '';
             item.parts.forEach(p => {
-                blueprintImgs += `<img id="blueprint-part-${p.id}" src="images/assemble/parts/${item.name}_${p.id}_full.png" style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:contain; opacity:0.18; transition:opacity 0.4s ease; pointer-events:none;">`;
+                blueprintSVG += `<g id="blueprint-part-${p.id}" opacity="0.16">${p.svg}</g>`;
             });
 
             let ws = get('game-workspace');
@@ -3492,12 +3537,18 @@
 
                 <!-- Main Board -->
                 <div class="assemble-board" style="position:relative; width:min(80vw, 380px); aspect-ratio:1/1; background-color:#eef5fb; background-image:radial-gradient(#90caf9 1.5px, transparent 1.5px); background-size:24px 24px; border:4px dashed #2196F3; border-radius:28px; box-shadow:0 12px 28px rgba(33, 150, 243, 0.15), inset 0 4px 10px rgba(0,0,0,0.02); margin:0 auto 20px; overflow:hidden;">
-                    <!-- Blueprint ghost: real artwork per part at low opacity -->
-                    <div id="assemble-blueprint-group" style="position:absolute; inset:0; z-index:2; transition: opacity 0.8s ease;">
-                        ${blueprintImgs}
-                    </div>
-                    <!-- Placed real artwork, built up piece by piece -->
-                    <div id="assemble-placed-group" style="position:absolute; inset:0; z-index:3; transition: opacity 0.8s ease;"></div>
+                    <!-- SVG Viewport for Vector Assembly -->
+                    <svg id="assemble-svg-viewport" viewBox="0 0 400 400" style="position:absolute; top:0; left:0; width:100%; height:100%; z-index:2; overflow:visible;">
+                        <!-- Blueprint dashes outline -->
+                        <g id="assemble-blueprint-group" stroke-dasharray="5 5" style="transition: opacity 0.8s ease;">
+                            ${blueprintSVG}
+                        </g>
+                        <!-- Placed colored parts -->
+                        <g id="assemble-placed-group" style="transition: opacity 0.8s ease; filter: drop-shadow(0 4px 5px rgba(0,0,0,0.18));"></g>
+                    </svg>
+
+                    <!-- Real illustration reward, revealed once all parts are placed -->
+                    <img id="assemble-reward-img" src="${item.img}" style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:contain; opacity:0; transition:opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1); pointer-events:none; z-index:5;">
                 </div>
 
                 <!-- Choices Row -->
@@ -3530,26 +3581,28 @@
 
             let distractors = [];
             item.parts.forEach(p => {
-                if (p.id !== part.id) distractors.push({ ...p, _group: item.name });
+                if (p.id !== part.id) distractors.push(p);
             });
             assembleData.forEach(g => {
                 if (g.name !== item.name) {
                     g.parts.forEach(p => {
-                        distractors.push({ ...p, _group: g.name });
+                        distractors.push(p);
                     });
                 }
             });
 
             distractors = shuffle(distractors).slice(0, 3);
-            let finalChoices = shuffle([{ ...part, _group: item.name }, ...distractors]);
+            let finalChoices = shuffle([part, ...distractors]);
 
             finalChoices.forEach(ch => {
                 let card = D.createElement('div');
                 card.style.cssText = 'background:#fff; border:4px solid #cfd8dc; border-radius:24px; width:clamp(85px, 22vw, 115px); height:clamp(85px, 22vw, 115px); cursor:pointer; box-shadow:0 6px 14px rgba(0,0,0,0.06); transition:all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275); display:flex; flex-direction:column; align-items:center; justify-content:center; overflow:hidden; position:relative; touch-action:none;';
-                
+
                 card.innerHTML = `
-                    <div style="width:clamp(45px, 12vw, 65px); height:clamp(45px, 12vw, 65px); margin-bottom:6px; display:flex; align-items:center; justify-content:center; pointer-events:none;">
-                        <img src="images/assemble/parts/${ch._group}_${ch.id}.png" style="max-width:100%; max-height:100%; object-fit:contain;">
+                    <div style="width:clamp(45px, 12vw, 65px); height:clamp(45px, 12vw, 65px); margin-bottom:6px; display:flex; align-items:center; justify-content:center; pointer-events:none; filter: drop-shadow(0 3px 3px rgba(0,0,0,0.15));">
+                        <svg viewBox="0 0 400 400" style="width:100%; height:100%; overflow:visible;">
+                            ${ch.svg}
+                        </svg>
                     </div>
                     <div style="font-size:clamp(12px, 3vw, 14px); font-weight:900; color:#455a64; text-align:center; padding:0 6px; direction:rtl; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; width:100%; pointer-events:none;">${ch.text}</div>
                 `;
@@ -3684,32 +3737,36 @@
                 card.style.borderColor = '#4CAF50';
                 card.style.background = '#e8f5e9';
 
-                // Reveal the real artwork for this part, and fade its blueprint ghost
+                // Add to placed SVG group
                 let placedGroup = get('assemble-placed-group');
                 if (placedGroup) {
-                    let pieceImg = D.createElement('img');
-                    pieceImg.src = `images/assemble/parts/${item.name}_${part.id}_full.png`;
-                    pieceImg.style.cssText = 'position:absolute; top:0; left:0; width:100%; height:100%; object-fit:contain; transform-origin:center center; animation: superPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;';
-                    placedGroup.appendChild(pieceImg);
+                    let g = D.createElementNS('http://www.w3.org/2000/svg', 'g');
+                    g.innerHTML = part.svg;
+                    g.style.cssText = 'transform-origin: 200px 200px; animation: superPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;';
+                    placedGroup.appendChild(g);
                 }
-                let ghost = get(`blueprint-part-${part.id}`);
-                if (ghost) ghost.style.opacity = '0';
 
                 setTimeout(() => {
                     assemblePartIndex++;
                     isProcessing = false;
-                    
+
                     if (assemblePartIndex >= item.parts.length) {
                         isProcessing = true;
 
-                        // Picture is already fully built piece-by-piece; just a small celebration pulse
-                        let board = document.querySelector('.assemble-board');
-                        if (board) {
-                            board.animate([
-                                { transform: 'scale(1)' },
-                                { transform: 'scale(1.05)' },
-                                { transform: 'scale(1)' }
-                            ], { duration: 500, easing: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)' });
+                        // Magic Morph transition: hide vectors, fade-in the real illustration
+                        let bp = get('assemble-blueprint-group');
+                        let pg = get('assemble-placed-group');
+                        let rewardImg = get('assemble-reward-img');
+
+                        if (bp) bp.style.opacity = '0';
+                        if (pg) pg.style.opacity = '0';
+                        if (rewardImg) {
+                            rewardImg.style.opacity = '1';
+                            rewardImg.animate([
+                                { transform: 'scale(0.9)', opacity: 0.5 },
+                                { transform: 'scale(1.05)', opacity: 1 },
+                                { transform: 'scale(1)', opacity: 1 }
+                            ], { duration: 600, easing: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)' });
                         }
 
                         let qEl = get('assemble-question');
