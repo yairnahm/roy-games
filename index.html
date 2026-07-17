@@ -2836,21 +2836,26 @@
             
             isProcessing = true;
             setTimeout(() => {
-                isProcessing = false;
-                
-                if (station.gameId === 'missing') {
-                    mLang = 'he';
-                } else if (station.gameId === 'firstletter') {
-                    flLang = 'he';
-                } else if (station.gameId === 'faces') {
-                    facesLang = 'he';
-                    facesMode = 'game';
+                try {
+                    isProcessing = false;
+                    
+                    if (station.gameId === 'missing') {
+                        mLang = 'he';
+                    } else if (station.gameId === 'firstletter') {
+                        flLang = 'he';
+                    } else if (station.gameId === 'faces') {
+                        facesLang = 'he';
+                        facesMode = 'game';
+                    }
+                    
+                    currentGameMode = station.gameId;
+                    currentDifficulty = station.difficulty;
+                    
+                    startGameEngine(station.difficulty);
+                } catch (e) {
+                    console.error("ERROR LAUNCHING GAME:", e);
+                    alert("שגיאה בטעינת המשחק: " + e.message + "\n" + e.stack);
                 }
-                
-                currentGameMode = station.gameId;
-                currentDifficulty = station.difficulty;
-                
-                startGameEngine(station.difficulty);
             }, 1200);
         }
 
