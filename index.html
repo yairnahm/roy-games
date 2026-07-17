@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-07-12-v82-tower-bridge-backdrops -->
+<!DOCTYPE html><!-- build: 2026-07-17-v86-bridge-plank-art -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -2635,6 +2635,8 @@
             'oddone': { icon: '🍎', title: 'יוצא דופן' },
             'patterns': { icon: '🔴', title: 'תבניות' },
             'missing': { icon: '🔤', title: 'איזו אות חסרה?' },
+            'firstletter': { icon: '🔡', title: 'באיזו אות מתחיל?' },
+            'mgamish': { icon: '🧠', title: 'גמישות מחשבתית' },
             'tools': { icon: '🔨', title: 'מה הכלי המתאים?' },
             'context': { icon: '🧩', title: 'מה שייך לכאן?' },
             'vparts': { icon: '🚜', title: 'חלקי רכבים' },
@@ -2837,9 +2839,9 @@
                 isProcessing = false;
                 
                 if (station.gameId === 'missing') {
-                    missingLang = 'he';
+                    mLang = 'he';
                 } else if (station.gameId === 'firstletter') {
-                    firstletterLang = 'he';
+                    flLang = 'he';
                 } else if (station.gameId === 'faces') {
                     facesLang = 'he';
                     facesMode = 'game';
@@ -3248,6 +3250,20 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             let pContainer = get('active-progress-container'); pContainer.innerHTML=''; 
             for(let i=0;i<4;i++) { let d=D.createElement('div'); d.className='progress-dot'; d.id='active-progress-container-dot-'+i; pContainer.appendChild(d); }
             updateProgressUI(); get('game-workspace').innerHTML = `<div id="miss-w" style="font-size:clamp(40px,8vw,80px); font-weight:900; letter-spacing:5px; direction:${lang==='en'?'ltr':'rtl'}; margin:40px 0; color:#333; display:flex; justify-content:center; flex-wrap:wrap; gap:5px;"></div><button class="action-btn" id="m-btn">מוכן! 👍</button><div id="m-game" class="hidden" style="width:100%;"><div id="missing-word-display"></div><div id="missing-letters-options" class="opts-row" style="background:none; box-shadow:none;"></div></div>`; get('active-game-title').textContent='תסתכלו טוב... 👀'; get('m-btn').onclick=()=>{get('active-game-title').textContent='איזו אות חסרה? 🤔'; hide('miss-w'); hide('m-btn'); show('m-game'); loadMissingRound();}; loadMissingWord();
+        }
+        function initMissingGame() {
+            mLang = 'he';
+            missW = ["אבא", "אמא", "סבתא", "סבא", "דוד יוגב", "דודה קורין", "ינון", "בעגוש"];
+            get('game-workspace').innerHTML = `<div id="miss-w" style="font-size:clamp(40px,8vw,80px); font-weight:900; letter-spacing:5px; direction:rtl; margin:40px 0; color:#333; display:flex; justify-content:center; flex-wrap:wrap; gap:5px;"></div><button class="action-btn" id="m-btn">מוכן! 👍</button><div id="m-game" class="hidden" style="width:100%;"><div id="missing-word-display"></div><div id="missing-letters-options" class="opts-row" style="background:none; box-shadow:none;"></div></div>`;
+            get('active-game-title').textContent = 'תסתכלו טוב... 👀';
+            get('m-btn').onclick = () => {
+                get('active-game-title').textContent = 'איזו אות חסרה? 🤔';
+                hide('miss-w');
+                hide('m-btn');
+                show('m-game');
+                loadMissingRound();
+            };
+            loadMissingWord();
         }
         function loadMissingWord() {
             mWord = missW[rand(0, missW.length-1)]; let v=[]; for(let i=0; i<mWord.length; i++) if(mWord[i]!==' ') v.push(i);
@@ -7718,7 +7734,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 <style>
                     .wc-bridge-slot { width:64px; height:26px; border-radius:6px; border:3px dashed #a1887f; background:rgba(255,255,255,0.4); }
                     .wc-bridge-slot.next { border-color:#ff6f00; box-shadow:0 0 0 4px rgba(255,111,0,0.25); animation: btnPulseGreen 1s infinite alternate; }
-                    .wc-bridge-slot.filled { border-style:solid; background-size:cover; }
+                    .wc-bridge-slot.filled { border-style:solid; border-color:#5d4037; background:linear-gradient(135deg,#d7a86e,#a9744f); box-shadow:inset 0 2px 3px rgba(0,0,0,0.25); }
                     .wc-bridge-plank-choice { width:70px; height:70px; object-fit:contain; filter:drop-shadow(0 6px 12px rgba(0,0,0,0.3)); }
                 </style>
                 <div style="font-size:clamp(18px,4.5vw,26px); font-weight:900; color:#37474f; text-align:center; direction:rtl; margin-bottom:6px;">
@@ -7792,7 +7808,6 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             if (slot) {
                 slot.classList.remove('next');
                 slot.classList.add('filled');
-                slot.style.backgroundImage = "url('images/winners/bridge_plank_strong.webp')";
             }
             statusEl.textContent = '';
             wcBridgeBlocks++;
