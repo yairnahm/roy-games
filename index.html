@@ -1973,7 +1973,7 @@
     <div id="train-route-screen" class="hidden" style="background: linear-gradient(135deg, #0288d1, #26c6da); display:flex; flex-direction:column; align-items:center; justify-content:flex-start; min-height:100vh; padding:2vmin; box-sizing:border-box; width:100%; position:fixed; top:0; left:0; z-index:150; overflow-y:auto;">
         <div class="top-bar" style="align-self:stretch; max-width:950px; margin:0 auto 2vmin; width:100%;">
             <button class="exit-btn" onclick="exitTrainRoute()">➜ יציאה</button>
-            <h2 style="margin:0; font-size:clamp(18px,4.5vw,28px); color:#fff; text-shadow:0 2px 4px rgba(0,0,0,0.2); direction:rtl; font-weight:900;">🚂 מסלול הרכבת של רועי</h2>
+            <h2 style="margin:0; font-size:clamp(18px,4.5vw,28px); color:#e65100; direction:rtl; font-weight:900;">🚂 מסלול הרכבת של רועי</h2>
             <div style="width:60px;"></div>
         </div>
         
@@ -2351,7 +2351,7 @@
             updateWalletDisplay();
         }
 
-        function hideAllScreens() { ['start-screen', 'gender-screen', 'category-screen', 'settings-screen', 'hub-screen', 'unified-diff-screen', 'active-game-container', 'level-complete-overlay', 'missing-lang-screen', 'firstletter-lang-screen', 'faces-lang-screen', 'faces-mode-screen', 'faces-summary-screen', 'toy-shelf-overlay', 'toy-confirm-overlay'].forEach(hide); }
+        function hideAllScreens() { ['start-screen', 'gender-screen', 'category-screen', 'settings-screen', 'hub-screen', 'unified-diff-screen', 'active-game-container', 'level-complete-overlay', 'missing-lang-screen', 'firstletter-lang-screen', 'faces-lang-screen', 'faces-mode-screen', 'faces-summary-screen', 'toy-shelf-overlay', 'toy-confirm-overlay', 'train-route-screen'].forEach(hide); }
 
         function backToHub() { playClickSound(); hideAllScreens(); setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); }
         function backToCategories() { playClickSound(); hideAllScreens(); setAppBackground('hub'); show('category-screen'); updateWalletDisplay(); }
