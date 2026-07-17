@@ -1759,6 +1759,7 @@
         </div>
         <h3>באיזו קטגוריה נרצה לשחק?</h3>
         <div class="hub-container">
+            <div class="hub-card" style="background: linear-gradient(135deg, #fffde7, #fff59d); border: 3px solid #fbc02d; box-shadow: 0 4px 10px rgba(251,192,45,0.3);" onclick="startTrainRoute()"><div class="hub-icon">🚂</div><div class="hub-title" style="font-weight:900; color:#e65100;">מסלול הרכבת!</div><div style="font-size:clamp(11px,2.5vw,14px);color:#f57c00;margin-top:2px;font-weight:bold;">הרפתקת משחקים 🗺️</div></div>
             <div class="hub-card" onclick="openCategory('lang','שפה ואותיות')"><div class="hub-icon">🔤</div><div class="hub-title">שפה ואותיות</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">2 משחקים</div></div>
             <div class="hub-card" onclick="openCategory('think','חשיבה וזיכרון')"><div class="hub-icon">🧠</div><div class="hub-title">חשיבה וזיכרון</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">7 משחקים</div></div>
             <div class="hub-card" onclick="openCategory('emotion','רגשות ואנשים')"><div class="hub-icon">😊</div><div class="hub-title">רגשות ואנשים</div><div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">6 משחקים</div></div>
@@ -1967,6 +1968,53 @@
         </div>
     </div>
     <div id="feedback-layer" class="hidden feedback-icon"></div>
+
+    <!-- Train Route Screen (v77) -->
+    <div id="train-route-screen" class="hidden" style="background: linear-gradient(135deg, #1e88e5, #64b5f6); display:flex; flex-direction:column; align-items:center; justify-content:flex-start; min-height:100vh; padding:2vmin; box-sizing:border-box; width:100%; position:fixed; top:0; left:0; z-index:150; overflow-y:auto;">
+        <div class="top-bar" style="align-self:stretch; max-width:900px; margin:0 auto 2vmin; width:100%;">
+            <button class="exit-btn" onclick="exitTrainRoute()">➜ יציאה</button>
+            <h2 style="margin:0; font-size:clamp(18px,4.5vw,28px); color:#fff; text-shadow:0 2px 4px rgba(0,0,0,0.2); direction:rtl; font-weight:900;">🚂 מסלול הרכבת של רועי</h2>
+            <div style="width:60px;"></div>
+        </div>
+        
+        <div class="train-route-map-box" style="position:relative; width:min(94vw, 900px); aspect-ratio:2.3/1; background:linear-gradient(to bottom, #81d4fa, #c8e6c9); border:8px solid #5d4037; border-radius:32px; box-shadow:0 15px 40px rgba(0,0,0,0.3); overflow:hidden; margin:0 auto; user-select:none; touch-action:none;">
+            <!-- Curved Railroad SVG -->
+            <svg style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none;" viewBox="0 0 1000 400" preserveAspectRatio="none">
+                <!-- Under-ballast -->
+                <path d="M 120 260 C 210 100, 210 100, 300 140 C 390 180, 410 320, 500 260 C 590 200, 610 80, 700 140 C 790 200, 790 200, 880 260" stroke="rgba(0,0,0,0.12)" stroke-width="32" fill="none" stroke-linecap="round"/>
+                <!-- Railroad sleepers -->
+                <path d="M 120 260 C 210 100, 210 100, 300 140 C 390 180, 410 320, 500 260 C 590 200, 610 80, 700 140 C 790 200, 790 200, 880 260" stroke="#8d6e63" stroke-width="22" stroke-dasharray="8 14" fill="none" stroke-linecap="round"/>
+                <!-- Steel rails -->
+                <path d="M 120 254 C 210 94, 210 94, 300 134 C 390 174, 410 314, 500 254 C 590 194, 610 74, 700 134 C 790 194, 790 194, 880 254" stroke="#cfd8dc" stroke-width="3" fill="none"/>
+                <path d="M 120 266 C 210 106, 210 106, 300 146 C 390 186, 410 326, 500 266 C 590 206, 610 86, 700 146 C 790 206, 790 206, 880 266" stroke="#cfd8dc" stroke-width="3" fill="none"/>
+            </svg>
+
+            <!-- Station Nodes Containers -->
+            <div id="train-stations-layer" style="position:absolute; width:100%; height:100%; top:0; left:0; pointer-events:auto;"></div>
+
+            <!-- Roy's Train Avatar -->
+            <div id="train-roy-avatar" style="position:absolute; width:clamp(55px, 12vw, 75px); height:clamp(55px, 12vw, 75px); z-index:20; transition: left 1s ease-in-out, top 1s ease-in-out; transform: translate(-50%, -50%); pointer-events:none; left:12%; top:65%;">
+                <div style="position:relative; width:100%; height:100%; display:flex; align-items:center; justify-content:center; filter:drop-shadow(0 4px 10px rgba(0,0,0,0.3));">
+                    <span style="font-size:clamp(38px, 9vw, 55px); position:absolute; bottom:-4px; right:-2px; z-index:2; transform: scaleX(-1);">🚂</span>
+                    <img src="images/roy_sunglasses.jpg" style="width:clamp(22px, 5vw, 32px); height:clamp(22px, 5vw, 32px); border-radius:50%; border:2px solid #fff; position:absolute; top:4px; left:8px; z-index:3; object-fit:cover;" onerror="this.src='child_photo.jpg'" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Train Complete Overlay -->
+        <div id="train-complete-overlay" class="hidden" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); display:flex; align-items:center; justify-content:center; z-index:200; backdrop-filter:blur(8px);">
+            <div class="modal-box" style="text-align:center; padding:30px; border:6px solid #ffd166; background:#fff; border-radius:24px; box-shadow:0 12px 30px rgba(0,0,0,0.2); max-width:480px; width:90%; box-sizing:border-box;">
+                <h2 style="font-size:clamp(24px, 6vw, 36px); font-weight:900; color:#4caf50; text-shadow:0 2px 4px rgba(0,0,0,0.1); margin-top:0;">🚂 רכבת המנצחים! 🏆</h2>
+                <div style="font-size:clamp(16px, 4vw, 21px); font-weight:bold; color:#37474f; margin:15px 0 25px 0; direction:rtl; line-height:1.4;">
+                    כל הכבוד רועי! סיימת את כל תחנות הרכבת ופתרת את כל החידות! אתה אלוף אמיתי! 🎉
+                </div>
+                <div style="font-size:clamp(28px, 7vw, 42px); font-weight:900; color:#ff9800; margin-bottom:25px; display:flex; align-items:center; justify-content:center; gap:6px;">
+                    +15 ⭐
+                </div>
+                <button class="action-btn" onclick="closeTrainRouteComplete()" style="width:100%; height:55px; font-size:20px; font-weight:900; border-radius:18px;">חזרה לתפריט הראשי 🏠</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Toy Shelf Overlay (v57) -->
     <div id="toy-shelf-overlay" class="hidden" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); display:flex; align-items:center; justify-content:center; z-index:250; backdrop-filter:blur(8px);">
@@ -2442,6 +2490,12 @@
             playClickSound(); hideAllScreens();
             var agc = get('active-game-container');
             if (agc) agc.style.height = '';
+            if (typeof isTrainRouteMode !== 'undefined' && isTrainRouteMode) {
+                setAppBackground('create');
+                show('train-route-screen');
+                renderTrainRouteMap();
+                return;
+            }
             if(currentGameMode === 'emotion' || currentGameMode === 'emparts' || currentGameMode === 'missing' || currentGameMode === 'mgamish' || currentGameMode === 'firstletter' || currentGameMode === 'sharing' || currentGameMode === 'growth' || currentGameMode === 'goodbad' || currentGameMode === 'numwar' || currentGameMode === 'towertalk' || currentGameMode === 'cooppuzzle' || currentGameMode === 'tidyup' || currentGameMode === 'patterns' || currentGameMode === 'origins' || currentGameMode === 'families' || currentGameMode === 'whatneeds' || currentGameMode === 'calm' || currentGameMode === 'sounds' || currentGameMode === 'feelwhen' || currentGameMode === 'assemble' || currentGameMode === 'store' || currentGameMode === 'freeze' || currentGameMode === 'rescue' || currentGameMode === 'candle' || currentGameMode === 'detective' || currentGameMode === 'towertalk' || currentGameMode === 'path' || currentGameMode === 'museum' || currentGameMode === 'bridge' || currentGameMode === 'key' || WINNERS_GAMES.indexOf(currentGameMode) > -1) { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); } else if(currentGameMode === 'faces') { show('faces-mode-screen'); } else { show('unified-diff-screen'); }
         }
         function updateProgressUI() { for(let i=0;i<activeGameRounds;i++) { let d = get(`active-progress-container-dot-${i}`); if(d){ if(i < currentStep) d.classList.add('fill'); else d.classList.remove('fill'); } } }
@@ -2495,6 +2549,15 @@
             playClickSound(); hideAllScreens();
             var agc = get('active-game-container');
             if (agc) agc.style.height = '';
+            if (typeof isTrainRouteMode !== 'undefined' && isTrainRouteMode) {
+                setAppBackground('create');
+                show('train-route-screen');
+                let oldIdx = trainRouteCurrentIndex;
+                trainRouteCurrentIndex++;
+                renderTrainRouteMap();
+                animateTrainMovement(oldIdx, trainRouteCurrentIndex);
+                return;
+            }
             if(currentGameMode==='missing') { show('missing-lang-screen'); }
             else if(currentGameMode==='emotion' || currentGameMode==='emparts' || currentGameMode==='mgamish' || currentGameMode==='firstletter' || currentGameMode==='sharing' || currentGameMode==='growth' || currentGameMode==='goodbad' || currentGameMode==='numwar' || currentGameMode==='towertalk' || currentGameMode==='cooppuzzle' || currentGameMode==='tidyup' || currentGameMode==='patterns' || currentGameMode==='origins' || currentGameMode==='families' || currentGameMode==='whatneeds' || currentGameMode==='calm' || currentGameMode==='sounds' || currentGameMode==='feelwhen' || currentGameMode==='assemble' || currentGameMode==='store' || currentGameMode==='freeze' || currentGameMode==='rescue' || currentGameMode==='candle' || currentGameMode==='detective' || currentGameMode === 'towertalk' || currentGameMode === 'path' || currentGameMode === 'museum' || currentGameMode === 'bridge' || currentGameMode === 'key' || WINNERS_GAMES.indexOf(currentGameMode) > -1) { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); }
             else if(currentGameMode==='faces') { show('faces-mode-screen'); }
@@ -2515,6 +2578,286 @@
                 } catch(e) { console.error('closeLevelComplete error:', e); }
                 show('unified-diff-screen'); 
             } 
+        }
+
+        // ==========================================
+        // Train Route Mode (v77)
+        // ==========================================
+        let isTrainRouteMode = false;
+        let trainRouteStations = [];
+        let trainRouteCurrentIndex = 0;
+
+        const TRAIN_GAMES_INFO = {
+            'memory': { icon: '🧠', title: 'משחק הזיכרון' },
+            'diffscene': { icon: '🖼️', title: 'מה שונה בתמונה?' },
+            'diffvideo': { icon: '🎬', title: 'מה שונה בסרטון?' },
+            'tracing': { icon: '✏️', title: 'השלם את הצורה' },
+            'counting': { icon: '🔢', title: 'ספור את הצורות' },
+            'sequence': { icon: '🔄', title: 'סדר נכון' },
+            'diff': { icon: '🔎', title: 'זהה את השונה' },
+            'oddone': { icon: '🍎', title: 'יוצא דופן' },
+            'patterns': { icon: '🔴', title: 'תבניות' },
+            'missing': { icon: '🔤', title: 'איזו אות חסרה?' },
+            'tools': { icon: '🔨', title: 'מה הכלי המתאים?' },
+            'context': { icon: '🧩', title: 'מה שייך לכאן?' },
+            'vparts': { icon: '🚜', title: 'חלקי רכבים' },
+            'shape': { icon: '🖼️', title: 'השלם את הצורה' },
+            'bigger': { icon: '⚖️', title: 'מה יותר גדול?' },
+            'emotion': { icon: '🎭', title: 'איך הם מרגישים?' },
+            'habitat': { icon: '🏠', title: 'מי גר כאן?' },
+            'origins': { icon: '🥛', title: 'מאיפה זה מגיע?' },
+            'families': { icon: '🐕', title: 'הורה וגור' },
+            'shadow': { icon: '👤', title: 'של מי הצללית?' },
+            'halfhalf': { icon: '✂️', title: 'השלם את החצי' },
+            'assemble': { icon: '🧩', title: 'הרכבת חפצים' },
+            'store': { icon: '🏪', title: 'החנות של רועי' },
+            'freeze': { icon: '🕺', title: 'ריקוד הפסלים' },
+            'rescue': { icon: '🐢', title: 'חילוץ החיות' },
+            'candle': { icon: '🕯️', title: 'לכבות את הנר' },
+            'detective': { icon: '🔍', title: 'הבלש רועי' },
+            'towertalk': { icon: '🗼', title: 'מגדל התורות' },
+            'path': { icon: '🗺️', title: 'הנתיב המסתורי' },
+            'museum': { icon: '🦖', title: 'המוזיאון של רועי' },
+            'bridge': { icon: '🌉', title: 'בונים מחדש' },
+            'key': { icon: '🔑', title: 'המפתח הגבוה' },
+            'routine': { icon: '🌅', title: 'סדר יום' },
+            'feelwhen': { icon: '💭', title: 'מה מרגישים כש...' },
+            'cooppuzzle': { icon: '🧩', title: 'פאזל שיתופי' },
+            'tidyup': { icon: '🧹', title: 'סדר בחדר' },
+            'numwar': { icon: '🃏', title: 'מלחמת מספרים' },
+            'whatneeds': { icon: '🧰', title: 'מה צריך לעשות?' },
+            'calm': { icon: '🌬️', title: 'רגע של רוגע' },
+            'sounds': { icon: '🔊', title: 'מי עושה כך?' },
+            'faces': { icon: '🧑', title: 'פרצופים' },
+            'sharing': { icon: '🍕', title: 'שיתוף ואוכל' },
+            'growth': { icon: '🌱', title: 'צמיחה ולמידה' },
+            'goodbad': { icon: '👍', title: 'מעשה טוב או רע' }
+        };
+
+        const TRAIN_STATION_COORDS = [
+            { left: '12%', top: '65%' },
+            { left: '30%', top: '35%' },
+            { left: '50%', top: '65%' },
+            { left: '70%', top: '35%' },
+            { left: '88%', top: '65%' }
+        ];
+
+        function startTrainRoute() {
+            playClickSound();
+            isTrainRouteMode = true;
+            trainRouteCurrentIndex = 0;
+            
+            // Choose 5 random unique games from TRAIN_GAMES_INFO keys
+            let keys = Object.keys(TRAIN_GAMES_INFO);
+            let shuffled = shuffle(keys);
+            trainRouteStations = [];
+            
+            for (let i = 0; i < 5; i++) {
+                let gameId = shuffled[i];
+                let info = TRAIN_GAMES_INFO[gameId];
+                let difficulty = 1;
+                let requiresLvl = ['memory', 'diffscene', 'diffvideo', 'tracing', 'counting', 'sequence', 'diff', 'oddone', 'patterns', 'shape', 'bigger', 'origins', 'families', 'shadow', 'halfhalf', 'routine', 'tidyup', 'numwar', 'patterns', 'shape'];
+                if (requiresLvl.indexOf(gameId) > -1) {
+                    difficulty = 1 + rand(0, 3);
+                }
+                trainRouteStations.push({
+                    gameId: gameId,
+                    icon: info.icon,
+                    title: info.title,
+                    difficulty: difficulty
+                });
+            }
+            
+            hideAllScreens();
+            setAppBackground('create');
+            show('train-route-screen');
+            renderTrainRouteMap();
+        }
+
+        function exitTrainRoute() {
+            playClickSound();
+            isTrainRouteMode = false;
+            hideAllScreens();
+            setAppBackground('hub');
+            show('start-screen');
+        }
+
+        function renderTrainRouteMap() {
+            let layer = get('train-stations-layer');
+            if (!layer) return;
+            layer.innerHTML = '';
+            
+            trainRouteStations.forEach((station, idx) => {
+                let coord = TRAIN_STATION_COORDS[idx];
+                let isCompleted = idx < trainRouteCurrentIndex;
+                let isActive = idx === trainRouteCurrentIndex;
+                
+                let node = D.createElement('div');
+                node.style.position = 'absolute';
+                node.style.left = coord.left;
+                node.style.top = coord.top;
+                node.style.transform = 'translate(-50%, -50%)';
+                node.style.zIndex = '15';
+                
+                let content = '';
+                let borderStyle = 'border: 4px solid #b0bec5; background: #eceff1; color: #90a4ae;';
+                let pulsingClass = '';
+                let clickHandler = '';
+                
+                if (isCompleted) {
+                    borderStyle = 'border: 4px solid #2e7d32; background: #e8f5e9; color: #2e7d32;';
+                    content = '<span style="font-weight:900; font-size:26px;">✓</span>';
+                } else if (isActive) {
+                    borderStyle = 'border: 4px solid #ff8f00; background: #fffde7; color: #ff8f00; box-shadow:0 0 15px rgba(255,143,0,0.5); cursor:pointer;';
+                    content = `<span style="font-size:35px;">${station.icon}</span>`;
+                    pulsingClass = 'active-station-pulse';
+                    clickHandler = `onclick="launchTrainStationGame(${idx})"`;
+                    
+                    if (!D.getElementById('train-pulse-styles')) {
+                        let s = D.createElement('style');
+                        s.id = 'train-pulse-styles';
+                        s.innerHTML = `
+                            .active-station-pulse {
+                                animation: trainPulse 1.2s infinite alternate;
+                            }
+                            @keyframes trainPulse {
+                                0% { transform: translate(-50%, -50%) scale(1); }
+                                100% { transform: translate(-50%, -50%) scale(1.16); box-shadow: 0 0 25px rgba(255,143,0,0.8); }
+                            }
+                        `;
+                        D.head.appendChild(s);
+                    }
+                } else {
+                    content = '<span style="font-size:24px; filter:grayscale(100%); opacity:0.4;">🔒</span>';
+                }
+                
+                node.innerHTML = `
+                    <div ${clickHandler} class="${pulsingClass}" style="width:72px; height:72px; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 6px 12px rgba(0,0,0,0.15); transition:all 0.3s; ${borderStyle}">
+                        ${content}
+                    </div>
+                    <div style="position:absolute; top:78px; left:50%; transform:translateX(-50%); white-space:nowrap; background:rgba(255,255,255,0.85); border-radius:10px; padding:3px 8px; border:2px solid #5d4037; font-size:12px; font-weight:bold; color:#3e2723; direction:rtl; text-align:center; box-shadow:0 2px 4px rgba(0,0,0,0.1);">
+                        תחנה ${idx + 1}: ${station.title}
+                    </div>
+                `;
+                layer.appendChild(node);
+            });
+            
+            let avatar = get('train-roy-avatar');
+            if (avatar) {
+                if (trainRouteCurrentIndex < 5) {
+                    let activeCoord = TRAIN_STATION_COORDS[trainRouteCurrentIndex];
+                    avatar.style.display = 'block';
+                    avatar.style.left = activeCoord.left;
+                    avatar.style.top = activeCoord.top;
+                } else {
+                    avatar.style.display = 'none';
+                }
+            }
+        }
+
+        function animateTrainMovement(oldIdx, newIdx) {
+            if (newIdx >= 5) {
+                setTimeout(() => {
+                    triggerTrainRouteComplete();
+                }, 1200);
+                return;
+            }
+            
+            let avatar = get('train-roy-avatar');
+            if (avatar) {
+                let coord = TRAIN_STATION_COORDS[newIdx];
+                avatar.style.left = coord.left;
+                avatar.style.top = coord.top;
+            }
+        }
+
+        function launchTrainStationGame(idx) {
+            if (isProcessing) return;
+            let station = trainRouteStations[idx];
+            if (!station) return;
+            
+            playTrainWhistleSynth();
+            
+            isProcessing = true;
+            setTimeout(() => {
+                isProcessing = false;
+                
+                if (station.gameId === 'missing') {
+                    missingLang = 'he';
+                } else if (station.gameId === 'firstletter') {
+                    firstletterLang = 'he';
+                } else if (station.gameId === 'faces') {
+                    facesLang = 'he';
+                    facesMode = 'game';
+                }
+                
+                currentGameMode = station.gameId;
+                currentDifficulty = station.difficulty;
+                
+                startGameEngine(station.difficulty);
+            }, 1200);
+        }
+
+        function triggerTrainRouteComplete() {
+            playSuccessSound();
+            playTrainWhistleSynth();
+            
+            try {
+                if (typeof confetti === 'function') {
+                    confetti({ particleCount: 200, spread: 80, origin: { y: 0.6 }, zIndex: 1000 });
+                }
+            } catch(e){}
+            
+            for (let i = 0; i < 15; i++) {
+                setTimeout(() => {
+                    purseCount++;
+                    updateWalletDisplay();
+                    playClickSound();
+                }, i * 150);
+            }
+            
+            show('train-complete-overlay');
+        }
+
+        function closeTrainRouteComplete() {
+            playClickSound();
+            hide('train-complete-overlay');
+            exitTrainRoute();
+        }
+
+        function playTrainWhistleSynth() {
+            if (!audioCtx) return;
+            try {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                
+                let osc1 = audioCtx.createOscillator();
+                let osc2 = audioCtx.createOscillator();
+                let gainNode = audioCtx.createGain();
+                
+                osc1.type = 'triangle';
+                osc2.type = 'triangle';
+                
+                osc1.frequency.value = 587.33; 
+                osc2.frequency.value = 659.25; 
+                
+                osc1.connect(gainNode);
+                osc2.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                
+                let vol = 0.08 * (roySettings.muted ? 0 : roySettings.volume);
+                gainNode.gain.setValueAtTime(vol, audioCtx.currentTime);
+                gainNode.gain.linearRampToValueAtTime(vol, audioCtx.currentTime + 0.3);
+                gainNode.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
+                gainNode.gain.setValueAtTime(vol, audioCtx.currentTime + 0.55);
+                gainNode.gain.linearRampToValueAtTime(vol, audioCtx.currentTime + 0.7);
+                gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 1.1);
+                
+                osc1.start();
+                osc2.start();
+                
+                osc1.stop(audioCtx.currentTime + 1.2);
+                osc2.stop(audioCtx.currentTime + 1.2);
+            } catch(e){}
         }
 
         const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉','🍍'], 'vehicles': ['🚗','🚌','🚂','✈️','🚁','⛵'], 'animals': ['🐶','🐱','🦁','🐘','🐒','🦓'], 'toys': ['🧸','🏎️','🧱','🧩','⚽','🪁'] } };
