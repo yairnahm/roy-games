@@ -1969,34 +1969,71 @@
     </div>
     <div id="feedback-layer" class="hidden feedback-icon"></div>
 
-    <!-- Train Route Screen (v77) -->
-    <div id="train-route-screen" class="hidden" style="background: linear-gradient(135deg, #1e88e5, #64b5f6); display:flex; flex-direction:column; align-items:center; justify-content:flex-start; min-height:100vh; padding:2vmin; box-sizing:border-box; width:100%; position:fixed; top:0; left:0; z-index:150; overflow-y:auto;">
-        <div class="top-bar" style="align-self:stretch; max-width:900px; margin:0 auto 2vmin; width:100%;">
+        <!-- Train Route Screen (v78) -->
+    <div id="train-route-screen" class="hidden" style="background: linear-gradient(135deg, #0288d1, #26c6da); display:flex; flex-direction:column; align-items:center; justify-content:flex-start; min-height:100vh; padding:2vmin; box-sizing:border-box; width:100%; position:fixed; top:0; left:0; z-index:150; overflow-y:auto;">
+        <div class="top-bar" style="align-self:stretch; max-width:950px; margin:0 auto 2vmin; width:100%;">
             <button class="exit-btn" onclick="exitTrainRoute()">➜ יציאה</button>
             <h2 style="margin:0; font-size:clamp(18px,4.5vw,28px); color:#fff; text-shadow:0 2px 4px rgba(0,0,0,0.2); direction:rtl; font-weight:900;">🚂 מסלול הרכבת של רועי</h2>
             <div style="width:60px;"></div>
         </div>
         
-        <div class="train-route-map-box" style="position:relative; width:min(94vw, 900px); aspect-ratio:2.3/1; background:linear-gradient(to bottom, #81d4fa, #c8e6c9); border:8px solid #5d4037; border-radius:32px; box-shadow:0 15px 40px rgba(0,0,0,0.3); overflow:hidden; margin:0 auto; user-select:none; touch-action:none;">
-            <!-- Curved Railroad SVG -->
-            <svg style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none;" viewBox="0 0 1000 400" preserveAspectRatio="none">
+        <div class="train-route-map-box" style="position:relative; width:min(96vw, 950px); aspect-ratio:2.0/1; background:linear-gradient(to bottom, #81d4fa, #a5d6a7); border:10px solid #5d4037; border-radius:36px; box-shadow:0 20px 50px rgba(0,0,0,0.35); overflow:hidden; margin:0 auto; user-select:none; touch-action:none;">
+            <!-- Layered Cartoon Hills -->
+            <div style="position:absolute; bottom:-80px; left:-80px; width:550px; height:220px; background:#81c784; border-radius:50% / 100% 100% 0 0; z-index:1; opacity:0.9;"></div>
+            <div style="position:absolute; bottom:-100px; right:-100px; width:650px; height:260px; background:#66bb6a; border-radius:50% / 100% 100% 0 0; z-index:1; opacity:0.9;"></div>
+            
+            <!-- Cartoon Background Decorations -->
+            <div style="position:absolute; left:48%; top:10%; font-size:60px; z-index:2; opacity:0.5; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.1));">🏔️</div>
+            <div style="position:absolute; left:18%; top:50%; font-size:45px; z-index:2; opacity:0.75; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.1));">🏠</div>
+            <div style="position:absolute; left:75%; top:48%; font-size:50px; z-index:2; opacity:0.7; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.1));">🏞️</div>
+            
+            <!-- Trees and Flowers -->
+            <div style="position:absolute; left:6%; top:15%; font-size:42px; z-index:2;">🌲</div>
+            <div style="position:absolute; left:30%; top:58%; font-size:38px; z-index:2;">🌳</div>
+            <div style="position:absolute; left:66%; top:60%; font-size:40px; z-index:2;">🌲</div>
+            <div style="position:absolute; left:88%; top:12%; font-size:42px; z-index:2;">🌳</div>
+            
+            <div style="position:absolute; left:18%; top:78%; font-size:22px; z-index:2; opacity:0.8;">🌸</div>
+            <div style="position:absolute; left:52%; top:74%; font-size:22px; z-index:2; opacity:0.8;">🌼</div>
+            <div style="position:absolute; left:80%; top:82%; font-size:22px; z-index:2; opacity:0.8;">🌸</div>
+            
+            <!-- Floating Cloud Animation -->
+            <style>
+                .train-cloud {
+                    position:absolute; font-size:45px; z-index:2; opacity:0.8;
+                    animation: floatCloud 24s linear infinite alternate;
+                }
+                @keyframes floatCloud {
+                    0% { transform: translateX(0); }
+                    100% { transform: translateX(60px); }
+                }
+            </style>
+            <div class="train-cloud" style="left:12%; top:8%;">☁️</div>
+            <div class="train-cloud" style="right:25%; top:6%; animation-delay: -10s; animation-duration: 30s;">☁️</div>
+
+            <!-- Curved Railroad SVG (7-stations coordinates curve spline) -->
+            <svg style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:5;" viewBox="0 0 1000 500" preserveAspectRatio="none">
                 <!-- Under-ballast -->
-                <path d="M 120 260 C 210 100, 210 100, 300 140 C 390 180, 410 320, 500 260 C 590 200, 610 80, 700 140 C 790 200, 790 200, 880 260" stroke="rgba(0,0,0,0.12)" stroke-width="32" fill="none" stroke-linecap="round"/>
+                <path d="M 100 375 C 160 200, 160 200, 220 200 C 280 200, 300 350, 360 350 C 420 350, 440 150, 500 150 C 560 150, 580 350, 640 350 C 700 350, 720 200, 780 200 C 840 200, 840 200, 900 375" stroke="rgba(0,0,0,0.15)" stroke-width="36" fill="none" stroke-linecap="round"/>
                 <!-- Railroad sleepers -->
-                <path d="M 120 260 C 210 100, 210 100, 300 140 C 390 180, 410 320, 500 260 C 590 200, 610 80, 700 140 C 790 200, 790 200, 880 260" stroke="#8d6e63" stroke-width="22" stroke-dasharray="8 14" fill="none" stroke-linecap="round"/>
+                <path d="M 100 375 C 160 200, 160 200, 220 200 C 280 200, 300 350, 360 350 C 420 350, 440 150, 500 150 C 560 150, 580 350, 640 350 C 700 350, 720 200, 780 200 C 840 200, 840 200, 900 375" stroke="#8d6e63" stroke-width="26" stroke-dasharray="10 16" fill="none" stroke-linecap="round"/>
                 <!-- Steel rails -->
-                <path d="M 120 254 C 210 94, 210 94, 300 134 C 390 174, 410 314, 500 254 C 590 194, 610 74, 700 134 C 790 194, 790 194, 880 254" stroke="#cfd8dc" stroke-width="3" fill="none"/>
-                <path d="M 120 266 C 210 106, 210 106, 300 146 C 390 186, 410 326, 500 266 C 590 206, 610 86, 700 146 C 790 206, 790 206, 880 266" stroke="#cfd8dc" stroke-width="3" fill="none"/>
+                <path d="M 100 368 C 160 193, 160 193, 220 193 C 280 193, 300 343, 360 343 C 420 343, 440 143, 500 143 C 560 143, 580 343, 640 343 C 700 343, 720 193, 780 193 C 840 193, 840 193, 900 368" stroke="#cfd8dc" stroke-width="3.5" fill="none"/>
+                <path d="M 100 382 C 160 207, 160 207, 220 207 C 280 207, 300 357, 360 357 C 420 357, 440 157, 500 157 C 560 157, 580 357, 640 357 C 700 357, 720 207, 780 207 C 840 207, 840 207, 900 382" stroke="#cfd8dc" stroke-width="3.5" fill="none"/>
             </svg>
 
             <!-- Station Nodes Containers -->
-            <div id="train-stations-layer" style="position:absolute; width:100%; height:100%; top:0; left:0; pointer-events:auto;"></div>
+            <div id="train-stations-layer" style="position:absolute; width:100%; height:100%; top:0; left:0; pointer-events:auto; z-index:10;"></div>
 
             <!-- Roy's Train Avatar -->
-            <div id="train-roy-avatar" style="position:absolute; width:clamp(55px, 12vw, 75px); height:clamp(55px, 12vw, 75px); z-index:20; transition: left 1s ease-in-out, top 1s ease-in-out; transform: translate(-50%, -50%); pointer-events:none; left:12%; top:65%;">
-                <div style="position:relative; width:100%; height:100%; display:flex; align-items:center; justify-content:center; filter:drop-shadow(0 4px 10px rgba(0,0,0,0.3));">
-                    <span style="font-size:clamp(38px, 9vw, 55px); position:absolute; bottom:-4px; right:-2px; z-index:2; transform: scaleX(-1);">🚂</span>
-                    <img src="images/roy_sunglasses.jpg" style="width:clamp(22px, 5vw, 32px); height:clamp(22px, 5vw, 32px); border-radius:50%; border:2px solid #fff; position:absolute; top:4px; left:8px; z-index:3; object-fit:cover;" onerror="this.src='child_photo.jpg'" />
+            <div id="train-roy-avatar" style="position:absolute; width:clamp(75px, 15vw, 96px); height:clamp(75px, 15vw, 96px); z-index:20; transition: left 1.2s ease-in-out, top 1.2s ease-in-out; transform: translate(-50%, -50%); pointer-events:none; left:10%; top:75%;">
+                <div style="position:relative; width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+                    <!-- Circular window with gold border for Roy's picture -->
+                    <div style="width:clamp(65px, 13vw, 84px); height:clamp(65px, 13vw, 84px); border-radius:50%; border:5px solid #ffca28; box-shadow:0 8px 24px rgba(0,0,0,0.35); overflow:hidden; background:#fff; position:relative; z-index:2;">
+                        <img src="images/roy_train_driver.jpg" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='images/roy_sunglasses.jpg'" />
+                    </div>
+                    <!-- Small train emoji decoration -->
+                    <span style="position:absolute; bottom:-6px; right:-6px; font-size:clamp(28px, 6vw, 36px); filter:drop-shadow(0 3px 6px rgba(0,0,0,0.3)); z-index:3;">🚂</span>
                 </div>
             </div>
         </div>
@@ -2580,8 +2617,8 @@
             } 
         }
 
-        // ==========================================
-        // Train Route Mode (v77)
+                // ==========================================
+        // Train Route Mode (v78)
         // ==========================================
         let isTrainRouteMode = false;
         let trainRouteStations = [];
@@ -2635,11 +2672,13 @@
         };
 
         const TRAIN_STATION_COORDS = [
-            { left: '12%', top: '65%' },
-            { left: '30%', top: '35%' },
-            { left: '50%', top: '65%' },
-            { left: '70%', top: '35%' },
-            { left: '88%', top: '65%' }
+            { left: '10%', top: '75%' },
+            { left: '22%', top: '40%' },
+            { left: '36%', top: '70%' },
+            { left: '50%', top: '30%' },
+            { left: '64%', top: '70%' },
+            { left: '78%', top: '40%' },
+            { left: '90%', top: '75%' }
         ];
 
         function startTrainRoute() {
@@ -2647,12 +2686,12 @@
             isTrainRouteMode = true;
             trainRouteCurrentIndex = 0;
             
-            // Choose 5 random unique games from TRAIN_GAMES_INFO keys
+            // Choose 7 random unique games from TRAIN_GAMES_INFO keys
             let keys = Object.keys(TRAIN_GAMES_INFO);
             let shuffled = shuffle(keys);
             trainRouteStations = [];
             
-            for (let i = 0; i < 5; i++) {
+            for (let i = 0; i < 7; i++) {
                 let gameId = shuffled[i];
                 let info = TRAIN_GAMES_INFO[gameId];
                 let difficulty = 1;
@@ -2697,21 +2736,26 @@
                 node.style.left = coord.left;
                 node.style.top = coord.top;
                 node.style.transform = 'translate(-50%, -50%)';
-                node.style.zIndex = '15';
+                node.style.zIndex = '30'; // Top layer above tracks & backgrounds
                 
                 let content = '';
                 let borderStyle = 'border: 4px solid #b0bec5; background: #eceff1; color: #90a4ae;';
                 let pulsingClass = '';
-                let clickHandler = '';
                 
                 if (isCompleted) {
                     borderStyle = 'border: 4px solid #2e7d32; background: #e8f5e9; color: #2e7d32;';
                     content = '<span style="font-weight:900; font-size:26px;">✓</span>';
                 } else if (isActive) {
-                    borderStyle = 'border: 4px solid #ff8f00; background: #fffde7; color: #ff8f00; box-shadow:0 0 15px rgba(255,143,0,0.5); cursor:pointer;';
+                    borderStyle = 'border: 4px solid #ff8f00; background: #fffde7; color: #ff8f00; box-shadow:0 0 15px rgba(255,143,0,0.5);';
                     content = `<span style="font-size:35px;">${station.icon}</span>`;
                     pulsingClass = 'active-station-pulse';
-                    clickHandler = `onclick="launchTrainStationGame(${idx})"`;
+                    
+                    // Bind the click handler directly via JS property on the node element
+                    node.style.cursor = 'pointer';
+                    node.onclick = (e) => {
+                        e.stopPropagation();
+                        launchTrainStationGame(idx);
+                    };
                     
                     if (!D.getElementById('train-pulse-styles')) {
                         let s = D.createElement('style');
@@ -2721,8 +2765,8 @@
                                 animation: trainPulse 1.2s infinite alternate;
                             }
                             @keyframes trainPulse {
-                                0% { transform: translate(-50%, -50%) scale(1); }
-                                100% { transform: translate(-50%, -50%) scale(1.16); box-shadow: 0 0 25px rgba(255,143,0,0.8); }
+                                0% { transform: scale(1); }
+                                100% { transform: scale(1.15); box-shadow: 0 0 25px rgba(255,143,0,0.8); }
                             }
                         `;
                         D.head.appendChild(s);
@@ -2732,10 +2776,10 @@
                 }
                 
                 node.innerHTML = `
-                    <div ${clickHandler} class="${pulsingClass}" style="width:72px; height:72px; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 6px 12px rgba(0,0,0,0.15); transition:all 0.3s; ${borderStyle}">
+                    <div class="${pulsingClass}" style="width:72px; height:72px; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 6px 12px rgba(0,0,0,0.15); transition:all 0.3s; ${borderStyle}">
                         ${content}
                     </div>
-                    <div style="position:absolute; top:78px; left:50%; transform:translateX(-50%); white-space:nowrap; background:rgba(255,255,255,0.85); border-radius:10px; padding:3px 8px; border:2px solid #5d4037; font-size:12px; font-weight:bold; color:#3e2723; direction:rtl; text-align:center; box-shadow:0 2px 4px rgba(0,0,0,0.1);">
+                    <div style="position:absolute; top:78px; left:50%; transform:translateX(-50%); white-space:nowrap; background:rgba(255,255,255,0.85); border-radius:10px; padding:3px 8px; border:2px solid #5d4037; font-size:12px; font-weight:bold; color:#3e2723; direction:rtl; text-align:center; box-shadow:0 2px 4px rgba(0,0,0,0.1); pointer-events:none;">
                         תחנה ${idx + 1}: ${station.title}
                     </div>
                 `;
@@ -2744,7 +2788,7 @@
             
             let avatar = get('train-roy-avatar');
             if (avatar) {
-                if (trainRouteCurrentIndex < 5) {
+                if (trainRouteCurrentIndex < 7) {
                     let activeCoord = TRAIN_STATION_COORDS[trainRouteCurrentIndex];
                     avatar.style.display = 'block';
                     avatar.style.left = activeCoord.left;
@@ -2756,10 +2800,10 @@
         }
 
         function animateTrainMovement(oldIdx, newIdx) {
-            if (newIdx >= 5) {
+            if (newIdx >= 7) {
                 setTimeout(() => {
                     triggerTrainRouteComplete();
-                }, 1200);
+                }, 1400);
                 return;
             }
             
@@ -2860,7 +2904,7 @@
             } catch(e){}
         }
 
-        const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉','🍍'], 'vehicles': ['🚗','🚌','🚂','✈️','🚁','⛵'], 'animals': ['🐶','🐱','🦁','🐘','🐒','🦓'], 'toys': ['🧸','🏎️','🧱','🧩','⚽','🪁'] } };
+const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉','🍍'], 'vehicles': ['🚗','🚌','🚂','✈️','🚁','⛵'], 'animals': ['🐶','🐱','🦁','🐘','🐒','🦓'], 'toys': ['🧸','🏎️','🧱','🧩','⚽','🪁'] } };
         
         // 1. Memory
         let memItems = []; let memOrder = []; let memHide = -1;
