@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-07-18-v95-soundmatch-game -->
+<!DOCTYPE html><!-- build: 2026-07-18-v98-growth-narration -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -886,6 +886,7 @@
         .sharing-img-btn:hover { transform:scale(1.04); box-shadow:0 12px 28px rgba(0,0,0,0.28); }
         .sharing-img-btn:active { transform:scale(0.96); }
         .sharing-img-btn:disabled { opacity:0.4; cursor:not-allowed; transform:none; }
+        .sharing-img-btn.growth-narrate-active { opacity:1 !important; border-color:#ffc107 !important; box-shadow:0 0 0 6px rgba(255,193,7,0.55), 0 10px 22px rgba(0,0,0,0.3) !important; transform:scale(1.05) !important; }
         .sharing-img-btn.correct-flash { border-color:#4CAF50; box-shadow:0 0 0 6px #4CAF50; }
         .sharing-img-btn.wrong-flash { border-color:#f44336; animation:shake 0.5s ease; }
 
@@ -9518,7 +9519,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/33_migdal_mechudash/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/33_migdal_mechudash/bechira_tova.webp',
                     badText:  'עומר מתייאש ולא מנסה לבנות מחדש את המגדל',
-                    goodText: 'עומר בונה מחדש עם בסיס רחב יותר!'
+                    goodText: 'עומר בונה מחדש עם בסיס רחב יותר!',
+                    badAudio: 'sharing/bad33.mp3',
+                    goodAudio: 'sharing/good33.mp3'
                 },
                 {
                     question:  'לעומר יש פאזל שהוא כבר פתר בעבר. מה יעשה עומר?',
@@ -9530,7 +9533,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/34_chida_chozeret/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/34_chida_chozeret/bechira_tova.webp',
                     badText:  'עומר מהסס ולא רוצה לגעת בפאזל כי הוא כבר פתר אותו בעבר',
-                    goodText: 'עומר ניגש לפאזל בביטחון, כי הוא כבר הצליח בו!'
+                    goodText: 'עומר ניגש לפאזל בביטחון, כי הוא כבר הצליח בו!',
+                    badAudio: 'sharing/bad34.mp3',
+                    goodAudio: 'sharing/good34.mp3'
                 },
                 {
                     question:  'עומר ניסה משהו ולא הצליח. מה יגיד עומר לעצמו?',
@@ -9542,7 +9547,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/35_machshava_chiuvit/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/35_machshava_chiuvit/bechira_tova.webp',
                     badText:  'עומר אומר לעצמו שהוא לא מוצלח וכועס על עצמו',
-                    goodText: 'עומר אומר לעצמו שהוא יכול להשתפר!'
+                    goodText: 'עומר אומר לעצמו שהוא יכול להשתפר!',
+                    badAudio: 'sharing/bad35.mp3',
+                    goodAudio: 'sharing/good35.mp3'
                 },
                 {
                     question:  'בלוח על הקיר יש כוכבים וגם איקסים מנסיונות קודמים של עומר. במה יסתכל עומר?',
@@ -9554,7 +9561,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/36_luach_hesegim/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/36_luach_hesegim/bechira_tova.webp',
                     badText:  'עומר מסתכל רק על האיקסים ומתעצב',
-                    goodText: 'עומר מסתכל על הכוכבים ושמח בהצלחות שלו!'
+                    goodText: 'עומר מסתכל על הכוכבים ושמח בהצלחות שלו!',
+                    badAudio: 'sharing/bad36.mp3',
+                    goodAudio: 'sharing/good36.mp3'
                 },
                 {
                     question:  'מונחת לפני עומר חידה חדשה, דומה לקודמת. איך ירגיש עומר?',
@@ -9566,7 +9575,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/37_chida_chadasha_atid/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/37_chida_chadasha_atid/bechira_tova.webp',
                     badText:  'עומר דואג שהחידה החדשה תהיה קשה מדי בשבילו',
-                    goodText: 'עומר מתרגש ומצפה בשמחה לנסות את החידה החדשה!'
+                    goodText: 'עומר מתרגש ומצפה בשמחה לנסות את החידה החדשה!',
+                    badAudio: 'sharing/bad37.mp3',
+                    goodAudio: 'sharing/good37.mp3'
                 },
                 {
                     question:  'קבוצת ילדים משחקת במגרש, ועומר עומד קצת בצד. מה יעשה עומר?',
@@ -9578,7 +9589,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/38_hitztarfut_lakvutza/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/38_hitztarfut_lakvutza/bechira_tova.webp',
                     badText:  'עומר נשאר לבד בצד ולא מצטרף למשחק',
-                    goodText: 'עומר מצטרף לקבוצה ושואל אם אפשר לשחק, וכולם שמחים לקבל אותו!'
+                    goodText: 'עומר מצטרף לקבוצה ושואל אם אפשר לשחק, וכולם שמחים לקבל אותו!',
+                    badAudio: 'sharing/bad38.mp3',
+                    goodAudio: 'sharing/good38.mp3'
                 },
                 {
                     question:  'לחבר של עומר יש שריטה בברך והוא קצת עצוב. מה יעשה עומר?',
@@ -9590,7 +9603,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/39_ezra_lechaver/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/39_ezra_lechaver/bechira_tova.webp',
                     badText:  'עומר ממשיך לשחק לבד ולא שם לב שהחבר שלו עצוב',
-                    goodText: 'עומר ניגש לחבר ושואל אותו אם הוא בסדר!'
+                    goodText: 'עומר ניגש לחבר ושואל אותו אם הוא בסדר!',
+                    badAudio: 'sharing/bad39.mp3',
+                    goodAudio: 'sharing/good39.mp3'
                 },
                 {
                     question:  'עומר וחברו רוצים את אותה משאית בדיוק באותו רגע. מה יעשה עומר?',
@@ -9602,7 +9617,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/40_tor_bamasait/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/40_tor_bamasait/bechira_tova.webp',
                     badText:  'עומר מושך את המשאית בכוח כדי לקחת אותה לעצמו',
-                    goodText: 'עומר מציע לעשות תורות עם המשאית!'
+                    goodText: 'עומר מציע לעשות תורות עם המשאית!',
+                    badAudio: 'sharing/bad40.mp3',
+                    goodAudio: 'sharing/good40.mp3'
                 },
                 {
                     question:  'חבר שלו בקבוצה טעה ונתן נקודה ליריבה. מה יעשה עומר?',
@@ -9614,7 +9631,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/41_eedud_chaver/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/41_eedud_chaver/bechira_tova.webp',
                     badText:  'עומר כועס על החבר שלו ואומר לו שהוא קלקל את המשחק',
-                    goodText: 'עומר מעודד את החבר שלו ואומר לו שבפעם הבאה יצליח!'
+                    goodText: 'עומר מעודד את החבר שלו ואומר לו שבפעם הבאה יצליח!',
+                    badAudio: 'sharing/bad41.mp3',
+                    goodAudio: 'sharing/good41.mp3'
                 },
                 {
                     question:  'שלושה ילדים רוצים את אותו הצעצוע בדיוק. מה יעשה עומר?',
@@ -9626,7 +9645,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/42_pitaron_meshutaf/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/42_pitaron_meshutaf/bechira_tova.webp',
                     badText:  'עומר מתעקש שהצעצוע שייך רק לו',
-                    goodText: 'עומר מציע רעיון, מקשיב לחברים, וכולם מוצאים פתרון ביחד!'
+                    goodText: 'עומר מציע רעיון, מקשיב לחברים, וכולם מוצאים פתרון ביחד!',
+                    badAudio: 'sharing/bad42.mp3',
+                    goodAudio: 'sharing/good42.mp3'
                 },
                 {
                     question:  'על המדף יש צעצוע ישן ומוכר, וגם צעצוע חדש באריזה. באיזה צעצוע יבחר עומר?',
@@ -9638,7 +9659,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/43_tzaatzua_chadash/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/43_tzaatzua_chadash/bechira_tova.webp',
                     badText:  'עומר בוחר שוב בצעצוע הישן ולא מנסה את החדש',
-                    goodText: 'עומר בוחר לנסות את הצעצוע החדש!'
+                    goodText: 'עומר בוחר לנסות את הצעצוע החדש!',
+                    badAudio: 'sharing/bad43.mp3',
+                    goodAudio: 'sharing/good43.mp3'
                 },
                 {
                     question:  'בפינת האמנות מראים לעומר דרך חדשה ומיוחדת לצייר. מה יעשה עומר?',
@@ -9650,7 +9673,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/44_tichnika_chadasha/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/44_tichnika_chadasha/bechira_tova.webp',
                     badText:  'עומר מסרב לנסות ומעדיף לצייר כמו תמיד',
-                    goodText: 'עומר מנסה לצייר בדרך החדשה ונהנה מאוד!'
+                    goodText: 'עומר מנסה לצייר בדרך החדשה ונהנה מאוד!',
+                    badAudio: 'sharing/bad44.mp3',
+                    goodAudio: 'sharing/good44.mp3'
                 },
                 {
                     question:  'עומר יושב במעגל עם ילדים אחרים, ויש לו רעיון למשחק. מה יעשה עומר?',
@@ -9662,7 +9687,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/45_raayon_bekvutza/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/45_raayon_bekvutza/bechira_tova.webp',
                     badText:  'עומר שומר את הרעיון לעצמו ולא אומר כלום',
-                    goodText: 'עומר מרים יד ומשתף את הרעיון שלו עם כולם!'
+                    goodText: 'עומר מרים יד ומשתף את הרעיון שלו עם כולם!',
+                    badAudio: 'sharing/bad45.mp3',
+                    goodAudio: 'sharing/good45.mp3'
                 },
                 {
                     question:  'על לוח המודעות יש דף הרשמה לתחרות בבית הספר. מה יעשה עומר?',
@@ -9674,7 +9701,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/46_harshama_letacharut/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/46_harshama_letacharut/bechira_tova.webp',
                     badText:  'עומר מסתכל בדף ההרשמה אבל לא ניגש להירשם',
-                    goodText: 'עומר נרשם לתחרות בעצמו!'
+                    goodText: 'עומר נרשם לתחרות בעצמו!',
+                    badAudio: 'sharing/bad46.mp3',
+                    goodAudio: 'sharing/good46.mp3'
                 },
                 {
                     question:  'לעומר יש קופסה עם דש שקשה לפתוח, והוא כבר ניסה קצת. מה יעשה עומר?',
@@ -9686,7 +9715,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/47_bakashat_ezra/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/47_bakashat_ezra/bechira_tova.webp',
                     badText:  'עומר ממשיך למשוך בכוח ומתוסכל בלי לבקש עזרה',
-                    goodText: 'עומר מבקש עזרה אחרי שניסה בעצמו!'
+                    goodText: 'עומר מבקש עזרה אחרי שניסה בעצמו!',
+                    badAudio: 'sharing/bad47.mp3',
+                    goodAudio: 'sharing/good47.mp3'
                 },
                 {
                     question:  'עומר תקוע בתרגיל בדף העבודה ומתוסכל. מה יעשה עומר?',
@@ -9698,7 +9729,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/48_harama_yad_leezra/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/48_harama_yad_leezra/bechira_tova.webp',
                     badText:  'עומר יושב בשקט ומתוסכל בלי להרים יד',
-                    goodText: 'עומר מרים יד ומבקש עזרה!'
+                    goodText: 'עומר מרים יד ומבקש עזרה!',
+                    badAudio: 'sharing/bad48.mp3',
+                    goodAudio: 'sharing/good48.mp3'
                 },
                 {
                     question:  'יש לעומר שאלה בשיעורי בית שהוא לא מבין. מה יבקש עומר?',
@@ -9710,7 +9743,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/49_havanat_hashita/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/49_havanat_hashita/bechira_tova.webp',
                     badText:  'עומר מבקש רק את התשובה בלי להבין איך פותרים',
-                    goodText: 'עומר מבקש שיסבירו לו איך לפתור, לא רק את התשובה!'
+                    goodText: 'עומר מבקש שיסבירו לו איך לפתור, לא רק את התשובה!',
+                    badAudio: 'sharing/bad49.mp3',
+                    goodAudio: 'sharing/good49.mp3'
                 },
                 {
                     question:  'הצעצוע של עומר נשבר, ויש לידו גם אמא וגם אדם זר. ממי יבקש עומר עזרה?',
@@ -9722,7 +9757,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/50_pnia_lamekor_nachon/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/50_pnia_lamekor_nachon/bechira_tova.webp',
                     badText:  'עומר פונה לאדם הזר במקום לאמא',
-                    goodText: 'עומר פונה לאמא שיודעת לעזור לו!'
+                    goodText: 'עומר פונה לאמא שיודעת לעזור לו!',
+                    badAudio: 'sharing/bad50.mp3',
+                    goodAudio: 'sharing/good50.mp3'
                 },
                 {
                     question:  'לעומר ולחברו יש פרויקט משותף להכין. מה יעשו הילדים?',
@@ -9734,7 +9771,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/51_avoda_meshutefet/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/51_avoda_meshutefet/bechira_tova.webp',
                     badText:  'עומר עושה הכל לבד ולא נותן לחבר שלו להשתתף',
-                    goodText: 'עומר וחברו מחלקים את העבודה ביניהם ועובדים יחד!'
+                    goodText: 'עומר וחברו מחלקים את העבודה ביניהם ועובדים יחד!',
+                    badAudio: 'sharing/bad51.mp3',
+                    goodAudio: 'sharing/good51.mp3'
                 },
                 {
                     question:  'בפינת החדר יש מנורה שמהבהבת. מה ישים לב עומר?',
@@ -9746,7 +9785,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/52_menora_mehavhevet/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/52_menora_mehavhevet/bechira_tova.webp',
                     badText:  'עומר ממשיך במשחק ולא שם לב למנורה המהבהבת',
-                    goodText: 'עומר שם לב למנורה המהבהבת ומסתכל לכיוונה!'
+                    goodText: 'עומר שם לב למנורה המהבהבת ומסתכל לכיוונה!',
+                    badAudio: 'sharing/bad52.mp3',
+                    goodAudio: 'sharing/good52.mp3'
                 },
                 {
                     question:  'מהמטבח מגיע ריח חדש ומעניין. מה יעשה עומר?',
@@ -9758,7 +9799,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/53_reach_chadash/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/53_reach_chadash/bechira_tova.webp',
                     badText:  'עומר ממשיך במשחק שלו ולא שם לב לריח החדש',
-                    goodText: 'עומר מריח את הריח ומסתכל לכיוון המטבח!'
+                    goodText: 'עומר מריח את הריח ומסתכל לכיוון המטבח!',
+                    badAudio: 'sharing/bad53.mp3',
+                    goodAudio: 'sharing/good53.mp3'
                 },
                 {
                     question:  'משהו קטן זז בקצה החדר בזמן שעומר משחק. מה יעשה עומר?',
@@ -9770,7 +9813,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/54_tnua_bakatze/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/54_tnua_bakatze/bechira_tova.webp',
                     badText:  'עומר ממשיך לשחק בלי לשים לב לתזוזה בפינת החדר',
-                    goodText: 'עומר שם לב לתזוזה ומסתכל לכיוון הזה!'
+                    goodText: 'עומר שם לב לתזוזה ומסתכל לכיוון הזה!',
+                    badAudio: 'sharing/bad54.mp3',
+                    goodAudio: 'sharing/good54.mp3'
                 },
                 {
                     question:  'הרדיו בפינת החדר נהיה חזק יותר ויותר. מה יעשה עומר?',
@@ -9782,7 +9827,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/55_haalaat_kol/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/55_haalaat_kol/bechira_tova.webp',
                     badText:  'עומר לא שם לב שהרדיו הולך ומתחזק',
-                    goodText: 'עומר שם לב לשינוי ומסתכל לכיוון הרדיו!'
+                    goodText: 'עומר שם לב לשינוי ומסתכל לכיוון הרדיו!',
+                    badAudio: 'sharing/bad55.mp3',
+                    goodAudio: 'sharing/good55.mp3'
                 },
                 {
                     question:  'על השולחן יש קופסה מסתורית וסגורה. מה יעשה עומר?',
@@ -9794,7 +9841,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/56_kufsa_mistorit/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/56_kufsa_mistorit/bechira_tova.webp',
                     badText:  'עומר ממשיך במה שעשה ולא מתקרב לבדוק את הקופסה',
-                    goodText: 'עומר מתקרב לשולחן כדי לבדוק את הקופסה!'
+                    goodText: 'עומר מתקרב לשולחן כדי לבדוק את הקופסה!',
+                    badAudio: 'sharing/bad56.mp3',
+                    goodAudio: 'sharing/good56.mp3'
                 },
                 {
                     question:  'יש דלת פתוחה לחדר לא מוכר. מה יעשה עומר?',
@@ -9806,7 +9855,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/57_cheder_lo_mukar/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/57_cheder_lo_mukar/bechira_tova.webp',
                     badText:  'עומר נשאר בחוץ ולא נכנס לחדר הלא מוכר',
-                    goodText: 'עומר נכנס לחדר ומסתכל סביבו בסקרנות!'
+                    goodText: 'עומר נכנס לחדר ומסתכל סביבו בסקרנות!',
+                    badAudio: 'sharing/bad57.mp3',
+                    goodAudio: 'sharing/good57.mp3'
                 },
                 {
                     question:  'על שולחן בצד השני של החדר יש מכשיר מוזר שעומר לא מכיר. מה יעשה עומר?',
@@ -9818,7 +9869,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/58_machshir_lo_mukar/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/58_machshir_lo_mukar/bechira_tova.webp',
                     badText:  'עומר מסתכל מרחוק ולא מתקרב למכשיר',
-                    goodText: 'עומר מתקרב לשולחן כדי לבדוק את המכשיר מקרוב!'
+                    goodText: 'עומר מתקרב לשולחן כדי לבדוק את המכשיר מקרוב!',
+                    badAudio: 'sharing/bad58.mp3',
+                    goodAudio: 'sharing/good58.mp3'
                 },
                 {
                     question:  'יש פינה בגינה שעומר עוד לא חקר. מה יעשה עומר?',
@@ -9830,7 +9883,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/59_pinat_gan_chadasha/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/59_pinat_gan_chadasha/bechira_tova.webp',
                     badText:  'עומר נשאר במקום ולא הולך לחקור את הפינה החדשה',
-                    goodText: 'עומר הולך אל הפינה החדשה בגינה כדי לחקור אותה!'
+                    goodText: 'עומר הולך אל הפינה החדשה בגינה כדי לחקור אותה!',
+                    badAudio: 'sharing/bad59.mp3',
+                    goodAudio: 'sharing/good59.mp3'
                 },
                 {
                     question:  'לעומר יש שעון צעצוע עם גלגלי שיניים שרואים בבירור. מה עומר עושה איתו הרבה זמן?',
@@ -9842,7 +9897,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/60_shaon_mechani/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/60_shaon_mechani/bechira_tova.webp',
                     badText:  'עומר מסתכל רגע קצר בשעון ועובר הלאה',
-                    goodText: 'עומר ממשיך לגעת ולסובב את הגלגלים שוב ושוב, כי זה מעניין אותו!'
+                    goodText: 'עומר ממשיך לגעת ולסובב את הגלגלים שוב ושוב, כי זה מעניין אותו!',
+                    badAudio: 'sharing/bad60.mp3',
+                    goodAudio: 'sharing/good60.mp3'
                 },
                 {
                     question:  'על השולחן יש חפץ שמרגיש מוזר ומיוחד למגע. מה יעשה עומר?',
@@ -9854,7 +9911,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/61_merkam_meyuchad/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/61_merkam_meyuchad/bechira_tova.webp',
                     badText:  'עומר לא נוגע בחפץ ועובר הלאה',
-                    goodText: 'עומר לוחץ ומותח את החפץ ובודק אותו בעניין!'
+                    goodText: 'עומר לוחץ ומותח את החפץ ובודק אותו בעניין!',
+                    badAudio: 'sharing/bad61.mp3',
+                    goodAudio: 'sharing/good61.mp3'
                 },
                 {
                     question:  'לעומר יש צעצוע עם חלקים שזזים. מה יעשה עומר?',
@@ -9866,7 +9925,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/62_tzaatzua_mifrakim/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/62_tzaatzua_mifrakim/bechira_tova.webp',
                     badText:  'עומר מניח את הצעצוע בצד בלי לבדוק איך הוא עובד',
-                    goodText: 'עומר מזיז את החלקים של הצעצוע ובודק איך הם עובדים!'
+                    goodText: 'עומר מזיז את החלקים של הצעצוע ובודק איך הם עובדים!',
+                    badAudio: 'sharing/bad62.mp3',
+                    goodAudio: 'sharing/good62.mp3'
                 },
                 {
                     question:  'אחרי הגשם, יש מים שזורמים לתוך הביוב ברחוב. מה יעשה עומר?',
@@ -9878,7 +9939,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/63_mayim_bebiyev/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/63_mayim_bebiyev/bechira_tova.webp',
                     badText:  'עומר ממשיך ללכת בלי לשים לב למים הזורמים',
-                    goodText: 'עומר עוצר ומתכופף לצפות במים הזורמים!'
+                    goodText: 'עומר עוצר ומתכופף לצפות במים הזורמים!',
+                    badAudio: 'sharing/bad63.mp3',
+                    goodAudio: 'sharing/good63.mp3'
                 },
                 {
                     question:  'אבא מתקן שרשרת של אופניים בחצר. מה יעשה עומר?',
@@ -9890,7 +9953,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/64_tikun_ofanaim/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/64_tikun_ofanaim/bechira_tova.webp',
                     badText:  'עומר ממשיך לשחק לבד ולא מתעניין במה שאבא עושה',
-                    goodText: 'עומר עומד ליד אבא וצופה בתיקון בעניין רב!'
+                    goodText: 'עומר עומד ליד אבא וצופה בתיקון בעניין רב!',
+                    badAudio: 'sharing/bad64.mp3',
+                    goodAudio: 'sharing/good64.mp3'
                 },
                 {
                     question:  'יש קן ציפורים בבניה על עץ בחצר. מה יעשה עומר?',
@@ -9902,7 +9967,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/65_ken_tzipor/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/65_ken_tzipor/bechira_tova.webp',
                     badText:  'עומר מסתכל פעם אחת בקן ולא חוזר לבדוק שוב',
-                    goodText: 'עומר חוזר כל יום כדי לבדוק איך הקן מתקדם!'
+                    goodText: 'עומר חוזר כל יום כדי לבדוק איך הקן מתקדם!',
+                    badAudio: 'sharing/bad65.mp3',
+                    goodAudio: 'sharing/good65.mp3'
                 },
                 {
                     question:  'לעומר יש שאלה בראש, ומעל הראש שלו יש עננת מחשבה. מה עומר עושה עם המחשבה שלו?',
@@ -9914,7 +9981,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/66_sheela_ptucha/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/66_sheela_ptucha/bechira_tova.webp',
                     badText:  'עומר משאיר את עננת המחשבה ריקה ולא חושב על תשובות',
-                    goodText: 'עומר ממלא את עננת המחשבה שלו בהרבה רעיונות!'
+                    goodText: 'עומר ממלא את עננת המחשבה שלו בהרבה רעיונות!',
+                    badAudio: 'sharing/bad66.mp3',
+                    goodAudio: 'sharing/good66.mp3'
                 },
                 {
                     question:  'לעומר יש חידה עם צורה לא רגילה. מה יעשה עומר?',
@@ -9926,7 +9995,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/67_chida_lo_regila/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/67_chida_lo_regila/bechira_tova.webp',
                     badText:  'עומר מוותר אחרי ניסיון אחד שלא הצליח',
-                    goodText: 'עומר מנסה כמה דרכים שונות ויצירתיות לפתור את החידה!'
+                    goodText: 'עומר מנסה כמה דרכים שונות ויצירתיות לפתור את החידה!',
+                    badAudio: 'sharing/bad67.mp3',
+                    goodAudio: 'sharing/good67.mp3'
                 },
                 {
                     question:  'עומר סגר ספר שלא מספר איך הסיפור נגמר. מה עומר עושה עם המחשבה שלו?',
@@ -9938,7 +10009,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/68_sof_patuach/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/68_sof_patuach/bechira_tova.webp',
                     badText:  'עומר סוגר את הספר ולא חושב על סוף אפשרי',
-                    goodText: 'עומר חושב על כמה דרכים שהסיפור יכול להיגמר!'
+                    goodText: 'עומר חושב על כמה דרכים שהסיפור יכול להיגמר!',
+                    badAudio: 'sharing/bad68.mp3',
+                    goodAudio: 'sharing/good68.mp3'
                 },
                 {
                     question:  'לעומר יש קוביות בניה בלי הוראות. מה יבנה עומר?',
@@ -9950,7 +10023,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/69_binyan_yetzirati/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/69_binyan_yetzirati/bechira_tova.webp',
                     badText:  'עומר לא יודע מה לבנות בלי הוראות ומניח את הקוביות בצד',
-                    goodText: 'עומר בונה כמה מבנים שונים ומקוריים!'
+                    goodText: 'עומר בונה כמה מבנים שונים ומקוריים!',
+                    badAudio: 'sharing/bad69.mp3',
+                    goodAudio: 'sharing/good69.mp3'
                 },
                 {
                     question:  'אמא מקריאה סיפור, ובעמוד יש מילה אחת שמאירה ומיוחדת. מה יעשה עומר?',
@@ -9962,7 +10037,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/70_mila_lo_mukeret/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/70_mila_lo_mukeret/bechira_tova.webp',
                     badText:  'עומר ממשיך להקשיב לסיפור בלי לשאול על המילה המאירה',
-                    goodText: 'עומר מצביע על המילה המאירה ושואל מה היא אומרת!'
+                    goodText: 'עומר מצביע על המילה המאירה ושואל מה היא אומרת!',
+                    badAudio: 'sharing/bad70.mp3',
+                    goodAudio: 'sharing/good70.mp3'
                 },
                 {
                     question:  'עלים נושרים מהעץ בזמן שעומר ואמא מטיילים. מה יעשה עומר?',
@@ -9974,7 +10051,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/71_alim_stav/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/71_alim_stav/bechira_tova.webp',
                     badText:  'עומר ממשיך ללכת בלי לשים לב לעלים הנופלים',
-                    goodText: 'עומר מצביע על העלים ושואל את אמא למה הם נופלים!'
+                    goodText: 'עומר מצביע על העלים ושואל את אמא למה הם נופלים!',
+                    badAudio: 'sharing/bad71.mp3',
+                    goodAudio: 'sharing/good71.mp3'
                 },
                 {
                     question:  'החבר של עומר מדגים טריק מחיאות כפיים מיוחד. מה יעשה עומר?',
@@ -9986,7 +10065,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/72_trick_chaver/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/72_trick_chaver/bechira_tova.webp',
                     badText:  'עומר לא מתעניין וממשיך במה שעשה',
-                    goodText: 'עומר מתעניין ושואל את החבר איך עושים את זה!'
+                    goodText: 'עומר מתעניין ושואל את החבר איך עושים את זה!',
+                    badAudio: 'sharing/bad72.mp3',
+                    goodAudio: 'sharing/good72.mp3'
                 },
                 {
                     question:  'בטיול, עומר מגיע לשלט עם ציורים קטנים וכתוב שהוא לא יודע לקרוא. מה יעשה עומר?',
@@ -9998,7 +10079,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/73_shelet_tiyul/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/73_shelet_tiyul/bechira_tova.webp',
                     badText:  'עומר מנסה לנחש לבד מה כתוב בשלט ולא שואל',
-                    goodText: 'עומר שואל את אמא מה כתוב בשלט!'
+                    goodText: 'עומר שואל את אמא מה כתוב בשלט!',
+                    badAudio: 'sharing/bad73.mp3',
+                    goodAudio: 'sharing/good73.mp3'
                 },
                 {
                     question:  'בטלוויזיה מופיעה מילה חדשה שעומר לא מכיר. מה יעשה עומר?',
@@ -10010,7 +10093,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/74_musag_chadash_tv/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/74_musag_chadash_tv/bechira_tova.webp',
                     badText:  'עומר ממשיך לצפות בטלוויזיה בלי לשאול על המילה החדשה',
-                    goodText: 'עומר מרים יד ושואל את אמא מה המילה הזאת אומרת!'
+                    goodText: 'עומר מרים יד ושואל את אמא מה המילה הזאת אומרת!',
+                    badAudio: 'sharing/bad74.mp3',
+                    goodAudio: 'sharing/good74.mp3'
                 },
                 {
                     question:  'בחוג המוזיקה יש כלי נגינה מוזר שעומר לא מכיר. מה יעשה עומר?',
@@ -10022,7 +10107,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/75_kli_nagina_chadash/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/75_kli_nagina_chadash/bechira_tova.webp',
                     badText:  'עומר נשאר במקום ולא ניגש לנסות את כלי הנגינה',
-                    goodText: 'עומר ניגש מיד לכלי הנגינה כדי לנסות אותו!'
+                    goodText: 'עומר ניגש מיד לכלי הנגינה כדי לנסות אותו!',
+                    badAudio: 'sharing/bad75.mp3',
+                    goodAudio: 'sharing/good75.mp3'
                 },
                 {
                     question:  'הגיעה חבילת הפתעה סגורה לעומר. מה יעשה עומר?',
@@ -10034,7 +10121,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/76_chavilat_hafta_a/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/76_chavilat_hafta_a/bechira_tova.webp',
                     badText:  'עומר משאיר את החבילה סגורה ולא פותח אותה',
-                    goodText: 'עומר פותח את החבילה בהתלהבות!'
+                    goodText: 'עומר פותח את החבילה בהתלהבות!',
+                    badAudio: 'sharing/bad76.mp3',
+                    goodAudio: 'sharing/good76.mp3'
                 },
                 {
                     question:  'בגן השעשועים הותקן מתקן טיפוס חדש ומוזר. מה יעשה עומר?',
@@ -10046,7 +10135,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/77_mitkan_tipus_chadash/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/77_mitkan_tipus_chadash/bechira_tova.webp',
                     badText:  'עומר מסתכל על המתקן החדש אבל לא מטפס עליו',
-                    goodText: 'עומר מטפס מיד על המתקן החדש!'
+                    goodText: 'עומר מטפס מיד על המתקן החדש!',
+                    badAudio: 'sharing/bad77.mp3',
+                    goodAudio: 'sharing/good77.mp3'
                 },
                 {
                     question:  'יש לעומר ערכת ניסויים חדשה שהוא עוד לא פתח. מה יעשה עומר?',
@@ -10058,7 +10149,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/78_maarechet_nisuyim/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/78_maarechet_nisuyim/bechira_tova.webp',
                     badText:  'עומר משאיר את הערכה סגורה על המדף',
-                    goodText: 'עומר פותח את הערכה ומתחיל להתנסות בה!'
+                    goodText: 'עומר פותח את הערכה ומתחיל להתנסות בה!',
+                    badAudio: 'sharing/bad78.mp3',
+                    goodAudio: 'sharing/good78.mp3'
                 },
                 {
                     question:  'יש ילד חדש בכיתה של עומר. מה יעשה עומר?',
@@ -10070,7 +10163,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/79_yeled_chadash_bakita/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/79_yeled_chadash_bakita/bechira_tova.webp',
                     badText:  'עומר נשאר במקומו ולא ניגש לילד החדש',
-                    goodText: 'עומר ניגש לילד החדש ומציג את עצמו!'
+                    goodText: 'עומר ניגש לילד החדש ומציג את עצמו!',
+                    badAudio: 'sharing/bad79.mp3',
+                    goodAudio: 'sharing/good79.mp3'
                 },
                 {
                     question:  'מורה חדשה ולא מוכרת שואלת שאלה בכיתה. מה יעשה עומר?',
@@ -10082,7 +10177,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/80_mora_machlifa/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/80_mora_machlifa/bechira_tova.webp',
                     badText:  'עומר משתיק את עצמו ולא מרים יד',
-                    goodText: 'עומר מרים יד ועונה בביטחון!'
+                    goodText: 'עומר מרים יד ועונה בביטחון!',
+                    badAudio: 'sharing/bad80.mp3',
+                    goodAudio: 'sharing/good80.mp3'
                 },
                 {
                     question:  'בפארק משחקים ילדים שעומר לא מכיר. מה יעשה עומר?',
@@ -10094,7 +10191,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/81_yeladim_lo_mukarim/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/81_yeladim_lo_mukarim/bechira_tova.webp',
                     badText:  'עומר נשאר לשחק לבד הרחק מהילדים',
-                    goodText: 'עומר ניגש לקבוצה ושואל אם אפשר להצטרף!'
+                    goodText: 'עומר ניגש לקבוצה ושואל אם אפשר להצטרף!',
+                    badAudio: 'sharing/bad81.mp3',
+                    goodAudio: 'sharing/good81.mp3'
                 },
                 {
                     question:  'רופא חדש שעומר לא מכיר ניגש לדבר איתו. מה יעשה עומר?',
@@ -10106,7 +10205,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/82_rofe_chadash/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/82_rofe_chadash/bechira_tova.webp',
                     badText:  'עומר מסתתר מאחורי אמא ולא עונה לרופא',
-                    goodText: 'עומר מסתכל על הרופא ועונה לו ישירות!'
+                    goodText: 'עומר מסתכל על הרופא ועונה לו ישירות!',
+                    badAudio: 'sharing/bad82.mp3',
+                    goodAudio: 'sharing/good82.mp3'
                 },
                 {
                     question:  'היום הראשון של עומר בגן. מה יעשה עומר כשאמא נפרדת ממנו?',
@@ -10118,7 +10219,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/83_yom_rishon_bagan/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/83_yom_rishon_bagan/bechira_tova.webp',
                     badText:  'עומר נאחז באמא ובוכה כשהיא הולכת',
-                    goodText: 'עומר מנופף לשלום לאמא והולך לשחק עם הילדים!'
+                    goodText: 'עומר מנופף לשלום לאמא והולך לשחק עם הילדים!',
+                    badAudio: 'sharing/bad83.mp3',
+                    goodAudio: 'sharing/good83.mp3'
                 },
                 {
                     question:  'בפארק השעשועים המקורה יש מתקני ניפוח צבעוניים, ואמא יושבת על ספסל. מה יעשה עומר?',
@@ -10130,7 +10233,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/84_park_shaashuim_mekura/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/84_park_shaashuim_mekura/bechira_tova.webp',
                     badText:  'עומר יושב ליד אמא על הספסל ולא הולך לשחק',
-                    goodText: 'עומר רץ לבד לשחק במתקנים!'
+                    goodText: 'עומר רץ לבד לשחק במתקנים!',
+                    badAudio: 'sharing/bad84.mp3',
+                    goodAudio: 'sharing/good84.mp3'
                 },
                 {
                     question:  'עומר נמצא באולם אירועים מקושט, ליד אמא. מה יעשה עומר?',
@@ -10142,7 +10247,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/85_ulam_eruim/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/85_ulam_eruim/bechira_tova.webp',
                     badText:  'עומר נשאר צמוד לאמא ולא מסתובב באולם',
-                    goodText: 'עומר מסתובב בין השולחנות בסקרנות!'
+                    goodText: 'עומר מסתובב בין השולחנות בסקרנות!',
+                    badAudio: 'sharing/bad85.mp3',
+                    goodAudio: 'sharing/good85.mp3'
                 },
                 {
                     question:  'עומר ואמא מטיילים בשביל ביער. מה יעשה עומר?',
@@ -10154,7 +10261,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/86_shvil_yaar/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/86_shvil_yaar/bechira_tova.webp',
                     badText:  'עומר מסרב לזוז בלי שאמא תחזיק לו יד',
-                    goodText: 'עומר צועד כמה צעדים לבד קדימה בשביל!'
+                    goodText: 'עומר צועד כמה צעדים לבד קדימה בשביל!',
+                    badAudio: 'sharing/bad86.mp3',
+                    goodAudio: 'sharing/good86.mp3'
                 },
                 {
                     question:  'האורות בחדר מהבהבים ונדלקים שוב תוך כדי משחק. מה יעשה עומר?',
@@ -10166,7 +10275,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/87_orot_mehavhevim/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/87_orot_mehavhevim/bechira_tova.webp',
                     badText:  'עומר נבהל ומפסיק לשחק כשהאורות מהבהבים',
-                    goodText: 'עומר מסתכל למעלה לרגע וממשיך לשחק כרגיל!'
+                    goodText: 'עומר מסתכל למעלה לרגע וממשיך לשחק כרגיל!',
+                    badAudio: 'sharing/bad87.mp3',
+                    goodAudio: 'sharing/good87.mp3'
                 },
                 {
                     question:  'חתול קטן מופיע פתאום בחצר ליד עומר. מה יעשה עומר?',
@@ -10178,7 +10289,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/88_chatul_bachatzer/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/88_chatul_bachatzer/bechira_tova.webp',
                     badText:  'עומר נבהל ובורח מהחתול הקטן',
-                    goodText: 'עומר ממשיך לשחק ואפילו מתקרב לחתול בסקרנות!'
+                    goodText: 'עומר ממשיך לשחק ואפילו מתקרב לחתול בסקרנות!',
+                    badAudio: 'sharing/bad88.mp3',
+                    goodAudio: 'sharing/good88.mp3'
                 },
                 {
                     question:  'מישהו קורא לעומר בשם שלו מכיוון לא צפוי. מה יעשה עומר?',
@@ -10190,7 +10303,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/89_kria_bishmo/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/89_kria_bishmo/bechira_tova.webp',
                     badText:  'עומר לא שם לב שקוראים לו ולא מגיב',
-                    goodText: 'עומר מסתובב לכיוון הקול ועונה!'
+                    goodText: 'עומר מסתובב לכיוון הקול ועונה!',
+                    badAudio: 'sharing/bad89.mp3',
+                    goodAudio: 'sharing/good89.mp3'
                 },
                 {
                     question:  'באמצע משחק קבוצתי, הכלל של המשחק משתנה בפתאומיות. מה יעשה עומר?',
@@ -10202,7 +10317,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/90_kelal_mishchak_mishtane/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/90_kelal_mishchak_mishtane/bechira_tova.webp',
                     badText:  'עומר מתעצבן וממשיך לשחק לפי הכלל הישן',
-                    goodText: 'עומר מתאים את עצמו לכלל החדש וממשיך לשחק!'
+                    goodText: 'עומר מתאים את עצמו לכלל החדש וממשיך לשחק!',
+                    badAudio: 'sharing/bad90.mp3',
+                    goodAudio: 'sharing/good90.mp3'
                 },
                 {
                     question:  'יש אורחים לא מוכרים בארוחת הערב המשפחתית. מה יעשה עומר?',
@@ -10214,7 +10331,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/91_orchim_baarucha/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/91_orchim_baarucha/bechira_tova.webp',
                     badText:  'עומר יושב בשקט ולא מדבר עם האורחים',
-                    goodText: 'עומר מדבר ומשתתף בשיחה עם האורחים!'
+                    goodText: 'עומר מדבר ומשתתף בשיחה עם האורחים!',
+                    badAudio: 'sharing/bad91.mp3',
+                    goodAudio: 'sharing/good91.mp3'
                 },
                 {
                     question:  'בכיתה חדשה, כל ילד מציג את עצמו בתורו. מה יעשה עומר כשמגיע תורו?',
@@ -10226,7 +10345,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/92_hitzagat_atzmi_kita/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/92_hitzagat_atzmi_kita/bechira_tova.webp',
                     badText:  'עומר מדבר בשקט ומתקשה להגיד מילה כשמגיע תורו',
-                    goodText: 'עומר קם ומספר על עצמו בקול!'
+                    goodText: 'עומר קם ומספר על עצמו בקול!',
+                    badAudio: 'sharing/bad92.mp3',
+                    goodAudio: 'sharing/good92.mp3'
                 },
                 {
                     question:  'עומר יושב במעגל עם ילדים חדשים בחוג. מה יעשה עומר?',
@@ -10238,7 +10359,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/93_chug_yeladim_chadashim/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/93_chug_yeladim_chadashim/bechira_tova.webp',
                     badText:  'עומר יושב בשקט ולא פונה לאף אחד',
-                    goodText: 'עומר פונה לילד לידו ומתחיל שיחה!'
+                    goodText: 'עומר פונה לילד לידו ומתחיל שיחה!',
+                    badAudio: 'sharing/bad93.mp3',
+                    goodAudio: 'sharing/good93.mp3'
                 },
                 {
                     question:  'יש מפגש משפחתי גדול עם קרובים שעומר לא מכיר כל כך. מה יעשה עומר?',
@@ -10250,7 +10373,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/94_mishpacha_murchevet/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/94_mishpacha_murchevet/bechira_tova.webp',
                     badText:  'עומר נשאר קרוב לאמא ולא ניגש לקרובי המשפחה',
-                    goodText: 'עומר ניגש לקרובי המשפחה ומשוחח איתם!'
+                    goodText: 'עומר ניגש לקרובי המשפחה ומשוחח איתם!',
+                    badAudio: 'sharing/bad94.mp3',
+                    goodAudio: 'sharing/good94.mp3'
                 },
                 {
                     question:  'במהלך סיור מודרך, יש לעומר שאלה למדריכה. מה יעשה עומר?',
@@ -10262,7 +10387,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     badImg:    'images/sharing_scenes/95_sheela_besiyur/bechira_raa.webp',
                     goodImg:   'images/sharing_scenes/95_sheela_besiyur/bechira_tova.webp',
                     badText:  'עומר משאיר את השאלה לעצמו ולא שואל את המדריכה',
-                    goodText: 'עומר מרים יד ושואל את השאלה בקול!'
+                    goodText: 'עומר מרים יד ושואל את השאלה בקול!',
+                    badAudio: 'sharing/bad95.mp3',
+                    goodAudio: 'sharing/good95.mp3'
                 }
             ];
             get('active-game-title').textContent = 'לגלות ולצמוח 🌱';
@@ -10310,12 +10437,35 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     '<p class="sharing-question" id="sh-q">' + scene.question + ' 🔊</p>' +
                     renderMediaHTML('sh-situation', 'sharing-situation-img', scene.situation) +
                     '<div class="sharing-img-choices" id="sh-choices">' +
-                    '<button class="sharing-img-btn" id="sh-left">' + renderMediaHTML('', '', leftImg) + '</button>' +
-                    '<button class="sharing-img-btn" id="sh-right">' + renderMediaHTML('', '', rightImg) + '</button>' +
+                    '<button class="sharing-img-btn" id="sh-left" disabled>' + renderMediaHTML('', '', leftImg) + '</button>' +
+                    '<button class="sharing-img-btn" id="sh-right" disabled>' + renderMediaHTML('', '', rightImg) + '</button>' +
                     '</div></div>';
 
-                playAudioWithCallback(scene.qAudio, null, scene.speakQ);
                 get('sh-q').onclick = function(){ playAudioWithCallback(scene.qAudio, null, scene.speakQ); };
+
+                // מקריאים קודם את השאלה, ואז את שתי הבחירות בזו אחר זו (כשהמוקד מודגש והשנייה מעומעמת),
+                // ורק אחרי ששתיהן הוקראו - מאפשרים לבחור.
+                function narrateChoice(btn, otherBtn, text, audio, onDone) {
+                    btn.classList.add('growth-narrate-active');
+                    otherBtn.classList.remove('growth-narrate-active');
+                    playAudioWithCallback(audio, onDone, text);
+                }
+                playAudioWithCallback(scene.qAudio, function() {
+                    var leftBtn = get('sh-left'), rightBtn = get('sh-right');
+                    if (!leftBtn || !rightBtn) return;
+                    var leftText  = goodOnRight ? scene.badText  : scene.goodText;
+                    var leftAudio = goodOnRight ? scene.badAudio : scene.goodAudio;
+                    var rightText  = goodOnRight ? scene.goodText  : scene.badText;
+                    var rightAudio = goodOnRight ? scene.goodAudio : scene.badAudio;
+                    narrateChoice(leftBtn, rightBtn, leftText, leftAudio, function() {
+                        narrateChoice(rightBtn, leftBtn, rightText, rightAudio, function() {
+                            leftBtn.classList.remove('growth-narrate-active');
+                            rightBtn.classList.remove('growth-narrate-active');
+                            leftBtn.disabled = false;
+                            rightBtn.disabled = false;
+                        });
+                    });
+                }, scene.speakQ);
 
                 function onChoice(isCorrect, clickedBtn) {
                     if (isProcessing) return;
