@@ -14492,6 +14492,10 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
         }
 
         // ===== זיהוי צלילים: תפריט של 4 אייקונים, כל אחד משמיע צליל משלו; לוחצים "מוכן" ואז מזהים איזה אייקון השמיע את הצליל ששמעתם =====
+        let soundMatchLoadedCount = 0;
+        let soundMatchAssetsReady = false;
+        let currentlyPlayingSoundMatchAudio = null;
+
         const SOUND_MATCH_AUDIOS = {
             bell: new Audio('audio/soundmatch/bell.mp3'),
             drum: new Audio('audio/soundmatch/drum.wav'),
@@ -14500,13 +14504,57 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             phone: new Audio('audio/soundmatch/phone.mp3'),
             clock: new Audio('audio/soundmatch/clock.mp3')
         };
-        // Pre-load audio elements
-        Object.values(SOUND_MATCH_AUDIOS).forEach(audio => { audio.load(); });
+
+        // Track loading status of each asset
+        Object.keys(SOUND_MATCH_AUDIOS).forEach(key => {
+            let audio = SOUND_MATCH_AUDIOS[key];
+            
+            function onAssetLoaded() {
+                if (audio.dataset.loaded) return;
+                audio.dataset.loaded = "true";
+                soundMatchLoadedCount++;
+                if (soundMatchLoadedCount === 6) {
+                    soundMatchAssetsReady = true;
+                    let loader = D.getElementById('soundmatch-loader');
+                    if (loader) {
+                        loadSoundMatchRound();
+                    }
+                }
+            }
+            
+            if (audio.readyState >= 3) {
+                onAssetLoaded();
+            } else {
+                audio.addEventListener('canplaythrough', onAssetLoaded);
+                audio.addEventListener('loadeddata', onAssetLoaded);
+            }
+            audio.load();
+        });
+
+        // Defensive fallback loader timeout (3 seconds max)
+        setTimeout(() => {
+            if (!soundMatchAssetsReady) {
+                soundMatchAssetsReady = true;
+                let loader = D.getElementById('soundmatch-loader');
+                if (loader) {
+                    loadSoundMatchRound();
+                }
+            }
+        }, 3000);
 
         function playSoundMatchAsset(id) {
+            // Stop any currently playing audio in this game mode to prevent overlapping
+            if (currentlyPlayingSoundMatchAudio) {
+                try {
+                    currentlyPlayingSoundMatchAudio.pause();
+                    currentlyPlayingSoundMatchAudio.currentTime = 0;
+                } catch(e){}
+            }
+            
             let audio = SOUND_MATCH_AUDIOS[id];
             if (audio) {
                 audio.currentTime = 0;
+                currentlyPlayingSoundMatchAudio = audio;
                 audio.play().catch(e => console.log("Audio play error:", e));
             }
         }
@@ -14525,7 +14573,18 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
 
         function initSoundMatchGame() {
             get('active-game-title').textContent = 'זיהוי צלילים 🎵';
-            loadSoundMatchRound();
+            
+            if (soundMatchAssetsReady || soundMatchLoadedCount === 6) {
+                loadSoundMatchRound();
+            } else {
+                get('game-workspace').innerHTML = `
+                    <div id="soundmatch-loader" style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:20px; padding:60px; min-height:40vh; direction:rtl; text-align:center;">
+                        <div style="font-size:64px; animation: pulse 1.2s infinite alternate;">🎧</div>
+                        <div style="font-size:24px; font-weight:900; color:#5d4037;">מכין את כלי הנגינה... 🎻🎺🥁</div>
+                        <div style="font-size:16px; color:#8d6e63;">טוען את הצלילים הטבעיים לרועי...</div>
+                    </div>
+                `;
+            }
         }
 
         function loadSoundMatchRound() {
@@ -14671,6 +14730,12 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
 
             if (item.id === soundMatchTarget.id) {
                 isProcessing = true;
+                if (currentlyPlayingSoundMatchAudio) {
+                    try {
+                        currentlyPlayingSoundMatchAudio.pause();
+                        currentlyPlayingSoundMatchAudio.currentTime = 0;
+                    } catch(e){}
+                }
                 playSuccessSound();
                 get('soundmatch-status').textContent = `נכון! זה ${item.name}! 🎉`;
                 setTimeout(() => { isProcessing = false; handleAnswer(true, btn, loadSoundMatchRound, null); }, 1200);
