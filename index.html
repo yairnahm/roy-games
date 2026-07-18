@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-07-18-v93-patterns-aab-level -->
+<!DOCTYPE html><!-- build: 2026-07-18-v95-soundmatch-game -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -1329,7 +1329,7 @@
         // Games that give a full star (⭐):
         const fullStarGames = ['sequence','memory','missing','diff','chrono',
             'patterns','shape','diffscene','diffvideo','firstletter',
-            'tools','vparts','habitat','origins','families','emotion','emparts','sounds','routine','feelwhen','assemble','store','freeze','rescue','candle','detective',
+            'tools','vparts','habitat','origins','families','emotion','emparts','sounds','soundmatch','routine','feelwhen','assemble','store','freeze','rescue','candle','detective',
             'wc_sort','wc_freeze','wc_tape','wc_candle','wc_tower','wc_puzzle','wc_path','wc_museum','wc_bridge','wc_key'];
         // Games that give a half star (two halves = 1 full):
         const halfStarGames = ['context','oddone','halfhalf','counting',
@@ -1812,6 +1812,7 @@
             <div class="hub-card" data-cat="emotion" style="position:relative;" onclick="openDifficultyScreen('tidyup', '🧼', 'סדר בחדר')"><span class="star-badge" data-game="tidyup" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🧼</div><div class="hub-title">סדר בחדר</div></div>
             <div class="hub-card" data-cat="emotion" style="position:relative;" onclick="openDifficultyScreen('calm', '🌬️', 'רגע של רוגע')"><div class="hub-icon">🌬️</div><div class="hub-title">רגע של רוגע</div></div>
             <div class="hub-card" data-cat="world" style="position:relative;" onclick="openDifficultyScreen('sounds', '🔊', 'מי עושה כך?')"><div class="hub-icon">🔊</div><div class="hub-title">מי עושה כך?</div></div>
+            <div class="hub-card" data-cat="world" style="position:relative;" onclick="openDifficultyScreen('soundmatch', '🎵', 'זיהוי צלילים')"><div class="hub-icon">🎵</div><div class="hub-title">זיהוי צלילים</div></div>
             <div class="hub-card" data-cat="emotion" style="position:relative;" onclick="openDifficultyScreen('feelwhen', '💭', 'מה מרגישים כש...')"><div class="hub-icon">💭</div><div class="hub-title">מה מרגישים כש...</div></div>
             <!-- routine: hidden until images/routine/ is generated (see GPT_IMAGE_PROMPTS.md) — remove 'hidden' to enable -->
             <div id="routine-hub-card" class="hub-card" data-cat="numbers" style="position:relative;" onclick="openDifficultyScreen('routine', '🌅', 'סדר יום')"><div class="hub-icon">🌅</div><div class="hub-title">סדר יום</div></div>
@@ -2093,7 +2094,7 @@
     </div>
 
     <script>
-        const bgIcons = { 'goodbad': ['👍','👎','❤️','😊'], 'sharing': ['🤝','❤️','🌟','🎁'], 'growth': ['🌱','🔍','💪','🌟'], 'memory': ['🧠','💭','💡'], 'tracing': ['✏️','🎨','📐'], 'counting': ['🔢','🧮','➕'], 'sequence': ['🔄','✨','🎯'], 'fly': ['🪰','💨'], 'cop': ['🚓','🚨'], 'diff': ['🔎','👀'], 'oddone': ['🍎','🐶','🚗'], 'missing': ['A','B','C'], 'tools': ['🔨','🔧','🔩'], 'context': ['🧩','🖼️','🎨'], 'vparts': ['🚗','✈️','🚂','⛵','🚁'], 'habitat': ['🏠','🌳','🌊'], 'shadow': ['👤','🌑','👀'], 'halfhalf': ['✂️','🎨','🧩'], 'chrono': ['⏳','📅','🔄'], 'bigger': ['⚖️','🐘','🐭','🔢'], 'emotion': ['😄','😢','😡','😱'], 'faces': ['📸','❤️','👨‍👩‍👧‍👦','🤳'], 'mgamish': ['🤸','💪','🌟','🤸‍♂️'], 'firstletter': ['🔡','🔤','📖','✏️'], 'numwar': ['⚔️','🃏','🔢','⭐'], 'towertalk': ['🧱','🏗️','🏢'], 'cooppuzzle': ['🧩','🖼️','🎨','📸'], 'tidyup': ['🧼','🧸','🧺','🧹'], 'patterns': ['🔴','🔵','💛','🟩','🔺','🌟'], 'origins': ['🐄','🥛','🐑','🐔','🐝','🍞'], 'families': ['🐕','🐶','🐈','🐱','🐥','🦁'], 'diffscene': ['🖼️','🔍','👀'], 'diffvideo': ['🎬','🔎','👀'], 'whatneeds': ['🤔','❓','💡','🔍','👁️','🌟'], 'shape': ['🖼️','🧩','❓'] };
+        const bgIcons = { 'goodbad': ['👍','👎','❤️','😊'], 'sharing': ['🤝','❤️','🌟','🎁'], 'growth': ['🌱','🔍','💪','🌟'], 'memory': ['🧠','💭','💡'], 'tracing': ['✏️','🎨','📐'], 'counting': ['🔢','🧮','➕'], 'sequence': ['🔄','✨','🎯'], 'fly': ['🪰','💨'], 'cop': ['🚓','🚨'], 'diff': ['🔎','👀'], 'oddone': ['🍎','🐶','🚗'], 'missing': ['A','B','C'], 'tools': ['🔨','🔧','🔩'], 'context': ['🧩','🖼️','🎨'], 'vparts': ['🚗','✈️','🚂','⛵','🚁'], 'habitat': ['🏠','🌳','🌊'], 'shadow': ['👤','🌑','👀'], 'halfhalf': ['✂️','🎨','🧩'], 'chrono': ['⏳','📅','🔄'], 'bigger': ['⚖️','🐘','🐭','🔢'], 'emotion': ['😄','😢','😡','😱'], 'faces': ['📸','❤️','👨‍👩‍👧‍👦','🤳'], 'mgamish': ['🤸','💪','🌟','🤸‍♂️'], 'firstletter': ['🔡','🔤','📖','✏️'], 'numwar': ['⚔️','🃏','🔢','⭐'], 'towertalk': ['🧱','🏗️','🏢'], 'cooppuzzle': ['🧩','🖼️','🎨','📸'], 'tidyup': ['🧼','🧸','🧺','🧹'], 'patterns': ['🔴','🔵','💛','🟩','🔺','🌟'], 'origins': ['🐄','🥛','🐑','🐔','🐝','🍞'], 'families': ['🐕','🐶','🐈','🐱','🐥','🦁'], 'diffscene': ['🖼️','🔍','👀'], 'diffvideo': ['🎬','🔎','👀'], 'whatneeds': ['🤔','❓','💡','🔍','👁️','🌟'], 'shape': ['🖼️','🧩','❓'], 'soundmatch': ['🔔','🥁','📯','🎵'] };
         function setAppBackground(theme) {
             let wasCalm = D.body.classList.contains('calm-mode');
             D.body.className = 'bg-' + theme + (wasCalm ? ' calm-mode' : '');
@@ -2369,7 +2370,7 @@
         
         function openDifficultyScreen(gameId, icon, title) {
             playClickSound(); hideAllScreens(); setAppBackground(gameId); currentGameMode = gameId;
-            if(gameId === 'emotion' || gameId === 'emparts' || gameId === 'sharing' || gameId === 'growth' || gameId === 'goodbad' || gameId === 'towertalk' || gameId === 'cooppuzzle' || gameId === 'tidyup' || gameId === 'whatneeds' || gameId === 'calm' || gameId === 'sounds' || gameId === 'feelwhen' || gameId === 'store' || gameId === 'freeze' || gameId === 'rescue' || gameId === 'candle' || gameId === 'detective' || gameId === 'towertalk' || gameId === 'path' || gameId === 'museum' || gameId === 'bridge' || gameId === 'key' || WINNERS_GAMES.indexOf(gameId) > -1) {
+            if(gameId === 'emotion' || gameId === 'emparts' || gameId === 'sharing' || gameId === 'growth' || gameId === 'goodbad' || gameId === 'towertalk' || gameId === 'cooppuzzle' || gameId === 'tidyup' || gameId === 'whatneeds' || gameId === 'calm' || gameId === 'sounds' || gameId === 'soundmatch' || gameId === 'feelwhen' || gameId === 'store' || gameId === 'freeze' || gameId === 'rescue' || gameId === 'candle' || gameId === 'detective' || gameId === 'towertalk' || gameId === 'path' || gameId === 'museum' || gameId === 'bridge' || gameId === 'key' || WINNERS_GAMES.indexOf(gameId) > -1) {
                 startGameEngine(1); // עוקף את מסך הרמות
                 return;
             }
@@ -2488,6 +2489,7 @@
                 else if(currentGameMode === 'shape') initShapeGame();
                 else if(currentGameMode === 'calm') initCalmGame();
                 else if(currentGameMode === 'sounds') initSoundsGame();
+                else if(currentGameMode === 'soundmatch') initSoundMatchGame();
                 else if(currentGameMode === 'routine') initRoutineGame();
                 else if(currentGameMode === 'feelwhen') initFeelwhenGame();
                 else if(currentGameMode === 'assemble') initAssembleGame();
@@ -2537,7 +2539,7 @@
                 renderTrainRouteMap();
                 return;
             }
-            if(currentGameMode === 'emotion' || currentGameMode === 'emparts' || currentGameMode === 'missing' || currentGameMode === 'mgamish' || currentGameMode === 'firstletter' || currentGameMode === 'sharing' || currentGameMode === 'growth' || currentGameMode === 'goodbad' || currentGameMode === 'numwar' || currentGameMode === 'towertalk' || currentGameMode === 'cooppuzzle' || currentGameMode === 'tidyup' || currentGameMode === 'patterns' || currentGameMode === 'origins' || currentGameMode === 'families' || currentGameMode === 'whatneeds' || currentGameMode === 'calm' || currentGameMode === 'sounds' || currentGameMode === 'feelwhen' || currentGameMode === 'assemble' || currentGameMode === 'store' || currentGameMode === 'freeze' || currentGameMode === 'rescue' || currentGameMode === 'candle' || currentGameMode === 'detective' || currentGameMode === 'towertalk' || currentGameMode === 'path' || currentGameMode === 'museum' || currentGameMode === 'bridge' || currentGameMode === 'key' || WINNERS_GAMES.indexOf(currentGameMode) > -1) { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); } else if(currentGameMode === 'faces') { show('faces-mode-screen'); } else { show('unified-diff-screen'); }
+            if(currentGameMode === 'emotion' || currentGameMode === 'emparts' || currentGameMode === 'missing' || currentGameMode === 'mgamish' || currentGameMode === 'firstletter' || currentGameMode === 'sharing' || currentGameMode === 'growth' || currentGameMode === 'goodbad' || currentGameMode === 'numwar' || currentGameMode === 'towertalk' || currentGameMode === 'cooppuzzle' || currentGameMode === 'tidyup' || currentGameMode === 'patterns' || currentGameMode === 'origins' || currentGameMode === 'families' || currentGameMode === 'whatneeds' || currentGameMode === 'calm' || currentGameMode === 'sounds' || currentGameMode === 'soundmatch' || currentGameMode === 'feelwhen' || currentGameMode === 'assemble' || currentGameMode === 'store' || currentGameMode === 'freeze' || currentGameMode === 'rescue' || currentGameMode === 'candle' || currentGameMode === 'detective' || currentGameMode === 'towertalk' || currentGameMode === 'path' || currentGameMode === 'museum' || currentGameMode === 'bridge' || currentGameMode === 'key' || WINNERS_GAMES.indexOf(currentGameMode) > -1) { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); } else if(currentGameMode === 'faces') { show('faces-mode-screen'); } else { show('unified-diff-screen'); }
         }
         function updateProgressUI() { for(let i=0;i<activeGameRounds;i++) { let d = get(`active-progress-container-dot-${i}`); if(d){ if(i < currentStep) d.classList.add('fill'); else d.classList.remove('fill'); } } }
 
@@ -2600,7 +2602,7 @@
                 return;
             }
             if(currentGameMode==='missing') { show('missing-lang-screen'); }
-            else if(currentGameMode==='emotion' || currentGameMode==='emparts' || currentGameMode==='mgamish' || currentGameMode==='firstletter' || currentGameMode==='sharing' || currentGameMode==='growth' || currentGameMode==='goodbad' || currentGameMode==='numwar' || currentGameMode==='towertalk' || currentGameMode==='cooppuzzle' || currentGameMode==='tidyup' || currentGameMode==='patterns' || currentGameMode==='origins' || currentGameMode==='families' || currentGameMode==='whatneeds' || currentGameMode==='calm' || currentGameMode==='sounds' || currentGameMode==='feelwhen' || currentGameMode==='assemble' || currentGameMode==='store' || currentGameMode==='freeze' || currentGameMode==='rescue' || currentGameMode==='candle' || currentGameMode==='detective' || currentGameMode === 'towertalk' || currentGameMode === 'path' || currentGameMode === 'museum' || currentGameMode === 'bridge' || currentGameMode === 'key' || WINNERS_GAMES.indexOf(currentGameMode) > -1) { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); }
+            else if(currentGameMode==='emotion' || currentGameMode==='emparts' || currentGameMode==='mgamish' || currentGameMode==='firstletter' || currentGameMode==='sharing' || currentGameMode==='growth' || currentGameMode==='goodbad' || currentGameMode==='numwar' || currentGameMode==='towertalk' || currentGameMode==='cooppuzzle' || currentGameMode==='tidyup' || currentGameMode==='patterns' || currentGameMode==='origins' || currentGameMode==='families' || currentGameMode==='whatneeds' || currentGameMode==='calm' || currentGameMode==='sounds' || currentGameMode==='soundmatch' || currentGameMode==='feelwhen' || currentGameMode==='assemble' || currentGameMode==='store' || currentGameMode==='freeze' || currentGameMode==='rescue' || currentGameMode==='candle' || currentGameMode==='detective' || currentGameMode === 'towertalk' || currentGameMode === 'path' || currentGameMode === 'museum' || currentGameMode === 'bridge' || currentGameMode === 'key' || WINNERS_GAMES.indexOf(currentGameMode) > -1) { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); }
             else if(currentGameMode==='faces') { show('faces-mode-screen'); }
             else {
                 try {
@@ -2671,6 +2673,7 @@
             'whatneeds': { icon: '🧰', title: 'מה צריך לעשות?' },
             'calm': { icon: '🌬️', title: 'רגע של רוגע' },
             'sounds': { icon: '🔊', title: 'מי עושה כך?' },
+            'soundmatch': { icon: '🎵', title: 'זיהוי צלילים' },
             'faces': { icon: '🧑', title: 'פרצופים' },
             'sharing': { icon: '🍕', title: 'שיתוף ואוכל' },
             'growth': { icon: '🌱', title: 'צמיחה ולמידה' },
@@ -14360,6 +14363,77 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 };
                 oArea.appendChild(b);
             });
+        }
+
+        // ===== זיהוי צלילים: תפריט של 4 אייקונים, כל אחד משמיע צליל משלו; לוחצים "מוכן" ואז מזהים איזה אייקון השמיע את הצליל ששמעתם =====
+        const SOUND_MATCH_ITEMS = [
+            { id: 'bell',  emoji: '🔔', name: 'פעמון',      play: () => { playTone(1200, 'sine', 0.35, 0, 0.14); playTone(1600, 'sine', 0.3, 0.12, 0.12); } },
+            { id: 'drum',  emoji: '🥁', name: 'תוף',        play: () => { playTone(90, 'square', 0.14, 0, 0.18); playTone(90, 'square', 0.14, 0.22, 0.18); } },
+            { id: 'horn',  emoji: '📯', name: 'חצוצרה',     play: () => { playTone(392, 'sawtooth', 0.45, 0, 0.12); } },
+            { id: 'car',   emoji: '🚗', name: 'קלקסון',     play: () => { playTone(350, 'square', 0.25, 0, 0.12); playTone(300, 'square', 0.3, 0.22, 0.12); } },
+            { id: 'phone', emoji: '☎️', name: 'טלפון',      play: () => { playTone(950, 'sine', 0.14, 0, 0.12); playTone(950, 'sine', 0.14, 0.25, 0.12); playTone(950, 'sine', 0.14, 0.5, 0.12); } },
+            { id: 'clock', emoji: '⏰', name: 'שעון מעורר', play: () => { playTone(1000, 'square', 0.09, 0, 0.12); playTone(1000, 'square', 0.09, 0.15, 0.12); playTone(1000, 'square', 0.09, 0.3, 0.12); } }
+        ];
+        let soundMatchRoundItems = [];
+        let soundMatchTarget = null;
+        let soundMatchPhase = 'explore'; // 'explore' | 'guess'
+
+        function initSoundMatchGame() {
+            get('active-game-title').textContent = 'זיהוי צלילים 🎵';
+            loadSoundMatchRound();
+        }
+
+        function loadSoundMatchRound() {
+            soundMatchPhase = 'explore';
+            soundMatchTarget = null;
+            soundMatchRoundItems = shuffle(SOUND_MATCH_ITEMS.slice()).slice(0, 4);
+
+            get('game-workspace').innerHTML = `
+                <div style="display:flex; flex-direction:column; align-items:center; gap:clamp(14px,3.5vmin,26px); width:100%;">
+                    <div id="soundmatch-status" style="font-size:clamp(17px,4vmin,26px); font-weight:900; color:#333; background:rgba(255,255,255,0.85); padding:10px 22px; border-radius:18px; box-shadow:0 6px 14px rgba(0,0,0,0.12); text-align:center; direction:rtl;">לחצו על כל אייקון כדי לשמוע את הצליל שלו! 🎧</div>
+                    <div id="soundmatch-icons" style="display:flex; flex-wrap:wrap; justify-content:center; gap:clamp(14px,4vmin,28px);"></div>
+                    <button id="soundmatch-action-btn" class="action-btn" style="font-size:clamp(18px,4.5vmin,26px); padding:clamp(10px,2.5vmin,16px) clamp(24px,6vmin,40px); border-radius:20px;">מוכן! ✅</button>
+                </div>`;
+
+            let iconsArea = get('soundmatch-icons');
+            soundMatchRoundItems.forEach(item => {
+                let b = D.createElement('button');
+                b.className = 'action-btn';
+                b.style.cssText = 'width:clamp(85px,20vmin,150px); height:clamp(85px,20vmin,150px); font-size:clamp(40px,10vmin,64px); background:#fff; border:5px solid #9c27b0; border-radius:22px; box-shadow:0 6px 14px rgba(0,0,0,0.15); touch-action:manipulation; cursor:pointer;';
+                b.textContent = item.emoji;
+                b.onclick = function() { soundMatchIconClicked(item, b); };
+                iconsArea.appendChild(b);
+            });
+
+            get('soundmatch-action-btn').onclick = startSoundMatchGuess;
+        }
+
+        function soundMatchIconClicked(item, btn) {
+            item.play();
+            btn.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.15)' }, { transform: 'scale(1)' }], { duration: 300 });
+
+            if (soundMatchPhase !== 'guess' || isProcessing) return;
+
+            if (item.id === soundMatchTarget.id) {
+                isProcessing = true;
+                playSuccessSound();
+                get('soundmatch-status').textContent = `נכון! זה ${item.name}! 🎉`;
+                setTimeout(() => { isProcessing = false; handleAnswer(true, btn, loadSoundMatchRound, null); }, 900);
+            } else {
+                playErrorSound();
+                handleAnswer(false, btn, null, null);
+            }
+        }
+
+        function startSoundMatchGuess() {
+            if (isProcessing) return;
+            soundMatchPhase = 'guess';
+            soundMatchTarget = soundMatchRoundItems[rand(0, soundMatchRoundItems.length - 1)];
+            get('soundmatch-status').textContent = 'הקשיבו לצליל... איזה אייקון השמיע אותו? 🤔';
+            let actionBtn = get('soundmatch-action-btn');
+            actionBtn.textContent = '🔊 שמע שוב';
+            actionBtn.onclick = () => soundMatchTarget.play();
+            setTimeout(() => { soundMatchTarget.play(); }, 400);
         }
 
         // ===== רגע של רוגע: guided breathing (no scoring, gentle pacing) =====
