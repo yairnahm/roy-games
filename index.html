@@ -1951,6 +1951,8 @@
             <div class="grid-card level-card level-card-adv" id="lvl-4-btn" onclick="startGameEngine(4)" style="display:none; border-color:#FF9800;"><div class="grid-card-icon">🟠</div><div class="grid-card-name">רמה 4 (מומחה)</div></div>
             <div class="grid-card level-card level-card-adv" id="lvl-5-btn" onclick="startGameEngine(5)" style="display:none; border-color:#E91E63;"><div class="grid-card-icon">🟣</div><div class="grid-card-name">רמה 5 (גאון)</div></div>
             <div class="grid-card level-card level-card-adv" id="lvl-6-btn" onclick="startGameEngine(6)" style="display:none; border-color:#009688;"><div class="grid-card-icon">🟢</div><div class="grid-card-name">רמה 6 (אלוף)</div></div>
+            <div class="grid-card level-card level-card-adv" id="lvl-7-btn" onclick="startGameEngine(7)" style="display:none; border-color:#673ab7;"><div class="grid-card-icon">🟪</div><div class="grid-card-name">רמה 7 (מאסטר)</div></div>
+            <div class="grid-card level-card level-card-adv" id="lvl-8-btn" onclick="startGameEngine(8)" style="display:none; border-color:#3f51b5;"><div class="grid-card-icon">🟦</div><div class="grid-card-name">רמה 8 (אלוף עולם)</div></div>
         </div>
     </div>
 
@@ -2376,11 +2378,13 @@
             get('lvl-4-btn').style.display = advGames.indexOf(gameId) > -1 ? 'flex' : 'none';
             get('lvl-5-btn').style.display = advGames.indexOf(gameId) > -1 ? 'flex' : 'none';
             get('lvl-6-btn').style.display = (gameId === 'patterns') ? 'flex' : 'none';
+            get('lvl-7-btn').style.display = (gameId === 'patterns') ? 'flex' : 'none';
+            get('lvl-8-btn').style.display = (gameId === 'patterns') ? 'flex' : 'none';
 
             // Clear level-recommended first
             document.querySelectorAll('.level-card').forEach(el => el.classList.remove('level-recommended'));
             // Find and highlight recommended level
-            const maxLevelList = (gameId === 'patterns') ? [1,2,3,4,5,6] : [1,2,3,4,5];
+            const maxLevelList = (gameId === 'patterns') ? [1,2,3,4,5,6,7,8] : [1,2,3,4,5];
             const recommendedLevel = maxLevelList.find(l => !(typeof awardedStars !== 'undefined' && awardedStars[gameId + '-' + l])) || 1;
             const recBtn = document.querySelector(`.level-card[onclick="startGameEngine(${recommendedLevel})"]`);
             if (recBtn) recBtn.classList.add('level-recommended');
@@ -11802,6 +11806,24 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             { sequence: ['🍎', '🍌', '🍇', '🍊', '🍎', '🍌', '🍇', '🍊'], answer: '🍎', wrong: ['🍌', '🍇', '🍊'], question: 'איזה פרי פותח את המחזור מחדש?' },
             { sequence: ['🚗', '✈️', '🚂', '🚁', '🚗', '✈️', '🚂', '🚁'], answer: '🚗', wrong: ['✈️', '🚂', '🚁'], question: 'מה פותח את המחזור מחדש?' }
         ];
+        // רמה 7: חוקיות עם איבר חסר באמצע הסדרה (Middle Missing)
+        const patternsPool7 = [
+            { sequence: ['🟢', '🟡', '🟡', '🟢', '❓', '🟡'], answer: '🟡', wrong: ['🟢', '🔴', '🔵'], question: 'איזה צבע חסר באמצע התבנית? 🤔' },
+            { sequence: ['🍎', '🍎', '🍌', '❓', '🍎', '🍌'], answer: '🍎', wrong: ['🍌', '🍇', '🍉'], question: 'איזה פרי חסר באמצע התבנית? 🍌' },
+            { sequence: ['🚗', '✈️', '🚂', '🚗', '❓', '🚂'], answer: '✈️', wrong: ['🚗', '🚂', '🚁'], question: 'איזה כלי תחבורה חסר באמצע? 🚂' },
+            { sequence: ['🔺', '🟩', '🔺', '🟩', '❓', '🟩'], answer: '🔺', wrong: ['🟩', '🟡', '🔷'], question: 'איזו צורה חסרה באמצע? 🔺' },
+            { sequence: ['🐻', '🐱', '🐱', '❓', '🐱', '🐱'], answer: '🐻', wrong: ['🐱', '🐶', '🐷'], question: 'איזו חיה חסרה באמצע? 🐻' },
+            { sequence: ['⭐', '❓', '🌙', '⭐', '☀️', '🌙'], answer: '☀️', wrong: ['⭐', '🌙', '☁️'], question: 'מה חסר באמצע התבנית הזו? ⭐' }
+        ];
+        // רמה 8: תבניות גדלות חזותיות (Growing Patterns)
+        const patternsPool8 = [
+            { sequence: ['🎈', '🎈🎈', '🎈🎈🎈'], answer: '🎈🎈🎈🎈', wrong: ['🎈🎈', '🎈🎈🎈🎈🎈', '🎈'], question: 'מה מגיע הבא בתור בסדרה הגדלה? 🎈' },
+            { sequence: ['⭐', '🔵', '⭐', '🔵🔵', '⭐', '🔵🔵🔵', '⭐'], answer: '🔵🔵🔵🔵', wrong: ['🔵🔵🔵', '🔵🔵', '🔵🔵🔵🔵🔵'], question: 'איזה כמות משלימה את הסדרה המתארכת? 🔵' },
+            { sequence: ['🍎', '🍇', '🍎🍎', '🍇', '🍎🍎🍎', '🍇'], answer: '🍎🍎🍎🍎', wrong: ['🍎🍎🍎', '🍇', '🍌'], question: 'איזה כמות של תפוחים באה עכשיו? 🍎' },
+            { sequence: ['🚗', '🚂', '🚗', '🚂🚂', '🚗', '🚂🚂🚂'], answer: '🚗', wrong: ['🚂🚂🚂🚂', '🚂', '🚁'], question: 'מה פותח את החלק הבא בסדרה? 🚗' },
+            { sequence: ['🔺', '🟩', '🔺', '🟩🟩', '🔺', '🟩🟩🟩'], answer: '🟩🟩🟩🟩', wrong: ['🟩🟩', '🟩', '🔺'], question: 'כמה מרובעים מגיעים עכשיו? 🟩' },
+            { sequence: ['🌸', '🌸🌸', '🌸🌸🌸'], answer: '🌸🌸🌸🌸', wrong: ['🌸🌸🌸', '🌸🌸', '🌸🌸🌸🌸🌸'], question: 'כמה פרחים מגיעים עכשיו? 🌸' }
+        ];
         let patternsOrder = [];
         let patternsActivePool = patternsPool;
 
@@ -11812,7 +11834,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 <div id="pattern-seq-area" style="display:flex; flex-direction:row-reverse; gap:12px; justify-content:center; align-items:center; margin-bottom:30px; background:rgba(255,255,255,0.6); padding:20px; border-radius:24px; border:4px solid #fff; box-shadow:0 6px 20px rgba(0,0,0,0.12); flex-wrap:wrap; max-width:90%; margin-left:auto; margin-right:auto;"></div>
                 <div id="pattern-options-area" class="opts-row" style="margin-top:20px;"></div>
             `;
-            patternsActivePool = currentDifficulty === 6 ? patternsPool6 : (currentDifficulty === 5 ? patternsPool5 : (currentDifficulty === 4 ? patternsPool4 : patternsPool));
+            patternsActivePool = currentDifficulty === 8 ? patternsPool8 : (currentDifficulty === 7 ? patternsPool7 : (currentDifficulty === 6 ? patternsPool6 : (currentDifficulty === 5 ? patternsPool5 : (currentDifficulty === 4 ? patternsPool4 : patternsPool))));
             patternsOrder = shuffle(createRange(patternsActivePool.length)).slice(0, 4);
             loadPatternsRound();
         }
@@ -11824,18 +11846,38 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             // Build sequence UI
             let seqArea = get('pattern-seq-area');
             seqArea.innerHTML = '';
+            
+            let hasPlaceholder = p.sequence.indexOf('❓') > -1;
+            let questionBox = null;
+            
             p.sequence.forEach(symbol => {
-                let box = D.createElement('div');
-                box.style.cssText = 'width:clamp(60px, 12vmin, 90px); height:clamp(60px, 12vmin, 90px); background:#fff; border:3px solid #ff9800; border-radius:18px; display:flex; align-items:center; justify-content:center; font-size:clamp(32px, 6vmin, 48px); box-shadow:0 4px 8px rgba(0,0,0,0.1);';
-                box.textContent = symbol;
-                seqArea.appendChild(box);
+                if (symbol === '❓') {
+                    questionBox = D.createElement('div');
+                    questionBox.style.cssText = 'width:clamp(60px, 12vmin, 90px); height:clamp(60px, 12vmin, 90px); background:#fff; border:3px dashed #ff5722; border-radius:18px; display:flex; align-items:center; justify-content:center; font-size:clamp(32px, 6vmin, 48px); font-weight:bold; color:#ff5722; animation: pulse 1.5s infinite;';
+                    questionBox.textContent = '❓';
+                    seqArea.appendChild(questionBox);
+                } else {
+                    let box = D.createElement('div');
+                    // Compute size adjustments for multi-emoji symbols
+                    let textLen = symbol.length;
+                    let boxFontSize = 'clamp(32px, 6vmin, 48px)';
+                    if (textLen === 2) boxFontSize = 'clamp(22px, 4.5vmin, 34px)';
+                    else if (textLen === 3) boxFontSize = 'clamp(17px, 3.5vmin, 26px)';
+                    else if (textLen >= 4) boxFontSize = 'clamp(13px, 2.8vmin, 20px)';
+                    
+                    box.style.cssText = 'width:clamp(60px, 12vmin, 90px); height:clamp(60px, 12vmin, 90px); background:#fff; border:3px solid #ff9800; border-radius:18px; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 8px rgba(0,0,0,0.1);';
+                    box.style.fontSize = boxFontSize;
+                    box.textContent = symbol;
+                    seqArea.appendChild(box);
+                }
             });
             
-            // Missing block representation (question mark card)
-            let questionBox = D.createElement('div');
-            questionBox.style.cssText = 'width:clamp(60px, 12vmin, 90px); height:clamp(60px, 12vmin, 90px); background:#fff; border:3px dashed #ff5722; border-radius:18px; display:flex; align-items:center; justify-content:center; font-size:clamp(32px, 6vmin, 48px); font-weight:bold; color:#ff5722; animation: pulse 1.5s infinite;';
-            questionBox.textContent = '❓';
-            seqArea.appendChild(questionBox);
+            if (!hasPlaceholder) {
+                questionBox = D.createElement('div');
+                questionBox.style.cssText = 'width:clamp(60px, 12vmin, 90px); height:clamp(60px, 12vmin, 90px); background:#fff; border:3px dashed #ff5722; border-radius:18px; display:flex; align-items:center; justify-content:center; font-size:clamp(32px, 6vmin, 48px); font-weight:bold; color:#ff5722; animation: pulse 1.5s infinite;';
+                questionBox.textContent = '❓';
+                seqArea.appendChild(questionBox);
+            }
             
             speakLetter(p.question, 'he');
             
@@ -11850,7 +11892,16 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 w.className = 'option-wrapper';
                 let b = D.createElement('button');
                 b.className = 'action-btn option-btn';
-                b.style.cssText = 'width:clamp(70px,18vmin,140px); height:clamp(70px,18vmin,140px); background:#fff; border:5px solid #4CAF50; border-radius:20px; padding:0; display:flex; justify-content:center; align-items:center; overflow:hidden; font-size:clamp(40px, 8vmin, 64px); box-shadow:0 6px 14px rgba(0,0,0,0.15); transition:transform 0.15s;';
+                b.style.cssText = 'width:clamp(70px,18vmin,140px); height:clamp(70px,18vmin,140px); background:#fff; border:5px solid #4CAF50; border-radius:20px; padding:0; display:flex; justify-content:center; align-items:center; overflow:hidden; box-shadow:0 6px 14px rgba(0,0,0,0.15); transition:transform 0.15s;';
+                
+                // Adjust font size dynamically to fit multiple emojis
+                let textLen = opt.text.length;
+                let fontSize = 'clamp(40px, 8vmin, 64px)';
+                if (textLen === 2) fontSize = 'clamp(26px, 6vmin, 44px)';
+                else if (textLen === 3) fontSize = 'clamp(20px, 4.5vmin, 32px)';
+                else if (textLen >= 4) fontSize = 'clamp(15px, 3.5vmin, 24px)';
+                
+                b.style.fontSize = fontSize;
                 b.textContent = opt.text;
                 if (opt.isCorrect) b.setAttribute('data-correct','1');
                 b.onclick = () => {
@@ -11861,6 +11912,15 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                         questionBox.style.borderStyle = 'solid';
                         questionBox.style.borderColor = '#4CAF50';
                         questionBox.style.animation = 'superPop 0.5s ease-out forwards';
+                        
+                        // Adjust font size of questionBox on success
+                        let ansLen = opt.text.length;
+                        let ansFontSize = 'clamp(32px, 6vmin, 48px)';
+                        if (ansLen === 2) ansFontSize = 'clamp(22px, 4.5vmin, 34px)';
+                        else if (ansLen === 3) ansFontSize = 'clamp(17px, 3.5vmin, 26px)';
+                        else if (ansLen >= 4) ansFontSize = 'clamp(13px, 2.8vmin, 20px)';
+                        questionBox.style.fontSize = ansFontSize;
+                        
                         questionBox.textContent = opt.text;
                         setTimeout(() => {
                             isProcessing = false;
