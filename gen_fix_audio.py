@@ -243,6 +243,12 @@ COOP = {
     "towertalk_victory.mp3": f"בנינו מגדל מדהים ביחד! {KOL} הכבוד!",
     # tidy up
     "tidy_victory.mp3": f"{KOL} הכבוד! סידרנו את {KOL} החדר ביחד!",
+    "tidy_shirt.mp3": "חולצה",
+    "tidy_pants.mp3": "מכנסיים",
+    "tidy_plate.mp3": "צלחת",
+    "tidy_cup.mp3": "כוס",
+    "tidy_book.mp3": "ספר",
+    "tidy_crayons.mp3": "צבעים",
 }
 
 # Tower blocks - one set per tower type (previously one shared set spoke castle

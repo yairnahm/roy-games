@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-07-17-v86-bridge-plank-art -->
+<!DOCTYPE html><!-- build: 2026-07-18-v91-tidyup-6-categories -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -2415,7 +2415,7 @@
                                (currentGameMode === 'numwar' ? 5 : 
                                (currentGameMode === 'towertalk' ? 5 : 
                                (currentGameMode === 'cooppuzzle' ? 4 : 
-                               (currentGameMode === 'tidyup' ? 6 :
+                               (currentGameMode === 'tidyup' ? 9 :
                                (currentGameMode === 'diffvideo' ? 6 :
                                (currentGameMode === 'routine' ? routineData.length :
                                (currentGameMode === 'assemble' ? 3 :
@@ -11400,93 +11400,43 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             let tidyPickIdx = 0;
 
             function showCategorySelection() {
+                let picker = TIDY_PICK_ORDER[tidyPickIdx];
+                let pickerName = picker === 'roy' ? 'רועי' : 'אבא יאיר';
+                let takenVals = royCategories.concat(abaCategories);
+
                 var ws = get('game-workspace');
                 ws.innerHTML = `
-                    <div style="display:flex; flex-direction:column; align-items:center; gap:20px; width:100%; max-width:620px; margin:40px auto; padding:25px; background:rgba(255,255,255,0.9); border-radius:24px; box-shadow:0 8px 32px rgba(0,0,0,0.15); border:3px solid #fff; direction:rtl;">
-                        <h2 style="font-size:clamp(20px, 4vw, 28px); font-weight:900; color:#333; text-align:center; margin:0; line-height:1.4;">אילו דברים רועי יסדר היום? 🧼<br><span style="font-size:0.75em; color:#666; font-weight:normal;">(בחר בדיוק 2 סוגים)</span></h2>
-                        <div style="display:flex; flex-direction:row; gap:16px; justify-content:center; flex-wrap:wrap; width:100%; margin-top:10px;">
-                            
-                            <div class="tidy-opt-card" data-val="toys" style="cursor:pointer; flex:1; min-width:140px; max-width:170px; padding:18px; border:4px solid #b0bec5; border-radius:20px; background:#fff; text-align:center; box-shadow:0 4px 10px rgba(0,0,0,0.08); transition:all 0.25s;">
-                                <div style="font-size:clamp(40px, 8vw, 55px); margin-bottom:8px;">🧸</div>
-                                <div style="font-size:clamp(16px, 3vw, 19px); font-weight:bold; color:#1976d2;">צעצועים וחפצים</div>
-                                <div style="font-size:12px; color:#78909c; margin-top:4px;">מכונית, דובי, כדור</div>
-                            </div>
-
-                            <div class="tidy-opt-card" data-val="animals" style="cursor:pointer; flex:1; min-width:140px; max-width:170px; padding:18px; border:4px solid #b0bec5; border-radius:20px; background:#fff; text-align:center; box-shadow:0 4px 10px rgba(0,0,0,0.08); transition:all 0.25s;">
-                                <div style="font-size:clamp(40px, 8vw, 55px); margin-bottom:8px;">🐶</div>
-                                <div style="font-size:clamp(16px, 3vw, 19px); font-weight:bold; color:#388e3c;">חיות מתוקות</div>
-                                <div style="font-size:12px; color:#78909c; margin-top:4px;">כלב, חתול</div>
-                            </div>
-
-                            <div class="tidy-opt-card" data-val="fruits" style="cursor:pointer; flex:1; min-width:140px; max-width:170px; padding:18px; border:4px solid #b0bec5; border-radius:20px; background:#fff; text-align:center; box-shadow:0 4px 10px rgba(0,0,0,0.08); transition:all 0.25s;">
-                                <div style="font-size:clamp(40px, 8vw, 55px); margin-bottom:8px;">🍎</div>
-                                <div style="font-size:clamp(16px, 3vw, 19px); font-weight:bold; color:#f44336;">פירות טעימים</div>
-                                <div style="font-size:12px; color:#78909c; margin-top:4px;">תפוח</div>
-                            </div>
-
+                    <div style="display:flex; flex-direction:column; align-items:center; gap:20px; width:100%; max-width:680px; margin:40px auto; padding:25px; background:rgba(255,255,255,0.9); border-radius:24px; box-shadow:0 8px 32px rgba(0,0,0,0.15); border:3px solid #fff; direction:rtl;">
+                        <h2 style="font-size:clamp(20px, 4vw, 28px); font-weight:900; color:#333; text-align:center; margin:0; line-height:1.4;">תור ${pickerName}: איזו קטגוריה תרצה לסדר? 🧼<br><span style="font-size:0.75em; color:#666; font-weight:normal;">(כל אחד בוחר 2 קטגוריות, בתורו)</span></h2>
+                        <div style="display:flex; flex-direction:row; gap:14px; justify-content:center; flex-wrap:wrap; width:100%; margin-top:10px;">
+                            ${TIDY_CATEGORIES.map(cat => `
+                            <div class="tidy-opt-card" data-val="${cat.val}" style="cursor:${takenVals.includes(cat.val) ? 'default' : 'pointer'}; opacity:${takenVals.includes(cat.val) ? '0.35' : '1'}; flex:1; min-width:130px; max-width:160px; padding:16px; border:4px solid ${takenVals.includes(cat.val) ? '#b0bec5' : cat.color}; border-radius:20px; background:#fff; text-align:center; box-shadow:0 4px 10px rgba(0,0,0,0.08); transition:all 0.25s;">
+                                <div style="font-size:clamp(36px, 7vw, 50px); margin-bottom:6px;">${cat.emoji}</div>
+                                <div style="font-size:clamp(14px, 2.6vw, 17px); font-weight:bold; color:${cat.color};">${cat.label}</div>
+                                <div style="font-size:11px; color:#78909c; margin-top:4px;">${cat.examples}</div>
+                                ${takenVals.includes(cat.val) ? `<div style="font-size:11px; font-weight:bold; color:${royCategories.includes(cat.val) ? '#2196F3' : '#FF5722'}; margin-top:4px;">${royCategories.includes(cat.val) ? 'של רועי' : 'של אבא'} ✓</div>` : ''}
+                            </div>`).join('')}
                         </div>
-                        <button id="start-tidy-btn" class="sys-btn" style="background:#b0bec5; color:#fff; padding:12px 36px; font-size:clamp(16px, 3.5vw, 20px); border-radius:18px; border:none; cursor:not-allowed; font-weight:bold; transition:all 0.25s; margin-top:15px; box-shadow:0 4px 12px rgba(0,0,0,0.1);" disabled>בחר 2 סוגים כדי להתחיל</button>
                     </div>
                 `;
 
                 D.querySelectorAll('.tidy-opt-card').forEach(el => {
                     var val = el.dataset.val;
-                    
+                    if (takenVals.includes(val)) return;
+
                     el.onclick = function() {
-                        if (selectedCategories.includes(val)) {
-                            selectedCategories = selectedCategories.filter(x => x !== val);
+                        playClickSound();
+                        if (picker === 'roy') royCategories.push(val); else abaCategories.push(val);
+                        tidyPickIdx++;
+                        if (tidyPickIdx >= TIDY_PICK_ORDER.length) {
+                            startTidyGame();
                         } else {
-                            if (selectedCategories.length === 2) {
-                                selectedCategories.shift();
-                            }
-                            selectedCategories.push(val);
+                            showCategorySelection();
                         }
-                        updateSelectionUI();
                     };
-                    
                     el.onmouseover = () => { el.style.transform = 'scale(1.05)'; };
-                    el.onmouseout = () => { el.style.transform = selectedCategories.includes(val) ? 'scale(1.05)' : 'scale(1)'; };
+                    el.onmouseout = () => { el.style.transform = 'scale(1)'; };
                 });
-
-                function updateSelectionUI() {
-                    D.querySelectorAll('.tidy-opt-card').forEach(el => {
-                        var val = el.dataset.val;
-                        var isSelected = selectedCategories.includes(val);
-                        if (isSelected) {
-                            el.style.borderColor = val === 'toys' ? '#2196f3' : (val === 'animals' ? '#4caf50' : '#f44336');
-                            el.style.background = val === 'toys' ? '#e3f2fd' : (val === 'animals' ? '#e8f5e9' : '#ffebee');
-                            el.style.borderWidth = '6px';
-                            el.style.transform = 'scale(1.05)';
-                            el.style.boxShadow = '0 6px 16px rgba(0,0,0,0.12)';
-                        } else {
-                            el.style.borderColor = '#b0bec5';
-                            el.style.background = '#fff';
-                            el.style.borderWidth = '4px';
-                            el.style.transform = 'scale(1)';
-                            el.style.boxShadow = '0 4px 10px rgba(0,0,0,0.08)';
-                        }
-                    });
-
-                    var btn = get('start-tidy-btn');
-                    if (btn) {
-                        if (selectedCategories.length === 2) {
-                            btn.disabled = false;
-                            btn.style.background = '#4CAF50';
-                            btn.style.cursor = 'pointer';
-                            btn.textContent = 'מתחילים לסדר! 🧼🚀';
-                        } else {
-                            btn.disabled = true;
-                            btn.style.background = '#b0bec5';
-                            btn.style.cursor = 'not-allowed';
-                            btn.textContent = 'בחר 2 סוגים כדי להתחיל';
-                        }
-                    }
-                }
-
-                get('start-tidy-btn').onclick = function() {
-                    if (selectedCategories.length !== 2) return;
-                    startTidyGame();
-                };
             }
 
             function startTidyGame() {
@@ -11496,43 +11446,40 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     { image: 'images/tidy_ball.png', nameHe: 'כדור', type: 'toys' },
                     { image: 'images/tidy_apple.png', nameHe: 'תפוח', type: 'fruits' },
                     { image: 'images/tidy_dog.png', nameHe: 'כלב', type: 'animals' },
-                    { image: 'images/tidy_cat.png', nameHe: 'חתול', type: 'animals' }
+                    { image: 'images/tidy_cat.png', nameHe: 'חתול', type: 'animals' },
+                    { image: 'images/tidy_shirt.png', nameHe: 'חולצה', type: 'clothes' },
+                    { image: 'images/tidy_pants.png', nameHe: 'מכנסיים', type: 'clothes' },
+                    { image: 'images/tidy_plate.png', nameHe: 'צלחת', type: 'dishes' },
+                    { image: 'images/tidy_cup.png', nameHe: 'כוס', type: 'dishes' },
+                    { image: 'images/tidy_book.png', nameHe: 'ספר', type: 'books' },
+                    { image: 'images/tidy_crayons.png', nameHe: 'צבעים', type: 'books' }
                 ];
 
                 itemsPool = [];
                 allItems.forEach(item => {
-                    if (selectedCategories.includes(item.type)) {
+                    if (royCategories.includes(item.type)) {
                         item.category = 'roy';
-                    } else {
+                        itemsPool.push(item);
+                    } else if (abaCategories.includes(item.type)) {
                         item.category = 'aba';
+                        itemsPool.push(item);
                     }
-                    itemsPool.push(item);
                 });
 
                 itemsPool = shuffle(itemsPool.slice());
 
-                let catNames = {
-                    'toys': 'צעצועים וחפצים 🧸',
-                    'animals': 'חיות מתוקות 🐶',
-                    'fruits': 'פירות טעימים 🍎'
-                };
+                let catByVal = {};
+                TIDY_CATEGORIES.forEach(c => catByVal[c.val] = c);
 
-                let royNames = selectedCategories.map(c => catNames[c].replace(/ 🧸| 🐶| 🍎/, ''));
-                royBasketTitle = royNames.join(' ו-') + ' ' + selectedCategories.map(c => catNames[c].split(' ').pop()).join('');
-
-                let abaCat = ['toys', 'animals', 'fruits'].find(c => !selectedCategories.includes(c));
-                abaBasketTitle = catNames[abaCat];
-
-                // סדר קנוני כדי שהמפתח יתאים תמיד לשם קובץ השמע שנוצר מראש
-                let orderedCats = ['toys', 'animals', 'fruits'].filter(c => selectedCategories.includes(c));
-                tidyComboKey = orderedCats.join('_');
-                royCleanNames = orderedCats.map(c => catNames[c].replace(/ 🧸| 🐶| 🍎/, ''));
-                abaCleanName = abaBasketTitle.replace(/ 🧸| 🐶| 🍎/, '');
+                royCleanNames = royCategories.map(c => catByVal[c].label);
+                abaCleanNames = abaCategories.map(c => catByVal[c].label);
+                royBasketTitle = royCategories.map(c => catByVal[c].label + ' ' + catByVal[c].emoji).join(' ו-');
+                abaBasketTitle = abaCategories.map(c => catByVal[c].label + ' ' + catByVal[c].emoji).join(' ו-');
 
                 drawLayout();
 
-                let speakText = `בואו נעשה סדר בחדר! רועי מסדר ${royCleanNames.join(' ו')}, ואבא יאיר מסדר ${abaCleanName}.`;
-                playCoopAudio('coop/tidy_instructions_' + tidyComboKey + '.mp3', speakText);
+                let speakText = `בואו נעשה סדר בחדר! רועי מסדר ${royCleanNames.join(' ו')}, ואבא יאיר מסדר ${abaCleanNames.join(' ו')}.`;
+                speakLetter(speakText, 'he');
             }
 
             function updateAvatarTurns() {
@@ -11719,7 +11666,13 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                                 'images/tidy_ball.png': 'tidy_ball.mp3',
                                 'images/tidy_apple.png': 'tidy_apple.mp3',
                                 'images/tidy_dog.png': 'tidy_dog.mp3',
-                                'images/tidy_cat.png': 'tidy_cat.mp3'
+                                'images/tidy_cat.png': 'tidy_cat.mp3',
+                                'images/tidy_shirt.png': 'tidy_shirt.mp3',
+                                'images/tidy_pants.png': 'tidy_pants.mp3',
+                                'images/tidy_plate.png': 'tidy_plate.mp3',
+                                'images/tidy_cup.png': 'tidy_cup.mp3',
+                                'images/tidy_book.png': 'tidy_book.mp3',
+                                'images/tidy_crayons.png': 'tidy_crayons.mp3'
                             };
                             playCoopAudio('coop/' + fileMap[item.image], item.nameHe);
                             
@@ -11736,7 +11689,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                                     
                                     setTimeout(() => {
                                         isProcessing = false;
-                                        currentStep = 6;
+                                        currentStep = activeGameRounds;
                                         handleAnswer(true, null, null, null);
                                     }, 2500);
                                 } else {
@@ -11769,15 +11722,13 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     }
                 } else {
                     playErrorSound();
-                    let errStr, errFile;
+                    let errStr;
                     if (currentTurn === 'roy') {
                         errStr = `זה מתאים לסל של אבא יאיר! רועי מסדר ${royCleanNames.join(' ו')}!`;
-                        errFile = 'coop/tidy_err_roy_' + tidyComboKey + '.mp3';
                     } else {
-                        errStr = `זה מתאים לסל של רועי! אבא יאיר מסדר ${abaCleanName}!`;
-                        errFile = 'coop/tidy_err_aba_' + tidyComboKey + '.mp3';
+                        errStr = `זה מתאים לסל של רועי! אבא יאיר מסדר ${abaCleanNames.join(' ו')}!`;
                     }
-                    playCoopAudio(errFile, errStr);
+                    speakLetter(errStr, 'he');
                 }
             }
 
