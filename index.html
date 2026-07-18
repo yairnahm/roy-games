@@ -2745,6 +2745,9 @@
                 let borderStyle = 'border: 4px solid #b0bec5; background: #eceff1; color: #90a4ae;';
                 let pulsingClass = '';
                 
+                let badgeColor = isCompleted ? '#2e7d32' : (isActive ? '#ff8f00' : '#78909c');
+                let numberBadge = `<div style="position:absolute; top:-6px; right:-6px; width:26px; height:26px; border-radius:50%; background:${badgeColor}; border:2px solid #fff; color:#fff; font-size:14px; font-weight:900; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 4px rgba(0,0,0,0.2); z-index:10;">${idx + 1}</div>`;
+
                 if (isCompleted) {
                     borderStyle = 'border: 4px solid #2e7d32; background: #e8f5e9; color: #2e7d32;';
                     content = '<span style="font-weight:900; font-size:26px;">✓</span>';
@@ -2779,8 +2782,9 @@
                 }
                 
                 node.innerHTML = `
-                    <div class="${pulsingClass}" style="width:72px; height:72px; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 6px 12px rgba(0,0,0,0.15); transition:all 0.3s; ${borderStyle}">
+                    <div class="${pulsingClass}" style="position:relative; width:72px; height:72px; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 6px 12px rgba(0,0,0,0.15); transition:all 0.3s; ${borderStyle}">
                         ${content}
+                        ${numberBadge}
                     </div>
                     <div style="position:absolute; top:78px; left:50%; transform:translateX(-50%); white-space:nowrap; background:rgba(255,255,255,0.85); border-radius:10px; padding:3px 8px; border:2px solid #5d4037; font-size:12px; font-weight:bold; color:#3e2723; direction:rtl; text-align:center; box-shadow:0 2px 4px rgba(0,0,0,0.1); pointer-events:none;">
                         תחנה ${idx + 1}: ${station.title}
@@ -11378,10 +11382,22 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             let itemsPool = [];
             let royBasketTitle = '';
             let abaBasketTitle = '';
-            let selectedCategories = [];
-            let tidyComboKey = '';      // מפתח קבוע (לפי סדר קנוני) לקבצי השמע של הצירוף שנבחר
+            let royCategories = [];
+            let abaCategories = [];
             let royCleanNames = [];     // שמות הקטגוריות של רועי ללא אימוג'י - לטקסט הקראה
-            let abaCleanName = '';      // שם הקטגוריה של אבא ללא אימוג'י
+            let abaCleanNames = [];     // שמות הקטגוריות של אבא ללא אימוג'י
+
+            const TIDY_CATEGORIES = [
+                { val: 'toys',    emoji: '🧸', label: 'צעצועים וחפצים', examples: 'מכונית, דובי, כדור', color: '#1976d2' },
+                { val: 'animals', emoji: '🐶', label: 'חיות מתוקות',    examples: 'כלב, חתול',           color: '#388e3c' },
+                { val: 'fruits',  emoji: '🍎', label: 'פירות טעימים',   examples: 'תפוח',                color: '#f44336' },
+                { val: 'clothes', emoji: '👕', label: 'בגדים',          examples: 'חולצה, מכנסיים',      color: '#8e24aa' },
+                { val: 'dishes',  emoji: '🍽️', label: 'כלי אוכל',       examples: 'צלחת, כוס',           color: '#00897b' },
+                { val: 'books',   emoji: '📚', label: 'ספרים וצבעים',   examples: 'ספר, צבעים',          color: '#6d4c41' }
+            ];
+            // סדר בחירה: רועי-אבא-רועי-אבא (2 קטגוריות לכל אחד, כל אחד בתורו)
+            const TIDY_PICK_ORDER = ['roy', 'aba', 'roy', 'aba'];
+            let tidyPickIdx = 0;
 
             function showCategorySelection() {
                 var ws = get('game-workspace');
