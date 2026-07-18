@@ -2016,7 +2016,7 @@
                 <!-- Under-ballast -->
                 <path d="M 100 375 C 160 200, 160 200, 220 200 C 280 200, 300 350, 360 350 C 420 350, 440 150, 500 150 C 560 150, 580 350, 640 350 C 700 350, 720 200, 780 200 C 840 200, 840 200, 900 375" stroke="rgba(0,0,0,0.15)" stroke-width="36" fill="none" stroke-linecap="round"/>
                 <!-- Railroad sleepers -->
-                <path d="M 100 375 C 160 200, 160 200, 220 200 C 280 200, 300 350, 360 350 C 420 350, 440 150, 500 150 C 560 150, 580 350, 640 350 C 700 350, 720 200, 780 200 C 840 200, 840 200, 900 375" stroke="#8d6e63" stroke-width="26" stroke-dasharray="10 16" fill="none" stroke-linecap="round"/>
+                <path id="train-rail-path" d="M 100 375 C 160 200, 160 200, 220 200 C 280 200, 300 350, 360 350 C 420 350, 440 150, 500 150 C 560 150, 580 350, 640 350 C 700 350, 720 200, 780 200 C 840 200, 840 200, 900 375" stroke="#8d6e63" stroke-width="26" stroke-dasharray="10 16" fill="none" stroke-linecap="round"/>
                 <!-- Steel rails -->
                 <path d="M 100 368 C 160 193, 160 193, 220 193 C 280 193, 300 343, 360 343 C 420 343, 440 143, 500 143 C 560 143, 580 343, 640 343 C 700 343, 720 193, 780 193 C 840 193, 840 193, 900 368" stroke="#cfd8dc" stroke-width="3.5" fill="none"/>
                 <path d="M 100 382 C 160 207, 160 207, 220 207 C 280 207, 300 357, 360 357 C 420 357, 440 157, 500 157 C 560 157, 580 357, 640 357 C 700 357, 720 207, 780 207 C 840 207, 840 207, 900 382" stroke="#cfd8dc" stroke-width="3.5" fill="none"/>
@@ -2815,16 +2815,54 @@
             if (newIdx >= 7) {
                 setTimeout(() => {
                     triggerTrainRouteComplete();
-                }, 1400);
+                }, 1500);
                 return;
             }
             
+            let pathEl = D.getElementById('train-rail-path');
             let avatar = get('train-roy-avatar');
-            if (avatar) {
-                let coord = TRAIN_STATION_COORDS[newIdx];
-                avatar.style.left = coord.left;
-                avatar.style.top = coord.top;
+            if (!pathEl || !avatar) return;
+            
+            // Clear any CSS transitions to avoid conflicts with frame-by-frame JS rendering
+            avatar.style.transition = 'none';
+            
+            let totalLength = pathEl.getTotalLength();
+            let tStart = oldIdx / 6;
+            let tEnd = newIdx / 6;
+            let duration = 1600; // 1.6 seconds of smooth travel
+            let startTime = null;
+            
+            // Easing function: easeInOutCubic for natural acceleration and deceleration
+            function easeInOutCubic(x) {
+                return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
             }
+            
+            function step(timestamp) {
+                if (!startTime) startTime = timestamp;
+                let elapsed = timestamp - startTime;
+                let progress = elapsed / duration;
+                if (progress > 1) progress = 1;
+                
+                let eased = easeInOutCubic(progress);
+                let tCurrent = tStart + (tEnd - tStart) * eased;
+                
+                try {
+                    let point = pathEl.getPointAtLength(tCurrent * totalLength);
+                    // Convert back to responsive percentages
+                    avatar.style.left = (point.x / 10) + '%';
+                    avatar.style.top = (point.y / 5) + '%';
+                } catch(e){}
+                
+                if (progress < 1) {
+                    requestAnimationFrame(step);
+                } else {
+                    // Restore default transition settings and synchronize final values
+                    avatar.style.transition = 'left 1.2s ease-in-out, top 1.2s ease-in-out';
+                    renderTrainRouteMap();
+                }
+            }
+            
+            requestAnimationFrame(step);
         }
 
         function launchTrainStationGame(idx) {
