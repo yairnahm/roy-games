@@ -11669,29 +11669,62 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             let firstCardIndex = null;
             let secondCardIndex = null;
             let isProcessing = false;
+            let failTimeout = null;
             let matchedPairs = 0;
             const totalPairs = 18;
             
             let royMatched = [];
             let abaMatched = [];
-            
-            const MEMORY_EMOJIS_POOL = [
-                '🦁', '🐼', '🐨', '🦊', '🐰', '🐸', '🐙', '🐬',
-                '🐝', '🦖', '🦕', '🍎', '🍌', '🍓', '🍇', '🍉',
-                '🍕', '🍦', '🍩', '🚗', '✈️', '🚂', '🚁', '🚀',
-                '⚽', '🎈', '🎸', '🎨', '👑', '🌈', '☀️', '⭐',
-                '🎁', '🧸', '🍭', '🍔'
-            ];
-            
-            // Choose 18 random emojis
-            let selectedEmojis = shuffle(MEMORY_EMOJIS_POOL.slice()).slice(0, 18);
-            let doublePool = selectedEmojis.concat(selectedEmojis);
-            let boardCards = shuffle(doublePool).map((emoji, idx) => ({
-                id: idx,
-                emoji: emoji,
-                flipped: false,
-                matched: false
-            }));
+            let boardCards = [];
+            let themeIsFont = false;
+            let themeFontFamily = '';
+
+            const THEMES = {
+                animals: {
+                    name: 'לוח חיות 🦁',
+                    items: ['🦁', '🐯', '🐼', '🐨', '🦊', '🐰', '🐵', '🐸', '🐢', '🐬', '🐙', '🐝', '🦖', '🦕', '🐧', '🦆', '🦉', '🐑'],
+                    bgColor: '#e8f5e9',
+                    borderColor: '#4caf50',
+                    isFont: false
+                },
+                space: {
+                    name: 'כלי רכב וחלל 🚀',
+                    items: ['🚗', '🚓', '🚑', '🚒', '🚜', '🚛', '🛵', '🚲', '🚂', '✈️', '🚁', '🚀', '🛸', '🛰️', '🪐', '🚤', '⛵', '⛴️'],
+                    bgColor: '#e3f2fd',
+                    borderColor: '#2196f3',
+                    isFont: false
+                },
+                toys: {
+                    name: 'לוח צעצועים 🧸',
+                    items: ['🧸', '🎈', '🎨', '🎸', '👑', '🌈', '🎁', '🍭', '🧩', '🪁', '🎠', '🛹', '🎳', '🎯', '🔮', '🎭', '🪄', '🪀'],
+                    bgColor: '#f3e5f5',
+                    borderColor: '#9c27b0',
+                    isFont: false
+                },
+                food: {
+                    name: 'לוח אוכל 🍎',
+                    items: ['🍎', '🍌', '🍓', '🍇', '🍉', '🍕', '🍦', '🍩', '🍔', '🍟', '🍭', '🍫', '🍿', '🧁', '🍪', '🥨', '🥐', '🧀'],
+                    bgColor: '#ffebee',
+                    borderColor: '#f44336',
+                    isFont: false
+                },
+                hebrew: {
+                    name: 'עברית כתב ✍️',
+                    items: ['א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ז', 'ח', 'ט', 'י', 'כ', 'ל', 'מ', 'נ', 'ס', 'ע', 'פ', 'צ'],
+                    bgColor: '#fff8e1',
+                    borderColor: '#ffb300',
+                    isFont: true,
+                    fontFamily: "'Gveret Levin', cursive"
+                },
+                english: {
+                    name: 'אנגלית ראשיות 🔠',
+                    items: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R'],
+                    bgColor: '#e0f2f1',
+                    borderColor: '#009688',
+                    isFont: true,
+                    fontFamily: "'Varela Round', sans-serif"
+                }
+            };
             
             function updateScoreboard() {
                 var sb = get('coop-memory-score');
@@ -11762,6 +11795,36 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     abaContainer.innerHTML = abaMatched.join(' ');
                 }
             }
+
+            function skipFailTimeout() {
+                if (failTimeout) {
+                    clearTimeout(failTimeout);
+                    failTimeout = null;
+                    
+                    let card1 = boardCards[firstCardIndex];
+                    let card2 = boardCards[secondCardIndex];
+                    if (card1) card1.flipped = false;
+                    if (card2) card2.flipped = false;
+                    
+                    let el1 = D.querySelector(`.coop-mem-card[data-index="${firstCardIndex}"]`);
+                    let el2 = D.querySelector(`.coop-mem-card[data-index="${secondCardIndex}"]`);
+                    if (el1) el1.classList.remove('flipped');
+                    if (el2) el2.classList.remove('flipped');
+                    
+                    currentTurn = currentTurn === 'roy' ? 'aba' : 'roy';
+                    firstCardIndex = null;
+                    secondCardIndex = null;
+                    
+                    let turnFile = currentTurn === 'roy' ? 'coop/numwar_turn_roy.mp3' : 'coop/numwar_turn_aba.mp3';
+                    let nextPlayerName = currentTurn === 'roy' ? 'רועי' : 'אבא יאיר';
+                    
+                    get('coop-memory-status').textContent = `תור ${currentTurn === 'roy' ? 'רועי' : 'אבא יאיר'}! ⏳`;
+                    
+                    playCoopAudio(turnFile, `תור ${nextPlayerName}!`);
+                    updateTurnVisuals();
+                    isProcessing = false;
+                }
+            }
             
             function drawLayout() {
                 if (!D.getElementById('coop-memory-styles')) {
@@ -11771,10 +11834,10 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                         .coop-memory-grid {
                             display: grid;
                             grid-template-columns: repeat(6, 1fr);
-                            gap: clamp(4px, 1.2vmin, 8px);
+                            gap: clamp(6px, 1.5vmin, 16px);
                             width: 100%;
-                            max-width: clamp(320px, 80vmin, 520px);
-                            margin: 15px auto;
+                            max-width: 100%;
+                            margin: 10px auto;
                         }
                         .coop-mem-card {
                             aspect-ratio: 1;
@@ -11797,7 +11860,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                             width: 100%;
                             height: 100%;
                             backface-visibility: hidden;
-                            border-radius: clamp(6px, 1.5vw, 12px);
+                            border-radius: clamp(8px, 1.5vw, 16px);
                             display: flex;
                             align-items: center;
                             justify-content: center;
@@ -11805,9 +11868,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                         }
                         .coop-mem-card-back {
                             background: radial-gradient(circle at 35% 35%, #2196f3, #0d47a1);
-                            border: 2px solid #fff;
+                            border: 3px solid #fff;
                             color: #fff;
-                            font-size: clamp(18px, 4.5vmin, 30px);
+                            font-size: clamp(20px, 4.5vmin, 38px);
                             font-weight: bold;
                             text-shadow: 0 2px 4px rgba(0,0,0,0.3);
                         }
@@ -11815,7 +11878,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                             background: #fff;
                             border: 3px solid #ff9800;
                             transform: rotateY(180deg);
-                            font-size: clamp(20px, 5.5vmin, 38px);
+                            font-size: clamp(24px, 5.5vmin, 44px);
                         }
                         .coop-mem-card.matched .coop-mem-card-front {
                             border-color: #4caf50;
@@ -11836,15 +11899,15 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     <div class="numwar-scoreboard" id="coop-memory-score"></div>
                     <div class="numwar-layout">
                         <!-- Aba Side (Right) -->
-                        <div class="numwar-side" id="aba-side-wrap" style="transition: all 0.3s; border-radius:20px; padding:15px;">
+                        <div class="numwar-side" id="aba-side-wrap" style="transition: all 0.3s; border-radius:20px; padding:15px; flex: 1;">
                             <img class="numwar-avatar" src="images/aba_sunglasses.jpg" alt="אבא יאיר">
                             <div class="numwar-name">אבא יאיר</div>
                             <div style="font-size:13px; font-weight:bold; color:#5d4037; margin-top:15px; direction:rtl;">הזוגות של אבא:</div>
                             <div id="aba-matched-pairs" style="display:flex; flex-wrap:wrap; gap:6px; justify-content:center; margin-top:8px; font-size:24px; min-height:40px; background:rgba(255,255,255,0.5); padding:8px; border-radius:12px; border:2px dashed #90caf9;"></div>
                         </div>
 
-                        <!-- Arena (Center) -->
-                        <div class="numwar-arena" style="flex: 2; max-width: 600px;">
+                        <!-- Arena (Center) - Set to 66% width -->
+                        <div class="numwar-arena" id="coop-memory-arena" style="flex: 0 0 66%; max-width: 66%;">
                             <div class="numwar-pendulum-wrap">
                                 <div class="numwar-pendulum-arm to-roy" id="coop-memory-pendulum">
                                     <div class="numwar-pendulum-weight">🧠</div>
@@ -11856,7 +11919,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                         </div>
 
                         <!-- Roy Side (Left) -->
-                        <div class="numwar-side" id="roy-side-wrap" style="transition: all 0.3s; border-radius:20px; padding:15px;">
+                        <div class="numwar-side" id="roy-side-wrap" style="transition: all 0.3s; border-radius:20px; padding:15px; flex: 1;">
                             <img class="numwar-avatar" src="images/roy_sunglasses.jpg" alt="רועי">
                             <div class="numwar-name">רועי</div>
                             <div style="font-size:13px; font-weight:bold; color:#5d4037; margin-top:15px; direction:rtl;">הזוגות של רועי:</div>
@@ -11864,6 +11927,16 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                         </div>
                     </div>
                 `;
+
+                // General click handler on the arena container to skip mismatch delays
+                let arena = get('coop-memory-arena');
+                if (arena) {
+                    arena.onclick = (e) => {
+                        if (!e.target.closest('.coop-mem-card') && failTimeout) {
+                            skipFailTimeout();
+                        }
+                    };
+                }
                 
                 let gridArea = get('coop-memory-grid');
                 boardCards.forEach((card, idx) => {
@@ -11874,7 +11947,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     cardEl.innerHTML = `
                         <div class="coop-mem-card-inner">
                             <div class="coop-mem-card-back">❓</div>
-                            <div class="coop-mem-card-front">${card.emoji}</div>
+                            <div class="coop-mem-card-front" style="${themeIsFont ? 'font-family:' + themeFontFamily + '; font-weight:bold; font-size:clamp(28px, 6vmin, 48px);' : ''}">${card.emoji}</div>
                         </div>
                     `;
                     
@@ -11893,7 +11966,14 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             }
             
             function onCardClicked(idx, cardEl) {
-                if (isProcessing) return;
+                if (isProcessing) {
+                    if (failTimeout) {
+                        skipFailTimeout();
+                        // Proceed to handle click on new card immediately
+                    } else {
+                        return;
+                    }
+                }
                 
                 let card = boardCards[idx];
                 if (card.flipped || card.matched) return;
@@ -11973,7 +12053,8 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                         let nameStr = currentTurn === 'roy' ? 'רועי' : 'אבא';
                         get('coop-memory-status').textContent = `לא זהה! מתהפך חזרה... ⏳`;
                         
-                        setTimeout(() => {
+                        failTimeout = setTimeout(() => {
+                            failTimeout = null;
                             firstCard.flipped = false;
                             card.flipped = false;
                             
@@ -11996,7 +12077,56 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     }
                 }
             }
-            drawLayout();
+
+            window.startGameWithTheme = function(themeId) {
+                playClickSound();
+                let selectedTheme = THEMES[themeId];
+                
+                if (themeId === 'hebrew' && !D.getElementById('gveret-levin-font')) {
+                    let link = D.createElement('link');
+                    link.id = 'gveret-levin-font';
+                    link.rel = 'stylesheet';
+                    link.href = 'https://cdn.jsdelivr.net/npm/@fontsource/gveret-levin/index.css';
+                    D.head.appendChild(link);
+                }
+                
+                let selectedEmojis = shuffle(selectedTheme.items.slice()).slice(0, 18);
+                let doublePool = selectedEmojis.concat(selectedEmojis);
+                boardCards = shuffle(doublePool).map((emoji, idx) => ({
+                    id: idx,
+                    emoji: emoji,
+                    flipped: false,
+                    matched: false
+                }));
+                
+                themeIsFont = selectedTheme.isFont;
+                themeFontFamily = selectedTheme.fontFamily || '';
+                
+                drawLayout();
+            };
+
+            // Draw initial theme selection grid
+            var ws = get('game-workspace');
+            ws.innerHTML = `
+                <div style="display:flex; flex-direction:column; align-items:center; gap:20px; width:100%; max-width:650px; margin:40px auto; padding:30px; background:rgba(255,255,255,0.92); border-radius:32px; box-shadow:0 12px 40px rgba(0,0,0,0.15); border:3px solid #fff; direction:rtl;">
+                    <h2 style="font-size:clamp(22px, 4.5vw, 32px); font-weight:900; color:#3e2723; text-align:center; margin:0 0 10px 0;">בחר לוח משחק זיכרון 🧠</h2>
+                    <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:16px; width:100%;">
+                        ${Object.keys(THEMES).map(key => {
+                            let th = THEMES[key];
+                            return `
+                                <div class="mem-theme-card" onclick="startGameWithTheme('${key}')" style="cursor:pointer; padding:20px; border:4px solid ${th.borderColor}; border-radius:24px; background:${th.bgColor}; text-align:center; box-shadow:0 6px 14px rgba(0,0,0,0.08); transition:transform 0.2s, box-shadow:0.2s;">
+                                    <div style="font-size:clamp(20px, 3.5vw, 26px); font-weight:bold; color:#3e2723;">${th.name}</div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+            `;
+            
+            D.querySelectorAll('.mem-theme-card').forEach(el => {
+                el.onmouseover = () => { el.style.transform = 'scale(1.05)'; el.style.boxShadow = '0 8px 20px rgba(0,0,0,0.15)'; };
+                el.onmouseout = () => { el.style.transform = 'scale(1)'; el.style.boxShadow = '0 6px 14px rgba(0,0,0,0.08)'; };
+            });
         }
 
         // ── סדר בחדר ביחד ──
