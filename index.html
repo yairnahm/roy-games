@@ -1450,6 +1450,7 @@
             
             overlay.appendChild(modal);
             D.body.appendChild(overlay);
+            playCoopAudio('coop/coop_ask_click.mp3', 'מי לחץ עכשיו? רועי או אבא יאיר?');
             
             let closed = false;
             
@@ -2431,6 +2432,7 @@
             const ASSETS_TO_PRELOAD = [
                 // Audio
                 { type: 'audio', url: 'audio/intro-boy.mp3' },
+                { type: 'audio', url: 'audio/coop/coop_ask_click.mp3' },
                 { type: 'audio', url: 'audio/coop/coop_rule_aba.mp3' },
                 { type: 'audio', url: 'audio/coop/coop_rule_roy.mp3' },
                 { type: 'audio', url: 'audio/coop/coop_memory_praise_aba.mp3' },

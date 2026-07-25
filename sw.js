@@ -1,4 +1,4 @@
-const CACHE_NAME = 'roy-games-v110';
+const CACHE_NAME = 'roy-games-v111';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -16,6 +16,7 @@ const ASSETS_TO_CACHE = [
   './audio/coop/coop_rule_aba.mp3',
   './audio/coop/coop_memory_praise_roy.mp3',
   './audio/coop/coop_memory_praise_aba.mp3',
+  './audio/coop/coop_ask_click.mp3',
   './images/winners/key_roy_reach.png',
   './images/winners/key_grandpa.webp',
   './images/winners/key_teacher.webp',
