@@ -2656,7 +2656,7 @@
             hideAllScreens();
             if (currentGameMode === 'freeze') {
                 if (!freezeMusicAudio) {
-                    freezeMusicAudio = new Audio('audio/freeze/dance.mp3');
+                    freezeMusicAudio = PRELOADED_AUDIOS['audio/freeze/dance.mp3'] || new Audio('audio/freeze/dance.mp3');
                 }
                 freezeMusicAudio.volume = 0.0001;
                 freezeMusicAudio.loop = true;
@@ -4952,9 +4952,10 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
 
         function playFreezeSynthLoop() {
             try {
+                stopFreezeSynthLoop();
                 if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
                 if (!freezeMusicAudio) {
-                    freezeMusicAudio = new Audio('audio/freeze/dance.mp3');
+                    freezeMusicAudio = PRELOADED_AUDIOS['audio/freeze/dance.mp3'] || new Audio('audio/freeze/dance.mp3');
                 }
                 freezeMusicAudio.volume = roySettings.muted ? 0.0 : roySettings.volume;
                 freezeMusicAudio.loop = true;
@@ -4963,7 +4964,6 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     console.error('Failed to play freeze music:', e);
                 });
                 
-                stopFreezeSynthLoop();
                 freezeMusicTimer = setInterval(() => {
                     spawnMusicParticle();
                 }, 220);
@@ -5042,9 +5042,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     }
                 </style>
 
-                <div id="freeze-question" style="font-size:clamp(18px,4.5vw,26px); font-weight:900; color:#37474f; text-align:center; direction:rtl; margin-bottom:15px; cursor:pointer; text-shadow:0 1px 2px rgba(255,255,255,0.8);">
-                    שליטה עצמית: ריקוד הפסלים 🕺 🔊
-                </div>
+                <div id="freeze-question" style="display:none;"></div>
 
                 <div id="freeze-stage-box" class="freeze-stage">
                     <div class="ice-overlay">🧊</div>
