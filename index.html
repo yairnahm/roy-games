@@ -2433,6 +2433,24 @@
                 // Audio
                 { type: 'audio', url: 'audio/intro-boy.mp3' },
                 { type: 'audio', url: 'audio/coop/coop_ask_click.mp3' },
+                { type: 'audio', url: 'audio/coop/coop_turn_roy.mp3' },
+                { type: 'audio', url: 'audio/coop/coop_turn_aba.mp3' },
+                { type: 'audio', url: 'audio/coop/coop_roy_win.mp3' },
+                { type: 'audio', url: 'audio/coop/coop_aba_win.mp3' },
+                { type: 'audio', url: 'audio/coop/coop_puzzle_victory.mp3' },
+                { type: 'audio', url: 'audio/coop/coop_puzzle_err.mp3' },
+                { type: 'audio', url: 'audio/coop/tidy_victory.mp3' },
+                { type: 'audio', url: 'audio/coop/numwar_roy_win.mp3' },
+                { type: 'audio', url: 'audio/coop/numwar_aba_win.mp3' },
+                { type: 'audio', url: 'audio/coop/numwar_tie.mp3' },
+                { type: 'audio', url: 'audio/coop/numwar_turn_roy.mp3' },
+                { type: 'audio', url: 'audio/coop/numwar_turn_aba.mp3' },
+                { type: 'audio', url: 'audio/coop/towertalk_turn_roy.mp3' },
+                { type: 'audio', url: 'audio/coop/towertalk_turn_aba.mp3' },
+                { type: 'audio', url: 'audio/coop/towertalk_err_roy.mp3' },
+                { type: 'audio', url: 'audio/coop/towertalk_err_aba.mp3' },
+                { type: 'audio', url: 'audio/coop/towertalk_fall.mp3' },
+                { type: 'audio', url: 'audio/coop/towertalk_victory.mp3' },
                 { type: 'audio', url: 'audio/coop/coop_rule_aba.mp3' },
                 { type: 'audio', url: 'audio/coop/coop_rule_roy.mp3' },
                 { type: 'audio', url: 'audio/coop/coop_memory_praise_aba.mp3' },
@@ -10246,7 +10264,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     firstCardIndex = null;
                     secondCardIndex = null;
                     
-                    let turnFile = currentTurn === 'roy' ? 'coop/numwar_turn_roy.mp3' : 'coop/numwar_turn_aba.mp3';
+                    let turnFile = currentTurn === 'roy' ? 'coop/coop_turn_roy.mp3' : 'coop/coop_turn_aba.mp3';
                     let nextPlayerName = currentTurn === 'roy' ? 'רועי' : 'אבא יאיר';
                     
                     get('coop-memory-status').textContent = `תור ${currentTurn === 'roy' ? 'רועי' : 'אבא יאיר'}! ⏳`;
@@ -10575,7 +10593,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                             firstCardIndex = null;
                             secondCardIndex = null;
                             
-                            let turnFile = currentTurn === 'roy' ? 'coop/numwar_turn_roy.mp3' : 'coop/numwar_turn_aba.mp3';
+                            let turnFile = currentTurn === 'roy' ? 'coop/coop_turn_roy.mp3' : 'coop/coop_turn_aba.mp3';
                             let nextPlayerName = currentTurn === 'roy' ? 'רועי' : 'אבא יאיר';
                             
                             get('coop-memory-status').textContent = `תור ${currentTurn === 'roy' ? 'רועי' : 'אבא יאיר'}! ⏳`;
