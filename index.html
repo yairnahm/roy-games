@@ -6813,6 +6813,28 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             var completed = false;
             var safeOnEnd = function() { if (completed) return; completed = true; if (onEnd) onEnd(); };
 
+            if (lang === 'he' && text) {
+                // Apply masculine vocalization (Nikkud) overrides to force correct pronunciation for a boy (Roy)
+                const vocalizations = [
+                    { pattern: /\bלך\b/g, replacement: 'לְךָ' },
+                    { pattern: /\bתורך\b/g, replacement: 'תּוֹרְךָ' },
+                    { pattern: /\bשלך\b/g, replacement: 'שֶׁלְּךָ' },
+                    { pattern: /\bרוצה\b/g, replacement: 'רוֹצֶה' },
+                    { pattern: /\bעושה\b/g, replacement: 'עוֹשֶׂה' },
+                    { pattern: /\bכל הכבוד\b/g, replacement: 'כָּל הַכָּבוֹד' },
+                    { pattern: /\bבחר\b/g, replacement: 'בְּחַר' },
+                    { pattern: /\bגרור\b/g, replacement: 'גְּרוֹר' },
+                    { pattern: /\bשחרר\b/g, replacement: 'שַׁחְרֵר' },
+                    { pattern: /\bהבט\b/g, replacement: 'הַבֵּט' },
+                    { pattern: /\bלחץ\b/g, replacement: 'לְחַץ' },
+                    { pattern: /\bנסה\b/g, replacement: 'נַסֵּה' },
+                    { pattern: /\bמגיע\b/g, replacement: 'מַגִּיעַ' }
+                ];
+                vocalizations.forEach(v => {
+                    text = text.replace(v.pattern, v.replacement);
+                });
+            }
+
             // מילים באנגלית באותיות גדולות (HOUSE, ADI) מוקראות אות-אות - נמיר לכתיב רגיל
             if (lang !== 'he' && text && text.length > 1 && text === text.toUpperCase()) {
                 text = text.toLowerCase();
