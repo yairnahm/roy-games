@@ -1335,6 +1335,181 @@
             'sharing','growth','goodbad','towertalk','cooppuzzle','tidyup','numwar','whatneeds','calm'];
         let starWallet = { full: 0, halves: 0 };
         let awardedStars = {};
+
+        let turnVerificationCounter = 0;
+        let verificationPending = false;
+
+        function registerTurnSwitch() {
+            turnVerificationCounter++;
+            if (turnVerificationCounter >= 3) {
+                verificationPending = true;
+            }
+        }
+
+        function showTurnVerificationModal(callback) {
+            let overlay = D.createElement('div');
+            overlay.id = 'turn-verification-overlay';
+            overlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background: rgba(0, 0, 0, 0.75);
+                backdrop-filter: blur(8px);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 99999;
+                direction: rtl;
+                animation: fadeIn 0.3s ease-out;
+            `;
+            
+            let modal = D.createElement('div');
+            modal.style.cssText = `
+                background: #fff;
+                border-radius: clamp(20px, 4vw, 32px);
+                padding: clamp(20px, 4vw, 40px);
+                width: 90%;
+                max-width: 600px;
+                text-align: center;
+                box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+                border: 4px solid #4caf50;
+                animation: scaleUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            `;
+            
+            if (!D.getElementById('verification-animations')) {
+                let style = D.createElement('style');
+                style.id = 'verification-animations';
+                style.innerHTML = `
+                    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+                    @keyframes scaleUp { from { transform: scale(0.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+                    .verify-avatar-btn {
+                        cursor: pointer;
+                        border: 4px solid transparent;
+                        border-radius: 24px;
+                        padding: 15px;
+                        background: #f5f5f5;
+                        transition: all 0.2s ease-in-out;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        gap: 10px;
+                    }
+                    .verify-avatar-btn:hover {
+                        transform: scale(1.05);
+                        box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+                    }
+                    .verify-avatar-btn.roy-style {
+                        border-color: #4caf50;
+                        background: #e8f5e9;
+                    }
+                    .verify-avatar-btn.aba-style {
+                        border-color: #2196f3;
+                        background: #e3f2fd;
+                    }
+                    .verify-avatar-img {
+                        width: 120px;
+                        height: 120px;
+                        border-radius: 50%;
+                        object-fit: cover;
+                        border: 3px solid #fff;
+                        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+                    }
+                    .verify-avatar-name {
+                        font-size: 20px;
+                        font-weight: bold;
+                        color: #333;
+                    }
+                `;
+                D.head.appendChild(style);
+            }
+            
+            let expectedTurn = window.getCurrentTurn ? window.getCurrentTurn() : 'roy';
+            
+            modal.innerHTML = `
+                <h2 style="font-size: clamp(24px, 5vw, 36px); font-weight: 900; color: #1b5e20; margin: 0 0 10px 0;">מי לחץ עכשיו? 🤔</h2>
+                <p style="font-size: clamp(16px, 3.5vw, 20px); font-weight: bold; color: #555; margin: 0 0 30px 0;">רועי או אבא יאיר?</p>
+                
+                <div style="display: flex; justify-content: center; gap: clamp(20px, 5vw, 40px); margin-bottom: 20px;">
+                    <!-- Roy Button -->
+                    <div class="verify-avatar-btn roy-style" id="verify-btn-roy">
+                        <img class="verify-avatar-img" src="images/roy_sunglasses.jpg" alt="רועי">
+                        <span class="verify-avatar-name">רועי 👦</span>
+                    </div>
+                    
+                    <!-- Aba Button -->
+                    <div class="verify-avatar-btn aba-style" id="verify-btn-aba">
+                        <img class="verify-avatar-img" src="images/aba_sunglasses.jpg" alt="אבא יאיר">
+                        <span class="verify-avatar-name">אבא יאיר 👨</span>
+                    </div>
+                </div>
+            `;
+            
+            overlay.appendChild(modal);
+            D.body.appendChild(overlay);
+            
+            let closed = false;
+            
+            function choose(player) {
+                if (closed) return;
+                
+                if (player === expectedTurn) {
+                    closed = true;
+                    playSuccessSound();
+                    try { if (typeof confetti === 'function') confetti({ particleCount: 50, spread: 60, origin: { y: 0.6 } }); } catch(e){}
+                    
+                    overlay.style.transition = 'opacity 0.2s ease-out';
+                    overlay.style.opacity = '0';
+                    setTimeout(() => {
+                        overlay.remove();
+                        verificationPending = false;
+                        turnVerificationCounter = 0;
+                        callback();
+                    }, 200);
+                } else {
+                    closed = true;
+                    playErrorSound();
+                    
+                    overlay.style.transition = 'opacity 0.2s ease-out';
+                    overlay.style.opacity = '0';
+                    setTimeout(() => {
+                        overlay.remove();
+                        verificationPending = false;
+                        turnVerificationCounter = 0;
+                        
+                        let expectedName = expectedTurn === 'roy' ? 'רועי' : 'אבא יאיר';
+                        let wrongName = expectedTurn === 'roy' ? 'אבא יאיר' : 'רועי';
+                        let ruleText = `עכשיו תור ${expectedName} ולכן ${expectedName} צריך ללחוץ. כאשר יגיע התור של ${wrongName} רק הוא צריך ללחוץ. אלה הכללים.`;
+                        speakLetter(ruleText, 'he');
+                        
+                        let fl = get('feedback-layer');
+                        if (fl) {
+                            fl.innerHTML = `<span>🛑</span><div class="feedback-msg" style="font-size: clamp(20px, 4vw, 32px); line-height: 1.4;">לא נכון!<br>${ruleText}</div>`;
+                            show('feedback-layer');
+                            setTimeout(() => { hide('feedback-layer'); }, 5000);
+                        }
+                    }, 200);
+                }
+            }
+            
+            get('verify-btn-roy').onclick = (e) => { e.stopPropagation(); choose('roy'); };
+            get('verify-btn-aba').onclick = (e) => { e.stopPropagation(); choose('aba'); };
+        }
+
+        window.checkTurnVerification = function(callback) {
+            const turnGames = ['coopmemory', 'numwar', 'towertalk', 'cooppuzzle', 'tidyup'];
+            if (turnGames.indexOf(currentGameMode) === -1) {
+                callback();
+                return;
+            }
+            if (verificationPending) {
+                showTurnVerificationModal(callback);
+            } else {
+                callback();
+            }
+        };
+
         try {
             if (localStorage.getItem('starWallet')) {
                 starWallet = JSON.parse(localStorage.getItem('starWallet'));
@@ -2387,6 +2562,7 @@
         function startGameEngine(level) {
             playClickSound(); currentDifficulty = level; currentStep = 0; mistakesInLevel = 0; isProcessing = false; isDrawing = false;
             hintRoundKey = ''; roundErrorCount = 0;
+            turnVerificationCounter = 0; verificationPending = false;
             hideAllScreens();
             // Force 100svh height for cooperative sharing and turn-taking modes, clear for others
             var agc = get('active-game-container');
@@ -8456,7 +8632,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                             card.classList.add('disabled');
                         } else if (currentTurn === 'roy' && !isProcessing) {
                             card.onclick = function() {
-                                playRoyCard(idx);
+                                window.checkTurnVerification(() => {
+                                    playRoyCard(idx);
+                                });
                             };
                         } else {
                             card.classList.add('disabled');
@@ -8477,7 +8655,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                             card.classList.add('disabled');
                         } else if (currentTurn === 'aba' && !isProcessing) {
                             card.onclick = function() {
-                                playAbaCard(idx);
+                                window.checkTurnVerification(() => {
+                                    playAbaCard(idx);
+                                });
                             };
                         } else {
                             card.classList.add('disabled');
@@ -8491,7 +8671,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             function playRoyCard(idx) {
                 isProcessing = true;
                 royPlayed[idx] = true;
-                currentTurn = 'aba'; // Switch turn to Aba
+                currentTurn = 'aba'; registerTurnSwitch();
                 renderHands();
 
                 // Slide Roy's card to arena
@@ -8597,7 +8777,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                         }, 2500);
                     } else {
                         // Swing pendulum back to Roy
-                        currentTurn = 'roy';
+                        currentTurn = 'roy'; registerTurnSwitch();
                         var pend = get('numwar-pendulum');
                         if (pend) pend.className = 'numwar-pendulum-arm to-roy';
                         get('arena-status').textContent = 'תור רועי לשחק! 🌟';
@@ -8744,7 +8924,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             
             let royScore = 0;
             let abaScore = 0;
-            let currentTurn = 'roy'; // Roy starts
+            let currentTurn = 'roy'; window.getCurrentTurn = () => currentTurn;
             let stackedBlocks = [];
             let royBlocks = [];
             let abaBlocks = [];
@@ -8915,7 +9095,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                                     return;
                                 }
                                 if (isProcessing) return;
-                                placeBlock('roy', idx);
+                                window.checkTurnVerification(() => { placeBlock('roy', idx); });
                             };
                         }
                         royContainer.appendChild(card);
@@ -8956,7 +9136,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                                     return;
                                 }
                                 if (isProcessing) return;
-                                placeBlock('aba', idx);
+                                window.checkTurnVerification(() => { placeBlock('aba', idx); });
                             };
                         }
                         abaContainer.appendChild(card);
@@ -9041,7 +9221,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                         }, 2500);
                     } else {
                         // Switch turn
-                        currentTurn = player === 'roy' ? 'aba' : 'roy';
+                        currentTurn = player === 'roy' ? 'aba' : 'roy'; registerTurnSwitch();
                         let nameStr = currentTurn === 'roy' ? 'רועי' : 'אבא או אמא';
                         get('arena-status').textContent = `תור ${nameStr} לשים קובייה! ⏳`;
                         
@@ -9321,7 +9501,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                         } else if (currentTurn === 'roy' && !isProcessing) {
                             if (selectedPieceIndex === idx) el.classList.add('selected');
                             el.onclick = function() {
-                                selectPiece(idx);
+                                window.checkTurnVerification(() => {
+                                    selectPiece(idx);
+                                });
                             };
                         } else {
                             el.classList.add('disabled');
@@ -9347,7 +9529,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                         } else if (currentTurn === 'aba' && !isProcessing) {
                             if (selectedPieceIndex === idx) el.classList.add('selected');
                             el.onclick = function() {
-                                selectPiece(idx);
+                                window.checkTurnVerification(() => {
+                                    selectPiece(idx);
+                                });
                             };
                         } else {
                             el.classList.add('disabled');
@@ -9416,7 +9600,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                             }, 2500);
                         } else {
                             // Switch turn
-                            currentTurn = currentTurn === 'roy' ? 'aba' : 'roy';
+                            currentTurn = currentTurn === 'roy' ? 'aba' : 'roy'; registerTurnSwitch();
                             var pend = get('numwar-pendulum');
                             if (pend) pend.className = 'numwar-pendulum-arm to-' + currentTurn;
 
@@ -9485,7 +9669,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
         function initCoopMemoryGame() {
             get('active-game-title').textContent = 'זיכרון משותף 🧠';
             
-            let level = currentDifficulty || 1;
+            let level = currentDifficulty || 1; window.getCurrentTurn = () => currentTurn;
             let cols = (level === 1) ? 5 : 6;
             let totalCards = cols * cols;
             let totalPairs = (level === 1) ? 13 : 18; // 12 normal pairs + 1 wildcard = 13 total matches, or 18 pairs
@@ -9638,7 +9822,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     if (el1) el1.classList.remove('flipped');
                     if (el2) el2.classList.remove('flipped');
                     
-                    currentTurn = currentTurn === 'roy' ? 'aba' : 'roy';
+                    currentTurn = currentTurn === 'roy' ? 'aba' : 'roy'; registerTurnSwitch();
                     firstCardIndex = null;
                     secondCardIndex = null;
                     
@@ -9785,7 +9969,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     `;
                     
                     cardEl.onclick = () => {
-                        onCardClicked(idx, cardEl);
+                        window.checkTurnVerification(() => {
+                            onCardClicked(idx, cardEl);
+                        });
                     };
                     
                     gridArea.appendChild(cardEl);
@@ -9964,7 +10150,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                             firstCardEl.classList.remove('flipped');
                             cardEl.classList.remove('flipped');
                             
-                            currentTurn = currentTurn === 'roy' ? 'aba' : 'roy';
+                            currentTurn = currentTurn === 'roy' ? 'aba' : 'roy'; registerTurnSwitch();
                             firstCardIndex = null;
                             secondCardIndex = null;
                             
@@ -10241,7 +10427,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     
                     if (!isProcessing) {
                         el.onclick = function() {
-                            tidyItemClicked(idx, item);
+                            window.checkTurnVerification(() => {
+                                tidyItemClicked(idx, item);
+                            });
                         };
                     } else {
                         el.classList.add('disabled');
@@ -10365,6 +10553,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                                     let hasRoyItems = itemsPool.some(it => it.category === 'roy');
                                     let hasAbaItems = itemsPool.some(it => it.category === 'aba');
                                     
+                                    let oldTurn = currentTurn;
                                     if (currentTurn === 'roy') {
                                         if (hasAbaItems) {
                                             currentTurn = 'aba';
@@ -10373,6 +10562,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                                         if (hasRoyItems) {
                                             currentTurn = 'roy';
                                         }
+                                    }
+                                    if (currentTurn !== oldTurn) {
+                                        registerTurnSwitch();
                                     }
                                     
                                     var pend = get('numwar-pendulum');
