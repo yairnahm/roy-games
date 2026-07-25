@@ -1338,6 +1338,7 @@
 
         let turnVerificationCounter = 0;
         let verificationPending = false;
+        let freezeMusicAudio = null;
 
         function registerTurnSwitch() {
             turnVerificationCounter++;
@@ -2564,6 +2565,23 @@
             hintRoundKey = ''; roundErrorCount = 0;
             turnVerificationCounter = 0; verificationPending = false;
             hideAllScreens();
+            if (currentGameMode === 'freeze') {
+                if (!freezeMusicAudio) {
+                    freezeMusicAudio = new Audio('audio/freeze/dance.mp3');
+                }
+                freezeMusicAudio.volume = 0.0001;
+                freezeMusicAudio.loop = true;
+                let playPromise = freezeMusicAudio.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        freezeMusicAudio.pause();
+                        freezeMusicAudio.volume = roySettings.muted ? 0.0 : roySettings.volume;
+                        freezeMusicAudio.currentTime = 0;
+                    }).catch(e => {
+                        console.log("Audio pre-unlock failed:", e);
+                    });
+                }
+            }
             // Force 100svh height for cooperative sharing and turn-taking modes, clear for others
             var agc = get('active-game-container');
             if (agc) {
@@ -4843,18 +4861,15 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             isProcessing = false;
         }
 
-        let freezeMusicAudio = null;
-
         function playFreezeSynthLoop() {
             try {
                 if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
-                if (freezeMusicAudio) {
-                    freezeMusicAudio.pause();
-                    freezeMusicAudio.currentTime = 0;
+                if (!freezeMusicAudio) {
+                    freezeMusicAudio = new Audio('audio/freeze/dance.mp3');
                 }
-                freezeMusicAudio = new Audio('audio/freeze/dance.mp3');
                 freezeMusicAudio.volume = roySettings.muted ? 0.0 : roySettings.volume;
                 freezeMusicAudio.loop = true;
+                freezeMusicAudio.currentTime = 0;
                 freezeMusicAudio.play().catch(e => {
                     console.error('Failed to play freeze music:', e);
                 });
@@ -4872,9 +4887,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             if (freezeMusicAudio) {
                 try {
                     freezeMusicAudio.pause();
-                    freezeMusicAudio.currentTime = 0;
                 } catch(e){}
-                freezeMusicAudio = null;
             }
             if (freezeMusicTimer) {
                 clearInterval(freezeMusicTimer);
@@ -5728,9 +5741,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     }
                 </style>
 
-                <div id="candle-question" style="font-size:clamp(18px,4.5vw,26px); font-weight:900; color:#37474f; text-align:center; direction:rtl; margin-bottom:12px; cursor:pointer; text-shadow:0 1px 2px rgba(255,255,255,0.8);">
-                    בריאות רגשית: לכבות את הנר 🕯️ 🔊
-                </div>
+                <div id="candle-question" style="display:none;"></div>
 
                 <div class="candle-container" id="candle-stage-box">
                     
@@ -6452,9 +6463,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     }
                 </style>
 
-                <div id="key-question" style="font-size:clamp(18px,4.5vw,26px); font-weight:900; color:#37474f; text-align:center; direction:rtl; margin-bottom:6px; cursor:pointer;">
-                    המפתח הגבוה: מחפשים את האוצר! 🔑 🔊
-                </div>
+                <div id="key-question" style="display:none;"></div>
 
                 <div id="key-status" style="font-size:17px; font-weight:bold; color:#455a64; text-align:center; direction:rtl; margin-bottom:12px; min-height:24px; transition: color 0.3s ease;">
                     נסו להגיע למפתח התלוי למעלה! 🔑
@@ -7119,7 +7128,15 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     { pattern: /\bהבט\b/g, replacement: 'הַבֵּט' },
                     { pattern: /\bלחץ\b/g, replacement: 'לְחַץ' },
                     { pattern: /\bנסה\b/g, replacement: 'נַסֵּה' },
-                    { pattern: /\bמגיע\b/g, replacement: 'מַגִּיעַ' }
+                    { pattern: /\bמגיע\b/g, replacement: 'מַגִּיעַ' },
+                    { pattern: /\bמצאת\b/g, replacement: 'מָצָאתָ' },
+                    { pattern: /\bהצלחת\b/g, replacement: 'הִצְלַחְתָּ' },
+                    { pattern: /\bקיבלת\b/g, replacement: 'קִבַּלְתָּ' },
+                    { pattern: /\bזכית\b/g, replacement: 'זָכִיתָ' },
+                    { pattern: /\bהגעת\b/g, replacement: 'הִגַּעְתָּ' },
+                    { pattern: /\bבנית\b/g, replacement: 'בָּנִיתָ' },
+                    { pattern: /\bניצחת\b/g, replacement: 'נִצַּחְתָּ' },
+                    { pattern: /\bחילצת\b/g, replacement: 'חִלַּצְתָּ' }
                 ];
                 vocalizations.forEach(v => {
                     text = text.replace(v.pattern, v.replacement);
@@ -9250,7 +9267,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 if (sb) {
                     sb.innerHTML = `
                         <div class="numwar-score-item aba" style="background:#e8f5e9; border-radius:15px; padding:6px 12px;">
-                             <span>אבא או אמא:</span>
+                             <span>אבא יאיר:</span>
                              <span class="numwar-score-val" id="score-aba" style="color:#2e7d32; font-weight:bold;">${abaScore}</span>
                         </div>
                         <div class="numwar-score-val" style="background:#fff3cd; color:#856404; font-weight:900; border-radius:15px; padding:6px 16px;">
@@ -9338,8 +9355,8 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                         
                         <!-- Aba Side (Mom/Dad) - Right in RTL -->
                         <div class="numwar-side numwar-side-container ${currentTurn === 'aba' ? 'active-turn' : 'inactive-turn'}" id="aba-side-box">
-                            <img class="numwar-avatar" src="images/aba_sunglasses.jpg" alt="אבא או אמא" style="border: 4px solid #4caf50;">
-                            <div class="numwar-name" style="color:#2e7d32;">אבא או אמא 👨‍👩‍👦</div>
+                            <img class="numwar-avatar" src="images/aba_sunglasses.jpg" alt="אבא יאיר" style="border: 4px solid #4caf50;">
+                            <div class="numwar-name" style="color:#2e7d32;">אבא יאיר 👨</div>
                             <div style="font-size:12px; color:#555; margin-bottom:8px; font-weight:bold;">
                                 ${currentTurn === 'aba' ? '🌟 התור שלך לשים! 🌟' : 'רגע, מחכים לרועי...'}
                             </div>
@@ -9535,7 +9552,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     } else {
                         // Switch turn
                         currentTurn = player === 'roy' ? 'aba' : 'roy'; registerTurnSwitch();
-                        let nameStr = currentTurn === 'roy' ? 'רועי' : 'אבא או אמא';
+                        let nameStr = currentTurn === 'roy' ? 'רועי' : 'אבא יאיר';
                         get('arena-status').textContent = `תור ${nameStr} לשים קובייה! ⏳`;
                         
                         // Update active state visual
@@ -10543,7 +10560,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             var ws = get('game-workspace');
             ws.innerHTML = `
                 <div style="display:flex; flex-direction:column; align-items:center; gap:20px; width:100%; max-width:650px; margin:40px auto; padding:30px; background:rgba(255,255,255,0.92); border-radius:32px; box-shadow:0 12px 40px rgba(0,0,0,0.15); border:3px solid #fff; direction:rtl;">
-                    <h2 style="font-size:clamp(22px, 4.5vw, 32px); font-weight:900; color:#3e2723; text-align:center; margin:0 0 10px 0;">בחר לוח משחק זיכרון 🧠</h2>
+                    <h2 style="font-size:clamp(22px, 4.5vw, 32px); font-weight:900; color:#3e2723; text-align:center; margin:0 0 10px 0;">בחר נושא: 🧠</h2>
                     <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:16px; width:100%;">
                         ${Object.keys(THEMES).map(key => {
                             let th = THEMES[key];

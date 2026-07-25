@@ -1,4 +1,4 @@
-const CACHE_NAME = 'roy-games-v107';
+const CACHE_NAME = 'roy-games-v108';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -10,7 +10,8 @@ const ASSETS_TO_CACHE = [
   './audio/soundmatch/horn.mp3',
   './audio/soundmatch/car.mp3',
   './audio/soundmatch/phone.mp3',
-  './audio/soundmatch/clock.mp3'
+  './audio/soundmatch/clock.mp3',
+  './audio/freeze/dance.mp3'
 ];
 
 self.addEventListener('install', (event) => {
