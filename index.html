@@ -1482,7 +1482,8 @@
                         let expectedName = expectedTurn === 'roy' ? 'רועי' : 'אבא יאיר';
                         let wrongName = expectedTurn === 'roy' ? 'אבא יאיר' : 'רועי';
                         let ruleText = `עכשיו תור ${expectedName} ולכן ${expectedName} צריך ללחוץ. כאשר יגיע התור של ${wrongName} רק הוא צריך ללחוץ. אלה הכללים.`;
-                        speakLetter(ruleText, 'he');
+                        let ruleFile = expectedTurn === 'roy' ? 'coop/coop_rule_roy.mp3' : 'coop/coop_rule_aba.mp3';
+                        playCoopAudio(ruleFile, ruleText);
                         
                         let fl = get('feedback-layer');
                         if (fl) {
@@ -10461,7 +10462,8 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                         let praiseText = `כל הכבוד ${playerName}, מצאת זוג תואם ולכן מגיע לך תור נוסף!`;
                         get('coop-memory-status').textContent = `זוג תואם! תור נוסף ל${currentTurn === 'roy' ? 'רועי' : 'אבא'}! 🎉`;
                         
-                        speakLetter(praiseText, 'he');
+                        let praiseFile = currentTurn === 'roy' ? 'coop/coop_memory_praise_roy.mp3' : 'coop/coop_memory_praise_aba.mp3';
+                        playCoopAudio(praiseFile, praiseText);
                         
                         setTimeout(() => {
                             currentStep++;
