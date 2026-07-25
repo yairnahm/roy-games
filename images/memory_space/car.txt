@@ -1,0 +1,6 @@
+image: car.png
+generated: 2026-07-25
+source: ChatGPT (DALL-E via chatgpt.com), cropped from a 3x2 sprite sheet (mem_grid_ground.png)
+grid cell: top-left (cell 1 of 6)
+prompt:
+Create a clean 3x2 grid sprite sheet of 6 separate cute 3D cartoon vehicle icons for a kids' memory-matching game, one vehicle per cell, each perfectly centered inside its own SQUARE cell on a plain solid white background, with a thin visible grid line separating cells (no overlapping between cells, no drop shadow extending past the cell). Style: adorable Pixar-like squishy 3D render with big round googly cartoon eyes, tiny smile, and soft glossy shading - same style as a cute toy character. Each vehicle should be shown as a simple standalone object (side view, 3/4 view is fine), filling about 80% of its cell with a small even margin all around - no scene, no background props, no road, no sky, no text or labels anywhere in the image. The 6 vehicles (in reading order, left-to-right top-to-bottom): 1) a car, 2) a police car, 3) an ambulance, 4) a fire truck, 5) a tractor, 6) a delivery truck.

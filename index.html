@@ -4843,37 +4843,39 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             isProcessing = false;
         }
 
+        let freezeMusicAudio = null;
+
         function playFreezeSynthLoop() {
-            if (!audioCtx) return;
             try {
-                if (audioCtx.state === 'suspended') audioCtx.resume();
+                if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+                if (freezeMusicAudio) {
+                    freezeMusicAudio.pause();
+                    freezeMusicAudio.currentTime = 0;
+                }
+                freezeMusicAudio = new Audio('audio/freeze/dance.mp3');
+                freezeMusicAudio.volume = roySettings.muted ? 0.0 : roySettings.volume;
+                freezeMusicAudio.loop = true;
+                freezeMusicAudio.play().catch(e => {
+                    console.error('Failed to play freeze music:', e);
+                });
+                
                 stopFreezeSynthLoop();
-                freezeSynthBeat = 0;
                 freezeMusicTimer = setInterval(() => {
-                    let osc = audioCtx.createOscillator();
-                    let gain = audioCtx.createGain();
-                    osc.connect(gain);
-                    gain.connect(audioCtx.destination);
-                    
-                    let scale = [261.63, 329.63, 392.00, 523.25, 392.00, 329.63]; // C-E-G-C-G-E
-                    let freq = scale[freezeSynthBeat % scale.length];
-                    osc.frequency.value = freq;
-                    
-                    osc.type = 'triangle';
-                    let vol = 0.08 * (roySettings.muted ? 0.0 : roySettings.volume);
-                    gain.gain.setValueAtTime(vol, audioCtx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.18);
-                    
-                    osc.start();
-                    osc.stop(audioCtx.currentTime + 0.2);
-                    
-                    freezeSynthBeat++;
                     spawnMusicParticle();
                 }, 220);
-            } catch(e){}
+            } catch(e) {
+                console.error('Error starting freeze music:', e);
+            }
         }
 
         function stopFreezeSynthLoop() {
+            if (freezeMusicAudio) {
+                try {
+                    freezeMusicAudio.pause();
+                    freezeMusicAudio.currentTime = 0;
+                } catch(e){}
+                freezeMusicAudio = null;
+            }
             if (freezeMusicTimer) {
                 clearInterval(freezeMusicTimer);
                 freezeMusicTimer = null;
@@ -5746,11 +5748,8 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                         </div>
 
                         <!-- Candle -->
-                        <div style="position:relative; width:60px; height:130px; display:flex; justify-content:center;">
-                            <div class="candle-body">
-                                <div class="candle-wick"></div>
-                                <div class="candle-flame-element" id="candle-flame"></div>
-                            </div>
+                        <div style="position:relative; width:90px; height:140px; display:flex; justify-content:center; align-items:flex-end;">
+                            <img id="candle-image-el" src="images/candle/candle_lit.png" style="width:100%; height:100%; object-fit:contain; transition:transform 0.2s ease;" />
                         </div>
                     </div>
 
@@ -5798,10 +5797,11 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             updateBreathProgressUI();
 
             // Animate flame shrinking due to blowing force
-            let flame = get('candle-flame');
-            if (flame) {
-                flame.style.transform = 'scale(0.65) skewX(15deg) rotate(10deg)';
-                flame.style.opacity = '0.8';
+            let candleImg = get('candle-image-el');
+            if (candleImg) {
+                candleImg.src = 'images/candle/candle_wind.png';
+                let baseScale = candleBreathsCount === 0 ? 1.0 : (candleBreathsCount === 1 ? 0.8 : 0.6);
+                candleImg.style.transform = `scale(${baseScale * 0.85}) skewX(12deg)`;
             }
 
             let actionBtn = get('candle-action-btn');
@@ -5820,10 +5820,12 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 }
 
                 // Dynamically skew the flame based on breath duration for feedback
-                if (flame) {
-                    let skewVal = 10 + Math.sin(candleBreathDuration / 80) * 12;
-                    let scaleVal = 0.65 - (candleBreathDuration / 2200) * 0.35;
-                    flame.style.transform = `scale(${scaleVal}) skewX(${skewVal}deg) rotate(${skewVal/2}deg)`;
+                let candleImg = get('candle-image-el');
+                if (candleImg) {
+                    let baseScale = candleBreathsCount === 0 ? 1.0 : (candleBreathsCount === 1 ? 0.8 : 0.6);
+                    let skewVal = 8 + Math.sin(candleBreathDuration / 80) * 6;
+                    let scaleVal = baseScale * (0.85 - (candleBreathDuration / 2200) * 0.15);
+                    candleImg.style.transform = `scale(${scaleVal}) skewX(${skewVal}deg)`;
                 }
 
                 if (candleBreathDuration >= 2200) {
@@ -5846,10 +5848,11 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             candleBreathDuration = 0;
             updateBreathProgressUI();
 
-            let flame = get('candle-flame');
-            if (flame && candleBreathsCount < 3) {
-                flame.style.transform = 'none';
-                flame.style.opacity = '1';
+            let candleImg = get('candle-image-el');
+            if (candleImg && candleBreathsCount < 3) {
+                let baseScale = candleBreathsCount === 0 ? 1.0 : (candleBreathsCount === 1 ? 0.8 : 0.6);
+                candleImg.src = 'images/candle/candle_lit.png';
+                candleImg.style.transform = `scale(${baseScale})`;
             }
 
             let actionBtn = get('candle-action-btn');
@@ -5897,11 +5900,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             
             candleBreathsCount++;
             
-            let flame = get('candle-flame');
-            if (flame) {
-                // Blow out flame completely
-                flame.style.opacity = '0';
-                flame.style.transform = 'scale(0)';
+            let candleImg = get('candle-image-el');
+            if (candleImg) {
+                candleImg.src = 'images/candle/candle_off.png';
             }
 
             let rounds = [
@@ -5921,10 +5922,10 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 
                 playCoopAudio('candle/breath.mp3', 'נשיפה ארוכה ויפה! עוד אחת.', () => {
                     isProcessing = false;
-                    // Relight candle slightly smaller
-                    if (flame) {
-                        flame.style.opacity = '1';
-                        flame.style.transform = 'scale(0.8)';
+                    let candleImg = get('candle-image-el');
+                    if (candleImg) {
+                        candleImg.src = 'images/candle/candle_lit.png';
+                        candleImg.style.transform = 'scale(0.8)';
                     }
                 });
             } else if (candleBreathsCount === 2) {
@@ -5937,9 +5938,10 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 
                 playCoopAudio('candle/breath.mp3', 'נשיפה ארוכה ויפה! עוד אחת.', () => {
                     isProcessing = false;
-                    if (flame) {
-                        flame.style.opacity = '1';
-                        flame.style.transform = 'scale(0.6)';
+                    let candleImg = get('candle-image-el');
+                    if (candleImg) {
+                        candleImg.src = 'images/candle/candle_lit.png';
+                        candleImg.style.transform = 'scale(0.6)';
                     }
                 });
             } else if (candleBreathsCount === 3) {
@@ -6341,6 +6343,295 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
 
 
 
+
+        // ==========================================
+        // wcMakeDraggable helper function
+        // ==========================================
+        function wcMakeDraggable(dragEl, dropZones, onDrop) {
+            dragEl.style.touchAction = 'none';
+            dragEl.style.cursor = 'grab';
+            let dragging = false, startX, startY, origLeft, origTop;
+            dragEl.onpointerdown = (e) => {
+                e.preventDefault();
+                if (dragging) return;
+                dragging = true;
+                try { dragEl.setPointerCapture(e.pointerId); } catch (err) {}
+                let rect = dragEl.getBoundingClientRect();
+                origLeft = rect.left; origTop = rect.top;
+                startX = e.clientX; startY = e.clientY;
+                dragEl.style.position = 'fixed';
+                dragEl.style.left = origLeft + 'px';
+                dragEl.style.top = origTop + 'px';
+                dragEl.style.zIndex = '9999';
+                dragEl.style.cursor = 'grabbing';
+                dragEl.style.transition = 'none';
+            };
+            dragEl.onpointermove = (e) => {
+                if (!dragging) return;
+                dragEl.style.left = (origLeft + (e.clientX - startX)) + 'px';
+                dragEl.style.top = (origTop + (e.clientY - startY)) + 'px';
+            };
+            function resetPosition() {
+                dragEl.style.position = ''; dragEl.style.left = ''; dragEl.style.top = '';
+                dragEl.style.zIndex = ''; dragEl.style.cursor = 'grab'; dragEl.style.transition = '';
+            }
+            function endDrag(e) {
+                if (!dragging) return;
+                dragging = false;
+                let elRect = dragEl.getBoundingClientRect();
+                let cx = elRect.left + elRect.width / 2, cy = elRect.top + elRect.height / 2;
+                let hitZone = null;
+                for (const z of dropZones) {
+                    let zRect = z.el.getBoundingClientRect();
+                    if (cx >= zRect.left && cx <= zRect.right && cy >= zRect.top && cy <= zRect.bottom) {
+                        hitZone = z.key; break;
+                    }
+                }
+                if (hitZone) {
+                    onDrop(hitZone);
+                    resetPosition();
+                } else {
+                    dragEl.style.transition = 'all 0.3s ease-out';
+                    dragEl.style.left = origLeft + 'px';
+                    dragEl.style.top = origTop + 'px';
+                    setTimeout(resetPosition, 300);
+                }
+            }
+            dragEl.onpointerup = endDrag;
+            dragEl.onpointercancel = endDrag;
+        }
+
+        // ==========================================
+        // המפתח הגבוה (High Key) Game
+        // ==========================================
+        let wcKeyTried = false;
+        let keyTriedAlone = false;
+
+        function clearKeyTimers() {
+            keyTriedAlone = false;
+            isProcessing = false;
+        }
+
+        function initKeyGame() {
+            setAppBackground('emotion');
+            clearKeyTimers();
+            loadWcKeyRound();
+        }
+
+        function loadWcKeyRound() {
+            isProcessing = false;
+            wcKeyTried = false;
+
+            let helpers = [
+                { name: 'סבא', img: 'images/winners/key_grandpa.webp', audio: 'winners/key/ask.mp3', label: 'סבא' },
+                { name: 'הגננת', img: 'images/winners/key_teacher.webp', audio: 'winners/key/ask.mp3', label: 'הגננת' },
+                { name: 'אבא', img: 'images/winners/key_aba_help.webp', audio: 'winners/key/ask.mp3', label: 'אבא' }
+            ];
+            let helper = helpers[currentStep] || helpers[0];
+
+            let ws = get('game-workspace');
+            ws.innerHTML = `
+                <style>
+                    .key-helper-character {
+                        transition: left 0.8s ease, opacity 0.4s ease, filter 0.4s ease, transform 0.4s ease;
+                        cursor: pointer;
+                    }
+                    .key-helper-character:hover {
+                        transform: scale(1.05);
+                    }
+                    .key-ask-btn {
+                        animation: keyPulseAsk 1.5s infinite alternate;
+                    }
+                    @keyframes keyPulseAsk {
+                        0% { box-shadow: 0 0 0 0 rgba(33,150,243,0.7); }
+                        100% { box-shadow: 0 0 0 12px rgba(33,150,243,0); }
+                    }
+                    @keyframes keySparkle {
+                        0% { transform: scale(0.9) rotate(0deg); opacity: 0.8; }
+                        100% { transform: scale(1.2) rotate(15deg); opacity: 1; }
+                    }
+                </style>
+
+                <div id="key-question" style="font-size:clamp(18px,4.5vw,26px); font-weight:900; color:#37474f; text-align:center; direction:rtl; margin-bottom:6px; cursor:pointer;">
+                    המפתח הגבוה: מחפשים את האוצר! 🔑 🔊
+                </div>
+
+                <div id="key-status" style="font-size:17px; font-weight:bold; color:#455a64; text-align:center; direction:rtl; margin-bottom:12px; min-height:24px; transition: color 0.3s ease;">
+                    נסו להגיע למפתח התלוי למעלה! 🔑
+                </div>
+
+                <div style="position:relative; width:min(95vw,500px); height:320px; margin:0 auto; background:linear-gradient(to bottom, #cfd8dc, #eceff1); border-radius:24px; border:4px solid #b0bec5; overflow:hidden;">
+                    <!-- Key hanging -->
+                    <div id="key-hanging" style="position:absolute; left:135px; top:65px; font-size:45px; transition:all 0.8s ease; z-index:5;">🔑</div>
+                    
+                    <!-- Helper character (moves to help) -->
+                    <div id="key-helper" class="key-helper-character" style="position:absolute; left:230px; bottom:20px; width:110px; height:135px; transition:all 0.8s ease; opacity:0.55; filter:grayscale(100%);" onclick="handleKeyHelperClick()">
+                        <img src="${helper.img}" style="width:100%; height:100%; object-fit:contain;" />
+                        <div style="position:absolute; top:-25px; left:0; width:100%; text-align:center; font-weight:bold; font-size:14px; background:rgba(255,255,255,0.85); border-radius:6px; border:1px solid #ccc; padding:2px 0;">${helper.name}</div>
+                    </div>
+
+                    <!-- Chest to unlock -->
+                    <div id="key-chest" style="position:absolute; right:20px; bottom:20px; width:100px; height:100px; z-index:4;">
+                        <svg viewBox="0 0 24 24" style="width:100%; height:100%; filter:drop-shadow(0 4px 6px rgba(0,0,0,0.15));">
+                            <rect x="2" y="8" width="20" height="13" rx="2" fill="#8d6e63" stroke="#5d4037" stroke-width="1.5"/>
+                            <rect x="2" y="5" width="20" height="3" rx="1" fill="#a1887f" stroke="#5d4037" stroke-width="1.5"/>
+                            <circle cx="12" cy="14" r="3" fill="#ffd54f" stroke="#ffb300" stroke-width="1.5"/>
+                            <path d="M12 14v4" stroke="#ffb300" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+
+                    <!-- Roy -->
+                    <div id="key-roy" style="position:absolute; left:110px; bottom:20px; width:90px; height:150px; cursor:pointer;" onclick="handleKeyRoyJump()">
+                        <div id="roy-key-overlay" class="hidden" style="position:absolute; top:-30px; right:-15px; font-size:35px; z-index:10; pointer-events:none; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.25));">🔑</div>
+                        <img id="key-roy-img" src="images/winners/key_roy_reach.png" style="width:100%; height:100%; object-fit:contain;" />
+                    </div>
+                </div>
+
+                <div id="key-ask-area" style="min-height:75px; display:flex; justify-content:center; align-items:center;"></div>
+            `;
+
+            let qEl = get('key-question');
+            if (qEl) {
+                qEl.onclick = () => {
+                    playCoopAudio('winners/key/intro.mp3', 'המפתח הגבוה! נסה להגיע למפתח לבד, ואם לא תצליח – בקש עזרה בנימוס.');
+                };
+            }
+
+            if (currentStep === 0) {
+                playCoopAudio('winners/key/intro.mp3', 'המפתח הגבוה! נסה להגיע למפתח לבד, ואם לא תצליח – בקש עזרה בנימוס.');
+            }
+        }
+
+        window.handleKeyRoyJump = function() {
+            if (isProcessing || wcKeyTried) return;
+            let roy = get('key-roy');
+            if (!roy) return;
+
+            isProcessing = true;
+            playClickSound();
+
+            roy.style.transition = 'transform 0.3s ease-out';
+            roy.style.transform = 'translateY(-75px)';
+
+            setTimeout(() => {
+                roy.style.transition = 'transform 0.35s ease-in';
+                roy.style.transform = 'translateY(0px)';
+                
+                setTimeout(() => {
+                    wcKeyTried = true;
+                    playErrorSound();
+                    
+                    let statusEl = get('key-status');
+                    if (statusEl) {
+                        statusEl.innerHTML = `המפתח גבוה מדי... 😅 לחצו על הדמות ליד כדי לבקש עזרה!`;
+                        statusEl.style.color = '#c62828';
+                    }
+
+                    let helperImg = get('key-helper');
+                    if (helperImg) {
+                        helperImg.style.opacity = '1';
+                        helperImg.style.filter = 'none';
+                        helperImg.style.transform = 'scale(1.1)';
+                        setTimeout(() => { helperImg.style.transform = 'none'; }, 300);
+                    }
+
+                    let askArea = get('key-ask-area');
+                    if (askArea && askArea.innerHTML === '') {
+                        askArea.innerHTML = `
+                            <button class="key-ask-btn" style="width:100%; max-width:280px; height:60px; border-radius:20px; border:none; background:linear-gradient(135deg,#2196f3,#1565c0); color:#fff; font-size:22px; font-weight:900; box-shadow:0 6px 15px rgba(21,101,192,0.3); cursor:pointer;" onclick="triggerKeyAskRequest()">
+                                לבקש עזרה 🙏
+                            </button>
+                        `;
+                    }
+
+                    isProcessing = false;
+                }, 350);
+            }, 300);
+        };
+
+        window.handleKeyHelperClick = function() {
+            if (isProcessing || !wcKeyTried) return;
+            triggerKeyAskRequest();
+        };
+
+        window.triggerKeyAskRequest = function() {
+            if (isProcessing) return;
+            isProcessing = true;
+            playClickSound();
+
+            let askArea = get('key-ask-area');
+            if (askArea) askArea.innerHTML = ''; // Hide button
+
+            playCoopAudio('winners/key/ask.mp3', 'אתה יכול בבקשה לעזור לי?', () => {
+                let key = get('key-hanging');
+                let helper = get('key-helper');
+                
+                if (helper && key) {
+                    helper.style.left = '45px'; // Move under the key
+                    
+                    setTimeout(() => {
+                        key.style.top = '110px'; // Lower the key
+                        
+                        setTimeout(() => {
+                            helper.style.left = '110px';
+                            key.style.left = '70px'; // Pass to Roy
+                            
+                            setTimeout(() => {
+                                helper.style.left = '175px'; // Helper returns
+                                key.style.display = 'none'; // Key is taken
+                                
+                                let keyOverlay = get('roy-key-overlay');
+                                if (keyOverlay) keyOverlay.classList.remove('hidden');
+
+                                // Show emotional validation smiley above helper's head (ASD support)
+                                let emoji = D.createElement('div');
+                                emoji.innerHTML = '😊❤️';
+                                emoji.style.cssText = 'position:absolute; left:205px; bottom:125px; font-size:35px; animation: keySparkle 0.8s ease-out; z-index:10; pointer-events:none;';
+                                helper.parentElement.appendChild(emoji);
+                                setTimeout(() => { if (emoji.parentNode) emoji.parentNode.removeChild(emoji); }, 2000);
+
+                                let statusEl = get('key-status');
+                                if (statusEl) {
+                                    statusEl.textContent = 'המפתח אצלך! גררו את רועי עם המפתח לפתוח את התיבה! 🔓';
+                                    statusEl.style.color = '#2e7d32';
+                                }
+
+                                bindKeyToChestDrag();
+                                isProcessing = false;
+                            }, 800);
+                        }, 800);
+                    }, 800);
+                }
+            });
+        };
+
+        function bindKeyToChestDrag() {
+            let roy = get('key-roy');
+            let chest = get('key-chest');
+            if (!roy || !chest) return;
+
+            wcMakeDraggable(roy, [{ el: chest, key: 'chest' }], (zoneKey) => {
+                if (zoneKey === 'chest') {
+                    isProcessing = true;
+                    playSuccessSound();
+
+                    let keyOverlay = get('roy-key-overlay');
+                    if (keyOverlay) keyOverlay.classList.add('hidden');
+
+                    // Open chest animation and sparkles
+                    let sparkles = D.createElement('div');
+                    sparkles.innerHTML = '✨🔓💎🔓✨';
+                    sparkles.style.cssText = 'position:absolute; left:300px; bottom:80px; font-size:35px; animation: keySparkle 0.8s infinite alternate; z-index:10;';
+                    chest.parentElement.appendChild(sparkles);
+
+                    playCoopAudio('winners/key/win.mp3', 'קיבלת את המפתח! כל הכבוד על הבקשה המנומסת!', () => {
+                        if (sparkles.parentNode) sparkles.parentNode.removeChild(sparkles);
+                        isProcessing = false;
+                        handleAnswer(true, null, loadWcKeyRound, null);
+                    });
+                }
+            });
+        }
 
                         // ==========================================
         // 16. מה יותר גדול?
@@ -9722,7 +10013,26 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 },
                 space: {
                     name: 'כלי רכב וחלל 🚀',
-                    items: ['🚗', '🚓', '🚑', '🚒', '🚜', '🚛', '🛵', '🚲', '🚂', '✈️', '🚁', '🚀', '🛸', '🛰️', '🪐', '🚤', '⛵', '⛴️'],
+                    items: [
+                        { emoji: '🚗', img: 'images/memory_space/car.png' },
+                        { emoji: '🚓', img: 'images/memory_space/police.png' },
+                        { emoji: '🚑', img: 'images/memory_space/ambulance.png' },
+                        { emoji: '🚒', img: 'images/memory_space/firetruck.png' },
+                        { emoji: '🚜', img: 'images/memory_space/tractor.png' },
+                        { emoji: '🚛', img: 'images/memory_space/truck.png' },
+                        { emoji: '🛵', img: 'images/memory_space/scooter.png' },
+                        { emoji: '🚲', img: 'images/memory_space/bicycle.png' },
+                        { emoji: '🚂', img: 'images/memory_space/train.png' },
+                        { emoji: '✈️', img: 'images/memory_space/airplane.png' },
+                        { emoji: '🚁', img: 'images/memory_space/helicopter.png' },
+                        { emoji: '🚀', img: 'images/memory_space/rocket.png' },
+                        { emoji: '🛸', img: 'images/memory_space/ufo.png' },
+                        { emoji: '🛰️', img: 'images/memory_space/satellite.png' },
+                        { emoji: '🪐', img: 'images/memory_space/saturn.png' },
+                        { emoji: '🚤', img: 'images/memory_space/speedboat.png' },
+                        { emoji: '⛵', img: 'images/memory_space/sailboat.png' },
+                        { emoji: '⛴️', img: 'images/memory_space/ferry.png' }
+                    ],
                     bgColor: '#e3f2fd',
                     borderColor: '#2196f3',
                     isFont: false
@@ -9986,7 +10296,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     cardEl.innerHTML = `
                         <div class="coop-mem-card-inner">
                             <div class="coop-mem-card-back">❓</div>
-                            <div class="coop-mem-card-front" style="${themeIsFont ? 'font-family:' + themeFontFamily + '; font-weight:bold; font-size:clamp(28px, 6vmin, 48px);' : ''}">${card.emoji}</div>
+                            <div class="coop-mem-card-front" style="${themeIsFont ? 'font-family:' + themeFontFamily + '; font-weight:bold; font-size:clamp(28px, 6vmin, 48px);' : ''}">${card.img ? `<img src="${card.img}" style="width:85%; height:85%; object-fit:contain; pointer-events:none;">` : card.emoji}</div>
                         </div>
                     `;
                     
@@ -10204,15 +10514,19 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 let numPairs = (level === 1) ? 12 : 18;
                 let selectedEmojis = shuffle(selectedTheme.items.slice()).slice(0, numPairs);
                 let doublePool = selectedEmojis.concat(selectedEmojis);
-                
-                let cardsData = doublePool.map(emoji => ({ emoji: emoji, isWildcard: false }));
+
+                // פריטי תמה יכולים להיות אימוג'י פשוט (מחרוזת) או אובייקט {emoji, img} לתמה מבוססת תמונות
+                let cardsData = doublePool.map(item => (typeof item === 'string')
+                    ? { emoji: item, img: null, isWildcard: false }
+                    : { emoji: item.emoji, img: item.img, isWildcard: false });
                 if (level === 1) {
-                    cardsData.push({ emoji: '⭐', isWildcard: true });
+                    cardsData.push({ emoji: '⭐', img: null, isWildcard: true });
                 }
-                
+
                 boardCards = shuffle(cardsData).map((c, idx) => ({
                     id: idx,
                     emoji: c.emoji,
+                    img: c.img,
                     isWildcard: c.isWildcard,
                     flipped: false,
                     matched: false,
