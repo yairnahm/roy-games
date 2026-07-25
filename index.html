@@ -946,9 +946,7 @@
                 padding: 1vmin 2vmin;
             }
             #active-game-title {
-                margin-top: 1vmin;
-                margin-bottom: 1vmin;
-                font-size: clamp(14px, 4vh, 22px);
+                display: none !important;
             }
             .opts-row {
                 margin-top: 1vmin;
@@ -2372,7 +2370,7 @@
         
         function openDifficultyScreen(gameId, icon, title) {
             playClickSound(); hideAllScreens(); setAppBackground(gameId); currentGameMode = gameId;
-            if(gameId === 'emotion' || gameId === 'emparts' || gameId === 'sharing' || gameId === 'growth' || gameId === 'goodbad' || gameId === 'towertalk' || gameId === 'cooppuzzle' || gameId === 'coopmemory' || gameId === 'tidyup' || gameId === 'whatneeds' || gameId === 'calm' || gameId === 'sounds' || gameId === 'soundmatch' || gameId === 'feelwhen' || gameId === 'store' || gameId === 'freeze' || gameId === 'rescue' || gameId === 'candle' || gameId === 'detective' || gameId === 'towertalk' || gameId === 'path' || gameId === 'museum' || gameId === 'bridge' || gameId === 'key' || WINNERS_GAMES.indexOf(gameId) > -1) {
+            if(gameId === 'emotion' || gameId === 'emparts' || gameId === 'sharing' || gameId === 'growth' || gameId === 'goodbad' || gameId === 'towertalk' || gameId === 'cooppuzzle' || gameId === 'tidyup' || gameId === 'whatneeds' || gameId === 'calm' || gameId === 'sounds' || gameId === 'soundmatch' || gameId === 'feelwhen' || gameId === 'store' || gameId === 'freeze' || gameId === 'rescue' || gameId === 'candle' || gameId === 'detective' || gameId === 'towertalk' || gameId === 'path' || gameId === 'museum' || gameId === 'bridge' || gameId === 'key' || WINNERS_GAMES.indexOf(gameId) > -1) {
                 startGameEngine(1); // עוקף את מסך הרמות
                 return;
             }
@@ -2421,7 +2419,7 @@
                                (currentGameMode === 'goodbad' ? 15 : 
                                (currentGameMode === 'numwar' ? 5 : 
                                (currentGameMode === 'towertalk' ? 5 : 
-                               (currentGameMode === 'coopmemory' ? 18 :
+                               (currentGameMode === 'coopmemory' ? (level === 1 ? 13 : 18) :
                                (currentGameMode === 'cooppuzzle' ? 4 : 
                                (currentGameMode === 'tidyup' ? 9 :
                                (currentGameMode === 'diffvideo' ? 6 :
@@ -2521,6 +2519,10 @@
         }
 
         function quitActiveGame() {
+            if (levelCompleteAutoTimeout) {
+                clearTimeout(levelCompleteAutoTimeout);
+                levelCompleteAutoTimeout = null;
+            }
             if (typeof clearCalmTimers === 'function') clearCalmTimers();
             if (typeof clearFreezeTimers === 'function') clearFreezeTimers();
             if (typeof clearRescueTimers === 'function') clearRescueTimers();
@@ -2576,7 +2578,16 @@
                                 let se = 4; if (mistakesInLevel === 1) se = 3; else if (mistakesInLevel === 2) se = 2; else if (mistakesInLevel > 2) se = 1;
                                 for(let i=1; i<=4; i++) { let st = get(`star-${i}`); if(st) st.classList.remove('earned'); if(i<=se) setTimeout(()=>{ if(st) st.classList.add('earned'); playClickSound(); }, i*300); }
                                 awardStar(currentGameMode, currentDifficulty);
-                                if(currentGameMode === 'faces') { showFacesSummary(); } else { show('level-complete-overlay'); }
+                                if(currentGameMode === 'faces') { showFacesSummary(); } else { 
+                                    show('level-complete-overlay'); 
+                                    if (levelCompleteAutoTimeout) clearTimeout(levelCompleteAutoTimeout);
+                                    levelCompleteAutoTimeout = setTimeout(() => {
+                                        let overlay = get('level-complete-overlay');
+                                        if (overlay && !overlay.classList.contains('hidden')) {
+                                            closeLevelComplete();
+                                        }
+                                    }, 3500);
+                                }
                             } else if(successCallback) { successCallback(); }
                         } catch(err) { console.error('handleAnswer timeout error:', err); isProcessing = false; }
                     }, 2800);
@@ -2592,7 +2603,13 @@
             } catch(err) { console.error(err); isProcessing = false; }
         }
 
+        let levelCompleteAutoTimeout = null;
+
         function closeLevelComplete() {
+            if (levelCompleteAutoTimeout) {
+                clearTimeout(levelCompleteAutoTimeout);
+                levelCompleteAutoTimeout = null;
+            }
             playClickSound(); hideAllScreens();
             var agc = get('active-game-container');
             if (agc) agc.style.height = '';
@@ -2605,26 +2622,20 @@
                 animateTrainMovement(oldIdx, trainRouteCurrentIndex);
                 return;
             }
+            
+            // Auto transition to next level if available
+            let nextLvlBtn = get('lvl-'+(currentDifficulty+1)+'-btn');
+            if (nextLvlBtn && nextLvlBtn.style.display !== 'none') {
+                currentDifficulty++;
+                startGameEngine(currentDifficulty);
+                return;
+            }
+            
             if(currentGameMode==='missing') { show('missing-lang-screen'); }
-            else if(currentGameMode==='emotion' || currentGameMode==='emparts' || currentGameMode==='mgamish' || currentGameMode==='firstletter' || currentGameMode==='sharing' || currentGameMode==='growth' || currentGameMode==='goodbad' || currentGameMode==='numwar' || currentGameMode==='towertalk' || currentGameMode==='cooppuzzle' || currentGameMode==='tidyup' || currentGameMode==='patterns' || currentGameMode==='origins' || currentGameMode==='families' || currentGameMode==='whatneeds' || currentGameMode==='calm' || currentGameMode==='sounds' || currentGameMode==='soundmatch' || currentGameMode==='feelwhen' || currentGameMode==='assemble' || currentGameMode==='store' || currentGameMode==='freeze' || currentGameMode==='rescue' || currentGameMode==='candle' || currentGameMode==='detective' || currentGameMode === 'towertalk' || currentGameMode === 'path' || currentGameMode === 'museum' || currentGameMode === 'bridge' || currentGameMode === 'key' || WINNERS_GAMES.indexOf(currentGameMode) > -1) { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); }
             else if(currentGameMode==='faces') { show('faces-mode-screen'); }
             else {
-                try {
-                    let nextLvlBtn = get('lvl-'+(currentDifficulty+1)+'-btn');
-                    if(mistakesInLevel === 0 && currentDifficulty < 5 && nextLvlBtn && nextLvlBtn.style.display !== 'none') { 
-                        currentDifficulty++; 
-                        get('adaptive-msg').style.display = 'block'; 
-                        get('adaptive-msg').textContent = 'היית מעולה! עלינו רמה!'; 
-                    }
-                    else if(mistakesInLevel > 2 && currentDifficulty > 1) { 
-                        currentDifficulty--; 
-                        get('adaptive-msg').style.display = 'block'; 
-                        get('adaptive-msg').textContent = 'התאמנו את הרמה בשבילך!'; 
-                    }
-                    else { get('adaptive-msg').style.display = 'none'; }
-                } catch(e) { console.error('closeLevelComplete error:', e); }
-                show('unified-diff-screen'); 
-            } 
+                quitActiveGame();
+            }
         }
 
                 // ==========================================
@@ -11659,9 +11670,15 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             };
         }
 
-        // ── זיכרון משותף 6X6 (תור אבא ותור רועי) ──
+        // ── זיכרון משותף (תור אבא ותור רועי) ──
         function initCoopMemoryGame() {
             get('active-game-title').textContent = 'זיכרון משותף 🧠';
+            
+            let level = currentDifficulty || 1;
+            let cols = (level === 1) ? 5 : 6;
+            let totalCards = cols * cols;
+            let totalPairs = (level === 1) ? 13 : 18; // 12 normal pairs + 1 wildcard = 13 total matches, or 18 pairs
+            let showViewedHelper = (level < 3); // Level 1 & 2 have viewed helper, Level 3 does not
             
             let royScore = 0;
             let abaScore = 0;
@@ -11671,7 +11688,6 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             let isProcessing = false;
             let failTimeout = null;
             let matchedPairs = 0;
-            const totalPairs = 18;
             
             let royMatched = [];
             let abaMatched = [];
@@ -11827,72 +11843,79 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             }
             
             function drawLayout() {
-                if (!D.getElementById('coop-memory-styles')) {
-                    let s = D.createElement('style');
-                    s.id = 'coop-memory-styles';
-                    s.innerHTML = `
-                        .coop-memory-grid {
-                            display: grid;
-                            grid-template-columns: repeat(6, 1fr);
-                            gap: clamp(6px, 1.5vmin, 16px);
-                            width: 100%;
-                            max-width: 100%;
-                            margin: 10px auto;
-                        }
-                        .coop-mem-card {
-                            aspect-ratio: 1;
-                            perspective: 1000px;
-                            cursor: pointer;
-                            user-select: none;
-                        }
-                        .coop-mem-card-inner {
-                            position: relative;
-                            width: 100%;
-                            height: 100%;
-                            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-                            transform-style: preserve-3d;
-                        }
-                        .coop-mem-card.flipped .coop-mem-card-inner {
-                            transform: rotateY(180deg);
-                        }
-                        .coop-mem-card-front, .coop-mem-card-back {
-                            position: absolute;
-                            width: 100%;
-                            height: 100%;
-                            backface-visibility: hidden;
-                            border-radius: clamp(8px, 1.5vw, 16px);
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                            box-shadow: 0 4px 8px rgba(0,0,0,0.12);
-                        }
-                        .coop-mem-card-back {
-                            background: radial-gradient(circle at 35% 35%, #2196f3, #0d47a1);
-                            border: 3px solid #fff;
-                            color: #fff;
-                            font-size: clamp(20px, 4.5vmin, 38px);
-                            font-weight: bold;
-                            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-                        }
-                        .coop-mem-card-front {
-                            background: #fff;
-                            border: 3px solid #ff9800;
-                            transform: rotateY(180deg);
-                            font-size: clamp(24px, 5.5vmin, 44px);
-                        }
-                        .coop-mem-card.matched .coop-mem-card-front {
-                            border-color: #4caf50;
-                            background: #f1f8e9;
-                            animation: matchPop 0.5s ease-out forwards;
-                        }
-                        @keyframes matchPop {
-                            0% { transform: rotateY(180deg) scale(1); }
-                            50% { transform: rotateY(180deg) scale(1.15); box-shadow: 0 0 15px rgba(76,175,80,0.5); }
-                            100% { transform: rotateY(180deg) scale(1); }
-                        }
-                    `;
-                    D.head.appendChild(s);
+                let oldStyles = D.getElementById('coop-memory-styles');
+                if (oldStyles) {
+                    oldStyles.remove();
                 }
+
+                let s = D.createElement('style');
+                s.id = 'coop-memory-styles';
+                s.innerHTML = `
+                    .coop-memory-grid {
+                        display: grid;
+                        grid-template-columns: repeat(${cols}, 1fr);
+                        gap: clamp(6px, 1.5vmin, 16px);
+                        width: 100%;
+                        max-width: 100%;
+                        margin: 10px auto;
+                    }
+                    .coop-mem-card {
+                        aspect-ratio: 1;
+                        perspective: 1000px;
+                        cursor: pointer;
+                        user-select: none;
+                    }
+                    .coop-mem-card-inner {
+                        position: relative;
+                        width: 100%;
+                        height: 100%;
+                        transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                        transform-style: preserve-3d;
+                    }
+                    .coop-mem-card.flipped .coop-mem-card-inner {
+                        transform: rotateY(180deg);
+                    }
+                    .coop-mem-card-front, .coop-mem-card-back {
+                        position: absolute;
+                        width: 100%;
+                        height: 100%;
+                        backface-visibility: hidden;
+                        border-radius: clamp(8px, 1.5vw, 16px);
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        box-shadow: 0 4px 8px rgba(0,0,0,0.12);
+                    }
+                    .coop-mem-card-back {
+                        background: radial-gradient(circle at 35% 35%, #2196f3, #0d47a1);
+                        border: 3px solid #fff;
+                        color: #fff;
+                        font-size: clamp(20px, 4.5vmin, 38px);
+                        font-weight: bold;
+                        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+                    }
+                    .coop-mem-card.viewed .coop-mem-card-back {
+                        background: radial-gradient(circle at 35% 35%, #78909c, #37474f);
+                        border-color: #cfd8dc;
+                    }
+                    .coop-mem-card-front {
+                        background: #fff;
+                        border: 3px solid #ff9800;
+                        transform: rotateY(180deg);
+                        font-size: clamp(24px, 5.5vmin, 44px);
+                    }
+                    .coop-mem-card.matched .coop-mem-card-front {
+                        border-color: #4caf50;
+                        background: #f1f8e9;
+                        animation: matchPop 0.5s ease-out forwards;
+                    }
+                    @keyframes matchPop {
+                        0% { transform: rotateY(180deg) scale(1); }
+                        50% { transform: rotateY(180deg) scale(1.15); box-shadow: 0 0 15px rgba(76,175,80,0.5); }
+                        100% { transform: rotateY(180deg) scale(1); }
+                    }
+                `;
+                D.head.appendChild(s);
 
                 var ws = get('game-workspace');
                 ws.innerHTML = `
@@ -11928,7 +11951,6 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     </div>
                 `;
 
-                // General click handler on the arena container to skip mismatch delays
                 let arena = get('coop-memory-arena');
                 if (arena) {
                     arena.onclick = (e) => {
@@ -11982,6 +12004,76 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 
                 card.flipped = true;
                 cardEl.classList.add('flipped');
+                
+                if (showViewedHelper) {
+                    card.viewed = true;
+                    cardEl.classList.add('viewed');
+                }
+                
+                // Wildcard checks
+                if (card.isWildcard) {
+                    card.matched = true;
+                    cardEl.classList.add('matched');
+                    
+                    matchedPairs++;
+                    if (currentTurn === 'roy') {
+                        royScore++;
+                        royMatched.push(card.emoji);
+                    } else {
+                        abaScore++;
+                        abaMatched.push(card.emoji);
+                    }
+                    
+                    updateScoreboard();
+                    renderCollectedPairs();
+                    
+                    try {
+                        if (typeof confetti === 'function') {
+                            confetti({ particleCount: 40, spread: 50, origin: { y: 0.6 } });
+                        }
+                    } catch(e){}
+                    
+                    let playerName = currentTurn === 'roy' ? 'רועי' : 'אבא יאיר';
+                    let praiseText = `כל הכבוד ${playerName}, מצאת את כוכב המזל ומגיע לך תור נוסף!`;
+                    get('coop-memory-status').textContent = `כוכב המזל! תור נוסף ל${currentTurn === 'roy' ? 'רועי' : 'אבא'}! ⭐🎉`;
+                    
+                    speakLetter(praiseText, 'he');
+                    
+                    isProcessing = true;
+                    setTimeout(() => {
+                        if (firstCardIndex !== null) {
+                            let fCard = boardCards[firstCardIndex];
+                            let fEl = D.querySelector(`.coop-mem-card[data-index="${firstCardIndex}"]`);
+                            if (fCard && fEl) {
+                                fCard.flipped = false;
+                                fEl.classList.remove('flipped');
+                            }
+                        }
+                        
+                        currentStep++;
+                        updateProgressUI();
+                        
+                        if (matchedPairs >= totalPairs) {
+                            let victoryMsg = 'איזה אלופים! מצאנו את כל הזוגות יחד! 🧠🎉';
+                            get('coop-memory-status').textContent = victoryMsg;
+                            try { if(typeof confetti === 'function') confetti({particleCount: 150, origin:{y:0.6}, zIndex:1000}); } catch(e){}
+                            showKisses();
+                            playCoopAudio('coop/coop_puzzle_victory.mp3', victoryMsg);
+                            
+                            setTimeout(() => {
+                                isProcessing = false;
+                                currentStep = totalPairs;
+                                handleAnswer(true, null, null, null);
+                            }, 3000);
+                        } else {
+                            firstCardIndex = null;
+                            secondCardIndex = null;
+                            isProcessing = false;
+                            updateTurnVisuals();
+                        }
+                    }, 2500);
+                    return;
+                }
                 
                 if (firstCardIndex === null) {
                     firstCardIndex = idx;
@@ -12038,7 +12130,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                                 
                                 setTimeout(() => {
                                     isProcessing = false;
-                                    currentStep = 18;
+                                    currentStep = totalPairs;
                                     handleAnswer(true, null, null, null);
                                 }, 3000);
                             } else {
@@ -12090,13 +12182,22 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     D.head.appendChild(link);
                 }
                 
-                let selectedEmojis = shuffle(selectedTheme.items.slice()).slice(0, 18);
+                let numPairs = (level === 1) ? 12 : 18;
+                let selectedEmojis = shuffle(selectedTheme.items.slice()).slice(0, numPairs);
                 let doublePool = selectedEmojis.concat(selectedEmojis);
-                boardCards = shuffle(doublePool).map((emoji, idx) => ({
+                
+                let cardsData = doublePool.map(emoji => ({ emoji: emoji, isWildcard: false }));
+                if (level === 1) {
+                    cardsData.push({ emoji: '⭐', isWildcard: true });
+                }
+                
+                boardCards = shuffle(cardsData).map((c, idx) => ({
                     id: idx,
-                    emoji: emoji,
+                    emoji: c.emoji,
+                    isWildcard: c.isWildcard,
                     flipped: false,
-                    matched: false
+                    matched: false,
+                    viewed: false
                 }));
                 
                 themeIsFont = selectedTheme.isFont;
