@@ -1339,6 +1339,7 @@
         let turnVerificationCounter = 0;
         let verificationPending = false;
         let freezeMusicAudio = null;
+        const PRELOADED_AUDIOS = {};
 
         function registerTurnSwitch() {
             turnVerificationCounter++;
@@ -1836,30 +1837,39 @@
         function playAudio(filename) {
             try {
                 stopAllSpeech();
-                _currentAudio = new Audio('./audio/' + filename);
-                _currentAudio.volume = roySettings.muted ? 0.0 : roySettings.volume;
-                _currentAudio.play().catch(function(){});
+                let fullPath = 'audio/' + filename;
+                let audio = PRELOADED_AUDIOS[fullPath];
+                if (!audio) {
+                    audio = new Audio(fullPath);
+                }
+                audio.volume = roySettings.muted ? 0.0 : roySettings.volume;
+                _currentAudio = audio;
+                audio.play().catch(function(){});
             } catch(e) {}
         }
         function playCoopAudio(filename, speakText, callback, lang) {
             try {
                 stopAllSpeech();
-                var a = new Audio('./audio/' + filename);
-                a.volume = roySettings.muted ? 0.0 : roySettings.volume;
-                _currentAudio = a;
+                let fullPath = 'audio/' + filename;
+                let audio = PRELOADED_AUDIOS[fullPath];
+                if (!audio) {
+                    audio = new Audio(fullPath);
+                }
+                audio.volume = roySettings.muted ? 0.0 : roySettings.volume;
+                _currentAudio = audio;
                 var finished = false;
                 var safeCallback = function() {
                     if (finished) return;
                     finished = true;
                     if (callback) callback();
                 };
-                a.onended = safeCallback;
-                a.onerror = function() {
+                audio.onended = safeCallback;
+                audio.onerror = function() {
                     speakLetter(speakText, lang || 'he', safeCallback);
                 };
-                a.play().then(function() {
+                audio.play().then(function() {
                     // Safety backup: in case onended doesn't fire (e.g. mobile Safari bugs)
-                    setTimeout(safeCallback, (a.duration || 5) * 1000 + 500);
+                    setTimeout(safeCallback, (audio.duration || 5) * 1000 + 500);
                 }).catch(function() {
                     speakLetter(speakText, lang || 'he', safeCallback);
                 });
@@ -2418,7 +2428,65 @@
         }
 
         window.addEventListener('load', () => {
-            let fallbackTimer = setTimeout(forceReady, 1000); 
+            const ASSETS_TO_PRELOAD = [
+                // Audio
+                { type: 'audio', url: 'audio/intro-boy.mp3' },
+                { type: 'audio', url: 'audio/coop/coop_rule_aba.mp3' },
+                { type: 'audio', url: 'audio/coop/coop_rule_roy.mp3' },
+                { type: 'audio', url: 'audio/coop/coop_memory_praise_aba.mp3' },
+                { type: 'audio', url: 'audio/coop/coop_memory_praise_roy.mp3' },
+                { type: 'audio', url: 'audio/freeze/dance.mp3' },
+                { type: 'audio', url: 'audio/soundmatch/bell.mp3' },
+                { type: 'audio', url: 'audio/soundmatch/drum.wav' },
+                { type: 'audio', url: 'audio/soundmatch/horn.mp3' },
+                { type: 'audio', url: 'audio/soundmatch/car.mp3' },
+                { type: 'audio', url: 'audio/soundmatch/phone.mp3' },
+                { type: 'audio', url: 'audio/soundmatch/clock.mp3' },
+                
+                // Images
+                { type: 'image', url: './images/winners/key_roy_reach.png' },
+                { type: 'image', url: './images/winners/key_grandpa.webp' },
+                { type: 'image', url: './images/winners/key_teacher.webp' },
+                { type: 'image', url: './images/winners/key_aba_help.webp' },
+                { type: 'image', url: './images/aba_sunglasses.jpg' },
+                { type: 'image', url: './images/roy_sunglasses.jpg' },
+                { type: 'image', url: './images/roys_store_bg.jpg' },
+                { type: 'image', url: './images/freeze/teddy_dancing.png' },
+                { type: 'image', url: './images/freeze/teddy_frozen.png' }
+            ];
+
+            let loadedCount = 0;
+            const totalAssets = ASSETS_TO_PRELOAD.length;
+            
+            function assetLoaded() {
+                loadedCount++;
+                let percentage = Math.round((loadedCount / totalAssets) * 100);
+                let lb = get('loader-bar'); if(lb) lb.style.width = percentage + '%';
+                let lt = get('loader-text'); if(lt) lt.textContent = "טוען קבצים... " + percentage + "%";
+                
+                if (loadedCount >= totalAssets) {
+                    forceReady();
+                }
+            }
+            
+            ASSETS_TO_PRELOAD.forEach(asset => {
+                if (asset.type === 'audio') {
+                    let audio = new Audio();
+                    audio.src = asset.url;
+                    audio.addEventListener('canplaythrough', assetLoaded, { once: true });
+                    audio.addEventListener('error', assetLoaded, { once: true });
+                    audio.load();
+                    PRELOADED_AUDIOS[asset.url] = audio;
+                } else if (asset.type === 'image') {
+                    let img = new Image();
+                    img.src = asset.url;
+                    img.addEventListener('load', assetLoaded, { once: true });
+                    img.addEventListener('error', assetLoaded, { once: true });
+                }
+            });
+
+            let fallbackTimer = setTimeout(forceReady, 8000); // 8 seconds safety timeout
+            
             function forceReady() {
                 if(isAppReady) return; isAppReady = true; clearTimeout(fallbackTimer);
                 let btn = get('start-btn'); if(btn) { btn.classList.remove('dimmed'); btn.disabled = false; }
