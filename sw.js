@@ -1,4 +1,4 @@
-const CACHE_NAME = 'roy-games-v115';
+const CACHE_NAME = 'roy-games-v116';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -42,7 +42,13 @@ const ASSETS_TO_CACHE = [
   './images/roy_hoodie.jpg',
   './images/maor.jpg',
   './images/nitai.jpg',
-  './images/aba_yair_sunglasses.jpg'
+  './images/aba_yair_sunglasses.jpg',
+  './images/saba.jpg',
+  './images/adi.jpg',
+  './images/alin.jpg',
+  './images/arya.jpg',
+  './images/yahel.jpg',
+  './images/yahli.jpg'
 ];
 
 self.addEventListener('install', (event) => {

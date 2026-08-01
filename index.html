@@ -1267,6 +1267,37 @@
         66% { transform: rotate(-6deg) translateY(-2px); }
     }
     </style>
+    <style>
+            .selected-player-card {
+                border-color: #4caf50 !important;
+                background: #e8f5e9 !important;
+                transform: scale(1.05);
+                box-shadow: 0 12px 28px rgba(76, 175, 80, 0.3) !important;
+            }
+            .player-badge {
+                position: absolute;
+                top: -8px;
+                right: -8px;
+                width: 28px;
+                height: 28px;
+                border-radius: 50%;
+                background: #4caf50;
+                color: white;
+                font-weight: 900;
+                font-size: 16px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+                border: 2px solid white;
+                animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                z-index: 20;
+            }
+            @keyframes popIn {
+                from { transform: scale(0); }
+                to { transform: scale(1); }
+            }
+    </style>
 </head>
 <body class="bg-hub">
 
@@ -1324,6 +1355,9 @@
         let userGender = 'boy';
         let currentPlayerName = null;
         let currentPlayerAvatar = null;
+        let coopPlayerName = null;
+        let coopPlayerGender = null;
+        let coopPlayerAvatar = null;
         let globalSuccessCount = 0;
 
         // ===== STAR WALLET SYSTEM =====
@@ -1567,12 +1601,24 @@
             if (roySettings.currentPlayerAvatar) {
                 currentPlayerAvatar = roySettings.currentPlayerAvatar;
             }
+            if (roySettings.coopPlayerName) {
+                coopPlayerName = roySettings.coopPlayerName;
+            }
+            if (roySettings.coopPlayerGender) {
+                coopPlayerGender = roySettings.coopPlayerGender;
+            }
+            if (roySettings.coopPlayerAvatar) {
+                coopPlayerAvatar = roySettings.coopPlayerAvatar;
+            }
         }
         function saveSettings() {
             try {
                 roySettings.currentPlayerName = currentPlayerName;
                 roySettings.currentPlayerAvatar = currentPlayerAvatar;
                 roySettings.userGender = userGender;
+                roySettings.coopPlayerName = coopPlayerName;
+                roySettings.coopPlayerGender = coopPlayerGender;
+                roySettings.coopPlayerAvatar = coopPlayerAvatar;
                 localStorage.setItem('roySettings', JSON.stringify(roySettings));
             } catch(e) {}
         }
@@ -1632,10 +1678,33 @@
             currentPlayerName = null;
             currentPlayerAvatar = null;
             userGender = null;
+            coopPlayerName = null;
+            coopPlayerGender = null;
+            coopPlayerAvatar = null;
             roySettings.currentPlayerName = null;
             roySettings.currentPlayerAvatar = null;
             roySettings.userGender = null;
+            roySettings.coopPlayerName = null;
+            roySettings.coopPlayerGender = null;
+            roySettings.coopPlayerAvatar = null;
+            selectedPlayers = [];
             saveSettings();
+            
+            // Clear visual selection state
+            document.querySelectorAll('.selected-player-card').forEach(c => {
+                c.classList.remove('selected-player-card');
+                let badge = c.querySelector('.player-badge');
+                if (badge) badge.remove();
+            });
+            
+            let statusText = get('player-select-status');
+            if (statusText) statusText.textContent = 'בחר את השחקן הראשון';
+            let startBtn = get('player-select-start-btn');
+            if (startBtn) {
+                startBtn.disabled = true;
+                startBtn.classList.add('dimmed');
+            }
+            
             hideAllScreens();
             show('player-selection-screen');
         }
@@ -1919,46 +1988,88 @@
         <button id="start-btn" class="action-btn dimmed" disabled onclick="openPlayerSelectionScreen()">התחלה!</button>
     </div>
 
-    <div id="player-selection-screen" class="screen hidden" style="display:flex; flex-direction:column; align-items:center;">
-        <h1 style="margin-top: 8vh; font-size: clamp(26px, 5vw, 42px); font-weight: 900; color: #37474f;">מי משחק/ת היום? 🎮</h1>
-        <div class="grid-container" style="gap: clamp(15px, 3vw, 25px); margin-top: 4vh; max-width: 900px; justify-content: center; display: flex; flex-wrap: wrap;">
-            
+    <div id="player-selection-screen" class="screen hidden" style="display:flex; flex-direction:column; align-items:center; padding-bottom: 50px;">
+        <h1 style="margin-top: 4vh; font-size: clamp(24px, 4.5vw, 36px); font-weight: 900; color: #37474f; text-align: center;">בחרו שני שחקנים למשחק! 🎮👥</h1>
+        
+        <div id="player-select-status" style="font-size: clamp(18px, 3.5vw, 24px); font-weight: bold; color: #4caf50; background: rgba(76, 175, 80, 0.1); padding: 8px 24px; border-radius: 20px; margin-top: 15px; text-align: center; border: 2px dashed #4caf50;">
+            בחר את השחקן הראשון
+        </div>
+
+        <div class="grid-container" style="gap: clamp(12px, 2.5vw, 20px); margin-top: 3vh; max-width: 1000px; justify-content: center; display: flex; flex-wrap: wrap;">
             <!-- Roy -->
-            <div class="grid-card" onclick="selectPlayer('רועי', 'boy', 'images/roy_hoodie.jpg')" style="width:clamp(140px, 28vw, 190px); border-color:#2196F3; border-width:4px;">
-                <img src="images/roy_hoodie.jpg" onerror="this.src='images/winners/avatar_roy.webp'" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 4px solid #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.15);" />
-                <div style="font-size: 20px; font-weight: 900; color: #37474f; margin-top: 10px;">רועי 👦</div>
+            <div class="grid-card" data-player-name="רועי" onclick="selectPlayerCard('רועי', 'boy', 'images/roy_hoodie.jpg', this)" style="width:clamp(120px, 22vw, 150px); border-color:#2196F3; position:relative;">
+                <img src="images/roy_hoodie.jpg" onerror="this.src='images/winners/avatar_roy.webp'" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
+                <div style="font-size: 16px; font-weight: 900; color: #37474f; margin-top: 8px;">רועי 👦</div>
             </div>
             
             <!-- Maor -->
-            <div class="grid-card" onclick="selectPlayer('מאור', 'girl', 'images/maor.jpg')" style="width:clamp(140px, 28vw, 190px); border-color:#E91E63; border-width:4px;">
-                <img src="images/maor.jpg" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 4px solid #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.15);" />
-                <div style="font-size: 20px; font-weight: 900; color: #37474f; margin-top: 10px;">מאור 👧</div>
+            <div class="grid-card" data-player-name="מאור" onclick="selectPlayerCard('מאור', 'girl', 'images/maor.jpg', this)" style="width:clamp(120px, 22vw, 150px); border-color:#E91E63; position:relative;">
+                <img src="images/maor.jpg" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
+                <div style="font-size: 16px; font-weight: 900; color: #37474f; margin-top: 8px;">מאור 👧</div>
             </div>
 
             <!-- Nitai -->
-            <div class="grid-card" onclick="selectPlayer('ניתאי', 'boy', 'images/nitai.jpg')" style="width:clamp(140px, 28vw, 190px); border-color:#9c27b0; border-width:4px;">
-                <img src="images/nitai.jpg" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 4px solid #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.15);" />
-                <div style="font-size: 20px; font-weight: 900; color: #37474f; margin-top: 10px;">ניתאי 👦</div>
+            <div class="grid-card" data-player-name="ניתאי" onclick="selectPlayerCard('ניתאי', 'boy', 'images/nitai.jpg', this)" style="width:clamp(120px, 22vw, 150px); border-color:#9c27b0; position:relative;">
+                <img src="images/nitai.jpg" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
+                <div style="font-size: 16px; font-weight: 900; color: #37474f; margin-top: 8px;">ניתאי 👦</div>
+            </div>
+
+            <!-- Arya -->
+            <div class="grid-card" data-player-name="אריאה" onclick="selectPlayerCard('אריאה', 'girl', 'images/arya.jpg', this)" style="width:clamp(120px, 22vw, 150px); border-color:#f06292; position:relative;">
+                <img src="images/arya.jpg" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
+                <div style="font-size: 16px; font-weight: 900; color: #37474f; margin-top: 8px;">אריאה 👧</div>
+            </div>
+
+            <!-- Yahli -->
+            <div class="grid-card" data-player-name="יהלי" onclick="selectPlayerCard('יהלי', 'boy', 'images/yahli.jpg', this)" style="width:clamp(120px, 22vw, 150px); border-color:#3f51b5; position:relative;">
+                <img src="images/yahli.jpg" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
+                <div style="font-size: 16px; font-weight: 900; color: #37474f; margin-top: 8px;">יהלי 👦</div>
+            </div>
+
+            <!-- Yahel -->
+            <div class="grid-card" data-player-name="יהל" onclick="selectPlayerCard('יהל', 'girl', 'images/yahel.jpg', this)" style="width:clamp(120px, 22vw, 150px); border-color:#009688; position:relative;">
+                <img src="images/yahel.jpg" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
+                <div style="font-size: 16px; font-weight: 900; color: #37474f; margin-top: 8px;">יהל 👧</div>
+            </div>
+
+            <!-- Alin -->
+            <div class="grid-card" data-player-name="אלין" onclick="selectPlayerCard('אלין', 'girl', 'images/alin.jpg', this)" style="width:clamp(120px, 22vw, 150px); border-color:#e040fb; position:relative;">
+                <img src="images/alin.jpg" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
+                <div style="font-size: 16px; font-weight: 900; color: #37474f; margin-top: 8px;">אלין 👧</div>
+            </div>
+
+            <!-- Adi -->
+            <div class="grid-card" data-player-name="עדי" onclick="selectPlayerCard('עדי', 'girl', 'images/adi.jpg', this)" style="width:clamp(120px, 22vw, 150px); border-color:#ff4081; position:relative;">
+                <img src="images/adi.jpg" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
+                <div style="font-size: 16px; font-weight: 900; color: #37474f; margin-top: 8px;">עדי 👧</div>
             </div>
 
             <!-- Dad Yair -->
-            <div class="grid-card" onclick="selectPlayer('אבא יאיר', 'boy', 'images/aba_yair_sunglasses.jpg')" style="width:clamp(140px, 28vw, 190px); border-color:#4caf50; border-width:4px;">
-                <img src="images/aba_yair_sunglasses.jpg" onerror="this.src='images/winners/avatar_aba.webp'" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 4px solid #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.15);" />
-                <div style="font-size: 20px; font-weight: 900; color: #37474f; margin-top: 10px;">אבא יאיר 👨</div>
+            <div class="grid-card" data-player-name="אבא יאיר" onclick="selectPlayerCard('אבא יאיר', 'boy', 'images/aba_yair_sunglasses.jpg', this)" style="width:clamp(120px, 22vw, 150px); border-color:#4caf50; position:relative;">
+                <img src="images/aba_yair_sunglasses.jpg" onerror="this.src='images/winners/avatar_aba.webp'" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
+                <div style="font-size: 16px; font-weight: 900; color: #37474f; margin-top: 8px;">אבא יאיר 👨</div>
             </div>
 
             <!-- Dad Ohad -->
-            <div class="grid-card" onclick="selectPlayer('אבא אוהד', 'boy', 'images/roy-ohad.jpg')" style="width:clamp(140px, 28vw, 190px); border-color:#00bcd4; border-width:4px;">
-                <img src="images/roy-ohad.jpg" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 4px solid #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.15);" />
-                <div style="font-size: 20px; font-weight: 900; color: #37474f; margin-top: 10px;">אבא אוהד 👨</div>
+            <div class="grid-card" data-player-name="אבא אוהד" onclick="selectPlayerCard('אבא אוהד', 'boy', 'images/roy-ohad.jpg', this)" style="width:clamp(120px, 22vw, 150px); border-color:#00bcd4; position:relative;">
+                <img src="images/roy-ohad.jpg" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
+                <div style="font-size: 16px; font-weight: 900; color: #37474f; margin-top: 8px;">אבא אוהד 👨</div>
             </div>
 
             <!-- Grandma -->
-            <div class="grid-card" onclick="selectPlayer('סבתא', 'girl', 'images/savta.jpg')" style="width:clamp(140px, 28vw, 190px); border-color:#ff9800; border-width:4px;">
-                <img src="images/savta.jpg" onerror="this.src='images/winners/puzzle_roy_savta.webp'" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 4px solid #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.15);" />
-                <div style="font-size: 20px; font-weight: 900; color: #37474f; margin-top: 10px;">סבתא 👵</div>
+            <div class="grid-card" data-player-name="סבתא" onclick="selectPlayerCard('סבתא', 'girl', 'images/savta.jpg', this)" style="width:clamp(120px, 22vw, 150px); border-color:#ff9800; position:relative;">
+                <img src="images/savta.jpg" onerror="this.src='images/winners/puzzle_roy_savta.webp'" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
+                <div style="font-size: 16px; font-weight: 900; color: #37474f; margin-top: 8px;">סבתא 👵</div>
+            </div>
+
+            <!-- Saba -->
+            <div class="grid-card" data-player-name="סבא" onclick="selectPlayerCard('סבא', 'boy', 'images/saba.jpg', this)" style="width:clamp(120px, 22vw, 150px); border-color:#795548; position:relative;">
+                <img src="images/saba.jpg" onerror="this.src='images/winners/key_grandpa.webp'" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
+                <div style="font-size: 16px; font-weight: 900; color: #37474f; margin-top: 8px;">סבא 👴</div>
             </div>
         </div>
+
+        <button id="player-select-start-btn" class="action-btn dimmed" disabled onclick="startWithSelectedPlayers()" style="margin-top: 30px; font-size: 24px; padding: 12px 48px; border-radius: 30px;">בואו נשחק! 🚀</button>
     </div>
 
     <div id="gender-screen" class="hidden" style="display:flex; flex-direction:column; align-items:center;">
@@ -2647,24 +2758,93 @@
             }
         });
 
+        let selectedPlayers = [];
+        
         function openPlayerSelectionScreen() {
             playClickSound();
             initAudio();
-            if (currentPlayerName) {
+            if (currentPlayerName && coopPlayerName) {
                 hideAllScreens();
                 setAppBackground('hub');
                 show('category-screen');
                 updateWalletDisplay();
             } else {
+                selectedPlayers = [];
                 hideAllScreens();
                 show('player-selection-screen');
             }
         }
-        function selectPlayer(name, gender, avatar) {
+        
+        function selectPlayerCard(name, gender, avatar, cardEl) {
             playClickSound();
-            currentPlayerName = name;
-            userGender = gender;
-            currentPlayerAvatar = avatar;
+            
+            let idx = selectedPlayers.findIndex(p => p.name === name);
+            if (idx > -1) {
+                // Deselect
+                selectedPlayers.splice(idx, 1);
+                cardEl.classList.remove('selected-player-card');
+                let badge = cardEl.querySelector('.player-badge');
+                if (badge) badge.remove();
+            } else {
+                // Max 2 players
+                if (selectedPlayers.length >= 2) {
+                    let first = selectedPlayers.shift();
+                    let firstCard = document.querySelector(`[data-player-name="${first.name}"]`);
+                    if (firstCard) {
+                        firstCard.classList.remove('selected-player-card');
+                        let badge = firstCard.querySelector('.player-badge');
+                        if (badge) badge.remove();
+                    }
+                }
+                
+                selectedPlayers.push({name: name, gender: gender, avatar: avatar});
+                cardEl.classList.add('selected-player-card');
+            }
+            
+            // Re-render badges
+            selectedPlayers.forEach((p, index) => {
+                let card = document.querySelector(`[data-player-name="${p.name}"]`);
+                if (card) {
+                    let badge = card.querySelector('.player-badge');
+                    if (!badge) {
+                        badge = D.createElement('div');
+                        badge.className = 'player-badge';
+                        card.appendChild(badge);
+                    }
+                    badge.textContent = (index + 1).toString();
+                }
+            });
+            
+            let statusText = get('player-select-status');
+            let startBtn = get('player-select-start-btn');
+            
+            if (selectedPlayers.length === 0) {
+                statusText.textContent = 'בחר את השחקן הראשון';
+                startBtn.disabled = true;
+                startBtn.classList.add('dimmed');
+            } else if (selectedPlayers.length === 1) {
+                statusText.textContent = `נבחר: ${selectedPlayers[0].name}. בחר את השחקן השני`;
+                startBtn.disabled = true;
+                startBtn.classList.add('dimmed');
+            } else {
+                statusText.textContent = `מוכנים למשחק! ${selectedPlayers[0].name} ו-${selectedPlayers[1].name}`;
+                startBtn.disabled = false;
+                startBtn.classList.remove('dimmed');
+            }
+        }
+        
+        function startWithSelectedPlayers() {
+            if (selectedPlayers.length < 2) return;
+            playClickSound();
+            
+            currentPlayerName = selectedPlayers[0].name;
+            userGender = selectedPlayers[0].gender;
+            currentPlayerAvatar = selectedPlayers[0].avatar;
+            
+            coopPlayerName = selectedPlayers[1].name;
+            coopPlayerGender = selectedPlayers[1].gender;
+            coopPlayerAvatar = selectedPlayers[1].avatar;
+            
             saveSettings();
             
             hideAllScreens();
@@ -2672,10 +2852,7 @@
             show('category-screen');
             updateWalletDisplay();
             
-            let greeting = `שלום ${name}! ברוך הבא למרכז המשחקים.`;
-            if (gender === 'girl') {
-                greeting = `שלום ${name}! ברוכה הבאה למרכז המשחקים.`;
-            }
+            let greeting = `שלום ${currentPlayerName} ו${coopPlayerName}! בואו נשחק ביחד.`;
             playCoopAudio('', greeting);
         }
         function openGenderScreen() {
@@ -7281,7 +7458,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
         var FL_EN_POOL = ['A','B','C','D','E','F','G','H','L','M','N','O','P','R','S','T','V'];
 
         function pickFemaleVoice(voices, lang) {
-            var MALE_NAMES = /david|asaf|yosef|moti|guy|jorge|diego|daniel|thomas|alex|fred|bruce|tom|he-il-x-heg|he_il_x_heg|\bmale\b/i;
+            var MALE_NAMES = /david|asaf|yosef|moti|guy|jorge|diego|daniel|thomas|alex|fred|bruce|tom|avri|he-il-x-heg|he_il_x_heg|\bmale\b/i;
             var FEMALE_NAMES = /hila|michal|idit|anat|carmit|yael|tamar|noa|sara|female|woman|girl|natural|samantha|karen|victoria|tessa|moira|fiona|alice|amelie|anna|sarah|zira|hnd/i;
             var targetLang = lang.toLowerCase();
             var langVoices = voices.filter(function(v) {
@@ -9109,8 +9286,8 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     <div class="numwar-layout">
                         <!-- Aba Side (Renders on Right in RTL) -->
                         <div class="numwar-side">
-                            <img class="numwar-avatar" src="images/aba_sunglasses.jpg" alt="אבא יאיר">
-                            <div class="numwar-name">אבא יאיר</div>
+                            <img class="numwar-avatar" src="${coopPlayerAvatar || 'images/aba_sunglasses.jpg'}" alt="${coopPlayerName || 'אבא יאיר'}">
+                            <div class="numwar-name">${coopPlayerName || 'אבא יאיר'}</div>
                             <div class="numwar-cards-container" id="aba-cards"></div>
                         </div>
 
@@ -9121,17 +9298,17 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                                     <div class="numwar-pendulum-weight">⚖️</div>
                                 </div>
                             </div>
-                            <div class="numwar-arena-title" id="arena-status">תור רועי לשחק! 🌟</div>
+                            <div class="numwar-arena-title" id="arena-status">תור ${currentPlayerName || 'רועי'} לשחק! 🌟</div>
                             <div class="numwar-battle-zone">
-                                <div class="numwar-arena-card-slot" data-label="אבא" id="arena-aba-slot"></div>
-                                <div class="numwar-arena-card-slot" data-label="רועי" id="arena-roy-slot"></div>
+                                <div class="numwar-arena-card-slot" data-label="${coopPlayerName || 'אבא'}" id="arena-aba-slot"></div>
+                                <div class="numwar-arena-card-slot" data-label="${currentPlayerName || 'רועי'}" id="arena-roy-slot"></div>
                             </div>
                         </div>
 
                         <!-- Roy Side (Renders on Left in RTL) -->
                         <div class="numwar-side">
-                            <img class="numwar-avatar" src="images/roy_sunglasses.jpg" alt="רועי">
-                            <div class="numwar-name">רועי</div>
+                            <img class="numwar-avatar" src="${currentPlayerAvatar || 'images/roy_sunglasses.jpg'}" alt="${currentPlayerName || 'רועי'}">
+                            <div class="numwar-name">${currentPlayerName || 'רועי'}</div>
                             <div class="numwar-cards-container" id="roy-cards"></div>
                         </div>
                     </div>
@@ -9546,10 +9723,10 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                         
                         <!-- Aba Side (Mom/Dad) - Right in RTL -->
                         <div class="numwar-side numwar-side-container ${currentTurn === 'aba' ? 'active-turn' : 'inactive-turn'}" id="aba-side-box">
-                            <img class="numwar-avatar" src="images/aba_sunglasses.jpg" alt="אבא יאיר" style="border: 4px solid #4caf50;">
-                            <div class="numwar-name" style="color:#2e7d32;">אבא יאיר 👨</div>
+                            <img class="numwar-avatar" src="${coopPlayerAvatar || 'images/aba_sunglasses.jpg'}" alt="${coopPlayerName || 'אבא יאיר'}" style="border: 4px solid #4caf50;">
+                            <div class="numwar-name" style="color:#2e7d32;">${coopPlayerName || 'אבא יאיר'} 👨</div>
                             <div style="font-size:12px; color:#555; margin-bottom:8px; font-weight:bold;">
-                                ${currentTurn === 'aba' ? '🌟 התור שלך לשים! 🌟' : 'רגע, מחכים לרועי...'}
+                                ${currentTurn === 'aba' ? '🌟 התור שלך לשים! 🌟' : `רגע, מחכים ל${currentPlayerName || 'רועי'}...`}
                             </div>
                             <div class="numwar-cards-container" id="aba-blocks"></div>
                         </div>
@@ -9567,10 +9744,10 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
 
                         <!-- Roy Side - Left in RTL -->
                         <div class="numwar-side numwar-side-container ${currentTurn === 'roy' ? 'active-turn' : 'inactive-turn'}" id="roy-side-box">
-                            <img class="numwar-avatar" src="images/roy_sunglasses.jpg" alt="רועי" style="border: 4px solid #2196f3;">
-                            <div class="numwar-name" style="color:#1565c0;">רועי 👦</div>
+                            <img class="numwar-avatar" src="${currentPlayerAvatar || 'images/roy_sunglasses.jpg'}" alt="${currentPlayerName || 'רועי'}" style="border: 4px solid #2196f3;">
+                            <div class="numwar-name" style="color:#1565c0;">${currentPlayerName || 'רועי'} ${userGender === 'girl' ? '👧' : '👦'}</div>
                             <div style="font-size:12px; color:#555; margin-bottom:8px; font-weight:bold;">
-                                ${currentTurn === 'roy' ? '🌟 התור שלך לשים! 🌟' : 'רגע, מחכים לאבא...'}
+                                ${currentTurn === 'roy' ? '🌟 התור שלך לשים! 🌟' : `רגע, מחכים ל${coopPlayerName || 'אבא יאיר'}...`}
                             </div>
                             <div class="numwar-cards-container" id="roy-blocks"></div>
                         </div>
@@ -9652,7 +9829,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                             card.onclick = function() {
                                 if (currentTurn !== 'aba') {
                                     playErrorSound();
-                                    showTurnWarning('aba', 'רגע, עכשיו תור רועי 😊');
+                                    showTurnWarning('aba', `רגע, עכשיו תור ${currentPlayerName || 'רועי'} 😊`);
                                     playCoopAudio('coop/towertalk_err_roy.mp3', 'רגע, עכשיו תור רועי');
                                     return;
                                 }
@@ -9743,7 +9920,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     } else {
                         // Switch turn
                         currentTurn = player === 'roy' ? 'aba' : 'roy'; registerTurnSwitch();
-                        let nameStr = currentTurn === 'roy' ? 'רועי' : 'אבא יאיר';
+                        let nameStr = currentTurn === 'roy' ? (currentPlayerName || 'רועי') : (coopPlayerName || 'אבא יאיר');
                         get('arena-status').textContent = `תור ${nameStr} לשים קובייה! ⏳`;
                         
                         // Update active state visual
@@ -9759,7 +9936,13 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                             }
                         }
 
-                        playCoopAudio('coop/towertalk_turn_' + currentTurn + '.mp3', `תור ${nameStr}`);
+                        if (nameStr === 'רועי' && currentTurn === 'roy') {
+                            playCoopAudio('coop/towertalk_turn_roy.mp3', `תור רועי`);
+                        } else if (nameStr === 'אבא יאיר' && currentTurn === 'aba') {
+                            playCoopAudio('coop/towertalk_turn_aba.mp3', `תור אבא יאיר`);
+                        } else {
+                            playCoopAudio('', `תור ${nameStr}`);
+                        }
                         
                         isProcessing = false;
                         renderHands();
@@ -9960,8 +10143,8 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     <div class="numwar-layout">
                         <!-- Aba Side (Renders on Right in RTL) -->
                         <div class="numwar-side">
-                            <img class="numwar-avatar" src="images/aba_sunglasses.jpg" alt="אבא יאיר">
-                            <div class="numwar-name">אבא יאיר</div>
+                            <img class="numwar-avatar" src="${coopPlayerAvatar || 'images/aba_sunglasses.jpg'}" alt="${coopPlayerName || 'אבא יאיר'}">
+                            <div class="numwar-name">${coopPlayerName || 'אבא יאיר'}</div>
                             <div class="numwar-cards-container" id="aba-pieces"></div>
                         </div>
 
@@ -9972,7 +10155,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                                     <div class="numwar-pendulum-weight">⚖️</div>
                                 </div>
                             </div>
-                            <div class="numwar-arena-title" id="arena-status">רועי, בחר חלק פאזל ולחץ על המקום הנכון! 🧩</div>
+                            <div class="numwar-arena-title" id="arena-status">${currentPlayerName || 'רועי'}, בחר חלק פאזל ולחץ על המקום הנכון! 🧩</div>
                             
                             <div class="coop-puzzle-grid" id="puzzle-grid" style="direction: ltr;">
                                 <div class="coop-puzzle-slot" data-index="0">1</div>
@@ -9984,8 +10167,8 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
 
                         <!-- Roy Side (Renders on Left in RTL) -->
                         <div class="numwar-side">
-                            <img class="numwar-avatar" src="images/roy_sunglasses.jpg" alt="רועי">
-                            <div class="numwar-name">רועי</div>
+                            <img class="numwar-avatar" src="${currentPlayerAvatar || 'images/roy_sunglasses.jpg'}" alt="${currentPlayerName || 'רועי'}">
+                            <div class="numwar-name">${currentPlayerName || 'רועי'}</div>
                             <div class="numwar-cards-container" id="roy-pieces"></div>
                         </div>
                     </div>
@@ -10458,9 +10641,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     <div class="numwar-layout">
                         <!-- Aba Side (Right) -->
                         <div class="numwar-side" id="aba-side-wrap" style="transition: all 0.3s; border-radius:20px; padding:15px; flex: 1;">
-                            <img class="numwar-avatar" src="images/aba_sunglasses.jpg" alt="אבא יאיר">
-                            <div class="numwar-name">אבא יאיר</div>
-                            <div style="font-size:13px; font-weight:bold; color:#5d4037; margin-top:15px; direction:rtl;">הזוגות של אבא:</div>
+                            <img class="numwar-avatar" src="${coopPlayerAvatar || 'images/aba_sunglasses.jpg'}" alt="${coopPlayerName || 'אבא יאיר'}">
+                            <div class="numwar-name">${coopPlayerName || 'אבא יאיר'}</div>
+                            <div style="font-size:13px; font-weight:bold; color:#5d4037; margin-top:15px; direction:rtl;">הזוגות של ${coopPlayerName || 'אבא'}:</div>
                             <div id="aba-matched-pairs" style="display:flex; flex-wrap:wrap; gap:6px; justify-content:center; margin-top:8px; font-size:24px; min-height:40px; background:rgba(255,255,255,0.5); padding:8px; border-radius:12px; border:2px dashed #90caf9;"></div>
                         </div>
 
@@ -10471,16 +10654,16 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                                     <div class="numwar-pendulum-weight">🧠</div>
                                 </div>
                             </div>
-                            <div class="numwar-arena-title" id="coop-memory-status" style="font-size:clamp(16px, 3.5vw, 22px);">רועי, בחר כרטיסייה ראשונה! 🧠</div>
+                            <div class="numwar-arena-title" id="coop-memory-status" style="font-size:clamp(16px, 3.5vw, 22px);">${currentPlayerName || 'רועי'}, בחר כרטיסייה ראשונה! 🧠</div>
                             
                             <div class="coop-memory-grid" id="coop-memory-grid"></div>
                         </div>
 
                         <!-- Roy Side (Left) -->
                         <div class="numwar-side" id="roy-side-wrap" style="transition: all 0.3s; border-radius:20px; padding:15px; flex: 1;">
-                            <img class="numwar-avatar" src="images/roy_sunglasses.jpg" alt="רועי">
-                            <div class="numwar-name">רועי</div>
-                            <div style="font-size:13px; font-weight:bold; color:#5d4037; margin-top:15px; direction:rtl;">הזוגות של רועי:</div>
+                            <img class="numwar-avatar" src="${currentPlayerAvatar || 'images/roy_sunglasses.jpg'}" alt="${currentPlayerName || 'רועי'}">
+                            <div class="numwar-name">${currentPlayerName || 'רועי'}</div>
+                            <div style="font-size:13px; font-weight:bold; color:#5d4037; margin-top:15px; direction:rtl;">הזוגות של ${currentPlayerName || 'רועי'}:</div>
                             <div id="roy-matched-pairs" style="display:flex; flex-wrap:wrap; gap:6px; justify-content:center; margin-top:8px; font-size:24px; min-height:40px; background:rgba(255,255,255,0.5); padding:8px; border-radius:12px; border:2px dashed #a5d6a7;"></div>
                         </div>
                     </div>
@@ -10878,7 +11061,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
 
                 drawLayout();
 
-                let speakText = `בואו נעשה סדר בחדר! רועי מסדר ${royCleanNames.join(' ו')}, ואבא יאיר מסדר ${abaCleanNames.join(' ו')}.`;
+                let speakText = `בואו נעשה סדר בחדר! ${currentPlayerName || 'רועי'} מסדר ${royCleanNames.join(' ו')}, ו${coopPlayerName || 'אבא יאיר'} מסדר ${abaCleanNames.join(' ו')}.`;
                 speakLetter(speakText, 'he');
             }
 
@@ -10905,12 +11088,12 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 if (sb) {
                     sb.innerHTML = `
                         <div class="numwar-score-item aba">
-                            <span>אבא יאיר:</span>
+                            <span>${coopPlayerName || 'אבא יאיר'}:</span>
                             <span class="numwar-score-val" id="score-aba">${abaScore}</span>
                         </div>
                         <div class="numwar-score-val" style="background:#e8f5e9;color:#2e7d32;font-weight:900;">לסדר: ${itemsPool.length} פריטים</div>
                         <div class="numwar-score-item roy">
-                            <span>רועי:</span>
+                            <span>${currentPlayerName || 'רועי'}:</span>
                             <span class="numwar-score-val" id="score-roy">${royScore}</span>
                         </div>
                     `;
@@ -10924,8 +11107,8 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     <div class="numwar-layout">
                         <!-- Aba Side / Basket (Renders on Right in RTL) -->
                         <div class="numwar-side" id="aba-basket-side" style="padding: 2vmin; border: 4px solid #FF5722; background: rgba(255, 87, 34, 0.05);">
-                            <img class="numwar-avatar" id="tidy-aba-avatar" src="images/aba_sunglasses.jpg" alt="אבא יאיר">
-                            <div class="numwar-name">הסל של אבא יאיר</div>
+                            <img class="numwar-avatar" id="tidy-aba-avatar" src="${coopPlayerAvatar || 'images/aba_sunglasses.jpg'}" alt="${coopPlayerName || 'אבא יאיר'}">
+                            <div class="numwar-name">הסל של ${coopPlayerName || 'אבא יאיר'}</div>
                             <div style="font-size:clamp(12px, 2.5vw, 15px); color:#FF5722; font-weight:bold; margin-bottom:1vmin;">${abaBasketTitle}</div>
                             <div class="coop-tidy-basket-items" id="aba-basket-items"></div>
                         </div>
@@ -10937,7 +11120,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                                     <div class="numwar-pendulum-weight">⚖️</div>
                                 </div>
                             </div>
-                            <div class="numwar-arena-title" id="arena-status">רועי, בחר פריט ששייך לקבוצה שלך! 🧼</div>
+                            <div class="numwar-arena-title" id="arena-status">${currentPlayerName || 'רועי'}, בחר פריט ששייך לקבוצה שלך! 🧼</div>
                             
                             <!-- Middle items container -->
                             <div id="tidy-items-container" style="display:flex; flex-wrap:wrap; gap:clamp(12px, 3.5vmin, 24px); justify-content:center; align-items:center; width:100%; margin-top:2vmin;"></div>
@@ -10945,8 +11128,8 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
 
                         <!-- Roy Side / Basket (Renders on Left in RTL) -->
                         <div class="numwar-side" id="roy-basket-side" style="padding: 2vmin; border: 4px solid #2196F3; background: rgba(33, 150, 243, 0.05);">
-                            <img class="numwar-avatar" id="tidy-roy-avatar" src="images/roy_sunglasses.jpg" alt="רועי">
-                            <div class="numwar-name">הסל של רועי</div>
+                            <img class="numwar-avatar" id="tidy-roy-avatar" src="${currentPlayerAvatar || 'images/roy_sunglasses.jpg'}" alt="${currentPlayerName || 'רועי'}">
+                            <div class="numwar-name">הסל של ${currentPlayerName || 'רועי'}</div>
                             <div style="font-size:clamp(12px, 2.5vw, 15px); color:#2196F3; font-weight:bold; margin-bottom:1vmin;">${royBasketTitle}</div>
                             <div class="coop-tidy-basket-items" id="roy-basket-items"></div>
                         </div>
@@ -11115,7 +11298,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                                     var pend = get('numwar-pendulum');
                                     if (pend) pend.className = 'numwar-pendulum-arm to-' + currentTurn;
                                     
-                                    let nameStr = currentTurn === 'roy' ? 'רועי' : 'אבא יאיר';
+                                    let nameStr = currentTurn === 'roy' ? (currentPlayerName || 'רועי') : (coopPlayerName || 'אבא יאיר');
                                     let categoryStr = currentTurn === 'roy' ? royBasketTitle : abaBasketTitle;
                                     get('arena-status').textContent = `תור ${nameStr} לבחור ${categoryStr}! ⏳`;
                                     
@@ -11130,9 +11313,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     playErrorSound();
                     let errStr;
                     if (currentTurn === 'roy') {
-                        errStr = `זה מתאים לסל של אבא יאיר! רועי מסדר ${royCleanNames.join(' ו')}!`;
+                        errStr = `זה מתאים לסל של ${coopPlayerName || 'אבא יאיר'}! ${currentPlayerName || 'רועי'} מסדר ${royCleanNames.join(' ו')}!`;
                     } else {
-                        errStr = `זה מתאים לסל של רועי! אבא יאיר מסדר ${abaCleanNames.join(' ו')}!`;
+                        errStr = `זה מתאים לסל של ${currentPlayerName || 'רועי'}! ${coopPlayerName || 'אבא יאיר'} מסדר ${abaCleanNames.join(' ו')}!`;
                     }
                     speakLetter(errStr, 'he');
                 }
