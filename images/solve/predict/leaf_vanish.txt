@@ -1,0 +1,4 @@
+File: leaf_vanish.png
+Generated directly in ChatGPT (single image, not a sprite sheet).
+Prompt: "New unrelated image, square 1024x1024, no text or letters anywhere. Soft Pixar-style 3D illustration for a children's educational game, warm pastel colors, simple uncluttered background. A clear glass bucket with calm water, and a single small green leaf turning into a puff of sparkly magic smoke and disappearing above the water surface, whimsical children's-book style, no people."
+Date: 2026-08-01
