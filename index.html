@@ -1322,6 +1322,8 @@
         let sharingOrder = [];
         let growthOrder = [];
         let userGender = 'boy';
+        let currentPlayerName = null;
+        let currentPlayerAvatar = null;
         let globalSuccessCount = 0;
 
         // ===== STAR WALLET SYSTEM =====
@@ -1429,28 +1431,43 @@
             
             let expectedTurn = window.getCurrentTurn ? window.getCurrentTurn() : 'roy';
             
+            let p1Name = currentPlayerName || 'רועי';
+            let p1Avatar = currentPlayerAvatar || 'images/roy_sunglasses.jpg';
+            let p1Gender = userGender || 'boy';
+            
+            let p2Name = 'אבא יאיר';
+            let p2Avatar = 'images/aba_sunglasses.jpg';
+            
+            if (p1Name === 'אבא יאיר' || p1Name === 'אבא אוהד') {
+                p2Name = p1Name;
+                p2Avatar = p1Avatar;
+                p1Name = 'רועי';
+                p1Avatar = 'images/roy_sunglasses.jpg';
+                p1Gender = 'boy';
+            }
+            
             modal.innerHTML = `
                 <h2 style="font-size: clamp(24px, 5vw, 36px); font-weight: 900; color: #1b5e20; margin: 0 0 10px 0;">מי לחץ עכשיו? 🤔</h2>
-                <p style="font-size: clamp(16px, 3.5vw, 20px); font-weight: bold; color: #555; margin: 0 0 30px 0;">רועי או אבא יאיר?</p>
+                <p style="font-size: clamp(16px, 3.5vw, 20px); font-weight: bold; color: #555; margin: 0 0 30px 0;">${p1Name} או ${p2Name}?</p>
                 
                 <div style="display: flex; justify-content: center; gap: clamp(20px, 5vw, 40px); margin-bottom: 20px;">
                     <!-- Roy Button -->
                     <div class="verify-avatar-btn roy-style" id="verify-btn-roy">
-                        <img class="verify-avatar-img" src="images/roy_sunglasses.jpg" alt="רועי">
-                        <span class="verify-avatar-name">רועי 👦</span>
+                        <img class="verify-avatar-img" src="${p1Avatar}" alt="${p1Name}">
+                        <span class="verify-avatar-name">${p1Name} ${p1Gender === 'girl' ? '👧' : '👦'}</span>
                     </div>
                     
                     <!-- Aba Button -->
                     <div class="verify-avatar-btn aba-style" id="verify-btn-aba">
-                        <img class="verify-avatar-img" src="images/aba_sunglasses.jpg" alt="אבא יאיר">
-                        <span class="verify-avatar-name">אבא יאיר 👨</span>
+                        <img class="verify-avatar-img" src="${p2Avatar}" alt="${p2Name}">
+                        <span class="verify-avatar-name">${p2Name} 👨</span>
                     </div>
                 </div>
             `;
             
             overlay.appendChild(modal);
             D.body.appendChild(overlay);
-            playCoopAudio('coop/coop_ask_click.mp3', 'מי לחץ עכשיו? רועי או אבא יאיר?');
+            playCoopAudio('', `מי לחץ עכשיו? ${p1Name} או ${p2Name}?`);
             
             let closed = false;
             
@@ -1544,9 +1561,18 @@
             if (roySettings.userGender) {
                 userGender = roySettings.userGender;
             }
+            if (roySettings.currentPlayerName) {
+                currentPlayerName = roySettings.currentPlayerName;
+            }
+            if (roySettings.currentPlayerAvatar) {
+                currentPlayerAvatar = roySettings.currentPlayerAvatar;
+            }
         }
         function saveSettings() {
             try {
+                roySettings.currentPlayerName = currentPlayerName;
+                roySettings.currentPlayerAvatar = currentPlayerAvatar;
+                roySettings.userGender = userGender;
                 localStorage.setItem('roySettings', JSON.stringify(roySettings));
             } catch(e) {}
         }
@@ -1603,11 +1629,15 @@
         }
         function switchPlayer() {
             playClickSound();
+            currentPlayerName = null;
+            currentPlayerAvatar = null;
             userGender = null;
+            roySettings.currentPlayerName = null;
+            roySettings.currentPlayerAvatar = null;
             roySettings.userGender = null;
             saveSettings();
             hideAllScreens();
-            show('gender-screen');
+            show('player-selection-screen');
         }
         function resetProgress() {
             playClickSound();
@@ -1886,7 +1916,49 @@
         <h1 style="font-size: clamp(40px, 8vw, 70px);">מרכז המשחקים!</h1>
         <div id="loader-wrapper"><div id="loader-bar"></div></div>
         <div id="loader-text">מכין את המשחקים...</div>
-        <button id="start-btn" class="action-btn dimmed" disabled onclick="openGenderScreen()">התחלה!</button>
+        <button id="start-btn" class="action-btn dimmed" disabled onclick="openPlayerSelectionScreen()">התחלה!</button>
+    </div>
+
+    <div id="player-selection-screen" class="screen hidden" style="display:flex; flex-direction:column; align-items:center;">
+        <h1 style="margin-top: 8vh; font-size: clamp(26px, 5vw, 42px); font-weight: 900; color: #37474f;">מי משחק/ת היום? 🎮</h1>
+        <div class="grid-container" style="gap: clamp(15px, 3vw, 25px); margin-top: 4vh; max-width: 900px; justify-content: center; display: flex; flex-wrap: wrap;">
+            
+            <!-- Roy -->
+            <div class="grid-card" onclick="selectPlayer('רועי', 'boy', 'images/roy_hoodie.jpg')" style="width:clamp(140px, 28vw, 190px); border-color:#2196F3; border-width:4px;">
+                <img src="images/roy_hoodie.jpg" onerror="this.src='images/winners/avatar_roy.webp'" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 4px solid #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.15);" />
+                <div style="font-size: 20px; font-weight: 900; color: #37474f; margin-top: 10px;">רועי 👦</div>
+            </div>
+            
+            <!-- Maor -->
+            <div class="grid-card" onclick="selectPlayer('מאור', 'girl', 'images/maor.jpg')" style="width:clamp(140px, 28vw, 190px); border-color:#E91E63; border-width:4px;">
+                <img src="images/maor.jpg" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 4px solid #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.15);" />
+                <div style="font-size: 20px; font-weight: 900; color: #37474f; margin-top: 10px;">מאור 👧</div>
+            </div>
+
+            <!-- Nitai -->
+            <div class="grid-card" onclick="selectPlayer('ניתאי', 'boy', 'images/nitai.jpg')" style="width:clamp(140px, 28vw, 190px); border-color:#9c27b0; border-width:4px;">
+                <img src="images/nitai.jpg" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 4px solid #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.15);" />
+                <div style="font-size: 20px; font-weight: 900; color: #37474f; margin-top: 10px;">ניתאי 👦</div>
+            </div>
+
+            <!-- Dad Yair -->
+            <div class="grid-card" onclick="selectPlayer('אבא יאיר', 'boy', 'images/aba_yair_sunglasses.jpg')" style="width:clamp(140px, 28vw, 190px); border-color:#4caf50; border-width:4px;">
+                <img src="images/aba_yair_sunglasses.jpg" onerror="this.src='images/winners/avatar_aba.webp'" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 4px solid #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.15);" />
+                <div style="font-size: 20px; font-weight: 900; color: #37474f; margin-top: 10px;">אבא יאיר 👨</div>
+            </div>
+
+            <!-- Dad Ohad -->
+            <div class="grid-card" onclick="selectPlayer('אבא אוהד', 'boy', 'images/roy-ohad.jpg')" style="width:clamp(140px, 28vw, 190px); border-color:#00bcd4; border-width:4px;">
+                <img src="images/roy-ohad.jpg" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 4px solid #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.15);" />
+                <div style="font-size: 20px; font-weight: 900; color: #37474f; margin-top: 10px;">אבא אוהד 👨</div>
+            </div>
+
+            <!-- Grandma -->
+            <div class="grid-card" onclick="selectPlayer('סבתא', 'girl', 'images/savta.jpg')" style="width:clamp(140px, 28vw, 190px); border-color:#ff9800; border-width:4px;">
+                <img src="images/savta.jpg" onerror="this.src='images/winners/puzzle_roy_savta.webp'" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 4px solid #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.15);" />
+                <div style="font-size: 20px; font-weight: 900; color: #37474f; margin-top: 10px;">סבתא 👵</div>
+            </div>
+        </div>
     </div>
 
     <div id="gender-screen" class="hidden" style="display:flex; flex-direction:column; align-items:center;">
@@ -2575,6 +2647,37 @@
             }
         });
 
+        function openPlayerSelectionScreen() {
+            playClickSound();
+            initAudio();
+            if (currentPlayerName) {
+                hideAllScreens();
+                setAppBackground('hub');
+                show('category-screen');
+                updateWalletDisplay();
+            } else {
+                hideAllScreens();
+                show('player-selection-screen');
+            }
+        }
+        function selectPlayer(name, gender, avatar) {
+            playClickSound();
+            currentPlayerName = name;
+            userGender = gender;
+            currentPlayerAvatar = avatar;
+            saveSettings();
+            
+            hideAllScreens();
+            setAppBackground('hub');
+            show('category-screen');
+            updateWalletDisplay();
+            
+            let greeting = `שלום ${name}! ברוך הבא למרכז המשחקים.`;
+            if (gender === 'girl') {
+                greeting = `שלום ${name}! ברוכה הבאה למרכז המשחקים.`;
+            }
+            playCoopAudio('', greeting);
+        }
         function openGenderScreen() {
             playClickSound(); initAudio(); hideAllScreens();
             if (roySettings.userGender) {
@@ -2609,7 +2712,7 @@
             updateWalletDisplay();
         }
 
-        function hideAllScreens() { ['start-screen', 'gender-screen', 'category-screen', 'settings-screen', 'hub-screen', 'unified-diff-screen', 'active-game-container', 'level-complete-overlay', 'missing-lang-screen', 'firstletter-lang-screen', 'faces-lang-screen', 'faces-mode-screen', 'faces-summary-screen', 'toy-shelf-overlay', 'toy-confirm-overlay', 'train-route-screen'].forEach(hide); }
+        function hideAllScreens() { ['start-screen', 'gender-screen', 'player-selection-screen', 'category-screen', 'settings-screen', 'hub-screen', 'unified-diff-screen', 'active-game-container', 'level-complete-overlay', 'missing-lang-screen', 'firstletter-lang-screen', 'faces-lang-screen', 'faces-mode-screen', 'faces-summary-screen', 'toy-shelf-overlay', 'toy-confirm-overlay', 'train-route-screen'].forEach(hide); }
 
         function backToHub() { playClickSound(); hideAllScreens(); setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); }
         function backToCategories() { playClickSound(); hideAllScreens(); setAppBackground('hub'); show('category-screen'); updateWalletDisplay(); }
@@ -6184,6 +6287,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                         display: grid; grid-template-columns: repeat(3, 100px); grid-template-rows: repeat(3, 100px);
                         margin: 0 auto 20px; overflow: hidden; gap: 0;
                         user-select: none; touch-action: none;
+                        direction: ltr; /* Fix grid alignment on Hebrew RTL layout */
                     }
                     .detective-cell {
                         position: relative; width: 100px; height: 100px; box-sizing: border-box;
@@ -6200,11 +6304,12 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                         position: absolute; width: 300px; height: 300px; pointer-events: none;
                     }
                     .detective-draggable-piece {
-                        position: relative; width: 96px; height: 96px;
+                        position: relative; width: 100px; height: 100px;
                         border: 3px solid #ffb74d; border-radius: 12px;
                         background: #fff; box-shadow: 0 6px 14px rgba(0,0,0,0.15);
                         overflow: hidden; cursor: grab; z-index: 10;
                         touch-action: none;
+                        box-sizing: content-box; /* Exact 100x100 content size, no scaling offset jump */
                     }
                     .detective-draggable-piece:active {
                         cursor: grabbing;
@@ -6290,13 +6395,10 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 let piece = D.createElement('div');
                 piece.className = 'detective-draggable-piece';
                 piece.id = `detective-piece-${pData.idx}`;
-                piece.style.width = '96px';
-                piece.style.height = '96px';
                 
-                // Outer scale relative to slot size (100px)
-                // Inside we align the SVG offset scaled by 96/100 = 0.96
+                // Content box is 100px, matches board cells exactly
                 piece.innerHTML = `
-                    <div style="position:absolute; width:288px; height:288px; left: -${pData.col * 96}px; top: -${pData.row * 96}px; pointer-events:none;">
+                    <div style="position:absolute; width:300px; height:300px; left: -${pData.col * 100}px; top: -${pData.row * 100}px; pointer-events:none;">
                         ${pData.svgContent}
                     </div>
                 `;
