@@ -15275,6 +15275,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 jContainer.appendChild(card);
             });
 
+            hide('solve-scene-area'); // Hide scene illustration during justification step to clear up screen space
             show('solve-justification-area');
         }
 
@@ -15292,6 +15293,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             
             // Go to Calibration
             setTimeout(() => {
+                hide('solve-scene-area'); // Keep scene hidden during calibration
                 show('solve-calibration-area');
             }, 1800);
         }
