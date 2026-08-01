@@ -14479,9 +14479,11 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
         // Register all 10 Gemini scenarios in SOLVE_GAMES
         
         // 1. בלשי הרגשות (Emotion Detectives)
+                // Register all 10 Gemini scenarios in SOLVE_GAMES
+        
+        // 1. בלשי הרגשות (Emotion Detectives)
         SOLVE_GAMES.fairswing = {
             introGoalText: "ברוכים הבאים לבלשי הרגשות! המטרה שלנו היא לעזור לילדים בגינה לפתור בעיות, להבין מה הם מרגישים ולמצוא פתרון הוגן לכולם. לחצו על הרמזים כדי להתחיל!",
-
             rounds: [
                 {
                     scene: `<svg viewBox="0 0 400 220" style="background: linear-gradient(to bottom, #e3f2fd, #fff); width:100%; max-height:30vh;">
@@ -14489,13 +14491,13 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                                 <line x1="200" y1="20" x2="200" y2="170" stroke="#78909c" stroke-width="6"/>
                                 <rect x="170" y="120" width="60" height="15" fill="#a1887f"/>
                                 <text x="200" y="110" font-size="40" text-anchor="middle">👦</text>
-                                <text x="100" y="180" font-size="40" text-anchor="middle">😢</text>
-                                <text x="100" y="130" font-size="20" fill="#d32f2f" font-weight="bold" text-anchor="middle">🩹 בברך</text>
+                                <text x="100" y="160" font-size="40" text-anchor="middle">😢</text>
+                                <text x="100" y="180" font-size="14" fill="#d32f2f" font-weight="bold" text-anchor="middle">🩹 ברך</text>
                             </svg>`,
                     prompt: "שני ילדים רוצים להתנדנד בנדנדה. אחד מתנדנד המון זמן, והשני כרגע הגיע, נפל ונפצע. מה עושים?",
                     clues: [
-                        { revealedText: "רמז 1: הילד שנפל בוכה וכואב לו מאוד בגלל השריטה בברך 😢" },
-                        { revealedText: "רמז 2: הילד בנדנדה מתנדנד כבר זמן רב ולא רוצה לרדת 😐" }
+                        { x: 25, y: 70, revealedText: "רמז 1: הילד שנפל בוכה וכואב לו מאוד בגלל השריטה בברך 😢" },
+                        { x: 50, y: 50, revealedText: "רמז 2: הילד בנדנדה מתנדנד כבר זמן רב ולא רוצה לרדת 😐" }
                     ],
                     choices: [
                         {
@@ -14538,19 +14540,18 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
         // 2. מעבדת הצמחים הקסומה (Magic Plant Lab)
         SOLVE_GAMES.cluegrow = {
             introGoalText: "ברוכים הבאים למעבדת הצמחים הקסומה! המטרה שלנו היא לעזור לצמח הנבול לצמוח ולפרוח על ידי בדיקת הרמזים בחדר ובחירת המשפך הנכון. לחצו על הרמזים כדי להתחיל!",
-
             rounds: [
                 {
                     scene: `<svg viewBox="0 0 400 220" style="background: linear-gradient(to bottom, #eceff1, #fff); width:100%; max-height:30vh;">
                                 <rect x="150" y="150" width="100" height="20" fill="#a1887f"/>
                                 <text x="200" y="130" font-size="50" text-anchor="middle">🥀</text>
                                 <rect x="30" y="20" width="90" height="60" fill="#fff" stroke="#cfd8dc" stroke-width="4"/>
-                                <text x="75" y="55" font-size="30" text-anchor="middle">🌧️➡️🌱</text>
+                                <text x="75" y="55" font-size="28" text-anchor="middle">🌧️➡️🌱</text>
                             </svg>`,
                     prompt: "עזרו לצמח הקסום והנבול לצמוח ולפרוח! יש לנו שני משפכים – אדום וכחול. באיזה לבחור?",
                     clues: [
-                        { revealedText: "רמז 1: הציור על הקיר מראה שמים של ענן גשם כחול גורמים לצמחים לפרוח 🌱" },
-                        { revealedText: "רמז 2: המשפך האדום מייצג שמש חמה שמייבשת את האדמה ☀️" }
+                        { x: 18, y: 25, revealedText: "רמז 1: הציור על הקיר מראה שמים של ענן גשם כחול גורמים לצמחים לפרוח 🌱" },
+                        { x: 50, y: 60, revealedText: "רמז 2: הצמח נבול ויבש וזקוק נואשות למים מתאימים 🥀" }
                     ],
                     choices: [
                         {
@@ -14584,21 +14585,20 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
         // 3. חדר הצעצועים השבירים (Fragile Toys Room)
         SOLVE_GAMES.carefulfast = {
             introGoalText: "ברוכים הבאים לחדר הצעצועים השבירים! המטרה שלנו היא לעזור לילד להגיע לתיבת האוצר בבטחה בלי לשבור את הצעצועים העדינים שבדרך. לחצו על הרמזים כדי להתחיל!",
-
             rounds: [
                 {
                     scene: `<svg viewBox="0 0 400 220" style="background:#f5f5f5; width:100%; max-height:30vh;">
-                                <text x="350" y="130" font-size="40" text-anchor="middle">🏃</text>
-                                <text x="50" y="130" font-size="50" text-anchor="middle">🎁</text>
-                                <text x="250" y="130" font-size="35" text-anchor="middle">🏺</text>
-                                <text x="180" y="130" font-size="35" text-anchor="middle">🤖</text>
-                                <text x="110" y="130" font-size="35" text-anchor="middle">✈️</text>
-                                <text x="200" y="60" font-size="24" fill="#d84315" font-weight="bold" text-anchor="middle">⚠️ צעצועים שבירים בדרך!</text>
+                                <text x="350" y="140" font-size="40" text-anchor="middle">🏃</text>
+                                <text x="50" y="140" font-size="50" text-anchor="middle">🎁</text>
+                                <text x="250" y="140" font-size="35" text-anchor="middle">🏺</text>
+                                <text x="180" y="140" font-size="35" text-anchor="middle">🤖</text>
+                                <text x="110" y="140" font-size="35" text-anchor="middle">✈️</text>
+                                <text x="200" y="65" font-size="20" fill="#d84315" font-weight="bold" text-anchor="middle">⚠️ שביר!</text>
                             </svg>`,
                     prompt: "הילד רוצה להגיע לתיבת הפרסים בקצה החדר, אך הדרך מלאה בצעצועים שבירים ומפתים. איך כדאי לנוע?",
                     clues: [
-                        { revealedText: "רמז 1: הצעצועים בדרך יקרים ושבירים מאוד, כל מכה קטנה תהרוס אותם 🏺" },
-                        { revealedText: "רמז 2: הילד נורא ממהר ורוצה להגיע לפרס במהירות 🏃" }
+                        { x: 45, y: 60, revealedText: "רמז 1: הצעצועים בדרך יקרים ושבירים מאוד, כל מכה קטנה תהרוס אותם 🏺" },
+                        { x: 12, y: 60, revealedText: "רמז 2: התיבה בקצה השני מכילה פרס נהדר שמחכה לנו 🎁" }
                     ],
                     choices: [
                         {
@@ -14609,17 +14609,17 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                             feedbackText: "אוי לא! רצנו מהר מדי, נתקלנו בכד השבירו והוא נשבר לרסיסים! בואו נחזור בזמן ונמצא דרך בטוחה יותר."
                         },
                         {
-                            label: "ללכת בזהירות רבה בין הצעצועים",
+                            label: "ללכת בזהירות רבה",
                             img: `<svg viewBox="0 0 100 100" style="width:100%;height:100%;"><text x="50" y="65" font-size="50" text-anchor="middle">🚶</text></svg>`,
                             tier: "best",
                             outcomeScene: `<svg viewBox="0 0 400 220" style="background:#e8f5e9; width:100%; max-height:30vh;"><text x="80" y="130" font-size="45" text-anchor="middle">🚶😊</text><text x="50" y="130" font-size="50" text-anchor="middle">🎁</text><text x="220" y="130" font-size="30" text-anchor="middle">🏺🤖✈️</text></svg>`,
                             feedbackText: "מצוין! הלכנו בנחת ובסבלנות, שמרנו על כל הצעצועים שלמים והגענו בהצלחה לתיבת האוצר!"
                         },
                         {
-                            label: "לזחול לאט מתחת לשולחנות",
+                            label: "לזחול לאט",
                             img: `<svg viewBox="0 0 100 100" style="width:100%;height:100%;"><text x="50" y="65" font-size="50" text-anchor="middle">🚼</text></svg>`,
                             tier: "poor",
-                            outcomeScene: `<svg viewBox="0 0 400 220" style="background:#eceff1; width:100%; max-height:30vh;"><text x="200" y="130" font-size="40" text-anchor="middle">🕸️🐜😣</text></svg>`,
+                            outcomeScene: `<svg viewBox="0 0 400 220" style="background:#eceff1; width:100%; max-height:30vh;"><text x="200" y="130" font-size="40" text-anchor="middle">🕸️  😣</text></svg>`,
                             feedbackText: "זה לקח המון זמן והילד התעייף והתלכלך מתחת לשולחנות. בואו נחזור בזמן ונבחר דרך מתאימה יותר."
                         }
                     ],
@@ -14635,7 +14635,6 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
         // 4. מחסה לציפור (Bird Shelter)
         SOLVE_GAMES.nestfix = {
             introGoalText: "ברוכים הבאים למחסה לציפור! המטרה שלנו היא לבנות גג מגן לקן הציפור מפני הגשם בעזרת חומרים קלים וחזקים. לחצו על הרמזים כדי להתחיל!",
-
             rounds: [
                 {
                     scene: `<svg viewBox="0 0 400 220" style="background: linear-gradient(to bottom, #78909c, #cfd8dc); width:100%; max-height:30vh;">
@@ -14643,31 +14642,31 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                                 <path d="M 150 160 Q 200 200 250 160" fill="none" stroke="#8d6e63" stroke-width="8"/>
                                 <text x="80" y="80" font-size="30">🪨</text>
                                 <text x="320" y="80" font-size="30">🍃</text>
-                                <text x="200" y="195" font-size="30" fill="#fff">🥛 כוס פלסטיק</text>
+                                <text x="200" y="195" font-size="18" fill="#fff" text-anchor="middle">🥛 כוס פלסטיק</text>
                             </svg>`,
                     prompt: "יורד גשם חזק וקן הציפור הקטן נשבר. מאיזה חומר כדאי לבנות לה גג מגן?",
                     clues: [
-                        { revealedText: "רמז 1: האבנים כבדות מאוד ויכולות למעוך את הקן הדק 🪨" },
-                        { revealedText: "רמז 2: העלים יבשים וסופגים מים, והגשם יעבור דרכם 🍃" },
-                        { revealedText: "רמז 3: כוס הפלסטיק קלה, אטומה למים ויכולה לשמש כגג מעולה 🥛" }
+                        { x: 50, y: 60, revealedText: "רמז 1: הציפור רועדת מקור וצריכה גג אטום שלא יכניס מים 🐦" },
+                        { x: 20, y: 35, revealedText: "רמז 2: האבנים חזקות אך כבדות מאוד ויכולות למעוך את הקן הדק 🪨" },
+                        { x: 50, y: 90, revealedText: "רמז 3: כוס הפלסטיק קלה, חזקה ואטומה לגמרי לגשם 🥛" }
                     ],
                     choices: [
                         {
-                            label: "לבנות גג מאבנים כבדות",
+                            label: "גג מאבנים כבדות",
                             img: `<svg viewBox="0 0 100 100" style="width:100%;height:100%;"><text x="50" y="65" font-size="50" text-anchor="middle">🪨</text></svg>`,
                             tier: "poor",
                             outcomeScene: `<svg viewBox="0 0 400 220" style="background:#ffcdd2; width:100%; max-height:30vh;"><text x="200" y="130" font-size="60" text-anchor="middle">💥🪹😭</text></svg>`,
                             feedbackText: "אוי לא! האבנים היו כבדות מדי ומעכו את הקן והענף של הציפור! בואו נחזור בזמן ונבחר חומר קל יותר."
                         },
                         {
-                            label: "לבנות גג מעלים יבשים",
+                            label: "גג מעלים יבשים",
                             img: `<svg viewBox="0 0 100 100" style="width:100%;height:100%;"><text x="50" y="65" font-size="50" text-anchor="middle">🍃</text></svg>`,
                             tier: "poor",
                             outcomeScene: `<svg viewBox="0 0 400 220" style="background:#b0bec5; width:100%; max-height:30vh;"><text x="200" y="130" font-size="50" text-anchor="middle">🐦💦😭</text></svg>`,
                             feedbackText: "הגשם חילחל דרך העלים והציפור נשארה רטובה וקרה. בואו נחזור בזמן ונמצא חומר אטום למים."
                         },
                         {
-                            label: "לבנות גג מכוס פלסטיק",
+                            label: "גג מכוס פלסטיק",
                             img: `<svg viewBox="0 0 100 100" style="width:100%;height:100%;"><text x="50" y="65" font-size="50" text-anchor="middle">🥛</text></svg>`,
                             tier: "best",
                             outcomeScene: `<svg viewBox="0 0 400 220" style="background:#e8f5e9; width:100%; max-height:30vh;">
@@ -14690,7 +14689,6 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
         // 5. תעלומת הכד השבור (Broken Vase Mystery)
         SOLVE_GAMES.stopthink = {
             introGoalText: "ברוכים הבאים לתעלומת הכד השבור! המטרה שלנו היא לחקור את החדר, למצוא רמזים ולהסביר מי לדעתכם הפיל את הכד ולמה. לחצו על הרמזים כדי להתחיל!",
-
             rounds: [
                 {
                     scene: `<svg viewBox="0 0 400 220" style="background:#fff9c4; width:100%; max-height:30vh;">
@@ -14703,27 +14701,27 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                             </svg>`,
                     prompt: "הכד היפה על השולחן נשבר. הילד אומר שזה לא הוא, הכלב מתחבא והחלון פתוח ויש רוח. מי שבר את הכד?",
                     clues: [
-                        { revealedText: "רמז 1: הילד אומר שהוא רק נכנס לחדר וראה את הכד שבור 👦" },
-                        { revealedText: "רמז 2: הכלב מתחבא ומפוחד מתחת לשולחן בצד 🐶" },
-                        { revealedText: "רמז 3: החלון פתוח לרווחה והרוח מעיפה את הווילונות בחוזקה 💨" }
+                        { x: 20, y: 70, revealedText: "רמז 1: הילד מופתע ואומר שהוא רק נכנס לחדר וראה את הכד שבור 👦" },
+                        { x: 80, y: 75, revealedText: "רמז 2: הכלב מפוחד, רועד ומתחבא מתחת לשולחן בצד 🐶" },
+                        { x: 52, y: 30, revealedText: "רמז 3: החלון פתוח לרווחה והרוח מעיפה את הווילונות בחוזקה 💨" }
                     ],
                     choices: [
                         {
-                            label: "הילד שבר את הכד",
+                            label: "הילד שבר אותו",
                             img: `<svg viewBox="0 0 100 100" style="width:100%;height:100%;"><text x="50" y="65" font-size="50" text-anchor="middle">👦</text></svg>`,
                             tier: "best",
                             outcomeScene: `<svg viewBox="0 0 400 220" style="background:#eceff1; width:100%; max-height:30vh;"><text x="200" y="130" font-size="45" text-anchor="middle">👦😔 "מצטער"</text></svg>`,
                             feedbackText: "בחרת בילד. ההסבר שלך הגיוני, ייתכן שהוא שיחק קרוב מדי והפיל אותו בטעות."
                         },
                         {
-                            label: "הכלב שבר את הכד",
+                            label: "הכלב שבר אותו",
                             img: `<svg viewBox="0 0 100 100" style="width:100%;height:100%;"><text x="50" y="65" font-size="50" text-anchor="middle">🐶</text></svg>`,
                             tier: "best",
-                            outcomeScene: `<svg viewBox="0 0 400 220" style="background:#eceff1; width:100%; max-height:30vh;"><text x="200" y="130" font-size="45" text-anchor="middle">🐶🐾 "הזנב שלי הפיל אותו"</text></svg>`,
+                            outcomeScene: `<svg viewBox="0 0 400 220" style="background:#eceff1; width:100%; max-height:30vh;"><text x="200" y="130" font-size="45" text-anchor="middle">🐶🐾 "אני מצטער"</text></svg>`,
                             feedbackText: "בחרת בכלב. זה מאוד הגיוני, כלבים אוהבים לקפוץ ולכשכש בזנב ולהפיל דברים בטעות."
                         },
                         {
-                            label: "הרוח מהחלון הפילה אותו",
+                            label: "הרוח הפילה אותו",
                             img: `<svg viewBox="0 0 100 100" style="width:100%;height:100%;"><text x="50" y="65" font-size="50" text-anchor="middle">💨</text></svg>`,
                             tier: "best",
                             outcomeScene: `<svg viewBox="0 0 400 220" style="background:#eceff1; width:100%; max-height:30vh;"><text x="200" y="130" font-size="45" text-anchor="middle">💨🌀🏺 "רוח חזקה"</text></svg>`,
@@ -14742,7 +14740,6 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
         // 6. משפט היער (Forest Trial)
         SOLVE_GAMES.together2 = {
             introGoalText: "ברוכים הבאים למשפט היער! המטרה שלנו היא לעזור לדוב ולסנאי לפתור את בעיית האוכל בצורה מוסרית והוגנת לשניהם. לחצו על הרמזים כדי להתחיל!",
-
             rounds: [
                 {
                     scene: `<svg viewBox="0 0 400 220" style="background: linear-gradient(to bottom, #d7ccc8, #fff); width:100%; max-height:30vh;">
@@ -14752,32 +14749,32 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                             </svg>`,
                     prompt: "הסנאי הרעב לקח אגוזים מערימת האוכל של הדוב, אבל הדוב עבד קשה מאוד כדי לאסוף אותם לחורף. מה הפתרון ההוגן?",
                     clues: [
-                        { revealedText: "רמז 1: הדוב עבד שעות רבות בשמש כדי לאסוף מזון לחורף הקר 🐻" },
-                        { revealedText: "רמז 2: הסנאי קטן ורעב מאוד, ואין לו אוכל בכלל ביער 🐿️" }
+                        { x: 25, y: 65, revealedText: "רמז 1: הדוב עבד שעות רבות בשמש כדי לאסוף מזון לחורף הקר 🐻" },
+                        { x: 75, y: 65, revealedText: "רמז 2: הסנאי קטן ורעב מאוד, ואין לו אוכל בכלל ביער 🐿️" }
                     ],
                     choices: [
                         {
-                            label: "הסנאי ישמור הכל כי הוא רעב",
+                            label: "הסנאי ישמור הכל",
                             img: `<svg viewBox="0 0 100 100" style="width:100%;height:100%;"><text x="50" y="65" font-size="50" text-anchor="middle">🐿️</text></svg>`,
                             tier: "poor",
                             outcomeScene: `<svg viewBox="0 0 400 220" style="background:#ffebee; width:100%; max-height:30vh;"><text x="100" y="140" font-size="40">🐻😭</text><text x="300" y="140" font-size="40">🐿️😋</text></svg>`,
                             feedbackText: "זה לא הוגן! הדוב עבד קשה וייגווע ברעב בחורף. בואו נחזור בזמן ונמצא פתרון שמתחשב בשניהם."
                         },
                         {
-                            label: "להחזיר הכל לדוב שעבד קשה",
+                            label: "להחזיר הכל לדוב",
                             img: `<svg viewBox="0 0 100 100" style="width:100%;height:100%;"><text x="50" y="65" font-size="50" text-anchor="middle">🐻</text></svg>`,
                             tier: "poor",
                             outcomeScene: `<svg viewBox="0 0 400 220" style="background:#ffebee; width:100%; max-height:30vh;"><text x="100" y="140" font-size="40">🐻😋</text><text x="300" y="140" font-size="40">🐿️😭</text></svg>`,
                             feedbackText: "עכשיו הסנאי הקטן יישאר רעב ועצוב. בואו נחזור בזמן ונחפש פתרון של שיתוף פעולה והבנה."
                         },
                         {
-                            label: "להתחלק חצי-חצי באגוזים",
+                            label: "להתחלק חצי-חצי",
                             img: `<svg viewBox="0 0 100 100" style="width:100%;height:100%;"><text x="50" y="65" font-size="50" text-anchor="middle">🤝</text></svg>`,
                             tier: "best",
                             outcomeScene: `<svg viewBox="0 0 400 220" style="background:#e8f5e9; width:100%; max-height:30vh;">
                                 <text x="120" y="140" font-size="45" text-anchor="middle">🐻😊</text>
                                 <text x="280" y="140" font-size="45" text-anchor="middle">🐿️😊</text>
-                                <text x="200" y="140" font-size="30" text-anchor="middle">🥜🥜</text>
+                                <text x="200" y="140" font-size="30" text-anchor="middle">🥜</text>
                             </svg>`,
                             feedbackText: "איזה יופי! שיתוף והתחלקות הוגנת עוזרים לשני החברים ביער לשרוד את החורף יחד בשמחה!"
                         }
@@ -14794,7 +14791,6 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
         // 7. התיק למסע (Travel Bag)
         SOLVE_GAMES.inventor = {
             introGoalText: "ברוכים הבאים לתיק למסע! המטרה שלנו היא לעזור לילד לתעדף ולארוז רק את שלושת הדברים הכי מתאימים וחשובים לטיול שלו בשלג. לחצו על הרמזים כדי להתחיל!",
-
             rounds: [
                 {
                     scene: `<svg viewBox="0 0 400 220" style="background: linear-gradient(to bottom, #b2dfdb, #fff); width:100%; max-height:30vh;">
@@ -14805,19 +14801,19 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                             </svg>`,
                     prompt: "הילד יוצא למסע בהרים מושלגים וקרים. יש לו מקום רק ל-3 חפצים בתיק שלו. מה כדאי לארוז?",
                     clues: [
-                        { revealedText: "רמז 1: בהרים המושלגים קר מאוד ויש שלג רב על האדמה ❄️" },
-                        { revealedText: "רמז 2: התיק קטן ויכול להכיל רק שלושה פריטים חיוניים 🎒" }
+                        { x: 50, y: 50, revealedText: "רמז 1: בהרים המושלגים קר מאוד ויש שלג רב על האדמה ❄️" },
+                        { x: 60, y: 75, revealedText: "רמז 2: התיק קטן ויכול להכיל רק שלושה פריטים חיוניים 🎒" }
                     ],
                     choices: [
                         {
-                            label: "כובע צמר, מגפיים ומשקפי שמש",
+                            label: "בגדי חורף ומשקפי שמש",
                             img: `<svg viewBox="0 0 100 100" style="width:100%;height:100%;"><text x="50" y="65" font-size="40" text-anchor="middle">🤠🥾🕶️</text></svg>`,
                             tier: "best",
                             outcomeScene: `<svg viewBox="0 0 400 220" style="background:#e8f5e9; width:100%; max-height:30vh;"><text x="200" y="110" font-size="55" text-anchor="middle">🏔️🚶🤠🥾😊</text></svg>`,
                             feedbackText: "מעולה! הילד לבוש חם, הרגליים שלו יבשות והעיניים שלו מוגנות מהשמש של השלג!"
                         },
                         {
-                            label: "בגד ים, גלגל ים ומשקפי שמש",
+                            label: "בגדי קיץ וגלגל ים",
                             img: `<svg viewBox="0 0 100 100" style="width:100%;height:100%;"><text x="50" y="65" font-size="40" text-anchor="middle">🩳🏐🕶️</text></svg>`,
                             tier: "poor",
                             outcomeScene: `<svg viewBox="0 0 400 220" style="background:#ffebee; width:100%; max-height:30vh;"><text x="200" y="120" font-size="50" text-anchor="middle">🏔️🥶🩳😭</text></svg>`,
@@ -14836,7 +14832,6 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
         // 8. מפה לאיבוד (Lost Map / Calibration)
         SOLVE_GAMES.predict = {
             introGoalText: "ברוכים הבאים למפה לאיבוד! המטרה שלנו היא לתקן את השביל השבור לטירה באמצעות התאמת האריח הגיאומטרי הנכון. לחצו על הרמזים כדי להתחיל!",
-
             rounds: [
                 {
                     scene: `<svg viewBox="0 0 400 220" style="background: linear-gradient(to bottom, #d1c4e9, #fff); width:100%; max-height:30vh;">
@@ -14844,12 +14839,11 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                                 <polygon points="170,165 170,195 230,195 230,165" fill="#fff" stroke="#9575cd" stroke-width="3" stroke-dasharray="4"/>
                                 <text x="50" y="150" font-size="40">🚶</text>
                                 <text x="350" y="150" font-size="45">🏰</text>
-                                <text x="200" y="100" font-size="18" fill="#5e35b1" font-weight="bold" text-anchor="middle">איזו צורה מתאימה לשביל?</text>
                             </svg>`,
                     prompt: "הילד רוצה להגיע לטירה, אך חסר חלק מלבני בשביל האבנים. מהו האריח המתאים להשלמה?",
                     clues: [
-                        { revealedText: "רמז 1: החלק החסר בשביל הוא בעל צורה מלבנית ארוכה וישרה 📏" },
-                        { revealedText: "רמז 2: שאר האבנים בשביל הן מלבנים מרובעים וחלקים 🧱" }
+                        { x: 50, y: 80, revealedText: "רמז 1: החלק החסר בשביל הוא בעל צורה מלבנית ארוכה וישרה 📏" },
+                        { x: 88, y: 68, revealedText: "רמז 2: שאר האבנים בשביל הן מלבנים מרובעים וחלקים 🧱" }
                     ],
                     choices: [
                         {
@@ -14878,7 +14872,6 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
         // 9. גשר התבניות (Pattern Bridge)
         SOLVE_GAMES.bridge = {
             introGoalText: "ברוכים הבאים לגשר התבניות! המטרה שלנו היא להשלים את החלק החסר בגשר לפי סדר הצבעים הקבוע כדי שהמכונית תעבור. לחצו על הרמזים כדי להתחיל!",
-
             rounds: [
                 {
                     scene: `<svg viewBox="0 0 400 220" style="background: linear-gradient(to bottom, #e0f7fa, #fff); width:100%; max-height:30vh;">
@@ -14892,8 +14885,8 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                             </svg>`,
                     prompt: "הגשר בנוי לפי סדר קבוע של צבעים וצורות. איזה חלק מגיע עכשיו כדי שהמכונית תעבור?",
                     clues: [
-                        { revealedText: "רמז 1: הסדר בגשר הוא עיגול אדום, ואז ריבוע כחול, ואז שוב עיגול אדום וריבוע כחול 🔴🟦" },
-                        { revealedText: "רמז 2: הרווח החסר נמצא מיד אחרי ריבוע כחול 🟦" }
+                        { x: 35, y: 60, revealedText: "רמז 1: הסדר בגשר הוא עיגול אדום, ואז ריבוע כחול, ואז שוב עיגול אדום וריבוע כחול 🔴🟦" },
+                        { x: 75, y: 60, revealedText: "רמז 2: הרווח החסר נמצא מיד אחרי ריבוע כחול 🟦" }
                     ],
                     choices: [
                         {
@@ -14922,7 +14915,6 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
         // 10. מכונת הזמן של הטעויות (Error Time Machine)
         SOLVE_GAMES.rescue2 = {
             introGoalText: "ברוכים הבאים למכונת הזמן של הטעויות! המטרה שלנו היא לעזור לילד ללמוד מהטעות שלו, לבנות מגדל יציב מחדש ולהתמודד עם תסכול. לחצו על הרמזים כדי להתחיל!",
-
             rounds: [
                 {
                     scene: `<svg viewBox="0 0 400 220" style="background: linear-gradient(to bottom, #ffecb3, #fff); width:100%; max-height:30vh;">
@@ -14934,19 +14926,19 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                             </svg>`,
                     prompt: "בנינו מגדל קוביות גבוה מאוד אבל הוא נפל בגלל שהבסיס שלו היה צר מדי. הילד עצוב וכועס מאוד. מה כדאי לעשות?",
                     clues: [
-                        { revealedText: "רמז 1: מגדלים נופלים בדרך כלל כשהבסיס שלהם צר וחלש מדי 🗼" },
-                        { revealedText: "רמז 2: כעס ובכי לא יעזרו לבנות את המגדל מחדש 😭" }
+                        { x: 30, y: 75, revealedText: "רמז 1: מגדלים נופלים בדרך כלל כשהבסיס שלהם צר וחלש מדי 🗼" },
+                        { x: 68, y: 75, revealedText: "רמז 2: כעס ובכי לא יעזרו לבנות את המגדל מחדש 😭" }
                     ],
                     choices: [
                         {
-                            label: "לבכות ולהרוס את שאר המשחקים",
+                            label: "לבכות ולהרוס משחקים",
                             img: `<svg viewBox="0 0 100 100" style="width:100%;height:100%;"><text x="50" y="65" font-size="50" text-anchor="middle">😭</text></svg>`,
                             tier: "poor",
                             outcomeScene: `<svg viewBox="0 0 400 220" style="background:#ffebee; width:100%; max-height:30vh;"><text x="200" y="130" font-size="50" text-anchor="middle">😭😠💔</text></svg>`,
                             feedbackText: "זה לא פותר את הבעיה והילד נשאר עצוב וכועס יותר. בואו נחזור בזמן ונמצא דרך חכמה להתמודד."
                         },
                         {
-                            label: "לבדוק למה המגדל נפל ולבנות עם בסיס רחב",
+                            label: "לבדוק למה נפל ולבנות מחדש",
                             img: `<svg viewBox="0 0 100 100" style="width:100%;height:100%;"><text x="50" y="65" font-size="50" text-anchor="middle">🗼</text></svg>`,
                             tier: "best",
                             outcomeScene: `<svg viewBox="0 0 400 220" style="background:#e8f5e9; width:100%; max-height:30vh;">
@@ -14966,6 +14958,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 }
             ]
         };
+
 
         let clickedClues = [];
         let selectedChoiceIdx = null;
