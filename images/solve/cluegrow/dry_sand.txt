@@ -1,0 +1,4 @@
+File: dry_sand.png
+Generated directly in ChatGPT (single image, not a sprite sheet).
+Prompt: "New unrelated image, square 1024x1024, no text or letters anywhere. Soft Pixar-style 3D illustration for a children's educational game, warm pastel colors, simple uncluttered plain pastel background. A small pile of dry beige desert sand, centered in frame, no people, no water."
+Date: 2026-08-01

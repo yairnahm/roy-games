@@ -1,0 +1,4 @@
+File: dark_closet.png
+Generated directly in ChatGPT (single image, not a sprite sheet).
+Prompt: "New unrelated image, square 1024x1024, no text or letters anywhere. Soft Pixar-style 3D illustration for a children's educational game, warm pastel colors, simple uncluttered background. A small potted flower plant sitting inside a dark closed wooden wardrobe with the door slightly open showing darkness inside, no sunlight, wilted droopy plant, centered in frame, no people."
+Date: 2026-08-01

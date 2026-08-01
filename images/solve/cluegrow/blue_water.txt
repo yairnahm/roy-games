@@ -1,0 +1,4 @@
+File: blue_water.png
+Generated directly in ChatGPT (single image, not a sprite sheet).
+Prompt: "New unrelated image, square 1024x1024, no text or letters anywhere. Soft Pixar-style 3D illustration for a children's educational game, warm pastel colors, simple uncluttered plain pastel background. A clear glass watering can pouring bright blue-tinted water, centered in frame, no people."
+Date: 2026-08-01

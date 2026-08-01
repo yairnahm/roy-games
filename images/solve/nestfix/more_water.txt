@@ -1,0 +1,4 @@
+File: more_water.png
+Generated directly in ChatGPT (single image, not a sprite sheet).
+Prompt: "New unrelated image, square 1024x1024, no text or letters anywhere. Soft Pixar-style 3D illustration for a children's educational game, warm pastel colors, simple uncluttered plain pastel background. A small bird's nest made of twigs completely soaked and dripping with extra water being poured onto it from a blue watering can above, puddle forming underneath, no people."
+Date: 2026-08-01

@@ -1,0 +1,4 @@
+File: dry_leaves.png
+Generated directly in ChatGPT (single image, not a sprite sheet).
+Prompt: "New unrelated image, square 1024x1024, no text or letters anywhere. Soft Pixar-style 3D illustration for a children's educational game, warm pastel colors, simple uncluttered plain pastel background. A small soft pile of dry crunchy brown autumn leaves, centered in frame, no people."
+Date: 2026-08-01
