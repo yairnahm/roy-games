@@ -1327,6 +1327,39 @@
             opacity: 0.5;
         }
     }
+    
+    /* Clean and Focused Game UI Styles */
+    #active-game-container #active-top-bar {
+        background: transparent !important;
+        box-shadow: none !important;
+        border: none !important;
+        padding: 10px 15px !important;
+        margin-bottom: 0 !important;
+        justify-content: flex-start !important;
+    }
+    #active-game-container #active-progress-container {
+        display: none !important;
+    }
+    #active-game-title {
+        display: none !important;
+    }
+    #active-game-container .exit-btn {
+        background: #7e57c2 !important;
+        color: white !important;
+        font-size: clamp(14px, 2.5vw, 18px) !important;
+        border-radius: 12px !important;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1) !important;
+        border: 2px solid #fff !important;
+    }
+    #game-workspace {
+        flex: 1 !important;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        padding: 10px !important;
+    }
     </style>
     <style>
             .selected-player-card {
@@ -2586,7 +2619,7 @@
     </div>
 
     <div id="active-game-container" class="hidden">
-        <div id="active-top-bar" class="top-bar"><button class="exit-btn" onclick="quitActiveGame()">➜ יציאה</button><div id="active-progress-container" class="progress-container"></div></div>
+        <div id="active-top-bar" class="top-bar"><button class="exit-btn" onclick="quitActiveGame()">➜ חזור</button><div id="active-progress-container" class="progress-container"></div></div>
         <h2 id="active-game-title" style="margin-bottom: 20px;"></h2>
         <div id="game-workspace"></div>
     </div>
