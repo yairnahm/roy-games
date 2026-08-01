@@ -835,6 +835,13 @@
 
         /* כלים והקשרים */
         .large-target { background: rgba(255, 255, 255, 0.8); border-radius: 30px; padding: 4vmin; display: inline-block; margin: 2vmin auto; box-shadow: 0 8px 20px rgba(0,0,0,0.15); font-size: clamp(60px, 15vw, 120px); border: 5px solid #fff; }
+        .drag-drop-zone { min-height: 90px; width: 100%; max-width: 500px; margin: 14px auto 0; border: 4px dashed #90a4ae; border-radius: 20px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.5); transition: all 0.2s ease; font-size: clamp(14px,3vw,18px); color: #78909c; font-weight: bold; text-align: center; padding: 10px; }
+        .drag-drop-zone.drag-hover { border-color: #4CAF50; border-style: solid; background: rgba(76,175,80,0.15); transform: scale(1.03); color: #2e7d32; }
+        .drag-drop-zone.target-mode { border: none; background: transparent; padding: 0; }
+        .large-target.drag-hover { box-shadow: 0 0 0 6px rgba(76,175,80,0.6) inset, 0 8px 20px rgba(0,0,0,0.15); }
+        #context-drop-zone.drag-hover { box-shadow: 0 0 0 6px rgba(76,175,80,0.6) inset; border-radius: 12px; }
+        .drag-choice-btn { touch-action: none; cursor: grab; }
+        .drag-choice-btn:active { cursor: grabbing; }
         #context-scene { position: relative; width: 100%; max-width: 700px; height: clamp(250px, 35vh, 400px); border-radius: 20px; border: 5px solid #fff; box-shadow: 0 10px 20px rgba(0,0,0,0.2); overflow: hidden; display: flex; justify-content: center; align-items: center; font-size: clamp(80px, 20vw, 150px); }
         #context-drop-zone { position: absolute; width: 15%; aspect-ratio: 1/1; min-width: 80px; min-height: 80px; border: 5px dashed white; border-radius: 50%; background: rgba(255,255,255,0.4); transform: translate(-50%, -50%); display: flex; justify-content: center; align-items: center; box-shadow: 0 0 15px rgba(0,0,0,0.3); transition: 0.3s; z-index: 5; font-size: clamp(50px, 12vw, 80px); }
 
@@ -1886,12 +1893,14 @@
             
             return { full: full, hasHalf: hasHalf, hasQuarter: hasQuarter, hasThreeQuarters: hasThreeQuarters };
         }
-        function awardStar(gameMode, level) {
+        function awardStar(gameMode, level, callback) {
             let key = gameMode + '-' + level;
-            if (awardedStars[key]) return; // already awarded
+            let done = () => { if (callback) callback(); };
+            
+            if (awardedStars[key]) { done(); return; } // already awarded
             awardedStars[key] = true;
             let type = getStarType(gameMode);
-            if (type === 'none') return;
+            if (type === 'none') { done(); return; }
             
             let starText = "";
             if (type === 'full') {
@@ -1922,11 +1931,16 @@
             updateWalletDisplay();
             showStarToast(type);
             
-            // Speak star announcement after praise finishes
             if (starText) {
-                setTimeout(() => {
-                    speakLetter(starText, 'he');
-                }, 2200);
+                if (callback) {
+                    speakLetter(starText, 'he', callback);
+                } else {
+                    setTimeout(() => {
+                        speakLetter(starText, 'he');
+                    }, 2200);
+                }
+            } else {
+                done();
             }
         }
         function updateWalletDisplay() {
@@ -4219,54 +4233,30 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             targetArea.style.justifyContent = 'center';
             targetArea.style.alignItems = 'center';
             targetArea.style.overflow = 'hidden';
-            targetArea.innerHTML = `<img src="${p.oImg}" alt="${p.oDesc}" style="width:85%; height:85%; object-fit:contain;" />`;
-            
-            speakLetter(p.oDesc, 'he');
-            targetArea.onclick = () => speakLetter(p.oDesc, 'he');
+            targetArea.innerHTML = `<img src="${p.oImg}" alt="${p.oDesc}" style="width:85%; height:85%; object-fit:contain;pointer-events:none;" />`;
 
-            let correctOpt = { img: p.tImg, desc: p.tDesc, isCorrect: true };
-            let wrongOpts = shuffle(p.w).slice(0, 3).map(o => ({ img: o.img, desc: o.desc, isCorrect: false }));
+            speakLetter(p.oDesc, 'he');
+
+            let correctOpt = { img: p.tImg, label: p.tDesc, isCorrect: true };
+            let wrongOpts = shuffle(p.w).slice(0, 3).map(o => ({ img: o.img, label: o.desc, isCorrect: false }));
             let opts = shuffle([correctOpt].concat(wrongOpts));
 
             let oArea = get('tool-options-area');
-            oArea.innerHTML='';
-            opts.forEach((opt,i)=>{
-                let w=D.createElement('div');
-                w.className='option-wrapper';
-                let b=D.createElement('button');
-                b.className='action-btn option-btn';
-                b.style.width='clamp(70px,18vmin,140px)';
-                b.style.height='clamp(70px,18vmin,140px)';
-                b.style.background='#fff';
-                b.style.border='5px solid #4CAF50';
-                b.style.borderRadius='20px';
-                b.style.padding='0';
-                b.style.display='flex';
-                b.style.justifyContent='center';
-                b.style.alignItems='center';
-                b.style.overflow='hidden';
-                b.innerHTML = `<img src="${opt.img}" alt="${opt.desc}" style="width:80%; height:80%; object-fit:contain;" />`;
-                if(opt.isCorrect) b.setAttribute('data-correct','1');
-                b.onclick=(e)=>{
-                    if(isProcessing)return;
-                    if(opt.isCorrect){
+            initDragChoiceRow(oArea, targetArea, opts,
+                (opt) => speakLetter(opt.label, 'he'),
+                (opt, idx, btn) => {
+                    if (opt.isCorrect) {
                         isProcessing = true;
-                        speakLetter(opt.desc, 'he', function(){
+                        speakLetter(opt.label, 'he', function () {
                             isProcessing = false;
-                            handleAnswer(true, b, loadToolsRound, null);
+                            handleAnswer(true, btn, loadToolsRound, null);
                         });
                     } else {
-                        speakLetter(opt.desc, 'he');
-                        handleAnswer(false, b, null, null);
+                        speakLetter(opt.label, 'he');
+                        handleAnswer(false, btn, null, null);
                     }
-                };
-                let n=D.createElement('div');
-                n.className='option-number';
-                n.textContent=i+1;
-                w.appendChild(b);
-                w.appendChild(n);
-                oArea.appendChild(w);
-            });
+                }
+            );
         }
 
         // ==========================================
@@ -4400,41 +4390,27 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             s.style.backgroundPosition = 'center';
             s.innerHTML = `<div id="context-drop-zone" style="top:${c.t.top}; left:${c.t.left};"></div>`;
             let dz = get('context-drop-zone');
-            let opts = shuffle([c.c].concat(c.w));
+            let opts = shuffle([c.c].concat(c.w)).map(o => ({ img: o.img, label: o.desc, q: o.q }));
             let oArea = get('context-options');
-            oArea.innerHTML='';
-            opts.forEach((o,i)=>{
-                let w=D.createElement('div');
-                w.className='option-wrapper';
-                let b=D.createElement('button');
-                b.className='option-btn';
-                b.style.padding='0';
-                b.innerHTML = `<img src="${o.img}" alt="${o.desc}" style="width:100%; height:100%; object-fit:cover; border-radius:12px;" />`;
-                if(o.q===c.c.q) b.setAttribute('data-correct','1');
-                b.onclick=(e)=>{
-                    if(isProcessing)return;
-                    if(o.q===c.c.q){
+            initDragChoiceRow(oArea, dz, opts,
+                (o) => speakLetter(o.label, 'he'),
+                (o, idx, btn) => {
+                    if (o.q === c.c.q) {
                         isProcessing = true;
-                        dz.style.border='none';
-                        dz.style.background='white';
-                        dz.innerHTML = `<img src="${o.img}" alt="${o.desc}" style="width:100%; height:100%; object-fit:cover; border-radius:50%;" />`;
-                        dz.style.animation='popIn 0.5s forwards';
-                        speakLetter(o.desc, 'he', function(){
+                        dz.style.border = 'none';
+                        dz.style.background = 'white';
+                        dz.innerHTML = `<img src="${o.img}" alt="${o.label}" style="width:100%; height:100%; object-fit:cover; border-radius:50%;" />`;
+                        dz.style.animation = 'popIn 0.5s forwards';
+                        speakLetter(o.label, 'he', function () {
                             isProcessing = false;
                             handleAnswer(true, null, loadContextRound, null);
                         });
                     } else {
-                        speakLetter(o.desc, 'he');
-                        handleAnswer(false, b, null, null);
+                        speakLetter(o.label, 'he');
+                        handleAnswer(false, btn, null, null);
                     }
-                };
-                let n=D.createElement('div');
-                n.className='option-number';
-                n.textContent=i+1;
-                w.appendChild(b);
-                w.appendChild(n);
-                oArea.appendChild(w);
-            });
+                }
+            );
         }
 
         // ==========================================
@@ -4540,37 +4516,23 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             for(let i=0;i<habData.length;i++){
                 if(habData[i]!==p) others.push(habData[i]);
             }
-            let opts = shuffle([p].concat(shuffle(others).slice(0,3)));
+            let opts = shuffle([p].concat(shuffle(others).slice(0,3))).map(o => ({ img: o.aImg, label: o.aDesc, isTarget: o === p }));
             let oArea = get('tool-options-area');
-            oArea.innerHTML='';
-            opts.forEach((opt,i)=>{
-                let w=D.createElement('div');
-                w.className='option-wrapper';
-                let b=D.createElement('button');
-                b.className='action-btn option-btn';
-                b.style.padding='0';
-                b.innerHTML = `<img src="${opt.aImg}" alt="${opt.aDesc}" style="width:100%; height:100%; object-fit:cover;">`;
-                if(opt===p) b.setAttribute('data-correct','1');
-                b.onclick=(e)=>{
-                    if(isProcessing)return;
-                    if(opt===p){
+            initDragChoiceRow(oArea, targetArea, opts,
+                (opt) => playHabitatAudio(opt.img, opt.label),
+                (opt, idx, btn) => {
+                    if (opt.isTarget) {
                         isProcessing = true;
-                        playHabitatAudio(opt.aImg, opt.aDesc, function(){
+                        playHabitatAudio(opt.img, opt.label, function () {
                             isProcessing = false;
-                            handleAnswer(true, b, loadHabitatRound, null);
+                            handleAnswer(true, btn, loadHabitatRound, null);
                         });
                     } else {
-                        playHabitatAudio(opt.aImg, opt.aDesc);
-                        handleAnswer(false, b, null, null);
+                        playHabitatAudio(opt.img, opt.label);
+                        handleAnswer(false, btn, null, null);
                     }
-                };
-                let n=D.createElement('div');
-                n.className='option-number';
-                n.textContent=i+1;
-                w.appendChild(b);
-                w.appendChild(n);
-                oArea.appendChild(w);
-            });
+                }
+            );
         }
 
         // ==========================================
@@ -11879,51 +11841,34 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             
             let targetArea = get('origins-target-area');
             let sourceImg = getOriginsSvg(p.qKey);
-            targetArea.innerHTML = `<img src="${sourceImg}" alt="${p.qDesc}" style="width:85%; height:85%; object-fit:contain;" />`;
-            
+            targetArea.innerHTML = `<img src="${sourceImg}" alt="${p.qDesc}" style="width:85%; height:85%; object-fit:contain;pointer-events:none;" />`;
+
             speakLetter(p.question, 'he');
-            targetArea.onclick = () => speakLetter(p.question, 'he');
-            
-            let correctOpt = { key: p.aKey, desc: p.aDesc, isCorrect: true };
+
+            let correctOpt = { img: getOriginsSvg(p.aKey), label: p.aDesc, isCorrect: true };
             let wrongOpts = shuffle(p.wKeys).slice(0, 3).map(k => {
                 let matching = originsPool.find(item => item.aKey === k);
                 let desc = matching ? matching.aDesc : 'משהו אחר';
-                return { key: k, desc: desc, isCorrect: false };
+                return { img: getOriginsSvg(k), label: desc, isCorrect: false };
             });
-            
+
             let opts = shuffle([correctOpt].concat(wrongOpts));
             let oArea = get('origins-options-area');
-            oArea.innerHTML = '';
-            
-            opts.forEach((opt, i) => {
-                let w = D.createElement('div');
-                w.className = 'option-wrapper';
-                let b = D.createElement('button');
-                b.className = 'action-btn option-btn';
-                b.style.cssText = 'width:clamp(70px,18vmin,140px); height:clamp(70px,18vmin,140px); background:#fff; border:5px solid #4CAF50; border-radius:20px; padding:0; display:flex; justify-content:center; align-items:center; overflow:hidden; box-shadow:0 6px 14px rgba(0,0,0,0.15); transition:transform 0.15s;';
-                b.innerHTML = `<img src="${getOriginsSvg(opt.key)}" alt="${opt.desc}" style="width:80%; height:80%; object-fit:contain;" />`;
-                if (opt.isCorrect) b.setAttribute('data-correct','1');
-                b.onclick = () => {
-                    if (isProcessing) return;
+            initDragChoiceRow(oArea, targetArea, opts,
+                (opt) => speakLetter(opt.label, 'he'),
+                (opt, idx, btn) => {
                     if (opt.isCorrect) {
                         isProcessing = true;
-                        speakLetter(opt.desc, 'he', function() {
+                        speakLetter(opt.label, 'he', function() {
                             isProcessing = false;
-                            handleAnswer(true, b, loadOriginsRound, null);
+                            handleAnswer(true, btn, loadOriginsRound, null);
                         });
                     } else {
-                        speakLetter(opt.desc, 'he');
-                        handleAnswer(false, b, null, null);
+                        speakLetter(opt.label, 'he');
+                        handleAnswer(false, btn, null, null);
                     }
-                };
-                
-                let n = D.createElement('div');
-                n.className = 'option-number';
-                n.textContent = i + 1;
-                w.appendChild(b);
-                w.appendChild(n);
-                oArea.appendChild(w);
-            });
+                }
+            );
         }
 
         // ── הורה וגור ──
@@ -11960,51 +11905,34 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             
             let targetArea = get('families-target-area');
             let parentImg = getFamiliesSvg(p.qKey);
-            targetArea.innerHTML = `<img src="${parentImg}" alt="${p.qDesc}" style="width:85%; height:85%; object-fit:contain;" />`;
-            
+            targetArea.innerHTML = `<img src="${parentImg}" alt="${p.qDesc}" style="width:85%; height:85%; object-fit:contain;pointer-events:none;" />`;
+
             speakLetter(p.question, 'he');
-            targetArea.onclick = () => speakLetter(p.question, 'he');
-            
-            let correctOpt = { key: p.aKey, desc: p.aDesc, isCorrect: true };
+
+            let correctOpt = { img: getFamiliesSvg(p.aKey), label: p.aDesc, isCorrect: true };
             let wrongOpts = shuffle(p.wKeys).slice(0, 3).map(k => {
                 let matching = familiesPool.find(item => item.aKey === k);
                 let desc = matching ? matching.aDesc : 'גור אחר';
-                return { key: k, desc: desc, isCorrect: false };
+                return { img: getFamiliesSvg(k), label: desc, isCorrect: false };
             });
-            
+
             let opts = shuffle([correctOpt].concat(wrongOpts));
             let oArea = get('families-options-area');
-            oArea.innerHTML = '';
-            
-            opts.forEach((opt, i) => {
-                let w = D.createElement('div');
-                w.className = 'option-wrapper';
-                let b = D.createElement('button');
-                b.className = 'action-btn option-btn';
-                b.style.cssText = 'width:clamp(70px,18vmin,140px); height:clamp(70px,18vmin,140px); background:#fff; border:5px solid #4CAF50; border-radius:20px; padding:0; display:flex; justify-content:center; align-items:center; overflow:hidden; box-shadow:0 6px 14px rgba(0,0,0,0.15); transition:transform 0.15s;';
-                b.innerHTML = `<img src="${getFamiliesSvg(opt.key)}" alt="${opt.desc}" style="width:80%; height:80%; object-fit:contain;" />`;
-                if (opt.isCorrect) b.setAttribute('data-correct','1');
-                b.onclick = () => {
-                    if (isProcessing) return;
+            initDragChoiceRow(oArea, targetArea, opts,
+                (opt) => speakLetter(opt.label, 'he'),
+                (opt, idx, btn) => {
                     if (opt.isCorrect) {
                         isProcessing = true;
-                        speakLetter(opt.desc, 'he', function() {
+                        speakLetter(opt.label, 'he', function() {
                             isProcessing = false;
-                            handleAnswer(true, b, loadFamiliesRound, null);
+                            handleAnswer(true, btn, loadFamiliesRound, null);
                         });
                     } else {
-                        speakLetter(opt.desc, 'he');
-                        handleAnswer(false, b, null, null);
+                        speakLetter(opt.label, 'he');
+                        handleAnswer(false, btn, null, null);
                     }
-                };
-                
-                let n = D.createElement('div');
-                n.className = 'option-number';
-                n.textContent = i + 1;
-                w.appendChild(b);
-                w.appendChild(n);
-                oArea.appendChild(w);
-            });
+                }
+            );
         }
 
         // ── מה שונה בתמונה? ──
@@ -14631,6 +14559,69 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             loadSolveRound(gameId);
         }
 
+        // מנוע גנרי: כפתורי בחירה גרירים + מקום גרירה יעד. טאפ (תזוזה קטנה) => onTap(choice).
+        // גרירה שמגיעה ליעד => onDrop(choice, idx, btn). גרירה שמפספסת => קופץ חזרה למקום.
+        function initDragChoiceRow(oArea, dropZoneEl, choices, onTap, onDrop) {
+            oArea.innerHTML = '';
+            choices.forEach((c, i) => {
+                let w = D.createElement('div');
+                w.className = 'option-wrapper';
+                let b = D.createElement('button');
+                b.className = 'option-btn drag-choice-btn';
+                if (c.img && c.img.startsWith('images/')) {
+                    b.innerHTML = `<img src="${c.img}" alt="${c.label}" style="width:75%;height:75%;object-fit:contain;pointer-events:none;" />`;
+                } else if (c.img) {
+                    b.innerHTML = `<span style="pointer-events:none;">${c.img}</span>`;
+                }
+                let lbl = D.createElement('div');
+                lbl.textContent = c.label;
+                lbl.style.cssText = 'font-weight:bold;color:#455a64;font-size:clamp(12px,2.4vw,16px);margin-top:4px;direction:rtl;';
+                w.appendChild(b);
+                w.appendChild(lbl);
+                oArea.appendChild(w);
+
+                let startX = 0, startY = 0, moved = false, dragging = false;
+                b.onpointerdown = (e) => {
+                    if (isProcessing) return;
+                    try { b.setPointerCapture(e.pointerId); } catch (err) {}
+                    startX = e.clientX; startY = e.clientY; moved = false; dragging = true;
+                    b.style.transition = 'none'; b.style.zIndex = 1000;
+                };
+                b.onpointermove = (e) => {
+                    if (!dragging) return;
+                    let dx = e.clientX - startX, dy = e.clientY - startY;
+                    if (Math.abs(dx) > 8 || Math.abs(dy) > 8) moved = true;
+                    if (moved) {
+                        b.style.transform = `translate(${dx}px, ${dy}px)`;
+                        let br = b.getBoundingClientRect();
+                        let cx = br.left + br.width / 2, cy = br.top + br.height / 2;
+                        let dz = dropZoneEl.getBoundingClientRect();
+                        let hit = cx >= dz.left && cx <= dz.right && cy >= dz.top && cy <= dz.bottom;
+                        dropZoneEl.classList.toggle('drag-hover', hit);
+                    }
+                };
+                let endDrag = () => {
+                    if (!dragging) return;
+                    dragging = false;
+                    b.style.transition = 'transform 0.35s ease';
+                    dropZoneEl.classList.remove('drag-hover');
+                    if (!moved) {
+                        b.style.transform = ''; b.style.zIndex = '';
+                        if (onTap) onTap(c, i, b);
+                        return;
+                    }
+                    let br = b.getBoundingClientRect();
+                    let cx = br.left + br.width / 2, cy = br.top + br.height / 2;
+                    let dz = dropZoneEl.getBoundingClientRect();
+                    let hit = cx >= dz.left && cx <= dz.right && cy >= dz.top && cy <= dz.bottom;
+                    b.style.transform = ''; b.style.zIndex = '';
+                    if (hit && onDrop) onDrop(c, i, b);
+                };
+                b.onpointerup = endDrag;
+                b.onpointercancel = endDrag;
+            });
+        }
+
         function loadSolveRound(gameId) {
             let game = SOLVE_GAMES[gameId];
             let round = game.rounds[currentStep];
@@ -14638,6 +14629,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 <div id="solve-scene-area" class="large-target" style="padding:0;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;"></div>
                 <div id="solve-prompt" style="font-size:clamp(16px,3.2vw,22px);font-weight:bold;color:#37474f;margin:10px 0;direction:rtl;text-align:center;"></div>
                 <div id="solve-options-area" class="opts-row"></div>
+                <div id="solve-drop-zone" class="drag-drop-zone">🫳 גררו לכאן את הפתרון הנכון</div>
             `;
             let sceneArea = get('solve-scene-area');
             if (round.scene.startsWith('images/')) {
@@ -14648,25 +14640,12 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             get('solve-prompt').textContent = round.prompt;
 
             let oArea = get('solve-options-area');
-            oArea.innerHTML = '';
-            round.choices.forEach((c, i) => {
-                let w = D.createElement('div');
-                w.className = 'option-wrapper';
-                let b = D.createElement('button');
-                b.className = 'option-btn solve-choice-btn';
-                if (c.img.startsWith('images/')) {
-                    b.innerHTML = `<img src="${c.img}" alt="${c.label}" style="width:75%;height:75%;object-fit:contain;" />`;
-                } else {
-                    b.innerHTML = `<span>${c.img}</span>`;
-                }
-                b.onclick = () => handleSolveChoice(gameId, i, b);
-                let lbl = D.createElement('div');
-                lbl.textContent = c.label;
-                lbl.style.cssText = 'font-weight:bold;color:#455a64;font-size:clamp(12px,2.4vw,16px);margin-top:4px;direction:rtl;';
-                w.appendChild(b);
-                w.appendChild(lbl);
-                oArea.appendChild(w);
-            });
+            let dropZone = get('solve-drop-zone');
+            initDragChoiceRow(oArea, dropZone,
+                round.choices,
+                (choice) => { speakLetter(choice.label, 'he'); },
+                (choice, idx, btn) => handleSolveChoice(gameId, idx, btn)
+            );
 
             speakLetter(round.prompt, 'he');
         }
@@ -14676,9 +14655,21 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             let round = SOLVE_GAMES[gameId].rounds[currentStep];
             let choice = round.choices[choiceIdx];
             window.currentSolveFeedback = choice;
-            document.querySelectorAll('.solve-choice-btn').forEach(b => b.style.pointerEvents = 'none');
-            speakLetter(choice.feedbackText, 'he');
-            handleAnswer(true, btn, () => loadSolveRound(gameId), null);
+            
+            isProcessing = true;
+            speakLetter(choice.feedbackText, 'he', () => {
+                isProcessing = false;
+                if (choice.tier === 'best') {
+                    document.querySelectorAll('.drag-choice-btn').forEach(b => b.style.pointerEvents = 'none');
+                    handleAnswer(true, btn, () => loadSolveRound(gameId), null);
+                } else {
+                    let fl = get('feedback-layer');
+                    let emoji = choice.tier === 'ok' ? '🙂' : '🤔';
+                    fl.innerHTML = `<span>${emoji}</span><div class="feedback-msg" style="direction:rtl;">${choice.feedbackText}</div>`;
+                    show('feedback-layer');
+                    setTimeout(() => hide('feedback-layer'), 2600);
+                }
+            });
         }
 
         // --- 1. בונים מחדש (bridge) — תמונות/אודיו קיימים מ-images/winners ---
@@ -15182,52 +15173,52 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             // Trigger level-end reward
             isProcessing = true;
             speakSuccess(false, () => {
-                // Award stars
-                awardStar(gameId, currentDifficulty);
-                
-                // Show floating praise animation
-                let fl = get('feedback-layer');
-                if (fl) {
-                    fl.innerHTML = '<span>🥳</span>';
-                    show('feedback-layer');
-                }
-                
-                setTimeout(() => {
-                    hide('feedback-layer');
-                    currentStep++;
-                    isProcessing = false;
+                // Award stars with callback to execute only after speech ends
+                awardStar(gameId, currentDifficulty, () => {
+                    // Show floating praise animation
+                    let fl = get('feedback-layer');
+                    if (fl) {
+                        fl.innerHTML = '<span>🥳</span>';
+                        show('feedback-layer');
+                    }
                     
-                    if (currentStep >= game.rounds.length) {
-                        show('level-complete-overlay');
-                        let overlay = get('level-complete-overlay');
+                    setTimeout(() => {
+                        hide('feedback-layer');
+                        currentStep++;
+                        isProcessing = false;
                         
-                        // Set up star display in victory screen
-                        let se = 4;
-                        if (mistakesInLevel === 1) se = 3;
-                        else if (mistakesInLevel === 2) se = 2;
-                        else if (mistakesInLevel > 2) se = 1;
-                        
-                        for (let i = 1; i <= 4; i++) {
-                            let st = get(`star-${i}`);
-                            if (st) {
-                                st.classList.remove('earned');
-                                if (i <= se) {
-                                    setTimeout(() => {
-                                        st.classList.add('earned');
-                                        playClickSound();
-                                    }, i * 300);
+                        if (currentStep >= game.rounds.length) {
+                            show('level-complete-overlay');
+                            let overlay = get('level-complete-overlay');
+                            
+                            // Set up star display in victory screen
+                            let se = 4;
+                            if (mistakesInLevel === 1) se = 3;
+                            else if (mistakesInLevel === 2) se = 2;
+                            else if (mistakesInLevel > 2) se = 1;
+                            
+                            for (let i = 1; i <= 4; i++) {
+                                let st = get(`star-${i}`);
+                                if (st) {
+                                    st.classList.remove('earned');
+                                    if (i <= se) {
+                                        setTimeout(() => {
+                                            st.classList.add('earned');
+                                            playClickSound();
+                                        }, i * 300);
+                                    }
                                 }
                             }
+                            
+                            if (levelCompleteAutoTimeout) clearTimeout(levelCompleteAutoTimeout);
+                            levelCompleteAutoTimeout = setTimeout(() => {
+                                closeLevelComplete();
+                            }, 4000);
+                        } else {
+                            loadGeminiRound(gameId);
                         }
-                        
-                        if (levelCompleteAutoTimeout) clearTimeout(levelCompleteAutoTimeout);
-                        levelCompleteAutoTimeout = setTimeout(() => {
-                            closeLevelComplete();
-                        }, 4000);
-                    } else {
-                        loadGeminiRound(gameId);
-                    }
-                }, 2000);
+                    }, 2000);
+                });
             });
         };
 
