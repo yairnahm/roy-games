@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-08-01-v110-drag-drop-choices -->
+<!DOCTYPE html><!-- build: 2026-08-01-v111-solve-fresh-images -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -14819,21 +14819,21 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
         SOLVE_GAMES.inventor = {
             rounds: [
                 {
-                    scene: '🎈',
+                    scene: 'images/solve/inventor/balloon_ceiling.png',
                     prompt: 'בלון תקוע גבוה בתקרה, איך נוריד אותו בלי לקלקל אותו?',
                     choices: [
-                        { img: '🧹', label: 'מטאטא', tier: 'best', feedbackText: 'רעיון נהדר! עם המטאטא אפשר לגעת בעדינות בבלון ולהוריד אותו בשלום! למה חשבת על מטאטא?' },
-                        { img: '🪑', label: 'כיסא', tier: 'ok', feedbackText: 'אפשר לעמוד על הכיסא כדי להתקרב, אבל צריך להיזהר מאוד לא ליפול. מה היה הפתרון הכי בטוח?' },
-                        { img: '✂️', label: 'מספריים', tier: 'poor', feedbackText: 'אופס, מספריים עלולות לפוצץ את הבלון! מה עוד אפשר לנסות שלא יפגע בבלון?' }
+                        { img: 'images/solve/inventor/broom.png', label: 'מטאטא', tier: 'best', feedbackText: 'רעיון נהדר! עם המטאטא אפשר לגעת בעדינות בבלון ולהוריד אותו בשלום! למה חשבת על מטאטא?' },
+                        { img: 'images/solve/inventor/chair.png', label: 'כיסא', tier: 'ok', feedbackText: 'אפשר לעמוד על הכיסא כדי להתקרב, אבל צריך להיזהר מאוד לא ליפול. מה היה הפתרון הכי בטוח?' },
+                        { img: 'images/solve/inventor/scissors.png', label: 'מספריים', tier: 'poor', feedbackText: 'אופס, מספריים עלולות לפוצץ את הבלון! מה עוד אפשר לנסות שלא יפגע בבלון?' }
                     ]
                 },
                 {
-                    scene: '🎩',
+                    scene: 'images/solve/inventor/hat_dresser.png',
                     prompt: 'הכובע נפל מאחורי הארון הגדול ואי אפשר להגיע אליו ביד. מה נעשה?',
                     choices: [
-                        { img: '🥢', label: 'מקל ארוך', tier: 'best', feedbackText: 'מצוין! מקל ארוך מגיע בדיוק למקום הצר מאחורי הארון ומוציא את הכובע! למה מקל ארוך עוזר כאן?' },
-                        { img: '🖌️', label: 'מברשת', tier: 'ok', feedbackText: 'המברשת קצת קצרה, אולי תזיז את הכובע קצת אבל לא תוציא אותו. מה צריך שיהיה יותר ארוך?' },
-                        { img: '🔨', label: 'פטיש', tier: 'poor', feedbackText: 'פטיש יכול לשבור את הארון! זה לא בטוח כאן. איזה כלי לא הורס כלום?' }
+                        { img: 'images/solve/inventor/stick.png', label: 'מקל ארוך', tier: 'best', feedbackText: 'מצוין! מקל ארוך מגיע בדיוק למקום הצר מאחורי הארון ומוציא את הכובע! למה מקל ארוך עוזר כאן?' },
+                        { img: 'images/solve/inventor/brush.png', label: 'מברשת', tier: 'ok', feedbackText: 'המברשת קצת קצרה, אולי תזיז את הכובע קצת אבל לא תוציא אותו. מה צריך שיהיה יותר ארוך?' },
+                        { img: 'images/solve/inventor/hammer.png', label: 'פטיש', tier: 'poor', feedbackText: 'פטיש יכול לשבור את הארון! זה לא בטוח כאן. איזה כלי לא הורס כלום?' }
                     ]
                 }
             ]
@@ -14843,19 +14843,19 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
         SOLVE_GAMES.predict = {
             rounds: [
                 {
-                    scene: '🪨🪣',
+                    scene: 'images/solve/predict/rock_before.png',
                     prompt: 'מה יקרה אם נשים אבן כבדה בתוך דלי מים?',
                     choices: [
-                        { img: '⬇️', label: 'האבן תשקע', tier: 'best', feedbackText: 'ניחשת נכון! אבן כבדה שוקעת במים כי היא כבדה מדי כדי לצוף. היית בטוח בזה, או שרק ניחשת?' },
+                        { img: 'images/solve/predict/rock_sunk.png', label: 'האבן תשקע', tier: 'best', feedbackText: 'ניחשת נכון! אבן כבדה שוקעת במים כי היא כבדה מדי כדי לצוף. היית בטוח בזה, או שרק ניחשת?' },
                         { img: '⬆️', label: 'האבן תצוף', tier: 'poor', feedbackText: 'בואו נראה מה קורה באמת... אבן כבדה שוקעת, היא לא צפה. בפעם הבאה ננחש לפי כמה שהחפץ כבד!' },
                         { img: '❓', label: 'לא יקרה כלום', tier: 'poor', feedbackText: 'בואו ננסה ונראה... האבן דווקא שוקעת ישר לתחתית! מה חשבת לפני שניסינו?' }
                     ]
                 },
                 {
-                    scene: '🍃🪣',
+                    scene: 'images/solve/predict/leaf_before.png',
                     prompt: 'מה יקרה אם נשים עלה קטן וקל על פני המים?',
                     choices: [
-                        { img: '⬆️', label: 'העלה יצוף', tier: 'best', feedbackText: 'נכון מאוד! העלה קל ולכן הוא צף על פני המים בקלות. איך ידעת שהוא יצוף?' },
+                        { img: 'images/solve/predict/leaf_floating.png', label: 'העלה יצוף', tier: 'best', feedbackText: 'נכון מאוד! העלה קל ולכן הוא צף על פני המים בקלות. איך ידעת שהוא יצוף?' },
                         { img: '⬇️', label: 'העלה ישקע', tier: 'poor', feedbackText: 'בואו נראה... העלה דווקא צף כי הוא קל מאוד! מה עוזר לחפץ לצוף?' },
                         { img: '💨', label: 'העלה ייעלם', tier: 'poor', feedbackText: 'בואו ננסה ונראה... העלה נשאר שם וצף בשקט על המים! מה קרה בסוף?' }
                     ]
@@ -14915,10 +14915,10 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
         SOLVE_GAMES.fairswing = {
             rounds: [
                 {
-                    scene: '🛝',
+                    scene: 'images/solve/fairswing/swing_kids.png',
                     prompt: 'שני ילדים רוצים להתנדנד. אחד כבר זמן רב על הנדנדה, השני הגיע עכשיו עם ברך שרוטה ובוכה. מה נציע?',
                     choices: [
-                        { img: '⏱️', label: 'לקבוע טיימר של 2 דקות לכל אחד', tier: 'best', feedbackText: 'איזה רעיון הוגן! עכשיו שני הילדים מתחלקים בזמן וכולם מרוצים! למה חשבת שזה הוגן?' },
+                        { img: 'images/solve/fairswing/hourglass.png', label: 'לקבוע טיימר של 2 דקות לכל אחד', tier: 'best', feedbackText: 'איזה רעיון הוגן! עכשיו שני הילדים מתחלקים בזמן וכולם מרוצים! למה חשבת שזה הוגן?' },
                         { img: '🏃', label: 'לשלוח את הפצוע לנדנדה אחרת רחוקה', tier: 'ok', feedbackText: 'זה פותר את זה חלקית, אבל הילד הפצוע עדיין לבד. אולי יש דרך שכולם ישחקו יחד?' },
                         { img: '✋', label: 'להוריד בכוח את מי שכבר מתנדנד', tier: 'poor', feedbackText: 'זה לא הוגן וגם עצוב לילד שכבר שיחק. איך אפשר לפתור את זה בלי לכעוס אחד על השני?' }
                     ]
@@ -14927,7 +14927,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     scene: '🧱',
                     prompt: 'שני ילדים רוצים לשים את הקובייה האחרונה במגדל בעצמם. מה נעשה?',
                     choices: [
-                        { img: '🤝', label: 'לבנות ביחד ולחלק תפקידים', tier: 'best', feedbackText: 'איזה יופי של שיתוף פעולה! שניכם בונים יחד וזה כיף כפול! איך החלטתם לחלק את התפקידים?' },
+                        { img: 'images/solve/fairswing/blocks_five.png', label: 'לבנות ביחד ולחלק תפקידים', tier: 'best', feedbackText: 'איזה יופי של שיתוף פעולה! שניכם בונים יחד וזה כיף כפול! איך החלטתם לחלק את התפקידים?' },
                         { img: '🎲', label: 'להטיל קובייה כדי להחליט', tier: 'ok', feedbackText: 'זו דרך הוגנת להחליט, אבל אולי יש דרך שגם שניכם תרגישו שותפים במגדל?' },
                         { img: '💪', label: 'מי שחזק יותר לוקח', tier: 'poor', feedbackText: 'זה לא הוגן כלפי הילד השני. איך אפשר להחליט בלי מריבה?' }
                     ]
@@ -14939,19 +14939,19 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
         SOLVE_GAMES.carefulfast = {
             rounds: [
                 {
-                    scene: '🧸🎎🏺',
+                    scene: 'images/solve/carefulfast/toy_room.png',
                     prompt: 'החדר מלא בצעצועים שבירים ויקרים, וצריך לעבור לצד השני. איך נלך?',
                     choices: [
-                        { img: '🚶', label: 'ללכת לאט ובזהירות', tier: 'best', feedbackText: 'מצוין! הלכת לאט וזהיר וכל הצעצועים נשארו שלמים! למה חשבת שכדאי ללכת לאט?' },
+                        { img: 'images/solve/carefulfast/boy_careful_toys.png', label: 'ללכת לאט ובזהירות', tier: 'best', feedbackText: 'מצוין! הלכת לאט וזהיר וכל הצעצועים נשארו שלמים! למה חשבת שכדאי ללכת לאט?' },
                         { img: '🐢', label: 'לזחול על הרצפה', tier: 'ok', feedbackText: 'זה בטוח, אבל לוקח הרבה זמן. איזו דרך גם בטוחה וגם לא איטית מדי?' },
                         { img: '🏃', label: 'לרוץ מהר כמה שאפשר', tier: 'poor', feedbackText: 'אופס! רצת מהר מדי ושברת צעצוע! מה קורה כשרצים בחדר מלא בדברים שבירים?' }
                     ]
                 },
                 {
-                    scene: '🥛🥛🥛',
+                    scene: 'images/solve/carefulfast/water_glasses.png',
                     prompt: 'יש כוסות מלאות מים על השולחן וצריך לעבור לידן בלי לשפוך. מה נעשה?',
                     choices: [
-                        { img: '🚶', label: 'ללכת לאט ולהסתכל טוב', tier: 'best', feedbackText: 'יופי! הלכת לאט והסתכלת איפה הכוסות, וכלום לא נשפך! מה עזר לך לא לשפוך?' },
+                        { img: 'images/solve/carefulfast/boy_careful_glasses.png', label: 'ללכת לאט ולהסתכל טוב', tier: 'best', feedbackText: 'יופי! הלכת לאט והסתכלת איפה הכוסות, וכלום לא נשפך! מה עזר לך לא לשפוך?' },
                         { img: '👀', label: 'לעצום עיניים ולנחש', tier: 'poor', feedbackText: 'אופס, בלי להסתכל קשה לדעת איפה הכוסות... מה חשוב לעשות לפני שזזים?' },
                         { img: '🤸', label: 'לקפוץ מעל השולחן', tier: 'poor', feedbackText: 'זה מסוכן מאוד ועלול להפיל הכל! מה דרך בטוחה יותר לעבור?' }
                     ]
@@ -14963,19 +14963,19 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
         SOLVE_GAMES.stopthink = {
             rounds: [
                 {
-                    scene: '🗼💥',
+                    scene: 'images/solve/stopthink/tower_fallen.png',
                     prompt: 'רועי ניסה לבנות מגדל קוביות גבוה מאוד, אבל הוא נפל כי הבסיס היה צר מדי. מה הכי חכם לחשוב עכשיו?',
                     choices: [
-                        { img: '💡', label: 'בפעם הבאה אבנה בסיס רחב יותר', tier: 'best', feedbackText: 'זו בדיוק המחשבה החכמה! למדת מהטעות ותדע איך לבנות מגדל יציב יותר בפעם הבאה!' },
+                        { img: 'images/solve/stopthink/boy_thinking.png', label: 'בפעם הבאה אבנה בסיס רחב יותר', tier: 'best', feedbackText: 'זו בדיוק המחשבה החכמה! למדת מהטעות ותדע איך לבנות מגדל יציב יותר בפעם הבאה!' },
                         { img: '😞', label: 'אני אף פעם לא אצליח לבנות מגדל', tier: 'poor', feedbackText: 'זה לא נכון! כל אחד טועה בדרך ללמידה. איך אפשר להפוך את הטעות להזדמנות ללמוד?' },
                         { img: '😠', label: 'זו אשמת הקוביות', tier: 'poor', feedbackText: 'הקוביות לא אשמות... מה באמת גרם למגדל ליפול, ומה אפשר לשנות בפעם הבאה?' }
                     ]
                 },
                 {
-                    scene: '🎨🐱',
+                    scene: 'images/solve/stopthink/cat_drawing.png',
                     prompt: 'מאיה ניסתה לצייר כלב, אבל זה יצא דומה יותר לחתול. מה הכי חכם לחשוב?',
                     choices: [
-                        { img: '🔄', label: 'אפשר לתקן ולנסות שוב, טעויות עוזרות ללמוד', tier: 'best', feedbackText: 'איזו מחשבה נהדרת! עם עוד ניסיון הציור ישתפר, וטעויות הן חלק מהלמידה!' },
+                        { img: 'images/solve/stopthink/girl_thinking.png', label: 'אפשר לתקן ולנסות שוב, טעויות עוזרות ללמוד', tier: 'best', feedbackText: 'איזו מחשבה נהדרת! עם עוד ניסיון הציור ישתפר, וטעויות הן חלק מהלמידה!' },
                         { img: '🚫', label: 'אני לא יודעת לצייר בכלל', tier: 'poor', feedbackText: 'ציור אחד לא מלמד אותנו הכל... מה אפשר לנסות כדי שהציור הבא יצליח יותר?' },
                         { img: '😢', label: 'לא אצייר יותר לעולם', tier: 'poor', feedbackText: 'חבל לוותר כל כך מהר! מה קורה כשמנסים שוב אחרי טעות קטנה?' }
                     ]
@@ -14990,18 +14990,18 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     scene: 'images/solve/together2/blocks_dilemma.png',
                     prompt: 'יש רק 5 קוביות, ושני ילדים רוצים לבנות גשר ביחד. מה עושים?',
                     choices: [
-                        { img: '🗣️', label: 'לדבר ולהחליט ביחד איך לחלק', tier: 'best', feedbackText: 'מצוין! כשמדברים ומחליטים ביחד, בונים גשר יפה ושניכם שותפים בו! איך הגעתם להחלטה משותפת?' },
-                        { img: '🤐', label: 'כל אחד לוקח כמה שהוא רוצה בלי לדבר', tier: 'poor', feedbackText: 'ככה אחד עלול להישאר בלי קוביות בכלל, וזה לא הוגן. מה יעזור לחלק בצורה טובה יותר?' },
-                        { img: '🙅', label: 'לוותר על הבנייה', tier: 'poor', feedbackText: 'חבל לוותר לפני שמנסים לדבר! איך אפשר לפתור את זה ביחד?' }
+                        { img: 'images/solve/together2/talk_together.png', label: 'לדבר ולהחליט ביחד איך לחלק', tier: 'best', feedbackText: 'מצוין! כשמדברים ומחליטים ביחד, בונים גשר יפה ושניכם שותפים בו! איך הגעתם להחלטה משותפת?' },
+                        { img: 'images/solve/together2/grab_without_talking.png', label: 'כל אחד לוקח כמה שהוא רוצה בלי לדבר', tier: 'poor', feedbackText: 'ככה אחד עלול להישאר בלי קוביות בכלל, וזה לא הוגן. מה יעזור לחלק בצורה טובה יותר?' },
+                        { img: 'images/solve/together2/give_up_building.png', label: 'לוותר על הבנייה', tier: 'poor', feedbackText: 'חבל לוותר לפני שמנסים לדבר! איך אפשר לפתור את זה ביחד?' }
                     ]
                 },
                 {
-                    scene: '🎲🧩⚽',
+                    scene: 'images/solve/together2/game_choice_dilemma.png',
                     prompt: 'שני ילדים לא מסכימים באיזה משחק לשחק עכשיו. מה עושים?',
                     choices: [
-                        { img: '💬', label: 'כל אחד מציע רעיון ובוחרים ביחד', tier: 'best', feedbackText: 'איזה פתרון הוגן! כששומעים את שני הרעיונות ובוחרים ביחד, כולם מרגישים שמחים! איך בחרתם בסוף?' },
-                        { img: '📢', label: 'מי שצועק חזק יותר מחליט', tier: 'poor', feedbackText: 'זה לא הוגן כלפי מי שלא צועק... איך אפשר להחליט בצורה שמכבדת את שניהם?' },
-                        { img: '🚷', label: 'לא לשחק בכלל', tier: 'poor', feedbackText: 'חבל לפספס משחק כיפי בגלל אי-הסכמה קטנה! מה אפשר לנסות במקום?' }
+                        { img: 'images/solve/together2/propose_and_choose.png', label: 'כל אחד מציע רעיון ובוחרים ביחד', tier: 'best', feedbackText: 'איזה פתרון הוגן! כששומעים את שני הרעיונות ובוחרים ביחד, כולם מרגישים שמחים! איך בחרתם בסוף?' },
+                        { img: 'images/solve/together2/shout_loudest.png', label: 'מי שצועק חזק יותר מחליט', tier: 'poor', feedbackText: 'זה לא הוגן כלפי מי שלא צועק... איך אפשר להחליט בצורה שמכבדת את שניהם?' },
+                        { img: 'images/solve/together2/refuse_to_play.png', label: 'לא לשחק בכלל', tier: 'poor', feedbackText: 'חבל לפספס משחק כיפי בגלל אי-הסכמה קטנה! מה אפשר לנסות במקום?' }
                     ]
                 }
             ]
@@ -16750,6 +16750,11 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 width: 800,
                 height: 500,
                 parent: 'phaser-game-container',
+                backgroundColor: '#ffffff',
+                scale: {
+                    mode: Phaser.Scale.FIT,
+                    autoCenter: Phaser.Scale.CENTER_BOTH
+                },
                 physics: {
                     default: 'arcade',
                     arcade: {
@@ -16769,73 +16774,100 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 super('PhaserFlashlightScene');
             }
             create() {
-                // Background & Room Elements
-                let bg = this.add.graphics();
-                bg.fillStyle(0xfff9c4, 1); // Bright yellow room background
-                bg.fillRect(0, 0, 800, 500);
+                // Background wall design
+                let wall = this.add.graphics();
+                wall.fillStyle(0xe0f2f1, 1); // Light pastel teal wall
+                wall.fillRect(0, 0, 800, 500);
                 
-                // Draw room visuals (table, window, etc.)
-                let visuals = this.add.graphics();
-                visuals.fillStyle(0x795548, 1);
-                visuals.fillRect(300, 300, 200, 100); // Table
-                visuals.fillStyle(0x81d4fa, 1);
-                visuals.fillRect(100, 80, 120, 120); // Window
+                // Draw floor
+                wall.fillStyle(0xbcaaa4, 1); // Wooden floor brown
+                wall.fillRect(0, 400, 800, 100);
                 
-                // The hidden items/clues
-                let clue1 = this.add.text(200, 140, '😭 עצוב', { fontSize: '40px', color: '#ff3d00', fontStyle: 'bold' }).setOrigin(0.5);
-                let clue2 = this.add.text(600, 180, '😊 שמח', { fontSize: '40px', color: '#4caf50', fontStyle: 'bold' }).setOrigin(0.5);
-                let clue3 = this.add.text(400, 260, '🧸 צעצוע', { fontSize: '40px', color: '#ff9800', fontStyle: 'bold' }).setOrigin(0.5);
+                // Draw window
+                wall.fillStyle(0x80deea, 1);
+                wall.fillRect(100, 60, 140, 140);
+                wall.lineStyle(6, 0x00acc1);
+                wall.strokeRect(100, 60, 140, 140);
+                wall.lineBetween(170, 60, 170, 200);
+                wall.lineBetween(100, 130, 240, 130);
+                
+                // Draw bookshelf
+                wall.fillStyle(0xa1887f, 1);
+                wall.fillRect(600, 200, 120, 200);
+                wall.fillStyle(0x5d4037, 1);
+                wall.fillRect(600, 260, 120, 10);
+                wall.fillRect(600, 320, 120, 10);
+                
+                // Cute table
+                wall.fillStyle(0x8d6e63, 1);
+                wall.fillRect(320, 320, 160, 80);
+                wall.fillStyle(0x4e342e, 1);
+                wall.fillRect(300, 310, 200, 15);
+                
+                // The hidden items/clues placed inside cards with shadows
+                let clue1 = this.add.text(200, 130, '😭 עצוב', { fontSize: '38px', color: '#ff3d00', fontStyle: 'bold', fontFamily: 'Rubik' }).setOrigin(0.5);
+                let clue2 = this.add.text(660, 230, '😊 שמח', { fontSize: '38px', color: '#4caf50', fontStyle: 'bold', fontFamily: 'Rubik' }).setOrigin(0.5);
+                let clue3 = this.add.text(400, 270, '🧸 צעצוע', { fontSize: '38px', color: '#ff9800', fontStyle: 'bold', fontFamily: 'Rubik' }).setOrigin(0.5);
                 
                 // Dark Room Overlay
-                let darkRoom = this.add.graphics();
-                darkRoom.fillStyle(0x111126, 0.96); // Deep dark violet
-                darkRoom.fillRect(0, 0, 800, 500);
+                let darkOverlay = this.add.graphics();
+                darkOverlay.fillStyle(0x0f0f26, 0.97); // Very dark violet room
+                darkOverlay.fillRect(0, 0, 800, 500);
                 
-                // Spotlight mask
+                // Spotlight mask graphics
                 let spotlight = this.make.graphics();
                 spotlight.fillStyle(0xffffff, 1);
-                spotlight.fillCircle(0, 0, 85);
+                spotlight.fillCircle(0, 0, 90);
                 
                 let mask = new Phaser.Display.Masks.GeometryMask(this, spotlight);
                 
                 // Mask the bright visual layers
-                bg.setMask(mask);
-                visuals.setMask(mask);
+                wall.setMask(mask);
                 clue1.setMask(mask);
                 clue2.setMask(mask);
                 clue3.setMask(mask);
                 
+                // Add visible flashlight glowing yellow beam on top of dark overlay
+                let flashlightBeam = this.add.graphics();
+                flashlightBeam.clear();
+                
                 let foundClues = 0;
                 let c1Found = false, c2Found = false, c3Found = false;
                 
-                // Helper to check distance
                 this.input.on('pointermove', (pointer) => {
                     spotlight.x = pointer.x;
                     spotlight.y = pointer.y;
                     
-                    if (!c1Found && Phaser.Math.Distance.Between(pointer.x, pointer.y, 200, 140) < 55) {
+                    // Render interactive beam
+                    flashlightBeam.clear();
+                    flashlightBeam.fillStyle(0xfff176, 0.22); // yellow transparent cone
+                    flashlightBeam.fillTriangle(0, 500, pointer.x - 90, pointer.y, pointer.x + 90, pointer.y);
+                    flashlightBeam.lineStyle(3, 0xffeb3b, 0.5);
+                    flashlightBeam.strokeCircle(pointer.x, pointer.y, 90);
+                    
+                    if (!c1Found && Phaser.Math.Distance.Between(pointer.x, pointer.y, 200, 130) < 60) {
                         c1Found = true; foundClues++; playClickSound();
-                        clue1.setStyle({ color: '#fff', stroke: '#ff3d00', strokeThickness: 5 });
+                        clue1.setStyle({ color: '#ffffff', stroke: '#ff3d00', strokeThickness: 5 });
                     }
-                    if (!c2Found && Phaser.Math.Distance.Between(pointer.x, pointer.y, 600, 180) < 55) {
+                    if (!c2Found && Phaser.Math.Distance.Between(pointer.x, pointer.y, 660, 230) < 60) {
                         c2Found = true; foundClues++; playClickSound();
-                        clue2.setStyle({ color: '#fff', stroke: '#4caf50', strokeThickness: 5 });
+                        clue2.setStyle({ color: '#ffffff', stroke: '#4caf50', strokeThickness: 5 });
                     }
-                    if (!c3Found && Phaser.Math.Distance.Between(pointer.x, pointer.y, 400, 260) < 55) {
+                    if (!c3Found && Phaser.Math.Distance.Between(pointer.x, pointer.y, 400, 270) < 60) {
                         c3Found = true; foundClues++; playClickSound();
-                        clue3.setStyle({ color: '#fff', stroke: '#ff9800', strokeThickness: 5 });
+                        clue3.setStyle({ color: '#ffffff', stroke: '#ff9800', strokeThickness: 5 });
                     }
                     
                     if (foundClues === 3) {
-                        foundClues = 99; // Prevent multiple calls
-                        bg.clearMask();
-                        visuals.clearMask();
+                        foundClues = 99;
+                        wall.clearMask();
                         clue1.clearMask();
                         clue2.clearMask();
                         clue3.clearMask();
-                        darkRoom.setVisible(false);
+                        darkOverlay.setVisible(false);
+                        flashlightBeam.setVisible(false);
                         
-                        this.time.delayedCall(1200, () => {
+                        this.time.delayedCall(1500, () => {
                             speakSuccess(false, () => {
                                 awardStar('can_flashlight', currentDifficulty, () => {
                                     if (currentPhaserInstance) {
@@ -16857,19 +16889,39 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 super('PhaserPhysicsTowerScene');
             }
             create() {
-                // Static Ground and platform
-                let ground = this.add.rectangle(400, 480, 800, 40, 0x2e7d32);
+                // Sky background
+                let sky = this.add.graphics();
+                sky.fillGradientStyle(0x81d4fa, 0x81d4fa, 0xe1f5fe, 0xe1f5fe, 1);
+                sky.fillRect(0, 0, 800, 500);
+                
+                // Draw clouds
+                sky.fillStyle(0xffffff, 0.7);
+                sky.fillCircle(150, 120, 30);
+                sky.fillCircle(180, 110, 40);
+                sky.fillCircle(210, 120, 30);
+                
+                sky.fillCircle(600, 150, 30);
+                sky.fillCircle(630, 140, 40);
+                sky.fillCircle(660, 150, 30);
+                
+                // Static grass ground
+                let ground = this.add.rectangle(400, 480, 800, 40, 0x4caf50);
                 this.physics.add.existing(ground, true);
                 
-                let platform = this.add.rectangle(400, 440, 180, 20, 0xd84315); // Wide orange base
+                // Stacking platform base (thick wood log)
+                let platform = this.add.rectangle(400, 440, 190, 20, 0x8d6e63);
                 this.physics.add.existing(platform, true);
                 
-                // Dispenser moving back and forth
-                let dispenser = this.add.circle(400, 50, 15, 0x1565c0);
+                // Cute robot helper (emoji) standing on the side
+                let robot = this.add.text(700, 410, '🤖', { fontSize: '50px' }).setOrigin(0.5);
+                let speechBubble = this.add.text(700, 340, 'בהצלחה! 🏗️', { fontSize: '15px', color: '#000', backgroundColor: '#fff', padding: 5 }).setOrigin(0.5);
+                
+                // Swinging dispenser
+                let dispenser = this.add.circle(400, 60, 18, 0x0288d1);
                 this.tweens.add({
                     targets: dispenser,
-                    x: { from: 120, to: 680 },
-                    duration: 1800,
+                    x: { from: 150, to: 650 },
+                    duration: 1900,
                     yoyo: true,
                     repeat: -1
                 });
@@ -16885,22 +16937,30 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     if (isGameEnded) return;
                     playClickSound();
                     
-                    // Create block with high gravity and physical bounds
-                    let block = this.add.rectangle(dispenser.x, 80, 65, 45, 0x9c27b0);
+                    // Create beautiful block (purple/violet with borders)
+                    let blockIdx = blocks.getLength() + 1;
+                    let block = this.add.container(dispenser.x, 90);
+                    
+                    let blockBg = this.add.rectangle(0, 0, 70, 45, 0xba68c8).setStrokeStyle(3, 0x4a148c);
+                    let blockText = this.add.text(0, 0, blockIdx.toString(), { fontSize: '20px', fill: '#fff', fontStyle: 'bold' }).setOrigin(0.5);
+                    block.add([blockBg, blockText]);
+                    
                     this.physics.add.existing(block);
                     block.body.setCollideWorldBounds(true);
-                    block.body.setBounce(0.05);
+                    block.body.setBounce(0.02);
                     block.body.setFriction(0.9);
                     blocks.add(block);
                     
-                    // Verification timer for block stability
+                    // Verify if block falls off
                     this.time.delayedCall(2200, () => {
                         if (block.active) {
-                            if (block.y > 450 && Math.abs(block.x - 400) > 100) {
-                                speakLetter("אוי, הקוביה החליקה מהבסיס! בואו ננסה שוב ונשמור אותה במרכז.", 'he');
+                            if (block.y > 450 && Math.abs(block.x - 400) > 105) {
+                                speechBubble.setText('אופס! נפל 😭');
+                                speakLetter("אוי, הקוביה נפלה מהבסיס! בואו ננסה שוב ונשמור אותן ישרות.", 'he');
                                 block.destroy();
                             } else {
-                                // Count how many blocks are stable on top of platform
+                                speechBubble.setText('עבודה טובה! 👍');
+                                
                                 let stableCount = 0;
                                 blocks.getChildren().forEach(b => {
                                     if (b.y < 430 && Math.abs(b.body.velocity.y) < 2 && Math.abs(b.body.velocity.x) < 2) {
@@ -16910,6 +16970,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                                 
                                 if (stableCount >= 4 && !isGameEnded) {
                                     isGameEnded = true;
+                                    speechBubble.setText('איזה מגדל! 🏆');
                                     speakSuccess(false, () => {
                                         awardStar('can_tower', currentDifficulty, () => {
                                             if (currentPhaserInstance) {
@@ -16933,59 +16994,97 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 super('PhaserBirdShelterScene');
             }
             create() {
-                // Background & tree details
-                let branch = this.add.rectangle(400, 350, 240, 20, 0x8d6e63);
+                // Sky background
+                let sky = this.add.graphics();
+                sky.fillGradientStyle(0xe1f5fe, 0xe1f5fe, 0xb3e5fc, 0xb3e5fc, 1);
+                sky.fillRect(0, 0, 800, 500);
+                
+                // Draw tree branch
+                let branch = this.add.rectangle(400, 360, 240, 20, 0x5d4037).setStrokeStyle(2, 0x3e2723);
                 this.physics.add.existing(branch, true);
                 
-                // Bird emoji sitting on branch
-                let bird = this.add.text(400, 310, '🐦', { fontSize: '42px' }).setOrigin(0.5);
+                // Bird Nest
+                let nest = this.add.text(400, 340, '🪹', { fontSize: '65px' }).setOrigin(0.5);
+                let bird = this.add.text(400, 310, '🐦', { fontSize: '40px' }).setOrigin(0.5);
                 
-                // Wooden planks in the dock
-                let plank1 = this.add.rectangle(180, 450, 110, 25, 0xff7043).setInteractive();
-                let plank2 = this.add.rectangle(400, 450, 110, 25, 0xff7043).setInteractive();
-                let plank3 = this.add.rectangle(620, 450, 180, 25, 0xffb74d).setInteractive();
+                // Wooden planks in the dock styled as real cards
+                let p1Container = this.add.container(180, 450);
+                let p1Bg = this.add.rectangle(0, 0, 110, 28, 0xff7043).setStrokeStyle(3, 0xd84315);
+                let p1Text = this.add.text(0, 0, 'עמוד שמאל', { fontSize: '12px', fill: '#fff', fontStyle: 'bold', fontFamily: 'Rubik' }).setOrigin(0.5);
+                p1Container.add([p1Bg, p1Text]);
+                p1Container.setSize(110, 28).setInteractive();
                 
-                this.input.setDraggable(plank1);
-                this.input.setDraggable(plank2);
-                this.input.setDraggable(plank3);
+                let p2Container = this.add.container(400, 450);
+                let p2Bg = this.add.rectangle(0, 0, 110, 28, 0xff7043).setStrokeStyle(3, 0xd84315);
+                let p2Text = this.add.text(0, 0, 'עמוד ימין', { fontSize: '12px', fill: '#fff', fontStyle: 'bold', fontFamily: 'Rubik' }).setOrigin(0.5);
+                p2Container.add([p2Bg, p2Text]);
+                p2Container.setSize(110, 28).setInteractive();
+                
+                let p3Container = this.add.container(620, 450);
+                let p3Bg = this.add.rectangle(0, 0, 180, 28, 0xffb74d).setStrokeStyle(3, 0xf57c00);
+                let p3Text = this.add.text(0, 0, 'גג מגן', { fontSize: '14px', fill: '#fff', fontStyle: 'bold', fontFamily: 'Rubik' }).setOrigin(0.5);
+                p3Container.add([p3Bg, p3Text]);
+                p3Container.setSize(180, 28).setInteractive();
+                
+                this.input.setDraggable(p1Container);
+                this.input.setDraggable(p2Container);
+                this.input.setDraggable(p3Container);
                 
                 this.input.on('drag', (pointer, gameObject, dragX, dragY) => {
                     gameObject.x = dragX;
                     gameObject.y = dragY;
                 });
                 
-                // "Activate Wind" trigger button
-                let windBtn = this.add.text(400, 80, '💨 הפעילו את הרוח!', { fontSize: '24px', fill: '#0d47a1', backgroundColor: '#e3f2fd', padding: 12 }).setOrigin(0.5).setInteractive();
+                // Wind Breeze lines graphics
+                let breezeLines = this.add.graphics();
+                breezeLines.lineStyle(4, 0xffffff, 0.6);
+                
+                // Wind Button
+                let windBtn = this.add.text(400, 80, '💨 הפעילו את הרוח!', { fontSize: '22px', fill: '#0d47a1', backgroundColor: '#e3f2fd', padding: 12, fontStyle: 'bold', fontFamily: 'Rubik' }).setOrigin(0.5).setInteractive();
                 
                 windBtn.on('pointerdown', () => {
                     playClickSound();
                     
-                    // Activate physics bodies on the planks
-                    [plank1, plank2, plank3].forEach(p => {
-                        this.physics.add.existing(p);
-                        p.body.setCollideWorldBounds(true);
-                        p.body.setBounce(0.02);
-                        p.body.setFriction(0.9);
+                    [p1Container, p2Container, p3Container].forEach(c => {
+                        this.physics.add.existing(c);
+                        c.body.setCollideWorldBounds(true);
+                        c.body.setBounce(0.02);
+                        c.body.setFriction(0.9);
                     });
                     
-                    this.physics.add.collider([plank1, plank2, plank3], branch);
-                    this.physics.add.collider([plank1, plank2, plank3], [plank1, plank2, plank3]);
+                    this.physics.add.collider([p1Container, p2Container, p3Container], branch);
+                    this.physics.add.collider([p1Container, p2Container, p3Container], [p1Container, p2Container, p3Container]);
                     
-                    // Trigger wind force acceleration
+                    // Simulate breeze lines flying left
+                    this.tweens.addCounter({
+                        from: 0,
+                        to: 15,
+                        duration: 2000,
+                        onUpdate: (tween) => {
+                            breezeLines.clear();
+                            breezeLines.lineStyle(4, 0xffffff, 0.5);
+                            let val = tween.getValue() * 50;
+                            breezeLines.lineBetween(800 - val, 260, 600 - val, 260);
+                            breezeLines.lineBetween(700 - val, 300, 500 - val, 300);
+                            breezeLines.lineBetween(750 - val, 330, 550 - val, 330);
+                        }
+                    });
+                    
                     this.time.delayedCall(1200, () => {
-                        plank1.body.setAccelerationX(-220);
-                        plank2.body.setAccelerationX(-220);
-                        plank3.body.setAccelerationX(-220);
+                        p1Container.body.setAccelerationX(-240);
+                        p2Container.body.setAccelerationX(-240);
+                        p3Container.body.setAccelerationX(-240);
                     });
                     
-                    // Evaluate stability after 3.5 seconds
-                    this.time.delayedCall(3500, () => {
+                    this.time.delayedCall(3600, () => {
+                        breezeLines.clear();
                         let success = true;
-                        [plank1, plank2, plank3].forEach(p => {
-                            if (p.y > 360) success = false; // fell off the branch
+                        [p1Container, p2Container, p3Container].forEach(c => {
+                            if (c.y > 370) success = false;
                         });
                         
                         if (success) {
+                            bird.setText('🐦🥳');
                             speakSuccess(false, () => {
                                 awardStar('can_shelter', currentDifficulty, () => {
                                     if (currentPhaserInstance) {
@@ -16996,7 +17095,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                                 });
                             });
                         } else {
-                            speakLetter("אוי! המחסה הועף ברוח! בואו ננסה לבנות מחסה חזק ויציב יותר מעל הציפור.", 'he');
+                            speakLetter("אוי! המחסה עף ברוח. בואו ננסה לבנות מחסה חזק ויציב יותר מעל הגוזל.", 'he');
                             this.scene.restart();
                         }
                     });
@@ -17010,26 +17109,51 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 super('PhaserPatternBridgeScene');
             }
             create() {
-                // Draw patterned bridge elements
-                let r1 = this.add.rectangle(80, 280, 120, 20, 0xf44336); // Red
-                let b2 = this.add.rectangle(190, 280, 80, 20, 0x2196f3); // Blue
-                let r3 = this.add.rectangle(260, 280, 60, 20, 0xf44336); // Red
+                // Background & River flowing below
+                let sky = this.add.graphics();
+                sky.fillGradientStyle(0xe8f5e9, 0xe8f5e9, 0xc8e6c9, 0xc8e6c9, 1);
+                sky.fillRect(0, 0, 800, 500);
                 
-                // Gap zone for matching
-                let gapZone = this.add.rectangle(350, 280, 110, 20, 0xbbdefb).setStrokeStyle(3, 0x1e88e5);
+                sky.fillStyle(0x0288d1, 0.8);
+                sky.fillRect(0, 350, 800, 150); // River
                 
-                let r5 = this.add.rectangle(460, 280, 100, 20, 0xf44336); // Red
+                // Draw bridge pillars
+                sky.fillStyle(0x78909c, 1);
+                sky.fillRect(100, 290, 40, 70);
+                sky.fillRect(500, 290, 40, 70);
                 
-                // Rolling physics ball
-                let ball = this.add.circle(40, 240, 14, 0xffeb3b);
+                // Bridge segments
+                let r1 = this.add.rectangle(80, 280, 120, 20, 0xf44336).setStrokeStyle(2, 0xb71c1c); // Red
+                let b2 = this.add.rectangle(190, 280, 80, 20, 0x2196f3).setStrokeStyle(2, 0x0d47a1); // Blue
+                let r3 = this.add.rectangle(260, 280, 60, 20, 0xf44336).setStrokeStyle(2, 0xb71c1c); // Red
+                
+                // Gap zone with glowing dashed line
+                let gapZone = this.add.rectangle(355, 280, 110, 20, 0xb3e5fc).setStrokeStyle(3, 0x0288d1);
+                
+                let r5 = this.add.rectangle(465, 280, 100, 20, 0xf44336).setStrokeStyle(2, 0xb71c1c); // Red
+                
+                // Spinning Smiley Ball
+                let ball = this.add.text(40, 230, '🥎', { fontSize: '32px' }).setOrigin(0.5);
                 this.physics.add.existing(ball);
                 ball.body.setGravityY(0);
-                ball.body.setVelocityX(45); // Roll slowly across
+                ball.body.setVelocityX(48);
                 
-                // Draggable choice blue block
-                let blueBlock = this.add.rectangle(400, 430, 110, 20, 0x2196f3).setInteractive();
-                this.input.setDraggable(blueBlock);
+                // Spin animation tween
+                this.tweens.add({
+                    targets: ball,
+                    angle: 360,
+                    duration: 3000,
+                    repeat: -1
+                });
                 
+                // Choice block card
+                let choiceCard = this.add.container(400, 440);
+                let choiceBg = this.add.rectangle(0, 0, 110, 24, 0x2196f3).setStrokeStyle(3, 0x0d47a1);
+                let choiceText = this.add.text(0, 0, 'בלוק כחול', { fontSize: '13px', fill: '#fff', fontStyle: 'bold', fontFamily: 'Rubik' }).setOrigin(0.5);
+                choiceCard.add([choiceBg, choiceText]);
+                choiceCard.setSize(110, 24).setInteractive();
+                
+                this.input.setDraggable(choiceCard);
                 this.input.on('drag', (pointer, gameObject, dragX, dragY) => {
                     gameObject.x = dragX;
                     gameObject.y = dragY;
@@ -17038,16 +17162,14 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 this.physics.add.collider(ball, [r1, b2, r3, r5]);
                 
                 this.input.on('dragend', () => {
-                    // Check snap distance
-                    if (Phaser.Math.Distance.Between(blueBlock.x, blueBlock.y, gapZone.x, gapZone.y) < 45) {
-                        blueBlock.x = gapZone.x;
-                        blueBlock.y = gapZone.y;
-                        this.physics.add.existing(blueBlock, true); // make static body
-                        this.physics.add.collider(ball, blueBlock);
+                    if (Phaser.Math.Distance.Between(choiceCard.x, choiceCard.y, gapZone.x, gapZone.y) < 45) {
+                        choiceCard.x = gapZone.x;
+                        choiceCard.y = gapZone.y;
+                        this.physics.add.existing(choiceCard, true); // make static body
+                        this.physics.add.collider(ball, choiceCard);
                     }
                 });
                 
-                // Watch win/fail overlaps
                 this.time.addEvent({
                     delay: 100,
                     loop: true,
@@ -17078,27 +17200,47 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 super('PhaserRescuePlatScene');
             }
             create() {
-                // Platforms
-                let startPlat = this.add.rectangle(120, 340, 220, 20, 0x8d6e63);
+                // Background mountains & river
+                let sky = this.add.graphics();
+                sky.fillGradientStyle(0xe1f5fe, 0xe1f5fe, 0xb3e5fc, 0xb3e5fc, 1);
+                sky.fillRect(0, 0, 800, 500);
+                
+                sky.fillStyle(0x0288d1, 0.9);
+                sky.fillRect(0, 360, 800, 140); // Water flowing
+                
+                // Static cliffs
+                let startPlat = this.add.rectangle(120, 340, 220, 20, 0x795548).setStrokeStyle(3, 0x4e342e);
                 this.physics.add.existing(startPlat, true);
                 
-                let targetPlat = this.add.rectangle(680, 340, 220, 20, 0x8d6e63);
+                let targetPlat = this.add.rectangle(680, 340, 220, 20, 0x795548).setStrokeStyle(3, 0x4e342e);
                 this.physics.add.existing(targetPlat, true);
                 
-                let kitten = this.add.text(680, 300, '🐱', { fontSize: '40px' }).setOrigin(0.5);
-                let boy = this.add.text(100, 300, '🧑', { fontSize: '40px' }).setOrigin(0.5);
+                // Kitten and Boy emojis
+                let kitten = this.add.text(680, 300, '🐱', { fontSize: '42px' }).setOrigin(0.5);
+                let boy = this.add.text(100, 300, '🧑', { fontSize: '42px' }).setOrigin(0.5);
                 this.physics.add.existing(boy);
                 boy.body.setCollideWorldBounds(true);
                 this.physics.add.collider(boy, startPlat);
                 
-                // 3 draggable planks of different lengths
-                let plankShort = this.add.rectangle(160, 440, 160, 15, 0xff7043).setInteractive();
-                let plankCorrect = this.add.rectangle(400, 440, 390, 15, 0x8d6e63).setInteractive();
-                let plankGiant = this.add.rectangle(640, 440, 520, 15, 0xffb74d).setInteractive();
+                // 3 draggable wood planks styled with borders
+                let p1 = this.add.container(160, 440);
+                let p1Bg = this.add.rectangle(0, 0, 160, 20, 0xff7043).setStrokeStyle(3, 0xd84315);
+                let p1Text = this.add.text(0, 0, 'לוח קצר', { fontSize: '12px', fill: '#fff', fontStyle: 'bold', fontFamily: 'Rubik' }).setOrigin(0.5);
+                p1.add([p1Bg, p1Text]).setSize(160, 20).setInteractive();
                 
-                this.input.setDraggable(plankShort);
-                this.input.setDraggable(plankCorrect);
-                this.input.setDraggable(plankGiant);
+                let p2 = this.add.container(400, 440);
+                let p2Bg = this.add.rectangle(0, 0, 390, 20, 0x8d6e63).setStrokeStyle(3, 0x4e342e);
+                let p2Text = this.add.text(0, 0, 'לוח מתאים (ארוך)', { fontSize: '13px', fill: '#fff', fontStyle: 'bold', fontFamily: 'Rubik' }).setOrigin(0.5);
+                p2.add([p2Bg, p2Text]).setSize(390, 20).setInteractive();
+                
+                let p3 = this.add.container(640, 440);
+                let p3Bg = this.add.rectangle(0, 0, 520, 20, 0xffb74d).setStrokeStyle(3, 0xf57c00);
+                let p3Text = this.add.text(0, 0, 'לוח ענק', { fontSize: '13px', fill: '#fff', fontStyle: 'bold', fontFamily: 'Rubik' }).setOrigin(0.5);
+                p3.add([p3Bg, p3Text]).setSize(520, 20).setInteractive();
+                
+                this.input.setDraggable(p1);
+                this.input.setDraggable(p2);
+                this.input.setDraggable(p3);
                 
                 this.input.on('drag', (pointer, gameObject, dragX, dragY) => {
                     gameObject.x = dragX;
@@ -17106,15 +17248,12 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 });
                 
                 this.input.on('dragend', (pointer, gameObject) => {
-                    // Gap center is at x: 400, y: 340
                     if (Phaser.Math.Distance.Between(gameObject.x, gameObject.y, 400, 340) < 55) {
                         gameObject.x = 400;
                         gameObject.y = 340;
                         this.physics.add.existing(gameObject, true); // static
                         this.physics.add.collider(boy, gameObject);
-                        
-                        // Move boy forward
-                        boy.body.setVelocityX(105);
+                        boy.body.setVelocityX(110);
                     }
                 });
                 
@@ -17123,10 +17262,11 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     loop: true,
                     callback: () => {
                         if (boy.y > 450) {
-                            speakLetter("אוי! הלוח היה קצר מדי ולא הגיע לקצה השני. נסו להשתמש בלוח עץ ארוך יותר!", 'he');
+                            speakLetter("אוי! הלוח היה קצר מדי והילד נפל למים. נסו להשתמש בלוח עץ ארוך יותר!", 'he');
                             this.scene.restart();
                         } else if (boy.x > 620) {
                             boy.body.setVelocityX(0);
+                            kitten.setText('😸❤️');
                             speakSuccess(false, () => {
                                 awardStar('can_rescue', currentDifficulty, () => {
                                     if (currentPhaserInstance) {
@@ -17140,10 +17280,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     }
                 });
             }
-        }
-
-
-                // Register Service Worker for PWA offline support
+        }// Register Service Worker for PWA offline support
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function() {
                 navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' }).then(function(reg) {

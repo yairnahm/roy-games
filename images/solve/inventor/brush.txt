@@ -1,0 +1,4 @@
+File: brush.png
+Generated directly in ChatGPT (single image, not a sprite sheet).
+Prompt: "New unrelated image, square 1024x1024, no text or letters anywhere. Realistic 3D render of a paintbrush with wooden handle, isolated on a plain light gray background, product photo style."
+Date: 2026-08-01

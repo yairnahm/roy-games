@@ -1,0 +1,4 @@
+File: talk_together.png
+Generated directly in ChatGPT (single image, not a sprite sheet), same conversation as blocks_dilemma.png for character consistency.
+Prompt: "Same two boys, same style, same square 1024x1024 format, no text anywhere. Scene: the two boys sitting together happily, talking and pointing at the pile of five blocks between them, working out how to split them, warm cooperative smiles, mid-conversation hand gestures."
+Date: 2026-08-01

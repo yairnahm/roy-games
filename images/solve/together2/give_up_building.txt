@@ -1,0 +1,4 @@
+File: give_up_building.png
+Generated directly in ChatGPT (single image, not a sprite sheet), same conversation as blocks_dilemma.png for character consistency.
+Prompt: "Same two boys, same style, same square 1024x1024 format, no text anywhere. Scene: both boys turning away from the pile of blocks and walking off in opposite directions, disappointed shrugging expressions, the five blocks left untouched on the floor between them."
+Date: 2026-08-01

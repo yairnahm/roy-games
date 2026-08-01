@@ -1,0 +1,4 @@
+File: game_choice_dilemma.png
+Generated directly in ChatGPT (single image, not a sprite sheet), same conversation as blocks_dilemma.png for character consistency.
+Prompt: "Same two boys, same style, same square 1024x1024 format, no text anywhere. New scene, different situation: the two boys sitting on the floor surrounded by three toys — a die, a jigsaw puzzle piece, and a small ball — each boy pointing at a different toy, both with frustrated arguing expressions, unable to agree."
+Date: 2026-08-01

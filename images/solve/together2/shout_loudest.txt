@@ -1,0 +1,4 @@
+File: shout_loudest.png
+Generated directly in ChatGPT (single image, not a sprite sheet), same conversation as blocks_dilemma.png for character consistency.
+Prompt: "Same two boys, same style, same square 1024x1024 format, no text anywhere. Scene: the boy in the blue shirt shouting loudly with an angry wide-open mouth, pointing at himself insisting he decides, the boy in the red shirt covering his ears with both hands looking hurt and upset, the three toys on the floor between them."
+Date: 2026-08-01

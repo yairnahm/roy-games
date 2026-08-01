@@ -1,0 +1,4 @@
+File: blocks_dilemma.png
+Generated directly in ChatGPT (single image, not a sprite sheet).
+Prompt: "Create a square image (1024x1024), no text or letters or numbers anywhere in the image. Soft Pixar-style 3D illustration for a children's educational game, warm pastel colors, simple uncluttered background, clear simple facial expressions. Two young boys, one wearing a blue t-shirt and one wearing a red t-shirt — keep these two characters' appearance consistent, I will ask for more images with them later. Scene: the two boys sitting on the floor facing the camera, between them a small pile of exactly five colorful wooden building blocks, both boys looking straight at the camera with helpless, confused expressions, empty hands, unsure what to do."
+Date: 2026-08-01

@@ -1,0 +1,4 @@
+File: grab_without_talking.png
+Generated directly in ChatGPT (single image, not a sprite sheet), same conversation as blocks_dilemma.png for character consistency.
+Prompt: "Same two boys, same style, same square 1024x1024 format, no text anywhere. Scene: the boy in the blue shirt grabbing almost all five blocks into his own arms, hugging them possessively, while the boy in the red shirt is left with just one single block, looking sad and surprised, no talking between them."
+Date: 2026-08-01
