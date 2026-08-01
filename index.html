@@ -9,6 +9,7 @@
     <title>המרכז של רועי - פרימיום</title>
     <link rel="manifest" href="manifest.webmanifest">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;700;900&display=swap');
 
@@ -2363,6 +2364,11 @@
                 <div class="hub-title" style="font-weight:900; color:#4a148c;">פתרון בעיות - לגאונים</div>
                 <div style="font-size:clamp(11px,2.5vw,14px);color:#7b1fa2;margin-top:2px;font-weight:bold;">10 משחקים 💡</div>
             </div>
+            <div class="hub-card" style="background: linear-gradient(135deg, #e8eaf6, #c5cae9); border: 3px solid #3f51b5; box-shadow: 0 4px 10px rgba(63,81,181,0.3);" onclick="openCategory('canvas_solve','משחקי קנבס ופיזיקה')">
+                <div class="hub-icon">🎮⚙️</div>
+                <div class="hub-title" style="font-weight:900; color:#1a237e;">משחקי קנבס ופיזיקה</div>
+                <div style="font-size:clamp(11px,2.5vw,14px);color:#303f9f;margin-top:2px;font-weight:bold;">5 משחקים 💡</div>
+            </div>
 
         </div>
     </div>
@@ -2455,6 +2461,12 @@
             <div class="hub-card" data-cat="genius_solve" style="position:relative;" onclick="openDifficultyScreen('gen_decisions', '🧭', 'מבוך ההחלטות')"><span class="star-badge" data-game="gen_decisions" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🧭</div><div class="hub-title">מבוך ההחלטות</div></div>
             <div class="hub-card" data-cat="genius_solve" style="position:relative;" onclick="openDifficultyScreen('gen_iteration', '🚀', 'ניסוי וטעייה')"><span class="star-badge" data-game="gen_iteration" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🚀</div><div class="hub-title">ניסוי וטעייה</div></div>
             <div class="hub-card" data-cat="genius_solve" style="position:relative;" onclick="openDifficultyScreen('gen_coaching', '🤖', 'המאמן הצעיר')"><span class="star-badge" data-game="gen_coaching" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🤖</div><div class="hub-title">המאמן הצעיר</div></div>
+            <!-- משחקי קנבס ופיזיקה (Phaser) -->
+            <div class="hub-card" data-cat="canvas_solve" style="position:relative;" onclick="openDifficultyScreen('can_flashlight', '🕵️', 'בלשי הרגשות - קנבס')"><span class="star-badge" data-game="can_flashlight" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🕵️</div><div class="hub-title">בלשי הרגשות - קנבס</div></div>
+            <div class="hub-card" data-cat="canvas_solve" style="position:relative;" onclick="openDifficultyScreen('can_tower', '🏗️', 'מגדל יציב - פיזיקה')"><span class="star-badge" data-game="can_tower" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🏗️</div><div class="hub-title">מגדל יציב - פיזיקה</div></div>
+            <div class="hub-card" data-cat="canvas_solve" style="position:relative;" onclick="openDifficultyScreen('can_shelter', '🐦', 'מחסה לציפור - רוח')"><span class="star-badge" data-game="can_shelter" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🐦</div><div class="hub-title">מחסה לציפור - רוח</div></div>
+            <div class="hub-card" data-cat="canvas_solve" style="position:relative;" onclick="openDifficultyScreen('can_pattern', '🔴', 'גשר התבניות - קנבס')"><span class="star-badge" data-game="can_pattern" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🔴</div><div class="hub-title">גשר התבניות - קנבס</div></div>
+            <div class="hub-card" data-cat="canvas_solve" style="position:relative;" onclick="openDifficultyScreen('can_rescue', '🐱', 'מצילים ותקועים - גשר')"><span class="star-badge" data-game="can_rescue" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🐱</div><div class="hub-title">מצילים ותקועים - גשר</div></div>
         </div>
     </div>
 
@@ -3188,7 +3200,7 @@
         
         function openDifficultyScreen(gameId, icon, title) {
             playClickSound(); hideAllScreens(); setAppBackground(gameId); currentGameMode = gameId;
-            if(gameId.startsWith('gem_') || gameId.startsWith('gen_') || gameId === 'emotion' || gameId === 'emparts' || gameId === 'sharing' || gameId === 'growth' || gameId === 'goodbad' || gameId === 'towertalk' || gameId === 'cooppuzzle' || gameId === 'tidyup' || gameId === 'whatneeds' || gameId === 'calm' || gameId === 'sounds' || gameId === 'soundmatch' || gameId === 'feelwhen' || gameId === 'store' || gameId === 'freeze' || gameId === 'rescue' || gameId === 'candle' || gameId === 'detective' || gameId === 'towertalk' || gameId === 'path' || gameId === 'museum' || gameId === 'bridge' || gameId === 'key' || gameId === 'rescue2' || gameId === 'inventor' || gameId === 'predict' || gameId === 'cluegrow' || gameId === 'nestfix' || gameId === 'fairswing' || gameId === 'carefulfast' || gameId === 'stopthink' || gameId === 'together2') {
+            if(gameId.startsWith('gem_') || gameId.startsWith('gen_') || gameId.startsWith('can_') || gameId === 'emotion' || gameId === 'emparts' || gameId === 'sharing' || gameId === 'growth' || gameId === 'goodbad' || gameId === 'towertalk' || gameId === 'cooppuzzle' || gameId === 'tidyup' || gameId === 'whatneeds' || gameId === 'calm' || gameId === 'sounds' || gameId === 'soundmatch' || gameId === 'feelwhen' || gameId === 'store' || gameId === 'freeze' || gameId === 'rescue' || gameId === 'candle' || gameId === 'detective' || gameId === 'towertalk' || gameId === 'path' || gameId === 'museum' || gameId === 'bridge' || gameId === 'key' || gameId === 'rescue2' || gameId === 'inventor' || gameId === 'predict' || gameId === 'cluegrow' || gameId === 'nestfix' || gameId === 'fairswing' || gameId === 'carefulfast' || gameId === 'stopthink' || gameId === 'together2') {
                 startGameEngine(1); // עוקף את מסך הרמות
                 return;
             }
@@ -3308,6 +3320,7 @@
                 else if(currentGameMode === 'towertalk') initTowerGame();
                 else if(currentGameMode === 'cooppuzzle') initCoopPuzzleGame();
             else if(currentGameMode === 'coopmemory') initCoopMemoryGame();
+                else if(currentGameMode.startsWith('can_')) initPhaserGame(currentGameMode);
                 else if(currentGameMode === 'tidyup') initTidyupGame();
                 else if(currentGameMode === 'patterns') initPatternsGame();
                 else if(currentGameMode === 'origins') initOriginsGame();
@@ -3362,7 +3375,7 @@
                 renderTrainRouteMap();
                 return;
             }
-            if(currentGameMode.startsWith('gem_') || currentGameMode.startsWith('gen_') || currentGameMode === 'emotion' || currentGameMode === 'emparts' || currentGameMode === 'missing' || currentGameMode === 'mgamish' || currentGameMode === 'firstletter' || currentGameMode === 'sharing' || currentGameMode === 'growth' || currentGameMode === 'goodbad' || currentGameMode === 'numwar' || currentGameMode === 'towertalk' || currentGameMode === 'cooppuzzle' || currentGameMode === 'tidyup' || currentGameMode === 'patterns' || currentGameMode === 'origins' || currentGameMode === 'families' || currentGameMode === 'whatneeds' || currentGameMode === 'calm' || currentGameMode === 'sounds' || currentGameMode === 'soundmatch' || currentGameMode === 'feelwhen' || currentGameMode === 'assemble' || currentGameMode === 'store' || currentGameMode === 'freeze' || currentGameMode === 'rescue' || currentGameMode === 'candle' || currentGameMode === 'detective' || currentGameMode === 'towertalk' || currentGameMode === 'path' || currentGameMode === 'museum' || currentGameMode === 'bridge' || currentGameMode === 'key' || currentGameMode === 'rescue2' || currentGameMode === 'inventor' || currentGameMode === 'predict' || currentGameMode === 'cluegrow' || currentGameMode === 'nestfix' || currentGameMode === 'fairswing' || currentGameMode === 'carefulfast' || currentGameMode === 'stopthink' || currentGameMode === 'together2' || (typeof WINNERS_GAMES !== 'undefined' && WINNERS_GAMES.indexOf(currentGameMode) > -1)) { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); } else if(currentGameMode === 'faces') { show('faces-mode-screen'); } else { show('unified-diff-screen'); }
+            if(currentGameMode.startsWith('gem_') || currentGameMode.startsWith('gen_') || currentGameMode.startsWith('can_') || currentGameMode === 'emotion' || currentGameMode === 'emparts' || currentGameMode === 'missing' || currentGameMode === 'mgamish' || currentGameMode === 'firstletter' || currentGameMode === 'sharing' || currentGameMode === 'growth' || currentGameMode === 'goodbad' || currentGameMode === 'numwar' || currentGameMode === 'towertalk' || currentGameMode === 'cooppuzzle' || currentGameMode === 'tidyup' || currentGameMode === 'patterns' || currentGameMode === 'origins' || currentGameMode === 'families' || currentGameMode === 'whatneeds' || currentGameMode === 'calm' || currentGameMode === 'sounds' || currentGameMode === 'soundmatch' || currentGameMode === 'feelwhen' || currentGameMode === 'assemble' || currentGameMode === 'store' || currentGameMode === 'freeze' || currentGameMode === 'rescue' || currentGameMode === 'candle' || currentGameMode === 'detective' || currentGameMode === 'towertalk' || currentGameMode === 'path' || currentGameMode === 'museum' || currentGameMode === 'bridge' || currentGameMode === 'key' || currentGameMode === 'rescue2' || currentGameMode === 'inventor' || currentGameMode === 'predict' || currentGameMode === 'cluegrow' || currentGameMode === 'nestfix' || currentGameMode === 'fairswing' || currentGameMode === 'carefulfast' || currentGameMode === 'stopthink' || currentGameMode === 'together2' || (typeof WINNERS_GAMES !== 'undefined' && WINNERS_GAMES.indexOf(currentGameMode) > -1)) { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); } else if(currentGameMode === 'faces') { show('faces-mode-screen'); } else { show('unified-diff-screen'); }
         }
         function updateProgressUI() { for(let i=0;i<activeGameRounds;i++) { let d = get(`active-progress-container-dot-${i}`); if(d){ if(i < currentStep) d.classList.add('fill'); else d.classList.remove('fill'); } } }
 
@@ -3530,6 +3543,11 @@
             'gen_decisions': { icon: '🧭', title: 'מבוך ההחלטות' },
             'gen_iteration': { icon: '🚀', title: 'ניסוי וטעייה' },
             'gen_coaching': { icon: '🤖', title: 'המאמן הצעיר' },
+            'can_flashlight': { icon: '🕵️', title: 'בלשי הרגשות - קנבס' },
+            'can_tower': { icon: '🏗️', title: 'מגדל יציב - פיזיקה' },
+            'can_shelter': { icon: '🐦', title: 'מחסה לציפור - רוח' },
+            'can_pattern': { icon: '🔴', title: 'גשר התבניות - קנבס' },
+            'can_rescue': { icon: '🐱', title: 'מצילים ותקועים - גשר' },
             'routine': { icon: '🌅', title: 'סדר יום' },
             'feelwhen': { icon: '💭', title: 'מה מרגישים כש...' },
             'cooppuzzle': { icon: '🧩', title: 'פאזל שיתופי' },
@@ -14969,7 +14987,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
         SOLVE_GAMES.together2 = {
             rounds: [
                 {
-                    scene: '🧱🧱🧱🧱🧱',
+                    scene: 'images/solve/together2/blocks_dilemma.png',
                     prompt: 'יש רק 5 קוביות, ושני ילדים רוצים לבנות גשר ביחד. מה עושים?',
                     choices: [
                         { img: '🗣️', label: 'לדבר ולהחליט ביחד איך לחלק', tier: 'best', feedbackText: 'מצוין! כשמדברים ומחליטים ביחד, בונים גשר יפה ושניכם שותפים בו! איך הגעתם להחלטה משותפת?' },
@@ -16683,7 +16701,449 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
 
 
 
-        // Register Service Worker for PWA offline support
+        // ==========================================
+        // מנוע משחקי קנבס ופיזיקה (Phaser.js)
+        // ==========================================
+        let currentPhaserInstance = null;
+
+        function initPhaserGame(gameId) {
+            // Clean up old instance first if exists
+            if (currentPhaserInstance) {
+                currentPhaserInstance.destroy(true);
+                currentPhaserInstance = null;
+            }
+            
+            // Set up DOM container
+            get('game-workspace').innerHTML = `
+                <div class="solve-gemini-bot" id="solve-bot-bubble" style="margin-bottom:10px;">
+                    <span class="solve-gemini-bot-icon">🤖</span>
+                    <div style="flex:1; font-weight:bold; color:#0d47a1; font-size:clamp(15px, 3vw, 19px);" id="solve-bot-text"></div>
+                </div>
+                <div id="phaser-game-container" style="width:100%; max-width:750px; aspect-ratio: 800 / 500; border-radius:24px; border:4px solid #3f51b5; overflow:hidden; background:#fff; box-shadow: 0 10px 25px rgba(0,0,0,0.15); margin: 10px auto; touch-action:none;"></div>
+            `;
+            
+            let promptText = "";
+            let SceneClass = null;
+            
+            if (gameId === 'can_flashlight') {
+                promptText = "החדר חשוך! גררו את הפנס כדי למצוא את 3 רמזי הרגשות המסתתרים, ואז גלו איך רועי מרגיש!";
+                SceneClass = PhaserFlashlightScene;
+            } else if (gameId === 'can_tower') {
+                promptText = "עזרו לרובי לבנות מגדל יציב בגובה של 4 קוביות! לחצו כדי להפיל קוביה מהמשגר, והקפידו על בסיס רחב!";
+                SceneClass = PhaserPhysicsTowerScene;
+            } else if (gameId === 'can_shelter') {
+                promptText = "גררו את קורות העץ כדי לבנות מחסה חזק מעל הגוזל, ואז הפעילו את הרוח כדי לבדוק את היציבות שלו!";
+                SceneClass = PhaserBirdShelterScene;
+            } else if (gameId === 'can_pattern') {
+                promptText = "השלימו את תבנית הגשר! גררו את הבלוק המתאים למקום הריק לפני שהכדור המגלגל יגיע ויפול!";
+                SceneClass = PhaserPatternBridgeScene;
+            } else if (gameId === 'can_rescue') {
+                promptText = "החתלתול תקוע על הגג! גררו את הקרש המתאים כדי לגשר על הפער, ואז עזרו לילד לעבור ולהציל אותו!";
+                SceneClass = PhaserRescuePlatScene;
+            }
+            
+            get('solve-bot-text').textContent = promptText;
+            speakLetter(promptText, 'he');
+            
+            const config = {
+                type: Phaser.AUTO,
+                width: 800,
+                height: 500,
+                parent: 'phaser-game-container',
+                physics: {
+                    default: 'arcade',
+                    arcade: {
+                        gravity: { y: 350 },
+                        debug: false
+                    }
+                },
+                scene: [SceneClass]
+            };
+            
+            currentPhaserInstance = new Phaser.Game(config);
+        }
+
+        // --- סצנה 1: בלשי הרגשות (Flashlight Reveal) ---
+        class PhaserFlashlightScene extends Phaser.Scene {
+            constructor() {
+                super('PhaserFlashlightScene');
+            }
+            create() {
+                // Background & Room Elements
+                let bg = this.add.graphics();
+                bg.fillStyle(0xfff9c4, 1); // Bright yellow room background
+                bg.fillRect(0, 0, 800, 500);
+                
+                // Draw room visuals (table, window, etc.)
+                let visuals = this.add.graphics();
+                visuals.fillStyle(0x795548, 1);
+                visuals.fillRect(300, 300, 200, 100); // Table
+                visuals.fillStyle(0x81d4fa, 1);
+                visuals.fillRect(100, 80, 120, 120); // Window
+                
+                // The hidden items/clues
+                let clue1 = this.add.text(200, 140, '😭 עצוב', { fontSize: '40px', color: '#ff3d00', fontStyle: 'bold' }).setOrigin(0.5);
+                let clue2 = this.add.text(600, 180, '😊 שמח', { fontSize: '40px', color: '#4caf50', fontStyle: 'bold' }).setOrigin(0.5);
+                let clue3 = this.add.text(400, 260, '🧸 צעצוע', { fontSize: '40px', color: '#ff9800', fontStyle: 'bold' }).setOrigin(0.5);
+                
+                // Dark Room Overlay
+                let darkRoom = this.add.graphics();
+                darkRoom.fillStyle(0x111126, 0.96); // Deep dark violet
+                darkRoom.fillRect(0, 0, 800, 500);
+                
+                // Spotlight mask
+                let spotlight = this.make.graphics();
+                spotlight.fillStyle(0xffffff, 1);
+                spotlight.fillCircle(0, 0, 85);
+                
+                let mask = new Phaser.Display.Masks.GeometryMask(this, spotlight);
+                
+                // Mask the bright visual layers
+                bg.setMask(mask);
+                visuals.setMask(mask);
+                clue1.setMask(mask);
+                clue2.setMask(mask);
+                clue3.setMask(mask);
+                
+                let foundClues = 0;
+                let c1Found = false, c2Found = false, c3Found = false;
+                
+                // Helper to check distance
+                this.input.on('pointermove', (pointer) => {
+                    spotlight.x = pointer.x;
+                    spotlight.y = pointer.y;
+                    
+                    if (!c1Found && Phaser.Math.Distance.Between(pointer.x, pointer.y, 200, 140) < 55) {
+                        c1Found = true; foundClues++; playClickSound();
+                        clue1.setStyle({ color: '#fff', stroke: '#ff3d00', strokeThickness: 5 });
+                    }
+                    if (!c2Found && Phaser.Math.Distance.Between(pointer.x, pointer.y, 600, 180) < 55) {
+                        c2Found = true; foundClues++; playClickSound();
+                        clue2.setStyle({ color: '#fff', stroke: '#4caf50', strokeThickness: 5 });
+                    }
+                    if (!c3Found && Phaser.Math.Distance.Between(pointer.x, pointer.y, 400, 260) < 55) {
+                        c3Found = true; foundClues++; playClickSound();
+                        clue3.setStyle({ color: '#fff', stroke: '#ff9800', strokeThickness: 5 });
+                    }
+                    
+                    if (foundClues === 3) {
+                        foundClues = 99; // Prevent multiple calls
+                        bg.clearMask();
+                        visuals.clearMask();
+                        clue1.clearMask();
+                        clue2.clearMask();
+                        clue3.clearMask();
+                        darkRoom.setVisible(false);
+                        
+                        this.time.delayedCall(1200, () => {
+                            speakSuccess(false, () => {
+                                awardStar('can_flashlight', currentDifficulty, () => {
+                                    if (currentPhaserInstance) {
+                                        currentPhaserInstance.destroy(true);
+                                        currentPhaserInstance = null;
+                                    }
+                                    show('level-complete-overlay');
+                                });
+                            });
+                        });
+                    }
+                });
+            }
+        }
+
+        // --- סצנה 2: מגדל יציב (Physics Stacking) ---
+        class PhaserPhysicsTowerScene extends Phaser.Scene {
+            constructor() {
+                super('PhaserPhysicsTowerScene');
+            }
+            create() {
+                // Static Ground and platform
+                let ground = this.add.rectangle(400, 480, 800, 40, 0x2e7d32);
+                this.physics.add.existing(ground, true);
+                
+                let platform = this.add.rectangle(400, 440, 180, 20, 0xd84315); // Wide orange base
+                this.physics.add.existing(platform, true);
+                
+                // Dispenser moving back and forth
+                let dispenser = this.add.circle(400, 50, 15, 0x1565c0);
+                this.tweens.add({
+                    targets: dispenser,
+                    x: { from: 120, to: 680 },
+                    duration: 1800,
+                    yoyo: true,
+                    repeat: -1
+                });
+                
+                let blocks = this.physics.add.group();
+                this.physics.add.collider(blocks, blocks);
+                this.physics.add.collider(blocks, platform);
+                this.physics.add.collider(blocks, ground);
+                
+                let isGameEnded = false;
+                
+                this.input.on('pointerdown', () => {
+                    if (isGameEnded) return;
+                    playClickSound();
+                    
+                    // Create block with high gravity and physical bounds
+                    let block = this.add.rectangle(dispenser.x, 80, 65, 45, 0x9c27b0);
+                    this.physics.add.existing(block);
+                    block.body.setCollideWorldBounds(true);
+                    block.body.setBounce(0.05);
+                    block.body.setFriction(0.9);
+                    blocks.add(block);
+                    
+                    // Verification timer for block stability
+                    this.time.delayedCall(2200, () => {
+                        if (block.active) {
+                            if (block.y > 450 && Math.abs(block.x - 400) > 100) {
+                                speakLetter("אוי, הקוביה החליקה מהבסיס! בואו ננסה שוב ונשמור אותה במרכז.", 'he');
+                                block.destroy();
+                            } else {
+                                // Count how many blocks are stable on top of platform
+                                let stableCount = 0;
+                                blocks.getChildren().forEach(b => {
+                                    if (b.y < 430 && Math.abs(b.body.velocity.y) < 2 && Math.abs(b.body.velocity.x) < 2) {
+                                        stableCount++;
+                                    }
+                                });
+                                
+                                if (stableCount >= 4 && !isGameEnded) {
+                                    isGameEnded = true;
+                                    speakSuccess(false, () => {
+                                        awardStar('can_tower', currentDifficulty, () => {
+                                            if (currentPhaserInstance) {
+                                                currentPhaserInstance.destroy(true);
+                                                currentPhaserInstance = null;
+                                            }
+                                            show('level-complete-overlay');
+                                        });
+                                    });
+                                }
+                            }
+                        }
+                    });
+                });
+            }
+        }
+
+        // --- סצנה 3: מחסה לציפור (Physics Wind & Balance) ---
+        class PhaserBirdShelterScene extends Phaser.Scene {
+            constructor() {
+                super('PhaserBirdShelterScene');
+            }
+            create() {
+                // Background & tree details
+                let branch = this.add.rectangle(400, 350, 240, 20, 0x8d6e63);
+                this.physics.add.existing(branch, true);
+                
+                // Bird emoji sitting on branch
+                let bird = this.add.text(400, 310, '🐦', { fontSize: '42px' }).setOrigin(0.5);
+                
+                // Wooden planks in the dock
+                let plank1 = this.add.rectangle(180, 450, 110, 25, 0xff7043).setInteractive();
+                let plank2 = this.add.rectangle(400, 450, 110, 25, 0xff7043).setInteractive();
+                let plank3 = this.add.rectangle(620, 450, 180, 25, 0xffb74d).setInteractive();
+                
+                this.input.setDraggable(plank1);
+                this.input.setDraggable(plank2);
+                this.input.setDraggable(plank3);
+                
+                this.input.on('drag', (pointer, gameObject, dragX, dragY) => {
+                    gameObject.x = dragX;
+                    gameObject.y = dragY;
+                });
+                
+                // "Activate Wind" trigger button
+                let windBtn = this.add.text(400, 80, '💨 הפעילו את הרוח!', { fontSize: '24px', fill: '#0d47a1', backgroundColor: '#e3f2fd', padding: 12 }).setOrigin(0.5).setInteractive();
+                
+                windBtn.on('pointerdown', () => {
+                    playClickSound();
+                    
+                    // Activate physics bodies on the planks
+                    [plank1, plank2, plank3].forEach(p => {
+                        this.physics.add.existing(p);
+                        p.body.setCollideWorldBounds(true);
+                        p.body.setBounce(0.02);
+                        p.body.setFriction(0.9);
+                    });
+                    
+                    this.physics.add.collider([plank1, plank2, plank3], branch);
+                    this.physics.add.collider([plank1, plank2, plank3], [plank1, plank2, plank3]);
+                    
+                    // Trigger wind force acceleration
+                    this.time.delayedCall(1200, () => {
+                        plank1.body.setAccelerationX(-220);
+                        plank2.body.setAccelerationX(-220);
+                        plank3.body.setAccelerationX(-220);
+                    });
+                    
+                    // Evaluate stability after 3.5 seconds
+                    this.time.delayedCall(3500, () => {
+                        let success = true;
+                        [plank1, plank2, plank3].forEach(p => {
+                            if (p.y > 360) success = false; // fell off the branch
+                        });
+                        
+                        if (success) {
+                            speakSuccess(false, () => {
+                                awardStar('can_shelter', currentDifficulty, () => {
+                                    if (currentPhaserInstance) {
+                                        currentPhaserInstance.destroy(true);
+                                        currentPhaserInstance = null;
+                                    }
+                                    show('level-complete-overlay');
+                                });
+                            });
+                        } else {
+                            speakLetter("אוי! המחסה הועף ברוח! בואו ננסה לבנות מחסה חזק ויציב יותר מעל הציפור.", 'he');
+                            this.scene.restart();
+                        }
+                    });
+                });
+            }
+        }
+
+        // --- סצנה 4: גשר התבניות (Pattern Match & Snap) ---
+        class PhaserPatternBridgeScene extends Phaser.Scene {
+            constructor() {
+                super('PhaserPatternBridgeScene');
+            }
+            create() {
+                // Draw patterned bridge elements
+                let r1 = this.add.rectangle(80, 280, 120, 20, 0xf44336); // Red
+                let b2 = this.add.rectangle(190, 280, 80, 20, 0x2196f3); // Blue
+                let r3 = this.add.rectangle(260, 280, 60, 20, 0xf44336); // Red
+                
+                // Gap zone for matching
+                let gapZone = this.add.rectangle(350, 280, 110, 20, 0xbbdefb).setStrokeStyle(3, 0x1e88e5);
+                
+                let r5 = this.add.rectangle(460, 280, 100, 20, 0xf44336); // Red
+                
+                // Rolling physics ball
+                let ball = this.add.circle(40, 240, 14, 0xffeb3b);
+                this.physics.add.existing(ball);
+                ball.body.setGravityY(0);
+                ball.body.setVelocityX(45); // Roll slowly across
+                
+                // Draggable choice blue block
+                let blueBlock = this.add.rectangle(400, 430, 110, 20, 0x2196f3).setInteractive();
+                this.input.setDraggable(blueBlock);
+                
+                this.input.on('drag', (pointer, gameObject, dragX, dragY) => {
+                    gameObject.x = dragX;
+                    gameObject.y = dragY;
+                });
+                
+                this.physics.add.collider(ball, [r1, b2, r3, r5]);
+                
+                this.input.on('dragend', () => {
+                    // Check snap distance
+                    if (Phaser.Math.Distance.Between(blueBlock.x, blueBlock.y, gapZone.x, gapZone.y) < 45) {
+                        blueBlock.x = gapZone.x;
+                        blueBlock.y = gapZone.y;
+                        this.physics.add.existing(blueBlock, true); // make static body
+                        this.physics.add.collider(ball, blueBlock);
+                    }
+                });
+                
+                // Watch win/fail overlaps
+                this.time.addEvent({
+                    delay: 100,
+                    loop: true,
+                    callback: () => {
+                        if (ball.y > 330) {
+                            speakLetter("אוי! הכדור נפל לתוך הפער. בואו ננסה להשלים את התבנית שוב!", 'he');
+                            this.scene.restart();
+                        } else if (ball.x > 480) {
+                            ball.body.setVelocityX(0);
+                            speakSuccess(false, () => {
+                                awardStar('can_pattern', currentDifficulty, () => {
+                                    if (currentPhaserInstance) {
+                                        currentPhaserInstance.destroy(true);
+                                        currentPhaserInstance = null;
+                                    }
+                                    show('level-complete-overlay');
+                                });
+                            });
+                        }
+                    }
+                });
+            }
+        }
+
+        // --- סצנה 5: מצילים ותקועים (Bridge Connect) ---
+        class PhaserRescuePlatScene extends Phaser.Scene {
+            constructor() {
+                super('PhaserRescuePlatScene');
+            }
+            create() {
+                // Platforms
+                let startPlat = this.add.rectangle(120, 340, 220, 20, 0x8d6e63);
+                this.physics.add.existing(startPlat, true);
+                
+                let targetPlat = this.add.rectangle(680, 340, 220, 20, 0x8d6e63);
+                this.physics.add.existing(targetPlat, true);
+                
+                let kitten = this.add.text(680, 300, '🐱', { fontSize: '40px' }).setOrigin(0.5);
+                let boy = this.add.text(100, 300, '🧑', { fontSize: '40px' }).setOrigin(0.5);
+                this.physics.add.existing(boy);
+                boy.body.setCollideWorldBounds(true);
+                this.physics.add.collider(boy, startPlat);
+                
+                // 3 draggable planks of different lengths
+                let plankShort = this.add.rectangle(160, 440, 160, 15, 0xff7043).setInteractive();
+                let plankCorrect = this.add.rectangle(400, 440, 390, 15, 0x8d6e63).setInteractive();
+                let plankGiant = this.add.rectangle(640, 440, 520, 15, 0xffb74d).setInteractive();
+                
+                this.input.setDraggable(plankShort);
+                this.input.setDraggable(plankCorrect);
+                this.input.setDraggable(plankGiant);
+                
+                this.input.on('drag', (pointer, gameObject, dragX, dragY) => {
+                    gameObject.x = dragX;
+                    gameObject.y = dragY;
+                });
+                
+                this.input.on('dragend', (pointer, gameObject) => {
+                    // Gap center is at x: 400, y: 340
+                    if (Phaser.Math.Distance.Between(gameObject.x, gameObject.y, 400, 340) < 55) {
+                        gameObject.x = 400;
+                        gameObject.y = 340;
+                        this.physics.add.existing(gameObject, true); // static
+                        this.physics.add.collider(boy, gameObject);
+                        
+                        // Move boy forward
+                        boy.body.setVelocityX(105);
+                    }
+                });
+                
+                this.time.addEvent({
+                    delay: 100,
+                    loop: true,
+                    callback: () => {
+                        if (boy.y > 450) {
+                            speakLetter("אוי! הלוח היה קצר מדי ולא הגיע לקצה השני. נסו להשתמש בלוח עץ ארוך יותר!", 'he');
+                            this.scene.restart();
+                        } else if (boy.x > 620) {
+                            boy.body.setVelocityX(0);
+                            speakSuccess(false, () => {
+                                awardStar('can_rescue', currentDifficulty, () => {
+                                    if (currentPhaserInstance) {
+                                        currentPhaserInstance.destroy(true);
+                                        currentPhaserInstance = null;
+                                    }
+                                    show('level-complete-overlay');
+                                });
+                            });
+                        }
+                    }
+                });
+            }
+        }
+
+
+                // Register Service Worker for PWA offline support
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function() {
                 navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' }).then(function(reg) {
