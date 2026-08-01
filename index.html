@@ -17170,14 +17170,19 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     }
                 });
                 
+                let isGameOver = false;
                 this.time.addEvent({
                     delay: 100,
                     loop: true,
                     callback: () => {
+                        if (isGameOver) return;
                         if (ball.y > 330) {
+                            isGameOver = true;
+                            ball.body.setVelocityX(0);
                             speakLetter("אוי! הכדור נפל לתוך הפער. בואו ננסה להשלים את התבנית שוב!", 'he');
                             this.scene.restart();
                         } else if (ball.x > 480) {
+                            isGameOver = true;
                             ball.body.setVelocityX(0);
                             speakSuccess(false, () => {
                                 awardStar('can_pattern', currentDifficulty, () => {
@@ -17257,14 +17262,19 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     }
                 });
                 
+                let isGameOver = false;
                 this.time.addEvent({
                     delay: 100,
                     loop: true,
                     callback: () => {
+                        if (isGameOver) return;
                         if (boy.y > 450) {
+                            isGameOver = true;
+                            boy.body.setVelocityX(0);
                             speakLetter("אוי! הלוח היה קצר מדי והילד נפל למים. נסו להשתמש בלוח עץ ארוך יותר!", 'he');
                             this.scene.restart();
                         } else if (boy.x > 620) {
+                            isGameOver = true;
                             boy.body.setVelocityX(0);
                             kitten.setText('😸❤️');
                             speakSuccess(false, () => {
