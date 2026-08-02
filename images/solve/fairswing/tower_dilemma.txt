@@ -1,0 +1,4 @@
+File: tower_dilemma.png
+Generated directly in ChatGPT (single image, not a sprite sheet), same conversation as swing_dilemma.png for character consistency.
+Prompt: "Same two boys, same style, same square 1024x1024 format, no text anywhere. New scene, different situation: the two boys sitting on the floor in front of an almost-finished tall tower of colorful building blocks, only one last block missing at the top, both reaching for the same single last block at the same time, surprised excited expressions."
+Date: 2026-08-01

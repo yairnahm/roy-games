@@ -1,0 +1,4 @@
+File: far_swing.png
+Generated directly in ChatGPT (single image, not a sprite sheet), same conversation as swing_dilemma.png for character consistency.
+Prompt: "Same two boys, same style, same square 1024x1024 format, no text anywhere. Scene: the boy in blue still sitting on the same swing, while the boy in red is now sitting alone on a different empty swing far away across the playground, looking a little lonely, both swings visible in the wide scene."
+Date: 2026-08-01

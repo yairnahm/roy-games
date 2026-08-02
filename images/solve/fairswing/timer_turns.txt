@@ -1,0 +1,4 @@
+File: timer_turns.png
+Generated directly in ChatGPT (single image, not a sprite sheet), same conversation as swing_dilemma.png for character consistency.
+Prompt: "Same two boys, same style, same square 1024x1024 format, no text anywhere. Scene: the two boys at the playground swing, smiling and looking at a simple sand-timer hourglass held between them, both agreeing happily to take turns of two minutes each."
+Date: 2026-08-01

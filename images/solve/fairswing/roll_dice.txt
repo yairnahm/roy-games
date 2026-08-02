@@ -1,0 +1,4 @@
+File: roll_dice.png
+Generated directly in ChatGPT (single image, not a sprite sheet), same conversation as swing_dilemma.png for character consistency.
+Prompt: "Same two boys, same style, same square 1024x1024 format, no text anywhere. Scene: both boys sitting on the floor watching a single die they just rolled together on the ground near the almost-finished tower, curious anticipating expressions, waiting to see the result."
+Date: 2026-08-01

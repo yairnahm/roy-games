@@ -1,0 +1,4 @@
+File: pull_off.png
+Generated directly in ChatGPT (single image, not a sprite sheet), same conversation as swing_dilemma.png for character consistency.
+Prompt: "Same two boys, same style, same square 1024x1024 format, no text anywhere. Scene: the boy in red pulling the arm of the boy in blue trying to force him off the swing, the boy in blue looking upset and holding onto the chains tightly, tense unhappy expressions on both faces."
+Date: 2026-08-01
