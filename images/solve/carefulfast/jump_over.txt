@@ -1,0 +1,4 @@
+File: jump_over.png
+Generated directly in ChatGPT (single image, not a sprite sheet), same conversation as room_dilemma.png for character consistency.
+Prompt: "Same boy, same style, same square 1024x1024 format, no text anywhere. Scene: the boy jumping high in the air right over the table full of glasses of water, legs tucked up, worried surprised expression, mid-jump, about to land dangerously close to the glasses."
+Date: 2026-08-04

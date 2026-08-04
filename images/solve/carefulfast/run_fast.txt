@@ -1,0 +1,4 @@
+File: run_fast.png
+Generated directly in ChatGPT (single image, not a sprite sheet), same conversation as room_dilemma.png for character consistency.
+Prompt: "Same boy, same style, same square 1024x1024 format, no text anywhere. Scene: the boy running fast through the room full of fragile toys, mid-stride, accidentally kicking a vase which is falling and shattering into pieces, surprised worried expression on his face."
+Date: 2026-08-04

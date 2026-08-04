@@ -1,0 +1,4 @@
+File: close_eyes.png
+Generated directly in ChatGPT (single image, not a sprite sheet), same conversation as room_dilemma.png for character consistency.
+Prompt: "Same boy, same style, same square 1024x1024 format, no text anywhere. Scene: the boy walking with his eyes tightly closed and arms stretched out feeling forward, right next to the table of glasses, about to bump into one of the full glasses of water, uncertain expression."
+Date: 2026-08-04

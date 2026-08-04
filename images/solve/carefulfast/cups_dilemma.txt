@@ -1,0 +1,4 @@
+File: cups_dilemma.png
+Generated directly in ChatGPT (single image, not a sprite sheet), same conversation as room_dilemma.png for character consistency.
+Prompt: "Same boy, same style, same square 1024x1024 format, no text anywhere. New scene, different situation: the boy standing at one end of a long table full of glasses completely filled with water, needing to walk past them to the other side without spilling, looking carefully at the table."
+Date: 2026-08-04

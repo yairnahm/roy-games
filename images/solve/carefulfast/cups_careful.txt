@@ -1,0 +1,4 @@
+File: cups_careful.png
+Generated directly in ChatGPT (single image, not a sprite sheet), same conversation as room_dilemma.png for character consistency.
+Prompt: "Same boy, same style, same square 1024x1024 format, no text anywhere. Scene: the boy walking slowly along the side of the table, looking down carefully at the glasses of water, calm focused expression, all glasses still full and untouched."
+Date: 2026-08-04
