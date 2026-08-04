@@ -1,0 +1,4 @@
+File: key_round.png
+Generated directly in ChatGPT (single image, not a sprite sheet), same conversation as num6.png for style consistency.
+Prompt: "Same style, same square 1024x1024 format, no text anywhere. A single gold key with a round circular head, on a simple pastel background, centered, no people."
+Date: 2026-08-04

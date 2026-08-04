@@ -1,0 +1,4 @@
+File: cabinet_scene.png
+Generated directly in ChatGPT (single image, not a sprite sheet).
+Prompt: "New unrelated image, square 1024x1024. Flat 2D children's storybook illustration style, colorful, cheerful, thick clean outlines, matching a bright classroom picture-book art style. A cute cartoon monkey standing next to a wooden toy cabinet with a plus-shaped (cross-shaped) keyhole lock on its door, looking curious and eager to open it, colorful toys visible through a small gap, no text."
+Date: 2026-08-04
