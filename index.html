@@ -2402,6 +2402,11 @@
                 <div class="hub-title" style="font-weight:900; color:#1a237e;">משחקי קנבס ופיזיקה</div>
                 <div style="font-size:clamp(11px,2.5vw,14px);color:#303f9f;margin-top:2px;font-weight:bold;">5 משחקים 💡</div>
             </div>
+            <div class="hub-card" style="background: linear-gradient(135deg, #f1f8e9, #d1c4e9); border: 3px solid #673ab7; box-shadow: 0 4px 10px rgba(103,58,183,0.3);" onclick="openCategory('story_solve','סיפורים והרפתקאות')">
+                <div class="hub-icon">📖✨</div>
+                <div class="hub-title" style="font-weight:900; color:#311b92;">סיפורים והרפתקאות</div>
+                <div style="font-size:clamp(11px,2.5vw,14px);color:#5e35b1;margin-top:2px;font-weight:bold;">הרפתקה אינטראקטיבית 💡</div>
+            </div>
 
         </div>
     </div>
@@ -2500,6 +2505,8 @@
             <div class="hub-card" data-cat="canvas_solve" style="position:relative;" onclick="openDifficultyScreen('can_shelter', '🐦', 'מחסה לציפור - רוח')"><span class="star-badge" data-game="can_shelter" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🐦</div><div class="hub-title">מחסה לציפור - רוח</div></div>
             <div class="hub-card" data-cat="canvas_solve" style="position:relative;" onclick="openDifficultyScreen('can_pattern', '🔴', 'גשר התבניות - קנבס')"><span class="star-badge" data-game="can_pattern" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🔴</div><div class="hub-title">גשר התבניות - קנבס</div></div>
             <div class="hub-card" data-cat="canvas_solve" style="position:relative;" onclick="openDifficultyScreen('can_rescue', '🐱', 'מצילים ותקועים - גשר')"><span class="star-badge" data-game="can_rescue" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🐱</div><div class="hub-title">מצילים ותקועים - גשר</div></div>
+            <!-- סיפורים והרפתקאות -->
+            <div class="hub-card" data-cat="story_solve" style="position:relative;" onclick="openDifficultyScreen('sto_rescue', '📖', 'מסע הצלת היער הקסום')"><span class="star-badge" data-game="sto_rescue" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">📖</div><div class="hub-title">מסע הצלת היער הקסום</div></div>
         </div>
     </div>
 
@@ -2622,6 +2629,34 @@
         <div id="active-top-bar" class="top-bar"><button class="exit-btn" onclick="quitActiveGame()">➜ חזור</button><div id="active-progress-container" class="progress-container"></div></div>
         <h2 id="active-game-title" style="margin-bottom: 20px;"></h2>
         <div id="game-workspace"></div>
+    </div>
+    <!-- Story Adventure Container -->
+    <div id="story-game-container" class="hidden" style="background: linear-gradient(to bottom, #f3e5f5, #e1bee7); min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 20px; box-sizing: border-box; width:100%; position:fixed; top:0; left:0; z-index:120; overflow-y:auto;">
+        <div class="top-bar" style="background: transparent; box-shadow: none; border: none; justify-content: flex-start; margin-bottom: 10px; width:100%; max-width:750px;">
+            <button class="exit-btn" onclick="quitStoryGame()" style="background: #7e57c2; color: white; border-radius: 12px; border: 2px solid #fff; box-shadow: 0 4px 6px rgba(0,0,0,0.1); font-weight: bold; cursor: pointer; padding: 1vmin 3vmin; font-size: 18px;">➜ חזור</button>
+        </div>
+        
+        <!-- Story Bot Bubble -->
+        <div class="solve-gemini-bot" id="story-bot-bubble" style="margin-bottom:15px; width: 100%; max-width: 750px;">
+            <span class="solve-gemini-bot-icon">📖</span>
+            <div style="flex:1; font-weight:bold; color:#4a148c; font-size:clamp(15px, 3vw, 19px);" id="story-bot-text"></div>
+        </div>
+
+        <!-- Story Visual Illustration -->
+        <div id="story-scene-area" style="width:100%; max-width:700px; aspect-ratio: 400/220; border-radius:24px; border:4px solid #7e57c2; overflow:hidden; background:#fff; position:relative; box-shadow: 0 10px 25px rgba(0,0,0,0.15); margin-bottom: 20px; display: flex; align-items: center; justify-content: center;">
+            <img id="story-scene-img" src="" style="width:100%; height:100%; object-fit:cover; display:block;" />
+        </div>
+
+        <!-- Story Choices Grid -->
+        <div id="story-choices-area" class="solve-choice-container" style="width: 100%; max-width: 750px; display: grid; grid-template-columns: 1fr; gap: 15px; margin-top: 10px;">
+        </div>
+
+        <!-- Interactive feedback / explanation overlay -->
+        <div id="story-explanation-area" class="hidden" style="width: 100%; max-width: 750px; text-align: center; background: white; padding: 20px; border-radius: 20px; border: 3px solid #7e57c2; margin-top: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.1);">
+            <div id="story-exp-icon" style="font-size: 44px; margin-bottom: 10px;"></div>
+            <div id="story-exp-text" style="font-weight: bold; font-size: 18px; color: #37474f; margin-bottom: 15px;"></div>
+            <button id="story-exp-next-btn" class="action-btn" style="background: #7e57c2; color: white;">המשך בסיפור ➜</button>
+        </div>
     </div>
 
     <div id="level-complete-overlay" class="hidden">
@@ -3233,7 +3268,7 @@
         
         function openDifficultyScreen(gameId, icon, title) {
             playClickSound(); hideAllScreens(); setAppBackground(gameId); currentGameMode = gameId;
-            if(gameId.startsWith('gem_') || gameId.startsWith('gen_') || gameId.startsWith('can_') || gameId === 'emotion' || gameId === 'emparts' || gameId === 'sharing' || gameId === 'growth' || gameId === 'goodbad' || gameId === 'towertalk' || gameId === 'cooppuzzle' || gameId === 'tidyup' || gameId === 'whatneeds' || gameId === 'calm' || gameId === 'sounds' || gameId === 'soundmatch' || gameId === 'feelwhen' || gameId === 'store' || gameId === 'freeze' || gameId === 'rescue' || gameId === 'candle' || gameId === 'detective' || gameId === 'towertalk' || gameId === 'path' || gameId === 'museum' || gameId === 'bridge' || gameId === 'key' || gameId === 'rescue2' || gameId === 'inventor' || gameId === 'predict' || gameId === 'cluegrow' || gameId === 'nestfix' || gameId === 'fairswing' || gameId === 'carefulfast' || gameId === 'stopthink' || gameId === 'together2') {
+            if(gameId.startsWith('gem_') || gameId.startsWith('gen_') || gameId.startsWith('can_') || gameId.startsWith('sto_') || gameId === 'emotion' || gameId === 'emparts' || gameId === 'sharing' || gameId === 'growth' || gameId === 'goodbad' || gameId === 'towertalk' || gameId === 'cooppuzzle' || gameId === 'tidyup' || gameId === 'whatneeds' || gameId === 'calm' || gameId === 'sounds' || gameId === 'soundmatch' || gameId === 'feelwhen' || gameId === 'store' || gameId === 'freeze' || gameId === 'rescue' || gameId === 'candle' || gameId === 'detective' || gameId === 'towertalk' || gameId === 'path' || gameId === 'museum' || gameId === 'bridge' || gameId === 'key' || gameId === 'rescue2' || gameId === 'inventor' || gameId === 'predict' || gameId === 'cluegrow' || gameId === 'nestfix' || gameId === 'fairswing' || gameId === 'carefulfast' || gameId === 'stopthink' || gameId === 'together2') {
                 startGameEngine(1); // עוקף את מסך הרמות
                 return;
             }
@@ -3354,6 +3389,7 @@
                 else if(currentGameMode === 'cooppuzzle') initCoopPuzzleGame();
             else if(currentGameMode === 'coopmemory') initCoopMemoryGame();
                 else if(currentGameMode.startsWith('can_')) initPhaserGame(currentGameMode);
+                else if(currentGameMode.startsWith('sto_')) initStoryGame(currentGameMode);
                 else if(currentGameMode === 'tidyup') initTidyupGame();
                 else if(currentGameMode === 'patterns') initPatternsGame();
                 else if(currentGameMode === 'origins') initOriginsGame();
@@ -3408,7 +3444,7 @@
                 renderTrainRouteMap();
                 return;
             }
-            if(currentGameMode.startsWith('gem_') || currentGameMode.startsWith('gen_') || currentGameMode.startsWith('can_') || currentGameMode === 'emotion' || currentGameMode === 'emparts' || currentGameMode === 'missing' || currentGameMode === 'mgamish' || currentGameMode === 'firstletter' || currentGameMode === 'sharing' || currentGameMode === 'growth' || currentGameMode === 'goodbad' || currentGameMode === 'numwar' || currentGameMode === 'towertalk' || currentGameMode === 'cooppuzzle' || currentGameMode === 'tidyup' || currentGameMode === 'patterns' || currentGameMode === 'origins' || currentGameMode === 'families' || currentGameMode === 'whatneeds' || currentGameMode === 'calm' || currentGameMode === 'sounds' || currentGameMode === 'soundmatch' || currentGameMode === 'feelwhen' || currentGameMode === 'assemble' || currentGameMode === 'store' || currentGameMode === 'freeze' || currentGameMode === 'rescue' || currentGameMode === 'candle' || currentGameMode === 'detective' || currentGameMode === 'towertalk' || currentGameMode === 'path' || currentGameMode === 'museum' || currentGameMode === 'bridge' || currentGameMode === 'key' || currentGameMode === 'rescue2' || currentGameMode === 'inventor' || currentGameMode === 'predict' || currentGameMode === 'cluegrow' || currentGameMode === 'nestfix' || currentGameMode === 'fairswing' || currentGameMode === 'carefulfast' || currentGameMode === 'stopthink' || currentGameMode === 'together2' || (typeof WINNERS_GAMES !== 'undefined' && WINNERS_GAMES.indexOf(currentGameMode) > -1)) { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); } else if(currentGameMode === 'faces') { show('faces-mode-screen'); } else { show('unified-diff-screen'); }
+            if(currentGameMode.startsWith('gem_') || currentGameMode.startsWith('gen_') || currentGameMode.startsWith('can_') || currentGameMode.startsWith('sto_') || currentGameMode === 'emotion' || currentGameMode === 'emparts' || currentGameMode === 'missing' || currentGameMode === 'mgamish' || currentGameMode === 'firstletter' || currentGameMode === 'sharing' || currentGameMode === 'growth' || currentGameMode === 'goodbad' || currentGameMode === 'numwar' || currentGameMode === 'towertalk' || currentGameMode === 'cooppuzzle' || currentGameMode === 'tidyup' || currentGameMode === 'patterns' || currentGameMode === 'origins' || currentGameMode === 'families' || currentGameMode === 'whatneeds' || currentGameMode === 'calm' || currentGameMode === 'sounds' || currentGameMode === 'soundmatch' || currentGameMode === 'feelwhen' || currentGameMode === 'assemble' || currentGameMode === 'store' || currentGameMode === 'freeze' || currentGameMode === 'rescue' || currentGameMode === 'candle' || currentGameMode === 'detective' || currentGameMode === 'towertalk' || currentGameMode === 'path' || currentGameMode === 'museum' || currentGameMode === 'bridge' || currentGameMode === 'key' || currentGameMode === 'rescue2' || currentGameMode === 'inventor' || currentGameMode === 'predict' || currentGameMode === 'cluegrow' || currentGameMode === 'nestfix' || currentGameMode === 'fairswing' || currentGameMode === 'carefulfast' || currentGameMode === 'stopthink' || currentGameMode === 'together2' || (typeof WINNERS_GAMES !== 'undefined' && WINNERS_GAMES.indexOf(currentGameMode) > -1)) { setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); } else if(currentGameMode === 'faces') { show('faces-mode-screen'); } else { show('unified-diff-screen'); }
         }
         function updateProgressUI() { for(let i=0;i<activeGameRounds;i++) { let d = get(`active-progress-container-dot-${i}`); if(d){ if(i < currentStep) d.classList.add('fill'); else d.classList.remove('fill'); } } }
 
@@ -3582,6 +3618,7 @@
             'can_shelter': { icon: '🐦', title: 'מחסה לציפור - רוח' },
             'can_pattern': { icon: '🔴', title: 'גשר התבניות - קנבס' },
             'can_rescue': { icon: '🐱', title: 'מצילים ותקועים - גשר' },
+            'sto_rescue': { icon: '📖', title: 'מסע הצלת היער הקסום' },
             'routine': { icon: '🌅', title: 'סדר יום' },
             'feelwhen': { icon: '💭', title: 'מה מרגישים כש...' },
             'cooppuzzle': { icon: '🧩', title: 'פאזל שיתופי' },
@@ -17328,7 +17365,330 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     }
                 });
             }
-        }// Register Service Worker for PWA offline support
+
+        // ==========================================
+        // מנוע משחקי הרפתקאות וסיפורים אינטראקטיביים
+        // ==========================================
+        let currentStoryId = null;
+        let currentStoryNode = null;
+        let storyMistakes = 0;
+
+        const STORY_GAMES = {
+            'sto_rescue': {
+                title: "מסע הצלת היער הקסום",
+                nodes: {
+                    'start': {
+                        text: "הגענו ליער הקסום, אבל משהו מוזר קורה – הנחל הגדול יבש לגמרי, וכל החיות צמאות ועצובות. מה כדאי לעשות קודם כדי להבין מה קרה?",
+                        scene: "images/story_forest_r1.png",
+                        choices: [
+                            {
+                                label: "🧭 ללכת בעקבות הנחל למעלה ההר",
+                                feedback: "נכון מאוד! כדי לדעת למה הנחל יבש, צריך לחקור את מקור הנחל במעלה ההר.",
+                                outcome: "best",
+                                nextNode: "beaver_dam"
+                            },
+                            {
+                                label: "🏜️ לחפור גומה באדמה ולחכות שהמים יחזרו",
+                                feedback: "זה ייקח המון זמן ולא יעזור לכל החיות הצמאות ביער. בואו נחפש פתרון פעיל וחכם יותר.",
+                                outcome: "poor",
+                                nextNode: "wait_stream"
+                            },
+                            {
+                                label: "📢 לצעוק חזק ולבקש ממישהו שיעזור",
+                                feedback: "צעקות לא יביאו מים, צריך לחשוב על פעולה שתקדם אותנו לפתרון.",
+                                outcome: "poor",
+                                nextNode: "wait_stream"
+                            }
+                        ]
+                    },
+                    'wait_stream': {
+                        text: "אנחנו עדיין עומדים ליד הנחל היבש והחיות מחכות למים. מה כדאי לעשות עכשיו?",
+                        scene: "images/story_forest_r1.png",
+                        choices: [
+                            {
+                                label: "🧭 לעלות במעלה השביל למקור הנחל",
+                                feedback: "מצוין! חקירה יזומה היא הדרך הטובה ביותר לגלות את מקור הבעיה.",
+                                outcome: "best",
+                                nextNode: "beaver_dam"
+                            },
+                            {
+                                label: "🌲 ללכת לטייל עמוק יותר ביער",
+                                feedback: "הטיול נחמד, אך החיות עדיין צמאות. כדאי להתמקד בפתרון בעיית המים קודם.",
+                                outcome: "ok",
+                                nextNode: "start"
+                            }
+                        ]
+                    },
+                    'beaver_dam': {
+                        text: "הגענו למקור הנחל וגילינו שמשפחת בונים בנתה סכר ענק מענפים שחוסם את כל המים! הבונים צריכים את הסכר כדי להגן על ביתם, אבל היער כולו מתייבש. איך נפתור את הבעיה?",
+                        scene: "images/story_beaver_r1.png",
+                        choices: [
+                            {
+                                label: "🤝 לדבר איתם ולהציע לבנות יחד בריכה צידית עמוקה ובטוחה",
+                                feedback: "פשוט נפלא! שיתוף פעולה והסכם הוגן (משא ומתן) הוא הדרך הטובה ביותר לפתור בעיות מורכבות המערבות אחרים!",
+                                outcome: "best",
+                                nextNode: "beaver_deal"
+                            },
+                            {
+                                label: "🔨 להרוס להם את הסכר בלי לשאול",
+                                feedback: "אוי ואבוי! הבונים כועסים מאוד והם בנו את הסכר מחדש חזק יותר. זה רק יצר מריבה קשה.",
+                                outcome: "poor",
+                                nextNode: "beaver_fight"
+                            }
+                        ]
+                    },
+                    'beaver_fight': {
+                        text: "הבונים כועסים עלינו, הסכר עדיין חסום והמים לא זורמים. מה נעשה עכשיו כדי לתקן את היחסים?",
+                        scene: "images/story_beaver_r1.png",
+                        choices: [
+                            {
+                                label: "💖 לבקש סליחה ולהציע לבנות יחד בריכה הוגנת לכולם",
+                                feedback: "יופי! תיקון טעויות ובקשת סליחה עוזרים לנו לחזור למסלול של שיתוף פעולה.",
+                                outcome: "best",
+                                nextNode: "beaver_deal"
+                            },
+                            {
+                                label: "🚶‍♂️ ללכת לחפש מים במקום אחר ביער",
+                                feedback: "אין מקור מים אחר קרוב, אנחנו חייבים לפתור את האתגר עם הבונים.",
+                                outcome: "ok",
+                                nextNode: "beaver_dam"
+                            }
+                        ]
+                    },
+                    'beaver_deal': {
+                        text: "הבונים שמחו לעזרה! פתחנו חלק מהסכר, המים חזרו לזרום בנחל, ויחד בנינו להם בריכה בטוחה. פתאום, שמענו קול בכי קטן מגיע מפתח המערה הזוהרת. מישהו צריך עזרה! מה נעשה?",
+                        scene: "images/story_cave_r1.png",
+                        choices: [
+                            {
+                                label: "🔦 להיכנס למערה בזהירות עם פנס כדי לעזור",
+                                feedback: "נכון מאוד! כשאנו שומעים מישהו במצוקה, אנו נכנסים בזהירות ומגישים עזרה.",
+                                outcome: "best",
+                                nextNode: "cave_bear"
+                            },
+                            {
+                                label: "☄️ לזרוק אבן גדולה לתוך המערה ולראות מה יצא",
+                                feedback: "אוי! האבן הפחידה את מי שמתחבא בפנים, והוא ברח עמוק יותר לתוך החושך במערה.",
+                                outcome: "poor",
+                                nextNode: "cave_scared"
+                            }
+                        ]
+                    },
+                    'cave_scared': {
+                        text: "הקול מהמערה נחלש, והחיה הקטנה מפחדת מאוד. איך נזכה באמון שלה מחדש?",
+                        scene: "images/story_cave_r1.png",
+                        choices: [
+                            {
+                                label: "💬 לדבר בקול רך ולהציע פנס כדי להאיר לה",
+                                feedback: "נהדר! יחס עדין וסבלנות עוזרים להרגיע חבר מבוהל.",
+                                outcome: "best",
+                                nextNode: "cave_bear"
+                            },
+                            {
+                                label: "🚶‍♂️ להמשיך בטיול ביער ולהתעלם מהבכי",
+                                feedback: "לא משאירים חבר לבד בצרה! בואו נחזור ונעזור לו.",
+                                outcome: "poor",
+                                nextNode: "beaver_deal"
+                            }
+                        ]
+                    },
+                    'cave_bear': {
+                        text: "בתוך המערה מצאנו דובון חמוד ואבוד! הוא מבוהל ולא מוצא את אמא שלו. איך נעזור לו להירגע ולמצוא את דרכו?",
+                        scene: "images/story_bear_r1.png",
+                        choices: [
+                            {
+                                label: "🌸 להציע לו פרח ודבש, ולשאול אותו איפה אמא שלו ישנה",
+                                feedback: "מצוין! הרגעת חבר מבוהל בעזרת יחס חם ואוכל טעים עוזרת לו לחשוב בבהירות ולשתף פעולה.",
+                                outcome: "best",
+                                nextNode: "bear_search"
+                            },
+                            {
+                                label: "💪 למשוך אותו ביד החוצה בכוח כדי שילך מהר",
+                                feedback: "הדובון נלחץ עוד יותר, התחיל לבכות חזק וסירב לזוז ממקומו.",
+                                outcome: "poor",
+                                nextNode: "bear_angry"
+                            }
+                        ]
+                    },
+                    'bear_angry': {
+                        text: "הדובון מפחד ומסרב ללכת איתנו. מה נעשה כדי לעזור לו לשתף פעולה?",
+                        scene: "images/story_bear_r1.png",
+                        choices: [
+                            {
+                                label: "🤗 לתת לו חיבוק חם ולהציע לו את הפרח בעדינות",
+                                feedback: "מדהים! חיבוק ורוגע תמיד מנצחים את הפחד.",
+                                outcome: "best",
+                                nextNode: "bear_search"
+                            },
+                            {
+                                label: "📢 לקרוא בקול רם לאמא שלו בתוך היער",
+                                feedback: "האמא רחוקה מדי ולא שומעת, צריך קודם לרכוש את אמון הדובון וללכת לחפש יחד.",
+                                outcome: "ok",
+                                nextNode: "cave_bear"
+                            }
+                        ]
+                    },
+                    'bear_search': {
+                        text: "הדובון נרגע ונזכר שאמא שלו נמצאת מעבר לצוק הגבוה. הלכנו יחד, אך כשהגענו לצוק גילינו שגשר העץ היחיד נשבר! הפער גדול מדי למעבר, ואמא דובה נמצאת בצד השני וקוראת לדובון. מה נעשה?",
+                        scene: "images/story_bridge_r1.png",
+                        choices: [
+                            {
+                                label: "🪵 לבנות גשר חבלים זמני בעזרת קורות עץ וחבלים חזקים",
+                                feedback: "כל הכבוד! עבודה קבוצתית ושימוש בחבלים וקורות עץ יצרו גשר יציב ובטוח!",
+                                outcome: "best",
+                                nextNode: "win_story"
+                            },
+                            {
+                                label: "🏃‍♂️ לנסות לקפוץ מעל התהום העמוקה והרחבה",
+                                feedback: "זה מסוכן מאוד! התהום רחבה מדי ועלולים ליפול ולהיפצע קשה!",
+                                outcome: "poor",
+                                nextNode: "jump_fail"
+                            }
+                        ]
+                    },
+                    'jump_fail': {
+                        text: "הבנו שאי אפשר לקפוץ מעל התהום. מהי הדרך הבטוחה לעבור כעת?",
+                        scene: "images/story_bridge_r1.png",
+                        choices: [
+                            {
+                                label: "🪵 לבנות את גשר העץ יחד עם החברים והבונים",
+                                feedback: "מעולה! כשעובדים יחד, פותרים כל בעיה בקלות ובבטחה.",
+                                outcome: "best",
+                                nextNode: "win_story"
+                            },
+                            {
+                                label: "🎈 לחכות שיבוא כדור פורח שיקח אותנו",
+                                feedback: "אין כדורים פורחים ביער הקסום, עלינו לבנות פתרון מעשי בעצמנו.",
+                                outcome: "poor",
+                                nextNode: "bear_search"
+                            }
+                        ]
+                    },
+                    'win_story': {
+                        text: "הצלחנו! בנינו גשר חזק ויציב, הדובון רץ בבטחה אל אמא שלו שהודתה לנו בחיבוק חם, והמים זורמים בנחל לכל חיות היער! פתרתם את כל האתגרים בצורה מושלמת!",
+                        scene: "images/story_forest_r1.png",
+                        choices: []
+                    }
+                }
+            }
+        };
+
+        function initStoryGame(gameId) {
+            currentStoryId = gameId;
+            storyMistakes = 0;
+            hideAllScreens();
+            show('story-game-container');
+            loadStoryNode('start');
+        }
+
+        function loadStoryNode(nodeId) {
+            currentStoryNode = nodeId;
+            let story = STORY_GAMES[currentStoryId];
+            if (!story) return;
+            let node = story.nodes[nodeId];
+            if (!node) return;
+
+            // Update UI elements
+            get('story-bot-text').textContent = node.text;
+            speakLetter(node.text, 'he');
+
+            get('story-scene-img').src = node.scene;
+            
+            // Build choices
+            let cArea = get('story-choices-area');
+            cArea.innerHTML = '';
+            hide('story-explanation-area');
+            show('story-scene-area');
+            show('story-choices-area');
+
+            if (node.choices.length === 0) {
+                // Victory node! Show finish button
+                let winBtn = D.createElement('button');
+                winBtn.className = 'action-btn';
+                winBtn.style.background = '#4caf50';
+                winBtn.style.color = '#fff';
+                winBtn.style.fontSize = '20px';
+                winBtn.style.padding = '12px 40px';
+                winBtn.style.margin = '20px auto';
+                winBtn.textContent = 'סיום הרפתקה 🏆';
+                winBtn.onclick = () => {
+                    playSuccessSound();
+                    speakSuccess(false, () => {
+                        awardStar(currentStoryId, currentDifficulty, () => {
+                            quitStoryGame();
+                            show('level-complete-overlay');
+                        });
+                    });
+                };
+                cArea.appendChild(winBtn);
+            } else {
+                node.choices.forEach((c) => {
+                    let btn = D.createElement('button');
+                    btn.className = 'solve-choice-card';
+                    btn.style.padding = '18px';
+                    btn.style.textAlign = 'right';
+                    btn.style.width = '100%';
+                    btn.style.fontSize = '17px';
+                    btn.style.display = 'flex';
+                    btn.style.alignItems = 'center';
+                    btn.style.direction = 'rtl';
+                    btn.innerHTML = `<span style="margin-left:10px; font-size:24px;"></span> ${c.label}`;
+                    btn.onclick = () => selectStoryChoice(c);
+                    cArea.appendChild(btn);
+                });
+            }
+        }
+
+        function selectStoryChoice(choice) {
+            // Hide selection interface
+            hide('story-choices-area');
+            hide('story-scene-area');
+
+            let expArea = get('story-explanation-area');
+            let expIcon = get('story-exp-icon');
+            let expText = get('story-exp-text');
+            let nextBtn = get('story-exp-next-btn');
+
+            expText.textContent = choice.feedback;
+            speakLetter(choice.feedback, 'he');
+
+            if (choice.outcome === 'best') {
+                playSuccessSound();
+                expIcon.textContent = '🌟';
+                nextBtn.style.background = '#4caf50';
+                nextBtn.textContent = 'המשך בסיפור ➜';
+                nextBtn.onclick = () => {
+                    playClickSound();
+                    loadStoryNode(choice.nextNode);
+                };
+            } else {
+                playErrorSound();
+                storyMistakes++;
+                expIcon.textContent = '🤔';
+                nextBtn.style.background = '#f44336';
+                nextBtn.textContent = 'נסו שוב 🔄';
+                nextBtn.onclick = () => {
+                    playClickSound();
+                    // Reload current node so they can retry
+                    loadStoryNode(currentStoryNode);
+                };
+            }
+
+            show('story-explanation-area');
+        }
+
+        window.quitStoryGame = function() {
+            if (currentPhaserInstance) {
+                currentPhaserInstance.destroy(true);
+                currentPhaserInstance = null;
+            }
+            hide('story-game-container');
+            setAppBackground('hub');
+            show('hub-screen');
+            updateWalletDisplay();
+        };
+
+
+                }// Register Service Worker for PWA offline support
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function() {
                 navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' }).then(function(reg) {

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'roy-games-v134';
+const CACHE_NAME = 'roy-games-v135';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -15,6 +15,11 @@ const ASSETS_TO_CACHE = [
   './images/gen_decisions_r1.png',
   './images/gen_iteration_r1.png',
   './images/gen_coaching_r1.png',
+  './images/story_forest_r1.png',
+  './images/story_beaver_r1.png',
+  './images/story_cave_r1.png',
+  './images/story_bear_r1.png',
+  './images/story_bridge_r1.png',
   './audio/soundmatch/bell.mp3',
   './audio/soundmatch/drum.wav',
   './audio/soundmatch/horn.mp3',
