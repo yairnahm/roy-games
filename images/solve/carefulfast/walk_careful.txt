@@ -1,0 +1,4 @@
+File: walk_careful.png
+Generated directly in ChatGPT (single image, not a sprite sheet), same conversation as room_dilemma.png for character consistency.
+Prompt: "Same boy, same style, same square 1024x1024 format, no text anywhere. Scene: the boy walking slowly and carefully on tiptoes through the room full of fragile toys, looking down watching his steps, calm focused expression, all the toys still intact around him."
+Date: 2026-08-04

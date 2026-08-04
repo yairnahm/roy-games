@@ -1,0 +1,4 @@
+File: crawl.png
+Generated directly in ChatGPT (single image, not a sprite sheet), same conversation as room_dilemma.png for character consistency.
+Prompt: "Same boy, same style, same square 1024x1024 format, no text anywhere. Scene: the boy crawling slowly on his hands and knees across the floor of the room full of fragile toys, focused careful expression, taking a long time, all the toys still intact around him."
+Date: 2026-08-04

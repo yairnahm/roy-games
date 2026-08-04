@@ -1,0 +1,4 @@
+File: room_dilemma.png
+Generated directly in ChatGPT (single image, not a sprite sheet).
+Prompt: "New unrelated image, square 1024x1024, no text or letters anywhere. Soft Pixar-style 3D illustration for a children's educational game, warm pastel colors, simple uncluttered background, clear simple facial expressions. Main character: a young boy with short black hair wearing a yellow t-shirt and dark blue shorts — keep this character's appearance consistent, I will ask for more images with him later. Scene: the boy standing nervously at the doorway of a room completely full of fragile breakable toys — teacups, glass figurines, delicate vases — scattered across the floor, looking carefully at the room, needing to cross to the other side."
+Date: 2026-08-04

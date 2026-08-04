@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-08-02-v114-solve-fairswing-images -->
+<!DOCTYPE html><!-- build: 2026-08-04-v115-solve-videos -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -3433,7 +3433,8 @@
                     } else if (SOLVE_GAMES[currentGameMode]) {
                         let sc = window.currentSolveFeedback || {};
                         let scEmoji = sc.tier === 'best' ? '🌟' : (sc.tier === 'ok' ? '🙂' : '🤔');
-                        fl.innerHTML = `<span>${scEmoji}</span><div class="feedback-msg" style="direction:rtl;">${sc.feedbackText || ''}</div>`;
+                        let scMedia = sc.resultVideo ? `<video src="${sc.resultVideo}" autoplay muted loop playsinline style="width:min(70vw,260px);max-height:22vh;object-fit:contain;border-radius:16px;margin:6px auto;display:block;"></video>` : `<span>${scEmoji}</span>`;
+                        fl.innerHTML = `${scMedia}<div class="feedback-msg" style="direction:rtl;">${sc.feedbackText || ''}</div>`;
                     } else {
                         fl.innerHTML = '<span>🥳</span>';
                     }
@@ -14762,7 +14763,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 <div id="solve-drop-zone" class="drag-drop-zone">🫳 גררו לכאן את הפתרון הנכון</div>
             `;
             let sceneArea = get('solve-scene-area');
-            if (round.scene.startsWith('images/')) {
+            if (round.scene.match(/\.(mp4|webm|mov)$/i)) {
+                sceneArea.innerHTML = `<video src="${round.scene}" autoplay muted loop playsinline style="width:100%;max-height:30vh;object-fit:contain;"></video>`;
+            } else if (round.scene.startsWith('images/')) {
                 sceneArea.innerHTML = `<img src="${round.scene}" alt="" style="width:100%;max-height:30vh;object-fit:contain;" />`;
             } else {
                 sceneArea.innerHTML = `<span>${round.scene}</span>`;
@@ -14879,7 +14882,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     scene: 'images/solve/predict/rock_before.png',
                     prompt: 'מה יקרה אם נשים אבן כבדה בתוך דלי מים?',
                     choices: [
-                        { img: 'images/solve/predict/rock_sunk.png', label: 'האבן תשקע', tier: 'best', feedbackText: 'ניחשת נכון! אבן כבדה שוקעת במים כי היא כבדה מדי כדי לצוף. היית בטוח בזה, או שרק ניחשת?' },
+                        { img: 'images/solve/predict/rock_sunk.png', label: 'האבן תשקע', tier: 'best', resultVideo: 'videos/solve/predict_rock.mp4', feedbackText: 'ניחשת נכון! אבן כבדה שוקעת במים כי היא כבדה מדי כדי לצוף. היית בטוח בזה, או שרק ניחשת?' },
                         { img: 'images/solve/predict/rock_float.png', label: 'האבן תצוף', tier: 'poor', feedbackText: 'בואו נראה מה קורה באמת... אבן כבדה שוקעת, היא לא צפה. בפעם הבאה ננחש לפי כמה שהחפץ כבד!' },
                         { img: 'images/solve/predict/nothing_happens.png', label: 'לא יקרה כלום', tier: 'poor', feedbackText: 'בואו ננסה ונראה... האבן דווקא שוקעת ישר לתחתית! מה חשבת לפני שניסינו?' }
                     ]
@@ -14900,7 +14903,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
         SOLVE_GAMES.cluegrow = {
             rounds: [
                 {
-                    scene: 'images/whatneeds/surrounds/rain_cloud.png',
+                    scene: 'videos/solve/cluegrow_plant.mp4',
                     prompt: 'בציור על הקיר רואים שענן כחול גורם לצמחים לגדול חזק. באיזה מים נשקה את הצמח הנבול?',
                     choices: [
                         { img: 'images/solve/cluegrow/blue_water.png', label: 'מים כחולים', tier: 'best', feedbackText: 'חשבת נכון על פי הרמז בענן! הצמח שותה את המים הכחולים והולך ומתעורר לחיים! למה בחרת דווקא במים הכחולים?' },
@@ -14924,7 +14927,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
         SOLVE_GAMES.nestfix = {
             rounds: [
                 {
-                    scene: 'images/habitat/nest.png',
+                    scene: 'videos/solve/nestfix_rain.mp4',
                     prompt: 'לציפור הקטנה יש קן שבור ומתחיל לרדת גשם! ממה נבנה לה מחסה?',
                     choices: [
                         { img: 'images/solve/nestfix/cup.png', label: 'כוס הפוכה', tier: 'best', feedbackText: 'רעיון נהדר! הכוס ההפוכה חוסמת את הגשם והציפור נשארת יבשה וחמימה! למה חשבת שכוס תעזור?' },
