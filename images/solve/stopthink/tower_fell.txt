@@ -1,0 +1,4 @@
+File: tower_fell.png
+Generated directly in ChatGPT (single image, not a sprite sheet).
+Prompt: "New unrelated image, square 1024x1024, no text or letters anywhere. Soft Pixar-style 3D illustration for a children's educational game, warm pastel colors, simple uncluttered background, clear simple facial expressions. Main character: a young boy with short black hair wearing a yellow t-shirt and dark blue shorts — keep this character's appearance consistent, I will ask for more images with him later. Scene: the boy sitting on the floor looking sadly at a tall tower of colorful building blocks that has just collapsed and scattered around him, the tower's base was too narrow, disappointed expression."
+Date: 2026-08-04

@@ -1,0 +1,4 @@
+File: dont_know.png
+Generated directly in ChatGPT (single image, not a sprite sheet), same conversation as tower_fell.png for character consistency.
+Prompt: "Same boy, same style, same square 1024x1024 format, no text anywhere. Scene: the boy pushing the crayon and paper away from himself with both hands, shaking his head, discouraged embarrassed expression, refusing to keep drawing."
+Date: 2026-08-04

@@ -1,0 +1,4 @@
+File: never_succeed.png
+Generated directly in ChatGPT (single image, not a sprite sheet), same conversation as tower_fell.png for character consistency.
+Prompt: "Same boy, same style, same square 1024x1024 format, no text anywhere. Scene: the boy sitting among the scattered blocks with his head down and shoulders slumped, arms crossed, a small sad rain-cloud symbol above his head, giving up expression, not touching the blocks."
+Date: 2026-08-04
