@@ -2505,6 +2505,7 @@
             <div class="hub-card" data-cat="canvas_solve" style="position:relative;" onclick="openDifficultyScreen('can_shelter', '🐦', 'מחסה לציפור - רוח')"><span class="star-badge" data-game="can_shelter" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🐦</div><div class="hub-title">מחסה לציפור - רוח</div></div>
             <div class="hub-card" data-cat="canvas_solve" style="position:relative;" onclick="openDifficultyScreen('can_pattern', '🔴', 'גשר התבניות - קנבס')"><span class="star-badge" data-game="can_pattern" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🔴</div><div class="hub-title">גשר התבניות - קנבס</div></div>
             <div class="hub-card" data-cat="canvas_solve" style="position:relative;" onclick="openDifficultyScreen('can_rescue', '🐱', 'מצילים ותקועים - גשר')"><span class="star-badge" data-game="can_rescue" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">🐱</div><div class="hub-title">מצילים ותקועים - גשר</div></div>
+            <div class="hub-card" data-cat="canvas_solve" style="position:relative;" onclick="openDifficultyScreen('can_speed_odd', '⚡', 'זהה במהירות את השונה')"><span class="star-badge" data-game="can_speed_odd" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">⚡</div><div class="hub-title">זהה במהירות את השונה</div></div>
             <!-- סיפורים והרפתקאות -->
             <div class="hub-card" data-cat="story_solve" style="position:relative;" onclick="openDifficultyScreen('sto_rescue', '📖', 'מסע הצלת היער הקסום')"><span class="star-badge" data-game="sto_rescue" style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">⭐</span><div class="hub-icon">📖</div><div class="hub-title">מסע הצלת היער הקסום</div></div>
         </div>
@@ -3618,6 +3619,7 @@
             'can_shelter': { icon: '🐦', title: 'מחסה לציפור - רוח' },
             'can_pattern': { icon: '🔴', title: 'גשר התבניות - קנבס' },
             'can_rescue': { icon: '🐱', title: 'מצילים ותקועים - גשר' },
+            'can_speed_odd': { icon: '⚡', title: 'זהה במהירות את השונה' },
             'sto_rescue': { icon: '📖', title: 'מסע הצלת היער הקסום' },
             'routine': { icon: '🌅', title: 'סדר יום' },
             'feelwhen': { icon: '💭', title: 'מה מרגישים כש...' },
@@ -16809,6 +16811,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             } else if (gameId === 'can_rescue') {
                 promptText = "החתלתול תקוע על הגג! גררו את הקרש המתאים כדי לגשר על הפער, ואז עזרו לילד לעבור ולהציל אותו!";
                 SceneClass = PhaserRescuePlatScene;
+            } else if (gameId === 'can_speed_odd') {
+                promptText = "מטרות רצות במורד המסך! ספרה אחת ביניהן שונה. מצאו ולחצו עליה מהר לפני שתיעלם!";
+                SceneClass = PhaserSpeedOddScene;
             }
             
             get('solve-bot-text').textContent = promptText;
@@ -17361,7 +17366,143 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             }
         } // Close PhaserRescuePlatScene class properly
 
-        // ==========================================
+        // --- סצנה 6: זהה במהירות את השונה (Speed Matrix Search) ---
+        class PhaserSpeedOddScene extends Phaser.Scene {
+            constructor() {
+                super('PhaserSpeedOddScene');
+            }
+            create() {
+                // Background dark grid
+                let sky = this.add.graphics();
+                sky.fillStyle(0x0a0a18, 1);
+                sky.fillRect(0, 0, 800, 500);
+                
+                // Draw decorative matrix neon grid lines
+                sky.lineStyle(1, 0x00e5ff, 0.05);
+                for (let x = 0; x < 800; x += 40) {
+                    sky.lineBetween(x, 0, x, 500);
+                }
+                
+                this.score = 0;
+                this.isGameEnded = false;
+                this.oddTextObj = null;
+                
+                // Set speed based on level (1 = 150, 2 = 180, 3 = 210)
+                this.scrollSpeed = 130 + currentDifficulty * 35;
+                
+                // Score indicator
+                this.scoreText = this.add.text(25, 20, `הצלחות: 0/3`, { fontSize: '22px', fill: '#00e5ff', fontStyle: 'bold', fontFamily: 'Rubik' });
+                
+                this.spawnNewOddSet();
+            }
+            
+            spawnNewOddSet() {
+                if (this.isGameEnded) return;
+                
+                if (this.numberGroup) {
+                    this.numberGroup.clear(true, true);
+                }
+                
+                this.numberGroup = this.physics.add.group();
+                
+                // Dom / Odd pairs
+                const sets = [
+                    { dominant: '5', odd: '6' },
+                    { dominant: '8', odd: '3' },
+                    { dominant: '0', odd: 'O' },
+                    { dominant: '2', odd: 'Z' },
+                    { dominant: '9', odd: 'P' },
+                    { dominant: '6', odd: '9' }
+                ];
+                let currentSet = sets[Phaser.Math.Between(0, sets.length - 1)];
+                
+                let cols = 13;
+                let rows = 6;
+                let colWidth = 55;
+                let rowHeight = 60;
+                let startX = 70;
+                
+                let oddCol = Phaser.Math.Between(1, cols - 2);
+                let oddRow = Phaser.Math.Between(1, rows - 2);
+                
+                let startY = -380;
+                
+                for (let r = 0; r < rows; r++) {
+                    for (let c = 0; c < cols; c++) {
+                        let isOdd = (r === oddRow && c === oddCol);
+                        let char = isOdd ? currentSet.odd : currentSet.dominant;
+                        
+                        let tx = startX + c * colWidth;
+                        let ty = startY + r * rowHeight;
+                        
+                        let textObj = this.add.text(tx, ty, char, {
+                            fontSize: '46px',
+                            fontFamily: 'Rubik',
+                            fontStyle: 'bold',
+                            fill: isOdd ? '#ff3d00' : '#00ff66'
+                        }).setOrigin(0.5);
+                        
+                        if (isOdd) {
+                            textObj.setShadow(0, 0, '#ff3d00', 12, true, true);
+                            textObj.setInteractive();
+                            textObj.on('pointerdown', () => this.onOddClicked(textObj));
+                            this.oddTextObj = textObj;
+                        } else {
+                            textObj.setAlpha(0.6);
+                        }
+                        
+                        this.physics.add.existing(textObj);
+                        textObj.body.setGravityY(0);
+                        textObj.body.setVelocityY(this.scrollSpeed);
+                        this.numberGroup.add(textObj);
+                    }
+                }
+            }
+            
+            onOddClicked(textObj) {
+                if (this.isGameEnded) return;
+                playClickSound();
+                this.score++;
+                this.scoreText.setText(`הצלחות: ${this.score}/3`);
+                
+                // Explode spark graphics
+                let p = this.add.graphics();
+                p.fillStyle(0x00ff66, 1);
+                for (let i = 0; i < 8; i++) {
+                    let angle = (i * Math.PI) / 4;
+                    p.fillCircle(textObj.x + Math.cos(angle) * 35, textObj.y + Math.sin(angle) * 35, 5);
+                }
+                this.time.delayedCall(220, () => p.destroy());
+                
+                if (this.score >= 3) {
+                    this.isGameEnded = true;
+                    this.numberGroup.setVelocityY(0);
+                    speakSuccess(false, () => {
+                        awardStar('can_speed_odd', currentDifficulty, () => {
+                            if (currentPhaserInstance) {
+                                currentPhaserInstance.destroy(true);
+                                currentPhaserInstance = null;
+                            }
+                            show('level-complete-overlay');
+                        });
+                    });
+                } else {
+                    this.spawnNewOddSet();
+                }
+            }
+            
+            update() {
+                if (this.isGameEnded) return;
+                
+                if (this.oddTextObj && this.oddTextObj.active && this.oddTextObj.y > 510) {
+                    speakLetter("אוי! המספר ברח. נסו שוב מהר יותר!", 'he');
+                    this.spawnNewOddSet();
+                }
+            }
+        }
+
+
+                // ==========================================
         // מנוע משחקי הרפתקאות וסיפורים אינטראקטיביים
         // ==========================================
         let currentStoryId = null;
