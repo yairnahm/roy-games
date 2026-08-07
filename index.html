@@ -17359,6 +17359,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     }
                 });
             }
+        } // Close PhaserRescuePlatScene class properly
 
         // ==========================================
         // מנוע משחקי הרפתקאות וסיפורים אינטראקטיביים
@@ -17682,7 +17683,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
         };
 
 
-                }// Register Service Worker for PWA offline support
+        // Register Service Worker for PWA offline support
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function() {
                 navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' }).then(function(reg) {
