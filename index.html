@@ -17387,17 +17387,24 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 this.isGameEnded = false;
                 this.oddTextObj = null;
                 
-                // Set speed based on level (1 = 150, 2 = 180, 3 = 210)
-                this.scrollSpeed = 130 + currentDifficulty * 35;
+                // Set speed based on level (1 = 45, 2 = 65, 3 = 85) - Slower and manageable
+                this.scrollSpeed = 30 + currentDifficulty * 15;
                 
                 // Score indicator
                 this.scoreText = this.add.text(25, 20, `הצלחות: 0/3`, { fontSize: '22px', fill: '#00e5ff', fontStyle: 'bold', fontFamily: 'Rubik' });
+                
+                this.events.on('shutdown', () => {
+                    this.isGameEnded = true;
+                    this.oddTextObj = null;
+                });
                 
                 this.spawnNewOddSet();
             }
             
             spawnNewOddSet() {
                 if (this.isGameEnded) return;
+                
+                this.oddTextObj = null; // Clear previous reference immediately to prevent race conditions
                 
                 if (this.numberGroup) {
                     this.numberGroup.clear(true, true);
@@ -17409,21 +17416,21 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 const sets = [
                     { dominant: '5', odd: '6' },
                     { dominant: '8', odd: '3' },
-                    { dominant: '0', odd: 'O' },
-                    { dominant: '2', odd: 'Z' },
-                    { dominant: '9', odd: 'P' },
-                    { dominant: '6', odd: '9' }
+                    { dominant: '0', odd: '9' },
+                    { dominant: '2', odd: '5' },
+                    { dominant: '9', odd: '6' },
+                    { dominant: '1', odd: '7' }
                 ];
                 let currentSet = sets[Phaser.Math.Between(0, sets.length - 1)];
                 
-                let cols = 13;
-                let rows = 6;
-                let colWidth = 55;
-                let rowHeight = 60;
-                let startX = 70;
+                let cols = 32; // Many columns to form a very long number row
+                let rows = 8;
+                let colWidth = 22; // Tightly packed columns
+                let rowHeight = 45;
+                let startX = 50;
                 
-                let oddCol = Phaser.Math.Between(1, cols - 2);
-                let oddRow = Phaser.Math.Between(1, rows - 2);
+                let oddCol = Phaser.Math.Between(3, cols - 4);
+                let oddRow = Phaser.Math.Between(2, rows - 3);
                 
                 let startY = -380;
                 
@@ -17436,19 +17443,18 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                         let ty = startY + r * rowHeight;
                         
                         let textObj = this.add.text(tx, ty, char, {
-                            fontSize: '46px',
+                            fontSize: '34px',
                             fontFamily: 'Rubik',
                             fontStyle: 'bold',
-                            fill: isOdd ? '#ff3d00' : '#00ff66'
+                            fill: '#00ff66' // Same color for all numbers
                         }).setOrigin(0.5);
                         
                         if (isOdd) {
-                            textObj.setShadow(0, 0, '#ff3d00', 12, true, true);
                             textObj.setInteractive();
                             textObj.on('pointerdown', () => this.onOddClicked(textObj));
                             this.oddTextObj = textObj;
                         } else {
-                            textObj.setAlpha(0.6);
+                            textObj.setAlpha(0.85);
                         }
                         
                         this.physics.add.existing(textObj);
@@ -17474,6 +17480,8 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 }
                 this.time.delayedCall(220, () => p.destroy());
                 
+                this.oddTextObj = null; // Clear reference to prevent offscreen check triggering
+                
                 if (this.score >= 3) {
                     this.isGameEnded = true;
                     this.numberGroup.setVelocityY(0);
@@ -17495,7 +17503,8 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 if (this.isGameEnded) return;
                 
                 if (this.oddTextObj && this.oddTextObj.active && this.oddTextObj.y > 510) {
-                    speakLetter("אוי! המספר ברח. נסו שוב מהר יותר!", 'he');
+                    this.oddTextObj = null; // Clear reference immediately to prevent multiple triggers in subsequent frames
+                    speakLetter("אוי! המספר ברח. נסו שוב!", 'he');
                     this.spawnNewOddSet();
                 }
             }
