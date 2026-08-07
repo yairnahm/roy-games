@@ -2668,6 +2668,8 @@
         </div>
     </div>
     <div id="feedback-layer" class="hidden feedback-icon"></div>
+    <!-- Caching version helper badge -->
+    <div style="position:fixed; bottom:5px; left:5px; font-size:10px; color:#fff; opacity:0.4; z-index:9999; font-family:monospace; pointer-events:none;">v138</div>
 
         <!-- Train Route Screen (v78) -->
     <div id="train-route-screen" class="hidden" style="background: linear-gradient(135deg, #0288d1, #26c6da); display:flex; flex-direction:column; align-items:center; justify-content:flex-start; min-height:100vh; padding:2vmin; box-sizing:border-box; width:100%; position:fixed; top:0; left:0; z-index:150; overflow-y:auto;">
@@ -17377,25 +17379,32 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 sky.fillStyle(0x0a0a18, 1);
                 sky.fillRect(0, 0, 800, 500);
                 
-                // Draw decorative matrix neon grid lines
-                sky.lineStyle(1, 0x00e5ff, 0.05);
+                // Neon matrix vertical lines
+                sky.lineStyle(1, 0x00e5ff, 0.04);
                 for (let x = 0; x < 800; x += 40) {
                     sky.lineBetween(x, 0, x, 500);
                 }
                 
                 this.score = 0;
                 this.isGameEnded = false;
-                this.oddTextObj = null;
                 
-                // Set speed based on level (1 = 45, 2 = 65, 3 = 85) - Slower and manageable
-                this.scrollSpeed = 30 + currentDifficulty * 15;
+                // Flowing path config
+                this.startX = 50;
+                this.endX = 750;
+                this.rowWidth = this.endX - this.startX; // 700 pixels per row
+                this.rowHeight = 80;
+                this.startY = 100;
+                this.numRows = 5;
+                this.totalPathLength = this.numRows * this.rowWidth; // 3500 pixels total
+                
+                // Set speed based on level (Level 1: 30 px/sec, Level 2: 45 px/sec, Level 3: 60 px/sec) - Slower and manageable
+                this.scrollSpeed = 15 + currentDifficulty * 15;
                 
                 // Score indicator
                 this.scoreText = this.add.text(25, 20, `הצלחות: 0/3`, { fontSize: '22px', fill: '#00e5ff', fontStyle: 'bold', fontFamily: 'Rubik' });
                 
                 this.events.on('shutdown', () => {
                     this.isGameEnded = true;
-                    this.oddTextObj = null;
                 });
                 
                 this.spawnNewOddSet();
@@ -17404,13 +17413,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             spawnNewOddSet() {
                 if (this.isGameEnded) return;
                 
-                this.oddTextObj = null; // Clear previous reference immediately to prevent race conditions
-                
-                if (this.numberGroup) {
-                    this.numberGroup.clear(true, true);
+                if (this.characters) {
+                    this.characters.forEach(c => c.textObj.destroy());
                 }
-                
-                this.numberGroup = this.physics.add.group();
                 
                 // Dom / Odd pairs
                 const sets = [
@@ -17423,44 +17428,44 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 ];
                 let currentSet = sets[Phaser.Math.Between(0, sets.length - 1)];
                 
-                let cols = 32; // Many columns to form a very long number row
-                let rows = 8;
-                let colWidth = 22; // Tightly packed columns
-                let rowHeight = 45;
-                let startX = 50;
+                // Spawn tightly packed characters along the path (50px spacing for 70px font looks continuous)
+                let charSpacing = 48;
+                let numChars = Math.floor(this.totalPathLength / charSpacing);
                 
-                let oddCol = Phaser.Math.Between(3, cols - 4);
-                let oddRow = Phaser.Math.Between(2, rows - 3);
+                // Select a random middle index to be the odd number (so it doesn't spawn exactly at wrapping edges)
+                let oddIndex = Phaser.Math.Between(15, numChars - 15);
                 
-                let startY = -380;
+                this.characters = [];
+                this.oddCharacter = null;
                 
-                for (let r = 0; r < rows; r++) {
-                    for (let c = 0; c < cols; c++) {
-                        let isOdd = (r === oddRow && c === oddCol);
-                        let char = isOdd ? currentSet.odd : currentSet.dominant;
-                        
-                        let tx = startX + c * colWidth;
-                        let ty = startY + r * rowHeight;
-                        
-                        let textObj = this.add.text(tx, ty, char, {
-                            fontSize: '34px',
-                            fontFamily: 'Rubik',
-                            fontStyle: 'bold',
-                            fill: '#00ff66' // Same color for all numbers
-                        }).setOrigin(0.5);
-                        
-                        if (isOdd) {
-                            textObj.setInteractive();
-                            textObj.on('pointerdown', () => this.onOddClicked(textObj));
-                            this.oddTextObj = textObj;
-                        } else {
-                            textObj.setAlpha(0.85);
-                        }
-                        
-                        this.physics.add.existing(textObj);
-                        textObj.body.setGravityY(0);
-                        textObj.body.setVelocityY(this.scrollSpeed);
-                        this.numberGroup.add(textObj);
+                for (let i = 0; i < numChars; i++) {
+                    let isOdd = (i === oddIndex);
+                    let char = isOdd ? currentSet.odd : currentSet.dominant;
+                    
+                    let distance = i * charSpacing;
+                    
+                    // Map distance to 2D row layout coordinates
+                    let rowIndex = Math.floor(distance / this.rowWidth);
+                    let offset = distance % this.rowWidth;
+                    let tx = this.startX + offset;
+                    let ty = this.startY + rowIndex * this.rowHeight;
+                    
+                    // Large digits (+100% font size = 70px)
+                    let textObj = this.add.text(tx, ty, char, {
+                        fontSize: '70px',
+                        fontFamily: 'Rubik',
+                        fontStyle: 'bold',
+                        fill: '#00ff66' // Exactly same color for all digits
+                    }).setOrigin(0.5);
+                    
+                    if (isOdd) {
+                        textObj.setInteractive();
+                        textObj.on('pointerdown', () => this.onOddClicked(textObj));
+                        this.oddCharacter = { textObj, distance, isOdd: true };
+                        this.characters.push(this.oddCharacter);
+                    } else {
+                        textObj.setAlpha(0.8);
+                        this.characters.push({ textObj, distance, isOdd: false });
                     }
                 }
             }
@@ -17476,15 +17481,12 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 p.fillStyle(0x00ff66, 1);
                 for (let i = 0; i < 8; i++) {
                     let angle = (i * Math.PI) / 4;
-                    p.fillCircle(textObj.x + Math.cos(angle) * 35, textObj.y + Math.sin(angle) * 35, 5);
+                    p.fillCircle(textObj.x + Math.cos(angle) * 45, textObj.y + Math.sin(angle) * 45, 6);
                 }
                 this.time.delayedCall(220, () => p.destroy());
                 
-                this.oddTextObj = null; // Clear reference to prevent offscreen check triggering
-                
                 if (this.score >= 3) {
                     this.isGameEnded = true;
-                    this.numberGroup.setVelocityY(0);
                     speakSuccess(false, () => {
                         awardStar('can_speed_odd', currentDifficulty, () => {
                             if (currentPhaserInstance) {
@@ -17499,12 +17501,33 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 }
             }
             
-            update() {
+            update(time, delta) {
                 if (this.isGameEnded) return;
                 
-                if (this.oddTextObj && this.oddTextObj.active && this.oddTextObj.y > 510) {
-                    this.oddTextObj = null; // Clear reference immediately to prevent multiple triggers in subsequent frames
-                    speakLetter("אוי! המספר ברח. נסו שוב!", 'he');
+                let dt = delta / 1000; // time in seconds
+                let oddWrapped = false;
+                
+                this.characters.forEach(c => {
+                    let prevDist = c.distance;
+                    c.distance += this.scrollSpeed * dt;
+                    
+                    if (c.distance >= this.totalPathLength) {
+                        c.distance -= this.totalPathLength;
+                        if (c.isOdd) {
+                            oddWrapped = true;
+                        }
+                    }
+                    
+                    // Recalculate 2D position
+                    let rowIndex = Math.floor(c.distance / this.rowWidth);
+                    let offset = c.distance % this.rowWidth;
+                    c.textObj.x = this.startX + offset;
+                    c.textObj.y = this.startY + rowIndex * this.rowHeight;
+                });
+                
+                // If the odd number wrapped around without being clicked
+                if (oddWrapped) {
+                    playErrorSound(); // Play error tone (no voice audio)
                     this.spawnNewOddSet();
                 }
             }
