@@ -2669,7 +2669,7 @@
     </div>
     <div id="feedback-layer" class="hidden feedback-icon"></div>
     <!-- Caching version helper badge -->
-    <div style="position:fixed; bottom:5px; left:5px; font-size:10px; color:#fff; opacity:0.4; z-index:9999; font-family:monospace; pointer-events:none;">v138</div>
+    <div style="position:fixed; bottom:5px; left:5px; font-size:10px; color:#fff; opacity:0.4; z-index:9999; font-family:monospace; pointer-events:none;">v140</div>
 
         <!-- Train Route Screen (v78) -->
     <div id="train-route-screen" class="hidden" style="background: linear-gradient(135deg, #0288d1, #26c6da); display:flex; flex-direction:column; align-items:center; justify-content:flex-start; min-height:100vh; padding:2vmin; box-sizing:border-box; width:100%; position:fixed; top:0; left:0; z-index:150; overflow-y:auto;">
@@ -2894,7 +2894,9 @@
         };
 
         function speakSuccess(isFinal = false, callback) {
-            let pool = audioFiles[userGender]; let file = "";
+            let gender = userGender || 'boy';
+            let pool = audioFiles[gender] || audioFiles['boy'];
+            let file = "";
             if (isFinal) { file = pool.life[rand(0, pool.life.length - 1)]; }
             else { globalSuccessCount++; if (globalSuccessCount % 2 === 0) file = pool.kapara[rand(0, pool.kapara.length - 1)]; else file = pool.reg[rand(0, pool.reg.length - 1)]; }
             
@@ -17376,32 +17378,53 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             create() {
                 // Background dark grid
                 let sky = this.add.graphics();
-                sky.fillStyle(0x0a0a18, 1);
+                sky.fillStyle(0x070714, 1);
                 sky.fillRect(0, 0, 800, 500);
                 
-                // Neon matrix vertical lines
-                sky.lineStyle(1, 0x00e5ff, 0.04);
+                // Neon matrix vertical grid lines
+                sky.lineStyle(1, 0x00e5ff, 0.03);
                 for (let x = 0; x < 800; x += 40) {
                     sky.lineBetween(x, 0, x, 500);
                 }
+                
+                // Beautiful neon border frame to frame the gameplay area
+                let frame = this.add.graphics();
+                frame.lineStyle(4, 0x7e57c2, 0.8);
+                frame.strokeRoundedRect(40, 75, 720, 395, 16);
+                frame.lineStyle(2, 0x00e5ff, 0.4);
+                frame.strokeRoundedRect(36, 71, 728, 403, 20);
+                
+                // Pulsing title header
+                this.add.text(750, 40, 'סריקת זרם נתונים 🛰️', {
+                    fontSize: '18px',
+                    fontFamily: 'Rubik',
+                    fill: '#00ff66',
+                    fontStyle: 'bold'
+                }).setOrigin(1, 0.5).setAlpha(0.65);
                 
                 this.score = 0;
                 this.isGameEnded = false;
                 
                 // Flowing path config
-                this.startX = 50;
-                this.endX = 750;
-                this.rowWidth = this.endX - this.startX; // 700 pixels per row
-                this.rowHeight = 80;
-                this.startY = 100;
+                this.startX = 60;
+                this.endX = 740;
+                this.rowWidth = this.endX - this.startX; // 680 pixels per row
+                this.rowHeight = 76;
+                this.startY = 115;
                 this.numRows = 5;
-                this.totalPathLength = this.numRows * this.rowWidth; // 3500 pixels total
+                this.totalPathLength = this.numRows * this.rowWidth;
                 
-                // Set speed based on level (Level 1: 30 px/sec, Level 2: 45 px/sec, Level 3: 60 px/sec) - Slower and manageable
+                // Speed (Level 1: 30 px/sec, Level 2: 45 px/sec, Level 3: 60 px/sec)
                 this.scrollSpeed = 15 + currentDifficulty * 15;
                 
                 // Score indicator
-                this.scoreText = this.add.text(25, 20, `הצלחות: 0/3`, { fontSize: '22px', fill: '#00e5ff', fontStyle: 'bold', fontFamily: 'Rubik' });
+                this.scoreText = this.add.text(50, 40, `הצלחות: 0/3`, { fontSize: '24px', fill: '#00e5ff', fontStyle: 'bold', fontFamily: 'Rubik' });
+                this.scoreText.setShadow(0, 0, '#00e5ff', 8, true, true);
+                
+                // Laser scanner line overlay
+                this.scanner = this.add.graphics();
+                this.scannerY = 115;
+                this.scannerDir = 1;
                 
                 this.events.on('shutdown', () => {
                     this.isGameEnded = true;
@@ -17428,11 +17451,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 ];
                 let currentSet = sets[Phaser.Math.Between(0, sets.length - 1)];
                 
-                // Spawn tightly packed characters along the path (50px spacing for 70px font looks continuous)
+                // Spacing: 48px spacing creates a nice long continuous stream for 70px font
                 let charSpacing = 48;
                 let numChars = Math.floor(this.totalPathLength / charSpacing);
-                
-                // Select a random middle index to be the odd number (so it doesn't spawn exactly at wrapping edges)
                 let oddIndex = Phaser.Math.Between(15, numChars - 15);
                 
                 this.characters = [];
@@ -17441,21 +17462,19 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 for (let i = 0; i < numChars; i++) {
                     let isOdd = (i === oddIndex);
                     let char = isOdd ? currentSet.odd : currentSet.dominant;
-                    
                     let distance = i * charSpacing;
                     
-                    // Map distance to 2D row layout coordinates
                     let rowIndex = Math.floor(distance / this.rowWidth);
                     let offset = distance % this.rowWidth;
                     let tx = this.startX + offset;
                     let ty = this.startY + rowIndex * this.rowHeight;
                     
-                    // Large digits (+100% font size = 70px)
+                    // Large digits (+100% size)
                     let textObj = this.add.text(tx, ty, char, {
                         fontSize: '70px',
                         fontFamily: 'Rubik',
                         fontStyle: 'bold',
-                        fill: '#00ff66' // Exactly same color for all digits
+                        fill: '#00ff66' // EXACTLY same green color for all digits
                     }).setOrigin(0.5);
                     
                     if (isOdd) {
@@ -17464,7 +17483,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                         this.oddCharacter = { textObj, distance, isOdd: true };
                         this.characters.push(this.oddCharacter);
                     } else {
-                        textObj.setAlpha(0.8);
+                        textObj.setAlpha(0.85);
                         this.characters.push({ textObj, distance, isOdd: false });
                     }
                 }
@@ -17487,7 +17506,12 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 
                 if (this.score >= 3) {
                     this.isGameEnded = true;
-                    speakSuccess(false, () => {
+                    playSuccessSound(); // Instant win chime!
+                    
+                    let hasExited = false;
+                    let transitionOut = () => {
+                        if (hasExited) return;
+                        hasExited = true;
                         awardStar('can_speed_odd', currentDifficulty, () => {
                             if (currentPhaserInstance) {
                                 currentPhaserInstance.destroy(true);
@@ -17495,7 +17519,11 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                             }
                             show('level-complete-overlay');
                         });
-                    });
+                    };
+                    
+                    // Play success voice praise and transition out
+                    speakSuccess(false, transitionOut);
+                    this.time.delayedCall(2000, transitionOut); // 2-second fallback safety net
                 } else {
                     this.spawnNewOddSet();
                 }
@@ -17504,30 +17532,43 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             update(time, delta) {
                 if (this.isGameEnded) return;
                 
-                let dt = delta / 1000; // time in seconds
+                let dt = delta / 1000;
                 let oddWrapped = false;
                 
+                // Move numbers along the flowing path
                 this.characters.forEach(c => {
-                    let prevDist = c.distance;
                     c.distance += this.scrollSpeed * dt;
                     
                     if (c.distance >= this.totalPathLength) {
                         c.distance -= this.totalPathLength;
-                        if (c.isOdd) {
-                            oddWrapped = true;
-                        }
+                        if (c.isOdd) oddWrapped = true;
                     }
                     
-                    // Recalculate 2D position
                     let rowIndex = Math.floor(c.distance / this.rowWidth);
                     let offset = c.distance % this.rowWidth;
                     c.textObj.x = this.startX + offset;
                     c.textObj.y = this.startY + rowIndex * this.rowHeight;
                 });
                 
-                // If the odd number wrapped around without being clicked
+                // Animate sweeping scanning laser line
+                this.scannerY += this.scannerDir * 120 * dt;
+                let scannerBottom = this.startY + (this.numRows - 1) * this.rowHeight;
+                if (this.scannerY > scannerBottom) {
+                    this.scannerY = scannerBottom;
+                    this.scannerDir = -1;
+                } else if (this.scannerY < this.startY) {
+                    this.scannerY = this.startY;
+                    this.scannerDir = 1;
+                }
+                
+                this.scanner.clear();
+                this.scanner.lineStyle(2, 0x00e5ff, 0.45);
+                this.scanner.strokeLineShape(new Phaser.Geom.Line(50, this.scannerY, 750, this.scannerY));
+                this.scanner.fillStyle(0x00e5ff, 0.04);
+                this.scanner.fillRect(50, this.scannerY - 12, 700, 24);
+                
                 if (oddWrapped) {
-                    playErrorSound(); // Play error tone (no voice audio)
+                    playErrorSound();
                     this.spawnNewOddSet();
                 }
             }
