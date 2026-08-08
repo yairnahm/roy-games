@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-08-08-v156-fix-prefab-bot-and-preload -->
+<!DOCTYPE html><!-- build: 2026-08-08-v157-can-tower-cloud-drift -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -914,6 +914,10 @@
         
         @keyframes kissAnim { 0% { transform: scale(0) rotate(var(--rot)); opacity: 0; } 20% { transform: scale(1.2) rotate(calc(var(--rot) + 15deg)); opacity: 1; } 80% { transform: scale(1) rotate(var(--rot)); opacity: 1; } 100% { transform: scale(1.5) rotate(var(--rot)); opacity: 0; } }
         @keyframes popIn { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        /* Ambient background motion (clouds/leaves/etc.) — subtle depth, respects reduced-motion */
+        @keyframes bgCloudDrift { 0% { transform: translateX(0); } 50% { transform: translateX(18px); } 100% { transform: translateX(0); } }
+        .bg-cloud-drift { animation-name: bgCloudDrift; animation-timing-function: ease-in-out; animation-iteration-count: infinite; }
+        @media (prefers-reduced-motion: reduce) { .bg-cloud-drift { animation: none; } }
         @keyframes superPop { 0% { transform: scale(0); opacity: 0; } 50% { transform: scale(1.3); } 100% { transform: scale(1); opacity: 1; } }
         @keyframes starPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
         @keyframes sparkle { 0%, 100% { opacity: 1; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3)); } 50% { opacity: 0.7; filter: drop-shadow(0 2px 8px rgba(255,215,0,0.8)); } }
@@ -18065,12 +18069,13 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 </div>
                 <div id="svg-game-container" style="position:relative; width:100%; max-width:750px; aspect-ratio: 800 / 500; border-radius:24px; border:4px solid #3f51b5; overflow:hidden; background:#fff; box-shadow: 0 10px 25px rgba(0,0,0,0.15); margin: 10px auto; touch-action:none; user-select:none; -webkit-user-select:none;">
                     <svg viewBox="0 0 800 500" width="100%" height="100%" id="tower-svg" style="display:block; background: linear-gradient(to bottom, #81d4fa, #e1f5fe);">
-                        <!-- Clouds -->
-                        <g fill="#ffffff" fill-opacity="0.7">
+                        <!-- Clouds (subtle drift for depth) -->
+                        <g fill="#ffffff" fill-opacity="0.7" class="bg-cloud-drift" style="animation-duration: 22s;">
                             <circle cx="150" cy="120" r="30" />
                             <circle cx="180" cy="110" r="40" />
                             <circle cx="210" cy="120" r="30" />
-                            
+                        </g>
+                        <g fill="#ffffff" fill-opacity="0.7" class="bg-cloud-drift" style="animation-duration: 28s; animation-delay: -6s;">
                             <circle cx="600" cy="150" r="30" />
                             <circle cx="630" cy="140" r="40" />
                             <circle cx="660" cy="150" r="30" />
