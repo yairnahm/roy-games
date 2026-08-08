@@ -4075,71 +4075,369 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
         const trDict = [].concat(oldShapes, [num1, num2, num3, num4, num5, num6, num7, num8, num9, num10]);
         let tOrder = [];
 
-        function initTracingGame() { get('active-game-title').textContent='השלימו את החסר ✏️'; get('game-workspace').innerHTML=`<div id="tracing-layout"><div id="minimap-area"><h3 style="font-size:clamp(14px,3vw,20px);margin:0 0 10px 0;color:#2196F3;">התקדמות</h3><canvas id="previewCanvas" width="180" height="180" style="width:100%;height:auto;aspect-ratio:1/1;border:2px dashed #ccc;border-radius:10px;background:#fafafa;"></canvas></div><div id="canvas-wrapper" class="canvas-container" style="aspect-ratio:1/1; max-width:600px;"><canvas id="tracingCanvas" class="drawing-canvas"></canvas></div></div>`; tOrder = shuffle(createRange(trDict.length)).slice(0, 4); tCanvas=get('tracingCanvas'); tCtx=tCanvas.getContext('2d'); tpCanvas=get('previewCanvas'); tpCtx=tpCanvas.getContext('2d'); tCanvas.onpointerdown=(e)=>{if(isProcessing)return; if(e.cancelable)e.preventDefault(); isDrawing=true; clearTimeout(gameErrorTimeout); hide('feedback-layer'); let p=getTpos(e); tLast=p; tStrokes.push({pts:[p],len:0}); tCtx.lineCap='round'; tCtx.lineJoin='round'; tpCtx.lineCap='round'; tpCtx.lineJoin='round';}; tCanvas.onpointermove=(e)=>{if(!isDrawing)return; if(e.cancelable)e.preventDefault(); let curr=getTpos(e); let s=tStrokes[tStrokes.length-1]; s.pts.push(curr); if(tLast){ let d=Math.hypot(curr.x-tLast.x, curr.y-tLast.y); s.len+=d; tPath.forEach(pt=>{if(!pt.h&&Math.hypot(pt.x-curr.x, pt.y-curr.y)<80)pt.h=true;}); } tCtx.shadowBlur=10; tCtx.shadowColor='#FF9800'; tCtx.beginPath(); tCtx.moveTo(tLast.x, tLast.y); tCtx.lineTo(curr.x, curr.y); tCtx.strokeStyle='#FF9800'; tCtx.lineWidth=45; tCtx.stroke(); tpCtx.beginPath(); tpCtx.moveTo(tLast.x*0.225, tLast.y*0.225); tpCtx.lineTo(curr.x*0.225, curr.y*0.225); tpCtx.strokeStyle='#FF9800'; tpCtx.lineWidth=14; tpCtx.stroke(); tLast=curr;}; tCanvas.onpointerup=tCanvas.onpointercancel=tCanvas.onpointerout=endTDraw; setTimeout(loadTracingRound, 50); }
-        function getTpos(e){ let r=tCanvas.getBoundingClientRect(); let cx = e.clientX !== undefined ? e.clientX : (e.touches && e.touches.length > 0 ? e.touches[0].clientX : 0); let cy = e.clientY !== undefined ? e.clientY : (e.touches && e.touches.length > 0 ? e.touches[0].clientY : 0); return { x: (cx - r.left) * (800 / r.width), y: (cy - r.top) * (800 / r.height) }; }
-        function loadTracingRound(){ tCanvas.width=800; tCanvas.height=800; tCanvas.parentElement.style.background='#fafafa'; tCtx.clearRect(0,0,800,800); tpCtx.clearRect(0,0,180,180); tStrokes=[]; tPath=[]; tGaps=[]; tDist=0; tPerimeter=0; let shape=trDict[tOrder[currentStep]]; let sc=shape.map(l=>[{x:l[0][0]*8,y:l[0][1]*8},{x:l[1][0]*8,y:l[1][1]*8}]); let segs=[]; sc.forEach((l,i)=>segs.push({l:l,i:i,d:Math.hypot(l[1].x-l[0].x,l[1].y-l[0].y)})); segs.forEach(s=>tPerimeter+=s.d); segs.sort((a,b)=>b.d-a.d); let numGaps=currentDifficulty===3?2:1; let ch=shuffle(segs.slice(0,Math.max(numGaps,2))).slice(0,numGaps); ch.forEach(s=>{let r1=currentDifficulty===1?0.1:0.25; let r2=currentDifficulty===1?0.9:0.75; let m1={x:s.l[0].x+(s.l[1].x-s.l[0].x)*r1, y:s.l[0].y+(s.l[1].y-s.l[0].y)*r1}; let m2={x:s.l[0].x+(s.l[1].x-s.l[0].x)*r2, y:s.l[0].y+(s.l[1].y-s.l[0].y)*r2}; tGaps.push({i:s.i, p1:m1, p2:m2, d:Math.hypot(m2.x-m1.x, m2.y-m1.y)}); let steps=Math.max(Math.abs(m2.x-m1.x), Math.abs(m2.y-m1.y)); for(let j=0;j<=steps;j+=3) tPath.push({x:m1.x+(m2.x-m1.x)*(j/steps), y:m1.y+(m2.y-m1.y)*(j/steps), h:false});}); drawTBase(sc); }
-        function drawTBase(sc){ tCtx.lineCap='round'; tCtx.lineJoin='round'; tpCtx.lineCap='round'; tpCtx.lineJoin='round'; sc.forEach((l,i)=>{let g=tGaps.find(x=>x.i===i); if(!g){ dLine(l[0],l[1],'#e0e0e0',60); dPLine(l[0],l[1],'#e0e0e0',14); }else{ dLine(l[0],g.p1,'#e0e0e0',60); dLine(g.p2,l[1],'#e0e0e0',60); dPLine(l[0],g.p1,'#e0e0e0',14); dPLine(g.p2,l[1],'#e0e0e0',14); if(currentDifficulty<3){ tCtx.beginPath(); tCtx.moveTo(g.p1.x,g.p1.y); tCtx.lineTo(g.p2.x,g.p2.y); tCtx.strokeStyle='#ccc'; tCtx.lineWidth=12; tCtx.setLineDash([20,30]); tCtx.stroke(); tCtx.setLineDash([]); } tCtx.beginPath(); tCtx.arc(g.p1.x,g.p1.y,25,0,Math.PI*2); tCtx.fillStyle='#FF9800'; tCtx.fill(); tCtx.beginPath(); tCtx.arc(g.p2.x,g.p2.y,25,0,Math.PI*2); tCtx.fillStyle='white'; tCtx.fill(); tCtx.lineWidth=6; tCtx.strokeStyle='#FF9800'; tCtx.stroke(); tpCtx.beginPath(); tpCtx.arc(g.p1.x*0.225,g.p1.y*0.225,6,0,Math.PI*2); tpCtx.fillStyle='#FF9800'; tpCtx.fill(); tpCtx.beginPath(); tpCtx.arc(g.p2.x*0.225,g.p2.y*0.225,6,0,Math.PI*2); tpCtx.fillStyle='white'; tpCtx.fill(); tpCtx.lineWidth=2; tpCtx.strokeStyle='#FF9800'; tpCtx.stroke(); }}); }
-        function dLine(p1,p2,c,w){tCtx.beginPath();tCtx.moveTo(p1.x,p1.y);tCtx.lineTo(p2.x,p2.y);tCtx.strokeStyle=c;tCtx.lineWidth=w;tCtx.stroke();} function dPLine(p1,p2,c,w){tpCtx.beginPath();tpCtx.moveTo(p1.x*0.225,p1.y*0.225);tpCtx.lineTo(p2.x*0.225,p2.y*0.225);tpCtx.strokeStyle=c;tpCtx.lineWidth=w;tpCtx.stroke();}
-        function endTDraw(){ 
-            if(!isDrawing)return; isDrawing=false; tLast=null; let cGaps=0, uInk=0; 
-            tStrokes.forEach(s=>uInk+=s.len); 
-            tGaps.forEach(g=>{
-                let conn=false; 
-                tStrokes.forEach(s=>{
-                    let h1=false, h2=false; 
-                    s.pts.forEach(p=>{
-                        if(Math.hypot(p.x-g.p1.x,p.y-g.p1.y)<150)h1=true; 
-                        if(Math.hypot(p.x-g.p2.x,p.y-g.p2.y)<150)h2=true;
-                    }); 
-                    if(h1&&h2)conn=true;
-                }); 
-                if(conn)cGaps++;
-            }); 
-            let cov= tPath.length>0 ? tPath.filter(p=>p.h).length/tPath.length : 0; 
-            let suc=false, scr=false; 
-            let maxInkAllowed = 12000; 
+        function initTracingGame() {
+            get('active-game-title').textContent = 'השלימו את החסר ✏️';
+            get('game-workspace').innerHTML = `
+                <div id="tracing-layout">
+                    <div id="minimap-area">
+                        <h3 style="font-size:clamp(14px,3vw,20px);margin:0 0 10px 0;color:#2196F3;">התקדמות</h3>
+                        <svg viewBox="0 0 180 180" id="preview-svg" style="width:100%;height:auto;aspect-ratio:1/1;border:2px dashed #ccc;border-radius:10px;background:#fafafa;">
+                            <g id="preview-base-lines" opacity="0.15"></g>
+                            <g id="preview-strokes"></g>
+                        </svg>
+                    </div>
+                    <div id="canvas-wrapper" class="canvas-container" style="aspect-ratio:1/1; max-width:600px;">
+                        <svg viewBox="0 0 800 800" width="100%" height="100%" id="tracing-svg" style="display:block; background:#fafafa; border-radius:24px; border:4px solid #b0bec5; box-shadow: 0 10px 25px rgba(0,0,0,0.1); touch-action:none;">
+                            <g id="tracing-base-lines" opacity="0.15"></g>
+                            <g id="tracing-guides"></g>
+                            <g id="tracing-strokes"></g>
+                        </svg>
+                    </div>
+                </div>
+            `;
+            tOrder = shuffle(createRange(trDict.length)).slice(0, 4);
+            const tracingSvg = document.getElementById('tracing-svg');
+            const previewSvg = document.getElementById('preview-svg');
+            const tStrokesGroup = document.getElementById('tracing-strokes');
+            const previewStrokesGroup = document.getElementById('preview-strokes');
+
+            let currentStroke = null;
+            let currentPreviewStroke = null;
+
+            tracingSvg.onpointerdown = (e) => {
+                if (isProcessing) return;
+                if (e.cancelable) e.preventDefault();
+                isDrawing = true;
+                clearTimeout(gameErrorTimeout);
+                hide('feedback-layer');
+
+                let p = getTpos(e);
+                tLast = p;
+                tStrokes.push({ pts: [p], len: 0 });
+
+                currentStroke = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                currentStroke.setAttribute('fill', 'none');
+                currentStroke.setAttribute('stroke', '#FF9800');
+                currentStroke.setAttribute('stroke-width', '45');
+                currentStroke.setAttribute('stroke-linecap', 'round');
+                currentStroke.setAttribute('stroke-linejoin', 'round');
+                currentStroke.setAttribute('filter', 'drop-shadow(0px 0px 8px #FF9800)');
+                currentStroke.setAttribute('d', `M ${p.x} ${p.y}`);
+                tStrokesGroup.appendChild(currentStroke);
+
+                currentPreviewStroke = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                currentPreviewStroke.setAttribute('fill', 'none');
+                currentPreviewStroke.setAttribute('stroke', '#FF9800');
+                currentPreviewStroke.setAttribute('stroke-width', '10');
+                currentPreviewStroke.setAttribute('stroke-linecap', 'round');
+                currentPreviewStroke.setAttribute('stroke-linejoin', 'round');
+                currentPreviewStroke.setAttribute('d', `M ${p.x * 0.225} ${p.y * 0.225}`);
+                previewStrokesGroup.appendChild(currentPreviewStroke);
+            };
+
+            tracingSvg.onpointermove = (e) => {
+                if (!isDrawing || !currentStroke) return;
+                if (e.cancelable) e.preventDefault();
+                let curr = getTpos(e);
+                let s = tStrokes[tStrokes.length - 1];
+                s.pts.push(curr);
+
+                if (tLast) {
+                    let d = Math.hypot(curr.x - tLast.x, curr.y - tLast.y);
+                    s.len += d;
+                    tPath.forEach(pt => {
+                        if (!pt.h && Math.hypot(pt.x - curr.x, pt.y - curr.y) < 80) pt.h = true;
+                    });
+                }
+
+                let dAttr = currentStroke.getAttribute('d') + ` L ${curr.x} ${curr.y}`;
+                currentStroke.setAttribute('d', dAttr);
+
+                let pdAttr = currentPreviewStroke.getAttribute('d') + ` L ${curr.x * 0.225} ${curr.y * 0.225}`;
+                currentPreviewStroke.setAttribute('d', pdAttr);
+
+                tLast = curr;
+            };
+
+            tracingSvg.onpointerup = tracingSvg.onpointercancel = tracingSvg.onpointerout = () => {
+                endTDraw();
+                currentStroke = null;
+                currentPreviewStroke = null;
+            };
+
+            setTimeout(loadTracingRound, 50);
+        }
+
+        function getTpos(e) {
+            const tracingSvg = document.getElementById('tracing-svg');
+            let r = tracingSvg.getBoundingClientRect();
+            let cx = e.clientX !== undefined ? e.clientX : (e.touches && e.touches.length > 0 ? e.touches[0].clientX : 0);
+            let cy = e.clientY !== undefined ? e.clientY : (e.touches && e.touches.length > 0 ? e.touches[0].clientY : 0);
+            return { x: (cx - r.left) * (800 / r.width), y: (cy - r.top) * (800 / r.height) };
+        }
+
+        function loadTracingRound() {
+            tStrokes = [];
+            tPath = [];
+            tGaps = [];
+            tDist = 0;
+            tPerimeter = 0;
+
+            document.getElementById('tracing-strokes').innerHTML = '';
+            document.getElementById('preview-strokes').innerHTML = '';
+            document.getElementById('tracing-svg').style.background = '#fafafa';
+
+            let shape = trDict[tOrder[currentStep]];
+            let sc = shape.map(l => [{ x: l[0][0] * 8, y: l[0][1] * 8 }, { x: l[1][0] * 8, y: l[1][1] * 8 }]);
+            let segs = [];
+            sc.forEach((l, i) => segs.push({ l: l, i: i, d: Math.hypot(l[1].x - l[0].x, l[1].y - l[0].y) }));
+            segs.forEach(s => tPerimeter += s.d);
+            segs.sort((a, b) => b.d - a.d);
+
+            let numGaps = currentDifficulty === 3 ? 2 : 1;
+            let ch = shuffle(segs.slice(0, Math.max(numGaps, 2))).slice(0, numGaps);
+            ch.forEach(s => {
+                let r1 = currentDifficulty === 1 ? 0.1 : 0.25;
+                let r2 = currentDifficulty === 1 ? 0.9 : 0.75;
+                let m1 = { x: s.l[0].x + (s.l[1].x - s.l[0].x) * r1, y: s.l[0].y + (s.l[1].y - s.l[0].y) * r1 };
+                let m2 = { x: s.l[0].x + (s.l[1].x - s.l[0].x) * r2, y: s.l[0].y + (s.l[1].y - s.l[0].y) * r2 };
+                tGaps.push({ i: s.i, p1: m1, p2: m2, d: Math.hypot(m2.x - m1.x, m2.y - m1.y) });
+
+                let steps = Math.max(Math.abs(m2.x - m1.x), Math.abs(m2.y - m1.y));
+                for (let j = 0; j <= steps; j += 3) {
+                    tPath.push({ x: m1.x + (m2.x - m1.x) * (j / steps), y: m1.y + (m2.y - m1.y) * (j / steps), h: false });
+                }
+            });
+
+            drawTBase(sc);
+        }
+
+        function drawTBase(sc) {
+            const baseGroup = document.getElementById('tracing-base-lines');
+            const guideGroup = document.getElementById('tracing-guides');
+            const previewBaseGroup = document.getElementById('preview-base-lines');
+
+            baseGroup.innerHTML = '';
+            guideGroup.innerHTML = '';
+            previewBaseGroup.innerHTML = '';
+
+            sc.forEach((l, i) => {
+                let g = tGaps.find(x => x.i === i);
+                if (!g) {
+                    baseGroup.innerHTML += `<line x1="${l[0].x}" y1="${l[0].y}" x2="${l[1].x}" y2="${l[1].y}" stroke="#e0e0e0" stroke-width="60" stroke-linecap="round" />`;
+                    previewBaseGroup.innerHTML += `<line x1="${l[0].x * 0.225}" y1="${l[0].y * 0.225}" x2="${l[1].x * 0.225}" y2="${l[1].y * 0.225}" stroke="#e0e0e0" stroke-width="14" stroke-linecap="round" />`;
+                } else {
+                    baseGroup.innerHTML += `<line x1="${l[0].x}" y1="${l[0].y}" x2="${g.p1.x}" y2="${g.p1.y}" stroke="#e0e0e0" stroke-width="60" stroke-linecap="round" />`;
+                    baseGroup.innerHTML += `<line x1="${g.p2.x}" y1="${g.p2.y}" x2="${l[1].x}" y2="${l[1].y}" stroke="#e0e0e0" stroke-width="60" stroke-linecap="round" />`;
+
+                    previewBaseGroup.innerHTML += `<line x1="${l[0].x * 0.225}" y1="${l[0].y * 0.225}" x2="${g.p1.x * 0.225}" y2="${g.p1.y * 0.225}" stroke="#e0e0e0" stroke-width="14" stroke-linecap="round" />`;
+                    previewBaseGroup.innerHTML += `<line x1="${g.p2.x * 0.225}" y1="${g.p2.y * 0.225}" x2="${l[1].x * 0.225}" y2="${l[1].y * 0.225}" stroke="#e0e0e0" stroke-width="14" stroke-linecap="round" />`;
+
+                    if (currentDifficulty < 3) {
+                        guideGroup.innerHTML += `<line x1="${g.p1.x}" y1="${g.p1.y}" x2="${g.p2.x}" y2="${g.p2.y}" stroke="#ccc" stroke-width="12" stroke-linecap="round" stroke-dasharray="20,30" />`;
+                    }
+
+                    guideGroup.innerHTML += `<circle cx="${g.p1.x}" cy="${g.p1.y}" r="25" fill="#FF9800" />`;
+                    guideGroup.innerHTML += `<circle cx="${g.p2.x}" cy="${g.p2.y}" r="25" fill="white" stroke="#FF9800" stroke-width="6" />`;
+                }
+            });
+        }
+
+        function endTDraw() {
+            if (!isDrawing) return;
+            isDrawing = false;
+            tLast = null;
+            let cGaps = 0, uInk = 0;
+            tStrokes.forEach(s => uInk += s.len);
+
+            tGaps.forEach(g => {
+                let conn = false;
+                tStrokes.forEach(s => {
+                    let h1 = false, h2 = false;
+                    s.pts.forEach(p => {
+                        if (Math.hypot(p.x - g.p1.x, p.y - g.p1.y) < 150) h1 = true;
+                        if (Math.hypot(p.x - g.p2.x, p.y - g.p2.y) < 150) h2 = true;
+                    });
+                    if (h1 && h2) conn = true;
+                });
+                if (conn) cGaps++;
+            });
+
+            let cov = tPath.length > 0 ? tPath.filter(p => p.h).length / tPath.length : 0;
+            let suc = false, scr = false;
+            let maxInkAllowed = 12000;
             let requiredCov = currentDifficulty === 3 ? 0.6 : 0.4;
-            if ((cGaps === tGaps.length || cov >= requiredCov) && uInk < maxInkAllowed) { suc = true; } 
+            if ((cGaps === tGaps.length || cov >= requiredCov) && uInk < maxInkAllowed) { suc = true; }
             else if (uInk >= maxInkAllowed) { scr = true; }
-            if(suc){ tCanvas.parentElement.style.background='#E8F5E9'; handleAnswer(true, null, loadTracingRound, null); } 
-            else if(scr){ handleAnswer(false, null, null, loadTracingRound, true); } 
+
+            if (suc) {
+                document.getElementById('tracing-svg').style.background = '#E8F5E9';
+                handleAnswer(true, null, loadTracingRound, null);
+            }
+            else if (scr) {
+                handleAnswer(false, null, null, loadTracingRound, true);
+            }
         }
 
         // 3. Counting
-        let cCanvas, cCtx, cTargets = [], cItemEls = [], cTouched = new Set(), cTouchCount = 0;
-        function initCountingGame() { get('game-workspace').innerHTML=`<div id="count-items-wrapper" class="canvas-container" style="aspect-ratio:3/2;"><canvas id="countCanvas" class="drawing-canvas"></canvas><div id="count-items-area"></div></div><div class="opts-row" id="count-opts"></div>`; cCanvas=get('countCanvas'); cCtx=cCanvas.getContext('2d'); cCanvas.onpointerdown=(e)=>{if(isProcessing)return; if(e.cancelable)e.preventDefault(); isDrawing=true; let p=getCpos(e); cCtx.beginPath(); cCtx.moveTo(p.x,p.y); cCtx.lineCap='round'; cCtx.lineWidth=6; cCtx.strokeStyle='rgba(255,0,0,0.5)';}; cCanvas.onpointermove=(e)=>{if(!isDrawing)return; if(e.cancelable)e.preventDefault(); let p=getCpos(e); cCtx.lineTo(p.x,p.y); cCtx.stroke(); cCtx.beginPath(); cCtx.moveTo(p.x,p.y); if(currentDifficulty<=2&&cItemEls.length>0){let cr=cCanvas.getBoundingClientRect(); cItemEls.forEach((el,idx)=>{if(cTouched.has(idx))return; let er=el.getBoundingClientRect(); let ix=(er.left+er.right)/2,iy=(er.top+er.bottom)/2; let ex=(ix-cr.left)*(600/cr.width),ey=(iy-cr.top)*(400/cr.height); if(Math.hypot(p.x-ex,p.y-ey)<46){cTouched.add(idx);cTouchCount++; cCtx.save(); cCtx.font='bold 34px Arial'; cCtx.textAlign='center'; cCtx.textBaseline='middle'; cCtx.strokeStyle='white'; cCtx.lineWidth=6; cCtx.strokeText(cTouchCount,ex,ey); cCtx.fillStyle='#e53935'; cCtx.fillText(cTouchCount,ex,ey); cCtx.restore(); cCtx.beginPath(); cCtx.moveTo(p.x,p.y);}});}  }; cCanvas.onpointerup=cCanvas.onpointercancel=cCanvas.onpointerout=()=>{isDrawing=false;}; 
-            if(currentDifficulty===1) cTargets=[rand(1,4),rand(2,5),rand(1,5),rand(3,6)];
-            else if(currentDifficulty===2) cTargets=shuffle([rand(4,6),rand(5,7),rand(6,8),rand(7,9)]);
-            else if(currentDifficulty===3) cTargets=shuffle([rand(7,9),rand(8,10),rand(9,12),rand(10,12)]);
-            else if(currentDifficulty===4) cTargets=shuffle([rand(13,16),rand(15,18),rand(17,20),rand(14,20)]);
-            else cTargets=shuffle([rand(3,6),rand(4,7),rand(5,8),rand(4,8)]); 
-            setTimeout(loadCountingRound, 50); 
+        let cTargets = [], cItemEls = [], cTouched = new Set(), cTouchCount = 0;
+        function initCountingGame() {
+            get('game-workspace').innerHTML = `
+                <div id="count-items-wrapper" class="canvas-container" style="aspect-ratio:3/2; position:relative;">
+                    <div id="count-items-area" style="position:absolute; top:0; left:0; width:100%; height:100%; z-index:1;"></div>
+                    <svg viewBox="0 0 600 400" id="count-svg" style="position:absolute; top:0; left:0; width:100%; height:100%; z-index:2; pointer-events:auto; touch-action:none; background:transparent;">
+                        <g id="counting-strokes"></g>
+                    </svg>
+                </div>
+                <div class="opts-row" id="count-opts"></div>
+            `;
+            const countSvg = document.getElementById('count-svg');
+            const strokesGroup = document.getElementById('counting-strokes');
+            let currentPath = null;
+
+            countSvg.onpointerdown = (e) => {
+                if (isProcessing) return;
+                if (e.cancelable) e.preventDefault();
+                isDrawing = true;
+                let p = getCpos(e);
+
+                currentPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                currentPath.setAttribute('fill', 'none');
+                currentPath.setAttribute('stroke', 'rgba(255,0,0,0.5)');
+                currentPath.setAttribute('stroke-width', '6');
+                currentPath.setAttribute('stroke-linecap', 'round');
+                currentPath.setAttribute('d', `M ${p.x} ${p.y}`);
+                strokesGroup.appendChild(currentPath);
+            };
+
+            countSvg.onpointermove = (e) => {
+                if (!isDrawing || !currentPath) return;
+                if (e.cancelable) e.preventDefault();
+                let p = getCpos(e);
+
+                let dAttr = currentPath.getAttribute('d') + ` L ${p.x} ${p.y}`;
+                currentPath.setAttribute('d', dAttr);
+
+                if (currentDifficulty <= 2 && cItemEls.length > 0) {
+                    let cr = countSvg.getBoundingClientRect();
+                    cItemEls.forEach((el, idx) => {
+                        if (cTouched.has(idx)) return;
+                        let er = el.getBoundingClientRect();
+                        let ix = (er.left + er.right) / 2, iy = (er.top + er.bottom) / 2;
+                        let ex = (ix - cr.left) * (600 / cr.width), ey = (iy - cr.top) * (400 / cr.height);
+                        
+                        if (Math.hypot(p.x - ex, p.y - ey) < 46) {
+                            cTouched.add(idx);
+                            cTouchCount++;
+
+                            let text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                            text.setAttribute('x', ex);
+                            text.setAttribute('y', ey + 2);
+                            text.setAttribute('font-size', '34');
+                            text.setAttribute('font-weight', 'bold');
+                            text.setAttribute('text-anchor', 'middle');
+                            text.setAttribute('dominant-baseline', 'central');
+                            text.setAttribute('stroke', 'white');
+                            text.setAttribute('stroke-width', '6');
+                            text.setAttribute('fill', '#e53935');
+                            text.setAttribute('font-family', 'Arial');
+                            text.textContent = cTouchCount;
+                            
+                            countSvg.appendChild(text);
+                        }
+                    });
+                }
+            };
+
+            countSvg.onpointerup = countSvg.onpointercancel = countSvg.onpointerout = () => {
+                isDrawing = false;
+                currentPath = null;
+            };
+
+            if (currentDifficulty === 1) cTargets = [rand(1,4), rand(2,5), rand(1,5), rand(3,6)];
+            else if (currentDifficulty === 2) cTargets = shuffle([rand(4,6), rand(5,7), rand(6,8), rand(7,9)]);
+            else if (currentDifficulty === 3) cTargets = shuffle([rand(7,9), rand(8,10), rand(9,12), rand(10,12)]);
+            else if (currentDifficulty === 4) cTargets = shuffle([rand(13,16), rand(15,18), rand(17,20), rand(14,20)]);
+            else cTargets = shuffle([rand(3,6), rand(4,7), rand(5,8), rand(4,8)]);
+
+            setTimeout(loadCountingRound, 50);
         }
-        function getCpos(e){ let r=cCanvas.getBoundingClientRect(); let cx = e.clientX !== undefined ? e.clientX : (e.touches && e.touches.length > 0 ? e.touches[0].clientX : 0); let cy = e.clientY !== undefined ? e.clientY : (e.touches && e.touches.length > 0 ? e.touches[0].clientY : 0); return { x: (cx - r.left) * (600 / r.width), y: (cy - r.top) * (400 / r.height) }; }
-        function loadCountingRound() { 
-            cCanvas.width=600; cCanvas.height=400; cCtx.clearRect(0,0,600,400);
-            let tgt=cTargets[currentStep]; let area=get('count-items-area'); area.innerHTML='';
-            cItemEls=[]; cTouched=new Set(); cTouchCount=0;
-            let allIcons = ['🚗','✈️','🚂','🍎','🐶','🎈','⚽','🧸']; let icon = allIcons[rand(0,allIcons.length-1)];
+
+        function getCpos(e) {
+            const countSvg = document.getElementById('count-svg');
+            let r = countSvg.getBoundingClientRect();
+            let cx = e.clientX !== undefined ? e.clientX : (e.touches && e.touches.length > 0 ? e.touches[0].clientX : 0);
+            let cy = e.clientY !== undefined ? e.clientY : (e.touches && e.touches.length > 0 ? e.touches[0].clientY : 0);
+            return { x: (cx - r.left) * (600 / r.width), y: (cy - r.top) * (400 / r.height) };
+        }
+
+        function loadCountingRound() {
+            const countSvg = document.getElementById('count-svg');
+            countSvg.innerHTML = '<g id="counting-strokes"></g>';
+
+            let tgt = cTargets[currentStep];
+            let area = get('count-items-area');
+            area.innerHTML = '';
+            cItemEls = [];
+            cTouched = new Set();
+            cTouchCount = 0;
+            let allIcons = ['🚗','✈️','🚂','🍎','🐶','🎈','⚽','🧸'];
+            let icon = allIcons[rand(0, allIcons.length - 1)];
 
             if (currentDifficulty === 5) {
                 get('active-game-title').textContent = `כמה ${icon} יש כאן? 🔢`;
                 let distractors = allIcons.filter(i => i !== icon);
                 let d1 = distractors[0], d2 = distractors[1];
                 let allItems = [];
-                for(let i=0;i<tgt;i++) allItems.push(icon);
-                for(let i=0;i<rand(3,6);i++) allItems.push(d1);
-                for(let i=0;i<rand(3,6);i++) allItems.push(d2);
+                for (let i = 0; i < tgt; i++) allItems.push(icon);
+                for (let i = 0; i < rand(3, 6); i++) allItems.push(d1);
+                for (let i = 0; i < rand(3, 6); i++) allItems.push(d2);
                 allItems = shuffle(allItems);
-                allItems.forEach(item => { let d=D.createElement('div'); d.style.fontSize='clamp(30px,6vw,50px)'; d.style.transform=`rotate(${rand(-20,20)}deg)`; d.textContent=item; area.appendChild(d); if(item===icon) cItemEls.push(d); });
+                allItems.forEach(item => {
+                    let d = D.createElement('div');
+                    d.style.fontSize = 'clamp(30px,6vw,50px)';
+                    d.style.transform = `rotate(${rand(-20, 20)}deg)`;
+                    d.textContent = item;
+                    area.appendChild(d);
+                    if (item === icon) cItemEls.push(d);
+                });
             } else {
                 get('active-game-title').textContent = 'כמה יש כאן? 🔢';
-                for(let i=0;i<tgt;i++){let d=D.createElement('div'); d.style.fontSize= currentDifficulty>=4 ? 'clamp(25px,5vw,40px)' : 'clamp(40px,8vw,70px)'; d.style.transform=`rotate(${rand(-20,20)}deg)`; d.textContent=icon; area.appendChild(d); cItemEls.push(d);}
+                for (let i = 0; i < tgt; i++) {
+                    let d = D.createElement('div');
+                    d.style.fontSize = currentDifficulty >= 4 ? 'clamp(25px,5vw,40px)' : 'clamp(40px,8vw,70px)';
+                    d.style.transform = `rotate(${rand(-20, 20)}deg)`;
+                    d.textContent = icon;
+                    area.appendChild(d);
+                    cItemEls.push(d);
+                }
             }
 
-            let opts=[tgt]; while(opts.length<4){let r=tgt+rand(-3,3); if(r>0 && r<=25 && opts.indexOf(r)===-1)opts.push(r);} opts=shuffle(opts); 
-            let oArea=get('count-opts'); oArea.innerHTML=''; 
-            opts.forEach((o,i)=>{let w=D.createElement('div');w.className='option-wrapper';let b=D.createElement('button'); b.className='text-option-btn'; b.textContent=o; b.onclick=(e)=>{if(isProcessing)return; handleAnswer(o===tgt, b, loadCountingRound, null);}; let n=D.createElement('div'); n.className='option-number'; n.textContent=i+1; w.appendChild(b); w.appendChild(n); oArea.appendChild(w);}); 
+            let opts = [tgt];
+            while (opts.length < 4) {
+                let r = tgt + rand(-3, 3);
+                if (r > 0 && r <= 25 && opts.indexOf(r) === -1) opts.push(r);
+            }
+            opts = shuffle(opts);
+            let oArea = get('count-opts');
+            oArea.innerHTML = '';
+            opts.forEach((o, i) => {
+                let w = D.createElement('div');
+                w.className = 'option-wrapper';
+                let b = D.createElement('button');
+                b.className = 'text-option-btn';
+                b.textContent = o;
+                b.onclick = (e) => {
+                    if (isProcessing) return;
+                    handleAnswer(o === tgt, b, loadCountingRound, null);
+                };
+                let n = D.createElement('div');
+                n.className = 'option-number';
+                n.textContent = i + 1;
+                w.appendChild(b);
+                w.appendChild(n);
+                oArea.appendChild(w);
+            });
         }
 
         // 4. Sequence
@@ -4149,18 +4447,22 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
         function goSeqOpts() { playClickSound(); get('sequence-target').style.transform='scale(0)'; get('sequence-target').style.opacity='0'; setTimeout(()=>{ get('active-game-title').textContent='מה היה הסדר הנכון? ❓'; hide('seq-btn'); let opts=[seqTarget]; let rem=seqIcons.filter(x=>seqTarget.indexOf(x)===-1); while(opts.length<4){let n=currentDifficulty===1?[seqTarget[rand(0,3)]].concat(shuffle(rem).slice(0,3)) : (currentDifficulty===2?[...shuffle(seqTarget).slice(0,3),rem[0]] : [...seqTarget]); n=shuffle(n); if(!opts.some(o=>o.join('')===n.join('')) && n.join('')!==seqTarget.join('')) opts.push(n);} opts=shuffle(opts); let c=get('sequence-opts'); c.innerHTML=''; show('sequence-opts'); opts.forEach((o,i)=>{let w=D.createElement('div'); w.className='option-wrapper'; w.style.width='100%'; w.style.maxWidth='550px'; w.style.position='relative'; let b=D.createElement('button'); b.className='sequence-option-btn'; b.innerHTML = o.map(x=>`<span class="seq-opt-item">${x}</span>`).join(''); b.onclick=(e)=>{if(isProcessing)return; handleAnswer(o.join('')===seqTarget.join(''), b, startSequenceRound, null);}; let n=D.createElement('div'); n.className='option-number'; n.textContent=i+1; w.appendChild(b); w.appendChild(n); c.appendChild(w); }); }, 500); }
 
         // 5+6. Path
-        let pathType = 'fly'; let pCanvas, pCtx; let pPath=[], pDist=0, pStrokes=[], pLast=null, pLen=0; let flyGameCount=0;
+        let pathType = 'fly'; let pSvg, pInk, pGuide, pActivePointerId = null; let pPath=[], pDist=0, pStrokes=[], pLast=null, pLen=0; let flyGameCount=0;
         function initPathGame() {
             pathType = currentGameMode; get('active-game-title').textContent = pathType==='fly' ? 'הובילו את הזבוב אל הפה! 🪰' : 'השוטר רודף אחרי הגנב! 🚓';
             if(pathType==='fly') flyGameCount++;
             let flyImg = (flyGameCount%2===0) ? './images/fly-geko.webp' : './images/fly-target.jpg';
+            new Image().src = './images/fly-geko.webp'; new Image().src = './images/fly-target.jpg';
             let tIcon = pathType==='fly' ? `<img src="${flyImg}" style="width:clamp(80px,16vw,130px);height:clamp(80px,16vw,130px);object-fit:cover;object-position:center 30%;border-radius:50%;border:4px solid #fff;box-shadow:0 4px 14px rgba(0,0,0,0.35);display:block;" alt="פה פתוח">` : `<div style="font-size:clamp(60px, 12vw, 90px); filter:drop-shadow(0 5px 5px rgba(0,0,0,0.2));">🏃‍♂️</div>`;
             let aIcon = pathType==='fly' ? `<div style="font-size:clamp(60px, 12vw, 90px); animation:flap 0.15s infinite alternate; filter:drop-shadow(0 5px 5px rgba(0,0,0,0.2));">🪰</div>` : `<div style="font-size:clamp(60px, 12vw, 90px); filter:drop-shadow(0 5px 5px rgba(0,0,0,0.2)); position:relative;">🚓<div id="p-siren" class="siren-light"></div></div>`;
-            get('game-workspace').innerHTML = `<div id="path-canvas-wrapper" class="canvas-container" style="aspect-ratio:2/1;"><canvas id="pathCanvas" class="drawing-canvas"></canvas><div id="p-target" class="path-character">${tIcon}</div><div id="p-actor" class="path-character">${aIcon}</div></div>`;
-            pCanvas = get('pathCanvas'); pCtx = pCanvas.getContext('2d');
-            pCanvas.onpointerdown=(e)=>{
+            get('game-workspace').innerHTML = `<div id="path-canvas-wrapper" class="canvas-container" style="aspect-ratio:2/1;"><svg id="pathSvg" class="drawing-canvas" viewBox="0 0 800 400" preserveAspectRatio="none"><path id="path-guide" fill="none" stroke="rgba(150,150,150,0.8)" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="15,25"/><g id="path-ink" fill="none" stroke="#FF9800" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" style="filter:drop-shadow(0 0 6px rgba(255,152,0,0.8));"></g></svg><div id="p-target" class="path-character">${tIcon}</div><div id="p-actor" class="path-character">${aIcon}</div></div>`;
+            pSvg = get('pathSvg'); pInk = get('path-ink'); pGuide = get('path-guide');
+            pSvg.onpointerdown=(e)=>{
                 if(isProcessing)return;
+                if(pActivePointerId !== null) return;
                 if(e.cancelable)e.preventDefault();
+                pActivePointerId = e.pointerId;
+                try{ pSvg.setPointerCapture(e.pointerId); }catch(err){}
                 isDrawing=true;
                 clearTimeout(gameErrorTimeout);
                 hide('feedback-layer');
@@ -4168,15 +4470,19 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 if(wrapper) {
                     wrapper.querySelectorAll('.start-indicator, .path-arrow').forEach(el => el.style.display = 'none');
                 }
-                let p=getPpos(e);pLast=p;pStrokes.push({pts:[p],len:0});pCtx.lineCap='round';pCtx.lineJoin='round';
+                let p=getPpos(e);pLast=p;
+                let strokeEl = document.createElementNS('http://www.w3.org/2000/svg','path');
+                strokeEl.setAttribute('d', `M ${p.x} ${p.y}`);
+                pInk.appendChild(strokeEl);
+                pStrokes.push({pts:[p],len:0,el:strokeEl});
             };
-            pCanvas.onpointermove=(e)=>{if(!isDrawing)return;if(e.cancelable)e.preventDefault();let curr=getPpos(e);let s=pStrokes[pStrokes.length-1];s.pts.push(curr);if(pLast){let d=Math.hypot(curr.x-pLast.x,curr.y-pLast.y);s.len+=d;let stps=Math.max(1,Math.floor(d/5));for(let i=0;i<=stps;i++){let cx=pLast.x+(curr.x-pLast.x)*(i/stps);let cy=pLast.y+(curr.y-pLast.y)*(i/stps);pPath.forEach(pt=>{if(!pt.h&&Math.hypot(pt.x-cx,pt.y-cy)<40)pt.h=true;});}}pCtx.shadowBlur=10;pCtx.shadowColor='#FF9800';pCtx.beginPath();pCtx.moveTo(pLast.x,pLast.y);pCtx.lineTo(curr.x,curr.y);pCtx.strokeStyle='#FF9800';pCtx.lineWidth=18;pCtx.stroke();pLast=curr;};
-            pCanvas.onpointerup=pCanvas.onpointercancel=pCanvas.onpointerout=endPDraw;
+            pSvg.onpointermove=(e)=>{if(!isDrawing||e.pointerId!==pActivePointerId)return;if(e.cancelable)e.preventDefault();let curr=getPpos(e);let s=pStrokes[pStrokes.length-1];s.pts.push(curr);if(pLast){let d=Math.hypot(curr.x-pLast.x,curr.y-pLast.y);s.len+=d;let stps=Math.max(1,Math.floor(d/5));for(let i=0;i<=stps;i++){let cx=pLast.x+(curr.x-pLast.x)*(i/stps);let cy=pLast.y+(curr.y-pLast.y)*(i/stps);pPath.forEach(pt=>{if(!pt.h&&Math.hypot(pt.x-cx,pt.y-cy)<40)pt.h=true;});}}s.el.setAttribute('d', s.el.getAttribute('d') + ` L ${curr.x} ${curr.y}`);pLast=curr;};
+            pSvg.onpointerup=pSvg.onpointercancel=pSvg.onpointerout=(e)=>{ if(e.pointerId!==pActivePointerId)return; pActivePointerId = null; endPDraw(); };
             setTimeout(loadPathRound, 50);
         }
-        function getPpos(e){ let r=pCanvas.getBoundingClientRect(); let cx = e.clientX !== undefined ? e.clientX : (e.touches && e.touches.length > 0 ? e.touches[0].clientX : 0); let cy = e.clientY !== undefined ? e.clientY : (e.touches && e.touches.length > 0 ? e.touches[0].clientY : 0); return { x: (cx - r.left) * (800 / r.width), y: (cy - r.top) * (400 / r.height) }; }
+        function getPpos(e){ let r=pSvg.getBoundingClientRect(); let cx = e.clientX !== undefined ? e.clientX : (e.touches && e.touches.length > 0 ? e.touches[0].clientX : 0); let cy = e.clientY !== undefined ? e.clientY : (e.touches && e.touches.length > 0 ? e.touches[0].clientY : 0); return { x: (cx - r.left) * (800 / r.width), y: (cy - r.top) * (400 / r.height) }; }
         function loadPathRound() {
-            pCanvas.width=800; pCanvas.height=400; pCtx.clearRect(0,0,800,400); pStrokes=[]; pPath=[]; let aEl=get('p-actor'); let tEl=get('p-target'); aEl.style.transition='none'; aEl.style.opacity='1'; aEl.style.transform='';
+            pInk.innerHTML=''; pStrokes=[]; pPath=[]; let aEl=get('p-actor'); let tEl=get('p-target'); aEl.style.transition='none'; aEl.style.opacity='1'; aEl.style.transform='';
             let sy=rand(20,80), ey=rand(20,80); let ax=pathType==='fly'?90:85; let tx=pathType==='fly'?10:15;
             if(currentDifficulty===1){ for(let i=0;i<=100;i+=2){let t=i/100; pPath.push({x:(ax-(ax-tx)*t)*8, y:(sy+(ey-sy)*t + Math.sin(t*Math.PI)*15)*4, h:false});} }
             else if(currentDifficulty===2){ sy=50;ey=50; for(let i=0;i<=100;i+=2){let t=i/100; pPath.push({x:(ax-(ax-tx)*t)*8, y:(50 + Math.sin(t*Math.PI*2)*25)*4, h:false});} }
@@ -4225,7 +4531,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             }
         }
         function drawPathBaseShape() {
-            pCtx.beginPath(); pCtx.moveTo(pPath[0].x, pPath[0].y); for(let i=1;i<pLen;i++) pCtx.lineTo(pPath[i].x, pPath[i].y); pCtx.strokeStyle='rgba(150,150,150,0.8)'; pCtx.setLineDash([15,25]); pCtx.lineWidth=14; pCtx.lineCap='round'; pCtx.lineJoin='round'; pCtx.stroke(); pCtx.setLineDash([]);
+            let d = `M ${pPath[0].x} ${pPath[0].y}`; for(let i=1;i<pLen;i++) d += ` L ${pPath[i].x} ${pPath[i].y}`; pGuide.setAttribute('d', d);
         }
         function endPDraw(){ 
             if(!isDrawing)return; isDrawing=false; pLast=null; let uInk=0, hs=false, he=false; 
@@ -4266,9 +4572,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 } 
                 anim(); 
             } else if(scr) { 
-                handleAnswer(false, null, loadPathRound, loadPathRound, true); pStrokes=[]; pPath.forEach(pt=>pt.h=false); pCtx.clearRect(0,0,800,400); drawPathBaseShape(); 
+                handleAnswer(false, null, loadPathRound, loadPathRound, true); pStrokes=[]; pPath.forEach(pt=>pt.h=false); pInk.innerHTML=''; drawPathBaseShape(); 
             } else if(hs && he && cov < requiredCov) {
-                handleAnswer(false, null, loadPathRound, loadPathRound, false); pStrokes=[]; pPath.forEach(pt=>pt.h=false); pCtx.clearRect(0,0,800,400); drawPathBaseShape();
+                handleAnswer(false, null, loadPathRound, loadPathRound, false); pStrokes=[]; pPath.forEach(pt=>pt.h=false); pInk.innerHTML=''; drawPathBaseShape();
             }
         }
 
