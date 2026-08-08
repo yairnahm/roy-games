@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-08-08-v158-canvas-solve-ambient-motion -->
+<!DOCTYPE html><!-- build: 2026-08-08-v159-phase6-collection-plus-starbadge-fix -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -1706,6 +1706,46 @@
             'fairswing','stopthink','together2'];
         let starWallet = { full: 0, halves: 0, quarters: 0 };
         let awardedStars = {};
+        let royCollection = {}; // { itemId: true } — Project 2 Phase 6 collectibles
+
+        // Which themed category each game-id belongs to, and what collectible it unlocks.
+        const CATEGORY_COLLECTIBLES = {
+            canvas_solve: { id: 'workshop_gear', emoji: '⚙️', label: 'גלגל שיניים', img: 'images/collection/workshop_gear.png' },
+            gemini_solve: { id: 'space_star',    emoji: '⭐', label: 'כוכב חלל',      img: 'images/collection/space_star.png' },
+            solve:        { id: 'forest_leaf',   emoji: '🍃', label: 'עלה יער',       img: 'images/collection/forest_leaf.png' },
+            world:        { id: 'sea_shell',     emoji: '🐚', label: 'צדפת ים',       img: 'images/collection/sea_shell.png' }
+        };
+        const GAME_TO_CATEGORY = {};
+        (function buildGameToCategoryMap() {
+            const map = {
+                canvas_solve: ['can_flashlight','can_tower','can_shelter','can_pattern','can_rescue','can_speed_odd'],
+                gemini_solve: ['gem_fairswing','gem_cluegrow','gem_carefulfast','gem_nestfix','gem_stopthink','gem_together2','gem_inventor','gem_predict','gem_bridge','gem_rescue2'],
+                solve: ['bridge','rescue2','inventor','predict','cluegrow','nestfix','fairswing','carefulfast','stopthink','together2'],
+                world: ['tools','context','vparts','habitat','origins','families','whatneeds','sounds','soundmatch']
+            };
+            for (const cat in map) map[cat].forEach(id => { GAME_TO_CATEGORY[id] = cat; });
+        })();
+
+        function maybeAwardCollectible(gameMode) {
+            let cat = GAME_TO_CATEGORY[gameMode];
+            if (!cat) return;
+            let item = CATEGORY_COLLECTIBLES[cat];
+            if (!item || royCollection[item.id]) return;
+            royCollection[item.id] = true;
+            try { localStorage.setItem('royCollection', JSON.stringify(royCollection)); } catch(e) {}
+            renderCollectionStrip();
+        }
+
+        function renderCollectionStrip() {
+            let el = get('collection-strip');
+            if (!el) return;
+            el.innerHTML = Object.values(CATEGORY_COLLECTIBLES).map(item => {
+                let owned = !!royCollection[item.id];
+                return `<div style="display:flex; flex-direction:column; align-items:center; opacity:${owned ? '1' : '0.3'}; filter:${owned ? 'none' : 'grayscale(100%)'};" title="${item.label}">
+                    <img src="${item.img}" alt="${item.label}" style="width:36px; height:36px; object-fit:contain;" onerror="this.outerHTML='<span style=\\'font-size:30px;\\'>${item.emoji}</span>'" />
+                </div>`;
+            }).join('');
+        }
 
         let turnVerificationCounter = 0;
         let verificationPending = false;
@@ -1906,6 +1946,9 @@
             }
             if (localStorage.getItem('awardedStars')) {
                 awardedStars = JSON.parse(localStorage.getItem('awardedStars'));
+            }
+            if (localStorage.getItem('royCollection')) {
+                royCollection = JSON.parse(localStorage.getItem('royCollection'));
             }
         } catch(e) {
             console.error('Failed to load stars from localStorage:', e);
@@ -2226,6 +2269,16 @@
             if (type === 'half') return '<span style="position:absolute;top:-5px;left:-5px;font-size:clamp(16px,3vw,24px);z-index:10;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3));">✨</span>';
             return '';
         }
+        // Shows/hides each hub-card's .star-badge based on whether that game was actually
+        // ever completed, instead of the hardcoded ⭐ every card was born with.
+        function syncStarBadges() {
+            document.querySelectorAll('.star-badge[data-game]').forEach(el => {
+                let type = getStarType(el.dataset.game);
+                if (type === 'full') { el.textContent = '⭐'; el.style.display = ''; }
+                else if (type === 'half') { el.textContent = '✨'; el.style.display = ''; }
+                else { el.style.display = 'none'; }
+            });
+        }
     </script>
 
     <script>
@@ -2472,6 +2525,7 @@
 
     <div id="category-screen" class="hidden">
         <h1 style="margin-top: 3vh;" id="hub-header" aria-live="polite">המרכז של רועי</h1>
+        <div id="collection-strip" style="display:flex; justify-content:center; align-items:center; gap:12px; margin-bottom:0.8vmin;" aria-label="האוסף שלי"></div>
         <div id="star-wallet-container" style="display:flex; justify-content:center; align-items:center; gap:clamp(10px,3vw,25px); margin-bottom:1.5vmin;">
             <!-- Settings button with long press lock -->
             <button id="parent-settings-btn" class="icon-tooltip" data-tip="הגדרות הורים" style="position:relative; width:clamp(55px,12vw,70px); height:clamp(55px,12vw,70px); background:rgba(255,255,255,0.9); border:4px solid #b0bec5; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; padding:0; box-shadow:0 4px 10px rgba(0,0,0,0.1); outline:none; transition: transform 0.15s; margin-left:10px;">
@@ -3227,6 +3281,7 @@
 
         window.addEventListener('DOMContentLoaded', function() {
             syncStarBadges();
+            renderCollectionStrip();
             
             // Wire long press settings button
             let btn = get('parent-settings-btn');
@@ -3660,7 +3715,8 @@
                                 let se = 4; if (mistakesInLevel === 1) se = 3; else if (mistakesInLevel === 2) se = 2; else if (mistakesInLevel > 2) se = 1;
                                 for(let i=1; i<=4; i++) { let st = get(`star-${i}`); if(st) st.classList.remove('earned'); if(i<=se) setTimeout(()=>{ if(st) st.classList.add('earned'); playClickSound(); }, i*300); }
                                 awardStar(currentGameMode, currentDifficulty);
-                                if(currentGameMode === 'faces') { showFacesSummary(); } else { 
+                                maybeAwardCollectible(currentGameMode);
+                                if(currentGameMode === 'faces') { showFacesSummary(); } else {
                                     show('level-complete-overlay'); 
                                     if (levelCompleteAutoTimeout) clearTimeout(levelCompleteAutoTimeout);
                                     levelCompleteAutoTimeout = setTimeout(() => {
