@@ -2669,7 +2669,7 @@
     </div>
     <div id="feedback-layer" class="hidden feedback-icon"></div>
     <!-- Caching version helper badge -->
-    <div style="position:fixed; bottom:5px; left:5px; font-size:10px; color:#fff; opacity:0.4; z-index:9999; font-family:monospace; pointer-events:none;">v140</div>
+    <div style="position:fixed; bottom:5px; left:5px; font-size:10px; color:#fff; opacity:0.4; z-index:9999; font-family:monospace; pointer-events:none;">v142</div>
 
         <!-- Train Route Screen (v78) -->
     <div id="train-route-screen" class="hidden" style="background: linear-gradient(135deg, #0288d1, #26c6da); display:flex; flex-direction:column; align-items:center; justify-content:flex-start; min-height:100vh; padding:2vmin; box-sizing:border-box; width:100%; position:fixed; top:0; left:0; z-index:150; overflow-y:auto;">
@@ -15112,6 +15112,11 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
 
             // Build the dynamic UI template
             get('game-workspace').innerHTML = `
+                <!-- Step banner -->
+                <div id="solve-step-banner" style="background:#e3f2fd; border-radius:16px; padding:12px; text-align:center; font-weight:bold; color:#0d47a1; margin-bottom:15px; font-size:16px; border: 2px solid #bbdefb; width:95%; max-width:700px; box-sizing:border-box;">
+                    🔍 שלב 1 מתוך 4: מציאת רמזים
+                </div>
+
                 <!-- Gemini Bot NPC Box -->
                 <div class="solve-gemini-bot" id="solve-bot-bubble">
                     <span class="solve-gemini-bot-icon">🤖</span>
@@ -15119,11 +15124,23 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 </div>
 
                 <!-- Central Visual Playground with Hotspots -->
-                <div id="solve-scene-area" style="padding:0; background:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; overflow:visible; min-height:35vh; width:95%; max-width:700px; border-radius:24px; border:4px solid #b0bec5; position:relative; box-shadow: 0 10px 25px rgba(0,0,0,0.1);"></div>
+                <div id="solve-scene-area" style="padding:0; background:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; overflow:visible; min-height:35vh; width:95%; max-width:700px; border-radius:24px; border:4px solid #b0bec5; position:relative; box-shadow: 0 10px 25px rgba(0,0,0,0.1); margin-bottom:15px;"></div>
                 
                 <!-- Clue Status & Trigger Button -->
                 <div id="solve-clue-zone" class="solve-clue-status-bar">
                     <span id="clue-counter-title">🔍 מצאו את הרמזים המהבהבים בכתום בתמונה כדי להמשיך</span>
+                </div>
+
+                <!-- Clue Board (Persistent Clues) -->
+                <div id="solve-clue-board" class="hidden" style="background:#fff3e0; border:2px dashed #ffb74d; border-radius:16px; padding:12px; margin-bottom:15px; width:95%; max-width:700px; box-sizing:border-box;">
+                    <div style="font-weight:900; color:#e65100; margin-bottom:6px; font-size:15px; text-align:right; direction:rtl;">📌 רמזים שגיליתם בסיטואציה:</div>
+                    <div id="solve-clues-list" style="display:flex; flex-direction:column; gap:6px;"></div>
+                </div>
+
+                <!-- Selected Choice & Outcome Board -->
+                <div id="solve-outcome-board" class="hidden" style="background:#e8f5e9; border:2px solid #81c784; border-radius:16px; padding:15px; margin-bottom:15px; width:95%; max-width:700px; box-sizing:border-box; text-align:right; direction:rtl;">
+                    <div style="font-weight:900; color:#2e7d32; font-size:17px; margin-bottom:5px;" id="solve-outcome-title">הבחירה שלכם:</div>
+                    <div style="font-weight:bold; color:#37474f; font-size:15px; line-height:1.4;" id="solve-outcome-detail"></div>
                 </div>
 
                 <!-- Option Selection Grid -->
@@ -15179,6 +15196,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
 
             // Overlay Clue Hotspots on top of wrapper to maintain exact coordinates
             if (round.clues && round.clues.length > 0) {
+                get('solve-step-banner').textContent = `🔍 שלב 1 מתוך 4: מציאת רמזים (0/${round.clues.length})`;
                 round.clues.forEach((clue, idx) => {
                     let div = D.createElement('div');
                     div.className = 'solve-hotspot';
@@ -15222,14 +15240,32 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             botText.textContent = clue.revealedText;
             speakLetter(clue.revealedText, 'he');
 
+            // Append clue to persistent clue board
+            show('solve-clue-board');
+            let cluesList = get('solve-clues-list');
+            if (cluesList) {
+                let div = D.createElement('div');
+                div.style.fontWeight = 'bold';
+                div.style.color = '#e65100';
+                div.style.fontSize = '14px';
+                div.style.margin = '4px 0';
+                div.textContent = `✔️ ${clue.revealedText}`;
+                cluesList.appendChild(div);
+            }
+
             // Update status text or show continue button
             let remaining = round.clues.length - geminiClickedClues.length;
             let counterTitle = get('clue-counter-title');
             if (counterTitle) {
                 if (remaining > 0) {
+                    get('solve-step-banner').textContent = `🔍 שלב 1 מתוך 4: מציאת רמזים (${geminiClickedClues.length}/${round.clues.length})`;
                     counterTitle.textContent = `🔍 מצאו את הרמזים המהבהבים בכתום בתמונה (נשארו עוד ${remaining} רמזים):`;
                 } else {
-                    counterTitle.innerHTML = `<button class="action-btn" onclick="hide('solve-clue-zone'); showGeminiChoices('${gameId}');" style="padding: 10px 36px; font-size:19px; border-radius: 20px; font-weight: 900; background: #00bcd4; box-shadow: 0 4px 12px rgba(0,188,212,0.3); border:none; color:white; cursor:pointer;">המשך לבחירת פתרון ➜</button>`;
+                    get('solve-step-banner').textContent = `💡 שלב 1 הושלם! לחצו על הכפתור למטה כדי להמשיך`;
+                    get('solve-step-banner').style.background = '#c8e6c9';
+                    get('solve-step-banner').style.borderColor = '#81c784';
+                    get('solve-step-banner').style.color = '#2e7d32';
+                    counterTitle.innerHTML = `<button class="action-btn" onclick="hide('solve-clue-zone'); showGeminiChoices('${gameId}');" style="padding: 10px 36px; font-size:19px; border-radius: 20px; font-weight: 900; background: #4caf50; box-shadow: 0 4px 12px rgba(76,175,80,0.3); border:none; color:white; cursor:pointer;">המשך לבחירת פתרון ➜</button>`;
                 }
             }
         };
@@ -15240,6 +15276,13 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             let oArea = get('solve-options-area');
             oArea.innerHTML = '';
             
+            // Update banner
+            let banner = get('solve-step-banner');
+            banner.textContent = `🤔 שלב 2 מתוך 4: בחירת הפתרון הטוב ביותר`;
+            banner.style.background = '#fff9c4';
+            banner.style.borderColor = '#fff59d';
+            banner.style.color = '#f57f17';
+
             // Remove hotspots from scene
             document.querySelectorAll('.solve-hotspot').forEach(el => el.remove());
 
@@ -15279,7 +15322,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             botText.textContent = choice.feedbackText;
             speakLetter(choice.feedbackText, 'he');
 
-            // Visual feedback: show outcome scene immediately
+            // Visual outcome
             let sceneArea = get('solve-scene-area');
             if (choice.outcomeScene.trim().startsWith('<svg')) {
                 sceneArea.innerHTML = choice.outcomeScene;
@@ -15288,15 +15331,45 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             }
 
             hide('solve-options-area');
+            hide('solve-clue-board'); // Hide clue board during outcome
+
+            // Show Selected Choice & Outcome Board
+            show('solve-outcome-board');
+            let outTitle = get('solve-outcome-title');
+            let outDetail = get('solve-outcome-detail');
+            let outBoard = get('solve-outcome-board');
+            
+            outTitle.textContent = `החלטתם: "${choice.label}"`;
+            outDetail.textContent = `תוצאה: ${choice.feedbackText}`;
+
+            let banner = get('solve-step-banner');
 
             if (choice.tier === 'best') {
                 playSuccessSound();
+                outBoard.style.borderColor = '#81c784';
+                outBoard.style.background = '#e8f5e9';
+                outTitle.style.color = '#2e7d32';
+                
+                banner.textContent = `💖 הפתרון הצליח! מעבר להסבר ההחלטה...`;
+                banner.style.background = '#c8e6c9';
+                banner.style.borderColor = '#81c784';
+                banner.style.color = '#2e7d32';
+
                 // For optimal choices, trigger justification
                 setTimeout(() => {
                     showGeminiJustification(gameId);
-                }, 2500);
+                }, 3000);
             } else {
                 playErrorSound();
+                outBoard.style.borderColor = '#e57373';
+                outBoard.style.background = '#ffebee';
+                outTitle.style.color = '#c62828';
+
+                banner.textContent = `⚠️ פתרון לא מיטבי. נסו פתרון אחר!`;
+                banner.style.background = '#ffcdd2';
+                banner.style.borderColor = '#ef9a9a';
+                banner.style.color = '#c62828';
+
                 // For suboptimal choices, prompt rewind
                 setTimeout(() => {
                     show('solve-rewind-area');
@@ -15321,6 +15394,13 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 jContainer.appendChild(card);
             });
 
+            // Update banner
+            let banner = get('solve-step-banner');
+            banner.textContent = `💡 שלב 3 מתוך 4: הסבירו למה זהו הפתרון הנכון`;
+            banner.style.background = '#e1bee7';
+            banner.style.borderColor = '#d1c4e9';
+            banner.style.color = '#4a148c';
+
             hide('solve-scene-area'); // Hide scene illustration during justification step to clear up screen space
             show('solve-justification-area');
         }
@@ -15339,6 +15419,13 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             
             // Go to Calibration
             setTimeout(() => {
+                // Update banner
+                let banner = get('solve-step-banner');
+                banner.textContent = `📊 שלב 4 מתוך 4: כמה הייתם בטוחים בבחירה שלכם?`;
+                banner.style.background = '#ffe0b2';
+                banner.style.borderColor = '#ffcc80';
+                banner.style.color = '#e65100';
+
                 hide('solve-scene-area'); // Keep scene hidden during calibration
                 show('solve-calibration-area');
             }, 1800);
@@ -15347,6 +15434,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
         window.submitCalibration = function(calValue, gameId) {
             playClickSound();
             hide('solve-calibration-area');
+            hide('solve-outcome-board');
             
             let game = GEMINI_GAMES[gameId];
             let botText = get('solve-bot-text');
