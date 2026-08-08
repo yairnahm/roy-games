@@ -17268,13 +17268,13 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
 
                         <!-- Draggable wood planks -->
                         <g id="plank-left" class="draggable-plank" style="cursor:grab; touch-action:none;">
-                            <rect x="-55" y="-14" width="110" height="28" fill="#ff7043" stroke="#d84315" stroke-width="3" rx="4" />
-                            <text x="0" y="4" font-size="12" fill="#ffffff" font-weight="bold" text-anchor="middle" font-family="Rubik">עמוד שמאל</text>
+                            <rect x="-14" y="-55" width="28" height="110" fill="#ff7043" stroke="#d84315" stroke-width="3" rx="4" />
+                            <text x="0" y="4" font-size="12" fill="#ffffff" font-weight="bold" text-anchor="middle" font-family="Rubik" transform="rotate(-90)">עמוד שמאל</text>
                         </g>
 
                         <g id="plank-right" class="draggable-plank" style="cursor:grab; touch-action:none;">
-                            <rect x="-55" y="-14" width="110" height="28" fill="#ff7043" stroke="#d84315" stroke-width="3" rx="4" />
-                            <text x="0" y="4" font-size="12" fill="#ffffff" font-weight="bold" text-anchor="middle" font-family="Rubik">עמוד ימין</text>
+                            <rect x="-14" y="-55" width="28" height="110" fill="#ff7043" stroke="#d84315" stroke-width="3" rx="4" />
+                            <text x="0" y="4" font-size="12" fill="#ffffff" font-weight="bold" text-anchor="middle" font-family="Rubik" transform="rotate(-90)">עמוד ימין</text>
                         </g>
 
                         <g id="plank-roof" class="draggable-plank" style="cursor:grab; touch-action:none;">
@@ -17301,9 +17301,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             const p2 = document.getElementById('plank-right');
             const p3 = document.getElementById('plank-roof');
 
-            p1.pos = { x: 180, y: 450 };
-            p2.pos = { x: 400, y: 450 };
-            p3.pos = { x: 620, y: 450 };
+            p1.pos = { x: 180, y: 410 };
+            p2.pos = { x: 350, y: 410 };
+            p3.pos = { x: 580, y: 410 };
 
             function updateTransform(element) {
                 element.style.transform = `translate(${element.pos.x}px, ${element.pos.y}px)`;
@@ -17403,9 +17403,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 setTimeout(() => {
                     if (!gameActive) return;
 
-                    const p1Ok = p1.pos.x >= 280 && p1.pos.x <= 340 && p1.pos.y >= 320 && p1.pos.y <= 350;
-                    const p2Ok = p2.pos.x >= 460 && p2.pos.x <= 520 && p2.pos.y >= 320 && p2.pos.y <= 350;
-                    const p3Ok = p3.pos.x >= 360 && p3.pos.x <= 440 && p3.pos.y >= 280 && p3.pos.y <= 325;
+                    const p1Ok = p1.pos.x >= 290 && p1.pos.x <= 350 && p1.pos.y >= 260 && p1.pos.y <= 330;
+                    const p2Ok = p2.pos.x >= 450 && p2.pos.x <= 510 && p2.pos.y >= 260 && p2.pos.y <= 330;
+                    const p3Ok = p3.pos.x >= 360 && p3.pos.x <= 440 && p3.pos.y >= 200 && p3.pos.y <= 250;
 
                     const success = p1Ok && p2Ok && p3Ok;
 
@@ -17445,9 +17445,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             });
 
             function resetCurrentGame() {
-                p1.pos = { x: 180, y: 450 };
-                p2.pos = { x: 400, y: 450 };
-                p3.pos = { x: 620, y: 450 };
+                p1.pos = { x: 180, y: 410 };
+                p2.pos = { x: 350, y: 410 };
+                p3.pos = { x: 580, y: 410 };
                 [p1, p2, p3].forEach(p => {
                     p.style.transition = 'none';
                     updateTransform(p);
