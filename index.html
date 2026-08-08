@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-08-08-v161-phase8-world-map-home -->
+<!DOCTYPE html><!-- build: 2026-08-08-v162-world-map-bg-art -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -3484,15 +3484,35 @@
             { id: 'story_solve',  name: 'סיפורים והרפתקאות',           count: 'הרפתקה אינטראקטיבית', icon: '📖✨', color: '#311b92', bg: '#ede7f6', action: () => openCategory('story_solve','סיפורים והרפתקאות') }
         ];
 
+        const WORLD_MAP_BG_SRC = 'images/world-map/world_map_bg.png';
+        let worldMapBgAvailable = null; // null = not checked yet, true/false once known
+
         function renderWorldMap() {
             let root = get('world-map-root');
             if (!root) return;
 
-            const perRow = 3, colW = 300, rowH = 210, pad = 60;
+            if (worldMapBgAvailable === null) {
+                let testImg = new Image();
+                testImg.onload = () => { worldMapBgAvailable = true; renderWorldMap(); };
+                testImg.onerror = () => { worldMapBgAvailable = false; renderWorldMap(); };
+                testImg.src = WORLD_MAP_BG_SRC;
+                return; // renderWorldMap() re-invokes itself once the check resolves
+            }
+
+            const perRow = 3;
             const n = WORLD_MAP_ISLANDS.length;
             const rows = Math.ceil(n / perRow);
-            const viewW = pad * 2 + colW * (perRow - 1);
-            const viewH = pad * 2 + rowH * (rows - 1) + 40;
+
+            // When world_map_bg.png is present, these are measured against the actual
+            // artwork's 15 clearings (image is 1064x1478 ~ same 0.72 ratio as the
+            // 720x1000 viewBox below, so no cropping happens with preserveAspectRatio slice).
+            // Without the art, fall back to a plain evenly-spaced grid.
+            const padX = worldMapBgAvailable ? 132 : 60;
+            const padY = worldMapBgAvailable ? 159 : 60;
+            const colW = worldMapBgAvailable ? 244 : 300;
+            const rowH = worldMapBgAvailable ? 172 : 210;
+            const viewW = worldMapBgAvailable ? 720 : (padX * 2 + colW * (perRow - 1));
+            const viewH = worldMapBgAvailable ? 1000 : (padY * 2 + rowH * (rows - 1) + 40);
 
             let points = [];
             WORLD_MAP_ISLANDS.forEach((item, i) => {
@@ -3500,8 +3520,8 @@
                 let col = i % perRow;
                 // Snake layout, RTL-first: even rows go right-to-left, odd rows left-to-right.
                 let visualCol = (row % 2 === 0) ? (perRow - 1 - col) : col;
-                let x = pad + visualCol * colW;
-                let y = pad + row * rowH;
+                let x = padX + visualCol * colW;
+                let y = padY + row * rowH;
                 points.push({ ...item, x, y });
             });
 
@@ -3510,21 +3530,27 @@
             let islandsSvg = points.map(p => `
                 <g class="world-island" tabindex="0" role="button" aria-label="${p.name}, ${p.count}" data-island="${p.id}">
                     <g class="world-island-land">
-                        <circle cx="${p.x}" cy="${p.y}" r="72" fill="${p.bg}" stroke="${p.color}" stroke-width="5"/>
-                        <text x="${p.x}" y="${p.y - 8}" font-size="40" text-anchor="middle" dominant-baseline="middle">${p.icon}</text>
+                        ${worldMapBgAvailable
+                            ? `<circle cx="${p.x}" cy="${p.y}" r="95" fill="transparent"/>`
+                            : `<circle cx="${p.x}" cy="${p.y}" r="72" fill="${p.bg}" stroke="${p.color}" stroke-width="5"/>`}
+                        <text x="${p.x}" y="${p.y - 8}" font-size="${worldMapBgAvailable ? 52 : 40}" text-anchor="middle" dominant-baseline="middle">${p.icon}</text>
                     </g>
-                    <text x="${p.x}" y="${p.y + 62}" font-size="17" font-weight="900" text-anchor="middle" fill="${p.color}" font-family="Rubik">${p.name}</text>
-                    <text x="${p.x}" y="${p.y + 84}" font-size="13" font-weight="700" text-anchor="middle" fill="${p.color}" opacity="0.75" font-family="Rubik">${p.count}</text>
+                    <text x="${p.x}" y="${p.y + (worldMapBgAvailable ? 56 : 62)}" font-size="${worldMapBgAvailable ? 16 : 17}" font-weight="900" text-anchor="middle" fill="${p.color}" font-family="Rubik" style="${worldMapBgAvailable ? 'paint-order:stroke; stroke:#fff; stroke-width:4px;' : ''}">${p.name}</text>
+                    <text x="${p.x}" y="${p.y + (worldMapBgAvailable ? 74 : 84)}" font-size="${worldMapBgAvailable ? 12 : 13}" font-weight="700" text-anchor="middle" fill="${p.color}" opacity="0.75" font-family="Rubik" style="${worldMapBgAvailable ? 'paint-order:stroke; stroke:#fff; stroke-width:3px;' : ''}">${p.count}</text>
                 </g>
             `).join('');
+
+            let bgLayer = worldMapBgAvailable
+                ? `<image href="${WORLD_MAP_BG_SRC}" x="0" y="0" width="${viewW}" height="${viewH}" preserveAspectRatio="xMidYMid slice"/>`
+                : `<g class="bg-cloud-drift" fill="#ffffff" fill-opacity="0.5" style="animation-duration:26s;">
+                        <circle cx="${viewW * 0.15}" cy="40" r="20"/><circle cx="${viewW * 0.15 + 26}" cy="34" r="26"/><circle cx="${viewW * 0.15 + 52}" cy="40" r="18"/>
+                    </g>
+                    <path d="${pathD}" fill="none" stroke="#ffffff" stroke-width="12" stroke-linecap="round" stroke-dasharray="2,24" style="filter: drop-shadow(0 2px 3px rgba(0,0,0,0.12));"/>`;
 
             root.innerHTML = `
                 <div class="world-map-frame">
                     <svg viewBox="0 0 ${viewW} ${viewH}" xmlns="http://www.w3.org/2000/svg">
-                        <g class="bg-cloud-drift" fill="#ffffff" fill-opacity="0.5" style="animation-duration:26s;">
-                            <circle cx="${viewW * 0.15}" cy="40" r="20"/><circle cx="${viewW * 0.15 + 26}" cy="34" r="26"/><circle cx="${viewW * 0.15 + 52}" cy="40" r="18"/>
-                        </g>
-                        <path d="${pathD}" fill="none" stroke="#ffffff" stroke-width="12" stroke-linecap="round" stroke-dasharray="2,24" style="filter: drop-shadow(0 2px 3px rgba(0,0,0,0.12));"/>
+                        ${bgLayer}
                         ${islandsSvg}
                     </svg>
                 </div>
