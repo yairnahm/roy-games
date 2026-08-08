@@ -1,0 +1,4 @@
+File: close_valve.png
+Generated directly in ChatGPT (single image, not a sprite sheet).
+Prompt: "New unrelated image, square 1024x1024. Flat 2D children's storybook illustration style, colorful, cheerful, thick clean outlines. A red round shut-off valve on a metal pipe, being turned by a hand, no leaking water, dry floor, no text."
+Date: 2026-08-08

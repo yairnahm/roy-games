@@ -1,0 +1,4 @@
+File: gazebo.png
+Generated directly in ChatGPT (single image, not a sprite sheet).
+Prompt: "New unrelated image, square 1024x1024. Flat 2D children's storybook illustration style, colorful, cheerful, thick clean outlines, matching a park picnic picture-book art style. A wooden gazebo shelter in a park, dry and safe looking, with dark rain clouds visible in the distance, no people, no text."
+Date: 2026-08-08
