@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-08-08-v157-can-tower-cloud-drift -->
+<!DOCTYPE html><!-- build: 2026-08-08-v158-canvas-solve-ambient-motion -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -917,7 +917,9 @@
         /* Ambient background motion (clouds/leaves/etc.) — subtle depth, respects reduced-motion */
         @keyframes bgCloudDrift { 0% { transform: translateX(0); } 50% { transform: translateX(18px); } 100% { transform: translateX(0); } }
         .bg-cloud-drift { animation-name: bgCloudDrift; animation-timing-function: ease-in-out; animation-iteration-count: infinite; }
-        @media (prefers-reduced-motion: reduce) { .bg-cloud-drift { animation: none; } }
+        @keyframes bgWaterShimmer { 0%, 100% { opacity: 0.6; transform: translateX(0); } 50% { opacity: 1; transform: translateX(10px); } }
+        .bg-water-shimmer { animation: bgWaterShimmer 3.5s ease-in-out infinite; }
+        @media (prefers-reduced-motion: reduce) { .bg-cloud-drift, .bg-water-shimmer { animation: none; } }
         @keyframes superPop { 0% { transform: scale(0); opacity: 0; } 50% { transform: scale(1.3); } 100% { transform: scale(1); opacity: 1; } }
         @keyframes starPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
         @keyframes sparkle { 0%, 100% { opacity: 1; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3)); } 50% { opacity: 0.7; filter: drop-shadow(0 2px 8px rgba(255,215,0,0.8)); } }
@@ -18291,6 +18293,14 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 </div>
                 <div id="svg-game-container" style="position:relative; width:100%; max-width:750px; aspect-ratio: 800 / 500; border-radius:24px; border:4px solid #3f51b5; overflow:hidden; background:#fff; box-shadow: 0 10px 25px rgba(0,0,0,0.15); margin: 10px auto; touch-action:none; user-select:none; -webkit-user-select:none;">
                     <svg viewBox="0 0 800 500" width="100%" height="100%" id="shelter-svg" style="display:block; background: linear-gradient(to bottom, #e1f5fe, #b3e5fc);">
+                        <!-- Sky clouds (subtle drift for depth) -->
+                        <g fill="#ffffff" fill-opacity="0.6" class="bg-cloud-drift" style="animation-duration: 24s;">
+                            <circle cx="90" cy="60" r="22" /><circle cx="115" cy="52" r="28" /><circle cx="140" cy="60" r="20" />
+                        </g>
+                        <g fill="#ffffff" fill-opacity="0.6" class="bg-cloud-drift" style="animation-duration: 19s; animation-delay: -8s;">
+                            <circle cx="670" cy="45" r="20" /><circle cx="695" cy="38" r="25" /><circle cx="720" cy="45" r="18" />
+                        </g>
+
                         <!-- Tree Branch -->
                         <rect x="280" y="350" width="240" height="20" fill="#5d4037" stroke="#3e2723" stroke-width="2" rx="5" />
 
@@ -18525,6 +18535,11 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     <svg viewBox="0 0 800 500" width="100%" height="100%" id="pattern-svg" style="display:block; background: linear-gradient(to bottom, #e8f5e9, #c8e6c9);">
                         <!-- River -->
                         <rect x="0" y="350" width="800" height="150" fill="#0288d1" fill-opacity="0.8" />
+                        <g fill="#ffffff" class="bg-water-shimmer">
+                            <ellipse cx="120" cy="390" rx="50" ry="6" fill-opacity="0.25" />
+                            <ellipse cx="420" cy="420" rx="70" ry="7" fill-opacity="0.2" />
+                            <ellipse cx="680" cy="400" rx="45" ry="5" fill-opacity="0.25" />
+                        </g>
 
                         <!-- Bridge Pillars -->
                         <rect x="100" y="290" width="40" height="70" fill="#78909c" />
@@ -18713,6 +18728,11 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     <svg viewBox="0 0 800 500" width="100%" height="100%" id="rescue-svg" style="display:block; background: linear-gradient(to bottom, #e1f5fe, #b3e5fc);">
                         <!-- Water -->
                         <rect x="0" y="350" width="800" height="150" fill="#0288d1" fill-opacity="0.9" />
+                        <g fill="#ffffff" class="bg-water-shimmer">
+                            <ellipse cx="180" cy="395" rx="55" ry="6" fill-opacity="0.22" />
+                            <ellipse cx="450" cy="425" rx="65" ry="7" fill-opacity="0.2" />
+                            <ellipse cx="640" cy="400" rx="50" ry="5" fill-opacity="0.22" />
+                        </g>
 
                         <!-- Start Cliff (Left) -->
                         <rect x="10" y="330" width="220" height="20" fill="#795548" stroke="#4e342e" stroke-width="3" rx="4" />
