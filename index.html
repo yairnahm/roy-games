@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-08-08-v150-genius-gen-decisions-images -->
+<!DOCTYPE html><!-- build: 2026-08-08-v151-genius-gen-iteration-images -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -14840,10 +14840,13 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             let game = SOLVE_GAMES[gameId];
             let round = game.rounds[currentStep];
             get('game-workspace').innerHTML = `
-                <div id="solve-scene-area" class="large-target" style="padding:0;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;"></div>
-                <div id="solve-prompt" style="font-size:clamp(16px,3.2vw,22px);font-weight:bold;color:#37474f;margin:10px 0;direction:rtl;text-align:center;"></div>
-                <div id="solve-options-area" class="opts-row"></div>
-                <div id="solve-drop-zone" class="drag-drop-zone">🫳 גררו לכאן את הפתרון הנכון</div>
+                <div class="solve-gemini-bot" id="solve-bot-bubble" style="margin-bottom:10px; width:95%; max-width:700px; box-sizing:border-box;">
+                    <span class="solve-gemini-bot-icon">🤖</span>
+                    <div style="flex:1; font-weight:bold; color:#0d47a1; font-size:clamp(15px, 3vw, 19px);" id="solve-bot-text">${round.prompt}</div>
+                </div>
+                <div id="solve-scene-area" class="large-target" style="padding:0;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden; border-radius:24px; border:4px solid #b0bec5; box-shadow: 0 10px 25px rgba(0,0,0,0.1); margin: 10px auto; min-height:30vh; width:95%; max-width:700px;"></div>
+                <div id="solve-options-area" class="opts-row" style="margin-bottom:15px;"></div>
+                <div id="solve-drop-zone" class="drag-drop-zone" style="border-radius:20px; border:3px dashed #1e88e5; background:#e3f2fd; font-weight:bold; color:#0d47a1; padding:15px; width:95%; max-width:700px; margin: 0 auto 10px auto;">🫳 גררו לכאן את הפתרון הנכון</div>
             `;
             let sceneArea = get('solve-scene-area');
             if (round.scene.match(/\.(mp4|webm|mov)$/i)) {
@@ -14853,7 +14856,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             } else {
                 sceneArea.innerHTML = `<span>${round.scene}</span>`;
             }
-            get('solve-prompt').textContent = round.prompt;
+            get('solve-bot-text').textContent = round.prompt;
 
             let oArea = get('solve-options-area');
             let dropZone = get('solve-drop-zone');
@@ -16723,7 +16726,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     choices: [
                         {
                             label: "להגביה זווית",
-                            img: `<svg viewBox="0 0 100 100" style="width:100%;height:100%;"><line x1="20" y1="80" x2="60" y2="30" stroke="#4caf50" stroke-width="8" stroke-linecap="round"/><circle cx="60" cy="30" r="10" fill="#4caf50"/></svg>`,
+                            img: "images/genius/gen_iteration/rocket_high_angle.png",
                             tier: "best",
                             outcomeScene: `<svg viewBox="0 0 400 220" style="background: linear-gradient(to bottom, #c8e6c9, #e8f5e9); width:100%; max-height:30vh; border-radius:20px;">
                                 <rect x="280" y="150" width="80" height="15" fill="#4caf50" rx="3"/>
@@ -16733,14 +16736,14 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                         },
                         {
                             label: "להנמיך זווית",
-                            img: `<svg viewBox="0 0 100 100" style="width:100%;height:100%;"><line x1="20" y1="50" x2="70" y2="70" stroke="#f44336" stroke-width="8" stroke-linecap="round"/><circle cx="70" cy="70" r="10" fill="#f44336"/></svg>`,
+                            img: "images/genius/gen_iteration/rocket_low_angle.png",
                             tier: "poor",
                             outcomeScene: `<svg viewBox="0 0 400 220" style="background:#ffebee; width:100%; max-height:30vh; border-radius:20px;"><text x="200" y="130" font-size="50" text-anchor="middle">🚀💥💥😭</text></svg>`,
                             feedbackText: "אם ננמיך את הזווית עוד יותר, הרקטה תיפול לאדמה מהר יותר ותפספס בגדול."
                         },
                         {
                             label: "לוותר",
-                            img: `<svg viewBox="0 0 100 100" style="width:100%;height:100%;"><text x="50" y="65" font-size="50" text-anchor="middle">❌😭</text></svg>`,
+                            img: "images/genius/gen_iteration/giving_up.png",
                             tier: "poor",
                             outcomeScene: `<svg viewBox="0 0 400 220" style="background:#ffebee; width:100%; max-height:30vh; border-radius:20px;"><text x="200" y="130" font-size="50" text-anchor="middle">❌😔💔🚶‍♂️</text></svg>`,
                             feedbackText: "אנחנו לא מוותרים! כדאי לנסות שוב ולשנות את הזווית של המשגר כדי להצליח!"
@@ -16770,7 +16773,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     choices: [
                         {
                             label: "לזרוק ימינה",
-                            img: `<svg viewBox="0 0 100 100" style="width:100%;height:100%;"><text x="50" y="65" font-size="50" text-anchor="middle">👉🏀</text></svg>`,
+                            img: "images/genius/gen_iteration/ball_right.png",
                             tier: "best",
                             outcomeScene: `<svg viewBox="0 0 400 220" style="background: linear-gradient(to bottom, #c8e6c9, #e8f5e9); width:100%; max-height:30vh; border-radius:20px;">
                                 <circle cx="320" cy="100" r="25" fill="none" stroke="#e91e63" stroke-width="6"/>
@@ -16780,7 +16783,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                         },
                         {
                             label: "לזרוק שמאלה",
-                            img: `<svg viewBox="0 0 100 100" style="width:100%;height:100%;"><text x="50" y="65" font-size="50" text-anchor="middle">👈🏀</text></svg>`,
+                            img: "images/genius/gen_iteration/ball_left.png",
                             tier: "poor",
                             outcomeScene: `<svg viewBox="0 0 400 220" style="background:#ffebee; width:100%; max-height:30vh; border-radius:20px;"><text x="200" y="130" font-size="50" text-anchor="middle">🏀💨💨💨❌</text></svg>`,
                             feedbackText: "הרוח כבר דוחפת שמאלה. אם נזרוק שמאלה, הכדור יפספס את הסל במרחק גדול עוד יותר."
