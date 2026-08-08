@@ -12,6 +12,37 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;700;900&display=swap');
 
+        /* ==========================================
+           World Design Tokens — shared visual language
+           Project 2, Phase 1. CSS-only, no game logic.
+           ========================================== */
+        :root {
+            --font-family-main: 'Rubik', sans-serif;
+
+            --shadow-sm: 0 3px 8px rgba(0,0,0,0.10);
+            --shadow-md: 0 6px 16px rgba(0,0,0,0.14);
+            --shadow-lg: 0 10px 28px rgba(0,0,0,0.18);
+
+            --radius-sm: 12px;
+            --radius-md: 20px;
+            --radius-lg: 28px;
+
+            --color-success: #4CAF50;
+            --color-error: #f44336;
+            --color-info: #2196F3;
+            --color-warning: #FF9800;
+
+            /* Per-category theme accents (used by hub cards / per-game backgrounds) */
+            --theme-forest: #00897b;
+            --theme-forest-bg: linear-gradient(135deg, #e0f2f1, #b2dfdb);
+            --theme-space: #6a1b9a;
+            --theme-space-bg: linear-gradient(135deg, #ede7f6, #d1c4e9);
+            --theme-sea: #1565c0;
+            --theme-sea-bg: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            --theme-workshop: #ef6c00;
+            --theme-workshop-bg: linear-gradient(135deg, #fff3e0, #ffe0b2);
+        }
+
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         button:focus-visible, .hub-card:focus-visible, .grid-card:focus-visible, .category-card:focus-visible { outline: 3px solid #2196F3 !important; outline-offset: 2px; }
         button, [onclick], [role="button"] { touch-action: manipulation; }
