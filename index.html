@@ -1500,6 +1500,26 @@
 </head>
 <body class="bg-hub">
 
+    <svg style="display: none;" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <g id="prefab-nest">
+                <text font-size="65" text-anchor="middle" dominant-baseline="central">🪹</text>
+            </g>
+            <g id="prefab-bird">
+                <text font-size="40" text-anchor="middle" dominant-baseline="central">🐦</text>
+            </g>
+            <g id="prefab-kitten">
+                <text font-size="50" text-anchor="middle" dominant-baseline="central">🐱</text>
+            </g>
+            <g id="prefab-kitten-happy">
+                <text font-size="50" text-anchor="middle" dominant-baseline="central">😸❤️</text>
+            </g>
+            <g id="prefab-boy">
+                <text font-size="60" text-anchor="middle" dominant-baseline="central">👦</text>
+            </g>
+        </defs>
+    </svg>
+
     <div id="bg-animations"></div>
     <button id="fullscreen-btn" class="sys-btn" onclick="toggleFullScreen()">⤢ מסך מלא</button>
 
@@ -4077,7 +4097,13 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
 
         function initTracingGame() {
             get('active-game-title').textContent = 'השלימו את החסר ✏️';
+            
+            const promptText = "עזרו להשלים את הציור! עברו עם האצבע במדויק על פני הקווים והנקודות המסומנים.";
             get('game-workspace').innerHTML = `
+                <div class="solve-gemini-bot" id="solve-bot-bubble" style="margin-bottom:10px;">
+                    <span class="solve-gemini-bot-icon">🤖</span>
+                    <div style="flex:1; font-weight:bold; color:#0d47a1; font-size:clamp(15px, 3vw, 19px);" id="solve-bot-text">${promptText}</div>
+                </div>
                 <div id="tracing-layout">
                     <div id="minimap-area">
                         <h3 style="font-size:clamp(14px,3vw,20px);margin:0 0 10px 0;color:#2196F3;">התקדמות</h3>
@@ -4095,6 +4121,8 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     </div>
                 </div>
             `;
+            speakLetter(promptText, 'he');
+            
             tOrder = shuffle(createRange(trDict.length)).slice(0, 4);
             const tracingSvg = document.getElementById('tracing-svg');
             const previewSvg = document.getElementById('preview-svg');
@@ -4103,10 +4131,14 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
 
             let currentStroke = null;
             let currentPreviewStroke = null;
+            let tActivePointerId = null;
 
             tracingSvg.onpointerdown = (e) => {
                 if (isProcessing) return;
+                if (tActivePointerId !== null) return;
                 if (e.cancelable) e.preventDefault();
+                tActivePointerId = e.pointerId;
+                try { tracingSvg.setPointerCapture(e.pointerId); } catch(err) {}
                 isDrawing = true;
                 clearTimeout(gameErrorTimeout);
                 hide('feedback-layer');
@@ -4136,7 +4168,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             };
 
             tracingSvg.onpointermove = (e) => {
-                if (!isDrawing || !currentStroke) return;
+                if (!isDrawing || !currentStroke || e.pointerId !== tActivePointerId) return;
                 if (e.cancelable) e.preventDefault();
                 let curr = getTpos(e);
                 let s = tStrokes[tStrokes.length - 1];
@@ -4159,7 +4191,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 tLast = curr;
             };
 
-            tracingSvg.onpointerup = tracingSvg.onpointercancel = tracingSvg.onpointerout = () => {
+            tracingSvg.onpointerup = tracingSvg.onpointercancel = tracingSvg.onpointerout = (e) => {
+                if (e.pointerId !== tActivePointerId) return;
+                tActivePointerId = null;
                 endTDraw();
                 currentStroke = null;
                 currentPreviewStroke = null;
@@ -4282,7 +4316,12 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
         // 3. Counting
         let cTargets = [], cItemEls = [], cTouched = new Set(), cTouchCount = 0;
         function initCountingGame() {
+            const promptText = "ספרו את הציורים המופיעים על המסך! עברו עם האצבע וסמנו כל אחד מהם, ואז בחרו בתשובה הנכונה מבין האפשרויות.";
             get('game-workspace').innerHTML = `
+                <div class="solve-gemini-bot" id="solve-bot-bubble" style="margin-bottom:10px;">
+                    <span class="solve-gemini-bot-icon">🤖</span>
+                    <div style="flex:1; font-weight:bold; color:#0d47a1; font-size:clamp(15px, 3vw, 19px);" id="solve-bot-text">${promptText}</div>
+                </div>
                 <div id="count-items-wrapper" class="canvas-container" style="aspect-ratio:3/2; position:relative;">
                     <div id="count-items-area" style="position:absolute; top:0; left:0; width:100%; height:100%; z-index:1;"></div>
                     <svg viewBox="0 0 600 400" id="count-svg" style="position:absolute; top:0; left:0; width:100%; height:100%; z-index:2; pointer-events:auto; touch-action:none; background:transparent;">
@@ -4291,13 +4330,20 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 </div>
                 <div class="opts-row" id="count-opts"></div>
             `;
+            
+            speakLetter(promptText, 'he');
+            
             const countSvg = document.getElementById('count-svg');
             const strokesGroup = document.getElementById('counting-strokes');
             let currentPath = null;
+            let cActivePointerId = null;
 
             countSvg.onpointerdown = (e) => {
                 if (isProcessing) return;
+                if (cActivePointerId !== null) return;
                 if (e.cancelable) e.preventDefault();
+                cActivePointerId = e.pointerId;
+                try { countSvg.setPointerCapture(e.pointerId); } catch(err) {}
                 isDrawing = true;
                 let p = getCpos(e);
 
@@ -4311,7 +4357,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             };
 
             countSvg.onpointermove = (e) => {
-                if (!isDrawing || !currentPath) return;
+                if (!isDrawing || !currentPath || e.pointerId !== cActivePointerId) return;
                 if (e.cancelable) e.preventDefault();
                 let p = getCpos(e);
 
@@ -4343,13 +4389,18 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                             text.setAttribute('font-family', 'Arial');
                             text.textContent = cTouchCount;
                             
+                            text.classList.add('animate-bounce-effect');
+                            text.style.transformOrigin = `${ex}px ${ey + 2}px`;
+                            
                             countSvg.appendChild(text);
                         }
                     });
                 }
             };
 
-            countSvg.onpointerup = countSvg.onpointercancel = countSvg.onpointerout = () => {
+            countSvg.onpointerup = countSvg.onpointercancel = countSvg.onpointerout = (e) => {
+                if (e.pointerId !== cActivePointerId) return;
+                cActivePointerId = null;
                 isDrawing = false;
                 currentPath = null;
             };
@@ -4455,7 +4506,24 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             new Image().src = './images/fly-geko.webp'; new Image().src = './images/fly-target.jpg';
             let tIcon = pathType==='fly' ? `<img src="${flyImg}" style="width:clamp(80px,16vw,130px);height:clamp(80px,16vw,130px);object-fit:cover;object-position:center 30%;border-radius:50%;border:4px solid #fff;box-shadow:0 4px 14px rgba(0,0,0,0.35);display:block;" alt="פה פתוח">` : `<div style="font-size:clamp(60px, 12vw, 90px); filter:drop-shadow(0 5px 5px rgba(0,0,0,0.2));">🏃‍♂️</div>`;
             let aIcon = pathType==='fly' ? `<div style="font-size:clamp(60px, 12vw, 90px); animation:flap 0.15s infinite alternate; filter:drop-shadow(0 5px 5px rgba(0,0,0,0.2));">🪰</div>` : `<div style="font-size:clamp(60px, 12vw, 90px); filter:drop-shadow(0 5px 5px rgba(0,0,0,0.2)); position:relative;">🚓<div id="p-siren" class="siren-light"></div></div>`;
-            get('game-workspace').innerHTML = `<div id="path-canvas-wrapper" class="canvas-container" style="aspect-ratio:2/1;"><svg id="pathSvg" class="drawing-canvas" viewBox="0 0 800 400" preserveAspectRatio="none"><path id="path-guide" fill="none" stroke="rgba(150,150,150,0.8)" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="15,25"/><g id="path-ink" fill="none" stroke="#FF9800" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" style="filter:drop-shadow(0 0 6px rgba(255,152,0,0.8));"></g></svg><div id="p-target" class="path-character">${tIcon}</div><div id="p-actor" class="path-character">${aIcon}</div></div>`;
+            
+            const promptText = pathType === 'fly' ? "עזרו לזבוב להגיע אל פי הצפרדע! ציירו קו רציף לאורך המסלול המקווקו." : "עזרו לניידת המשטרה לתפוס את הגנב! ציירו קו רציף לאורך מסלול המרדף.";
+            get('game-workspace').innerHTML = `
+                <div class="solve-gemini-bot" id="solve-bot-bubble" style="margin-bottom:10px;">
+                    <span class="solve-gemini-bot-icon">🤖</span>
+                    <div style="flex:1; font-weight:bold; color:#0d47a1; font-size:clamp(15px, 3vw, 19px);" id="solve-bot-text">${promptText}</div>
+                </div>
+                <div id="path-canvas-wrapper" class="canvas-container" style="aspect-ratio:2/1;">
+                    <svg id="pathSvg" class="drawing-canvas" viewBox="0 0 800 400" preserveAspectRatio="none">
+                        <path id="path-guide" fill="none" stroke="rgba(150,150,150,0.8)" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="15,25"/>
+                        <g id="path-ink" fill="none" stroke="#FF9800" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" style="filter:drop-shadow(0 0 6px rgba(255,152,0,0.8));"></g>
+                    </svg>
+                    <div id="p-target" class="path-character">${tIcon}</div>
+                    <div id="p-actor" class="path-character">${aIcon}</div>
+                </div>`;
+            
+            speakLetter(promptText, 'he');
+            
             pSvg = get('pathSvg'); pInk = get('path-ink'); pGuide = get('path-guide');
             pSvg.onpointerdown=(e)=>{
                 if(isProcessing)return;
@@ -4555,6 +4623,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                             if(tEl2){
                                 tEl2.style.transition='transform 0.2s'; 
                                 tEl2.style.transform='translate(-50%,-50%) scale(1.25)'; 
+                                tEl2.classList.add('animate-bounce-effect');
                                 setTimeout(()=>{tEl2.style.transform='translate(-50%,-50%) scale(1)';},200);
                             }
                             setTimeout(function(){
@@ -4565,8 +4634,14 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                             return;
                         }
                         if(sEl)sEl.classList.remove('siren-active'); 
-                        isProcessing = false;
-                        handleAnswer(true, null, loadPathRound, null); return; 
+                        aEl.classList.add('animate-bounce-effect');
+                        let tEl2=get('p-target');
+                        if(tEl2){ tEl2.classList.add('animate-bounce-effect'); }
+                        setTimeout(function(){
+                            isProcessing = false;
+                            handleAnswer(true, null, loadPathRound, null);
+                        }, 800);
+                        return; 
                     } 
                     aEl.style.left=(pPath[f].x/8)+'%'; aEl.style.top=(pPath[f].y/4)+'%'; f+=s; requestAnimationFrame(anim); 
                 } 
@@ -17516,6 +17591,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                         }, 1800);
                     } else {
                         speechText.textContent = 'עבודה טובה! 👍';
+                        rect.classList.add('animate-bounce-effect');
                         blocks.push({ x: droppedX, y: landingY, element: blockGroup });
                         isFalling = false;
 
@@ -17566,26 +17642,31 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                         <rect x="280" y="350" width="240" height="20" fill="#5d4037" stroke="#3e2723" stroke-width="2" rx="5" />
 
                         <!-- Bird Nest & Baby Bird -->
-                        <text x="400" y="355" font-size="65" text-anchor="middle" id="shelter-nest">🪹</text>
-                        <text x="400" y="325" font-size="40" text-anchor="middle" id="shelter-bird">🐦</text>
+                        <use href="#prefab-nest" x="400" y="355" id="shelter-nest" />
+                        <g id="shelter-bird-container" transform="translate(400, 325)">
+                            <use href="#prefab-bird" x="0" y="0" id="shelter-bird" />
+                        </g>
 
                         <!-- Wind breeze graphic lines -->
                         <g id="breeze-group" stroke="#ffffff" stroke-width="4" stroke-linecap="round" opacity="0.6"></g>
 
                         <!-- Draggable wood planks -->
                         <g id="plank-left" class="draggable-plank" style="cursor:grab; touch-action:none;">
-                            <rect x="-14" y="-55" width="28" height="110" fill="#ff7043" stroke="#d84315" stroke-width="3" rx="4" />
-                            <text x="0" y="4" font-size="12" fill="#ffffff" font-weight="bold" text-anchor="middle" font-family="Rubik" transform="rotate(-90)">עמוד שמאל</text>
+                            <rect x="-24" y="-65" width="48" height="130" fill="transparent" pointer-events="auto" />
+                            <rect x="-14" y="-55" width="28" height="110" fill="#ff7043" stroke="#d84315" stroke-width="3" rx="4" pointer-events="none" />
+                            <text x="0" y="4" font-size="12" fill="#ffffff" font-weight="bold" text-anchor="middle" font-family="Rubik" transform="rotate(-90)" pointer-events="none">עמוד שמאל</text>
                         </g>
 
                         <g id="plank-right" class="draggable-plank" style="cursor:grab; touch-action:none;">
-                            <rect x="-14" y="-55" width="28" height="110" fill="#ff7043" stroke="#d84315" stroke-width="3" rx="4" />
-                            <text x="0" y="4" font-size="12" fill="#ffffff" font-weight="bold" text-anchor="middle" font-family="Rubik" transform="rotate(-90)">עמוד ימין</text>
+                            <rect x="-24" y="-65" width="48" height="130" fill="transparent" pointer-events="auto" />
+                            <rect x="-14" y="-55" width="28" height="110" fill="#ff7043" stroke="#d84315" stroke-width="3" rx="4" pointer-events="none" />
+                            <text x="0" y="4" font-size="12" fill="#ffffff" font-weight="bold" text-anchor="middle" font-family="Rubik" transform="rotate(-90)" pointer-events="none">עמוד ימין</text>
                         </g>
 
                         <g id="plank-roof" class="draggable-plank" style="cursor:grab; touch-action:none;">
-                            <rect x="-90" y="-14" width="180" height="28" fill="#ffb74d" stroke="#f57c00" stroke-width="3" rx="4" />
-                            <text x="0" y="4" font-size="14" fill="#ffffff" font-weight="bold" text-anchor="middle" font-family="Rubik">גג מגן</text>
+                            <rect x="-105" y="-24" width="210" height="48" fill="transparent" pointer-events="auto" />
+                            <rect x="-90" y="-14" width="180" height="28" fill="#ffb74d" stroke="#f57c00" stroke-width="3" rx="4" pointer-events="none" />
+                            <text x="0" y="4" font-size="14" fill="#ffffff" font-weight="bold" text-anchor="middle" font-family="Rubik" pointer-events="none">גג מגן</text>
                         </g>
 
                         <g id="wind-button" style="cursor:pointer;" transform="translate(400, 80)">
@@ -17600,6 +17681,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
 
             const svg = document.getElementById('shelter-svg');
             const bird = document.getElementById('shelter-bird');
+            const birdContainer = document.getElementById('shelter-bird-container');
             const breezeGroup = document.getElementById('breeze-group');
             const windBtn = document.getElementById('wind-button');
 
@@ -17619,6 +17701,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
 
             let gameActive = true;
             let windActive = false;
+            let activePointerId = null;
 
             function setupDraggable(element) {
                 let isDragging = false;
@@ -17634,8 +17717,10 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
 
                 element.addEventListener('pointerdown', (e) => {
                     if (windActive || !gameActive) return;
+                    if (activePointerId !== null) return;
+                    activePointerId = e.pointerId;
                     isDragging = true;
-                    element.setPointerCapture(e.pointerId);
+                    try { element.setPointerCapture(e.pointerId); } catch(err) {}
                     element.style.cursor = 'grabbing';
 
                     const coords = getSVGCoords(e.clientX, e.clientY);
@@ -17646,7 +17731,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 });
 
                 element.addEventListener('pointermove', (e) => {
-                    if (!isDragging) return;
+                    if (!isDragging || e.pointerId !== activePointerId) return;
                     const coords = getSVGCoords(e.clientX, e.clientY);
                     const dx = coords.x - startX;
                     const dy = coords.y - startY;
@@ -17656,9 +17741,10 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     updateTransform(element);
                 });
 
-                const endDrag = () => {
-                    if (!isDragging) return;
+                const endDrag = (e) => {
+                    if (!isDragging || e.pointerId !== activePointerId) return;
                     isDragging = false;
+                    activePointerId = null;
                     element.style.cursor = 'grab';
                 };
 
@@ -17736,6 +17822,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
 
                         if (success) {
                             bird.textContent = '🐦🥳';
+                            birdContainer.classList.add('animate-bounce-effect');
                             speakSuccess(false, () => {
                                 awardStar('can_shelter', currentDifficulty, () => {
                                     show('level-complete-overlay');
@@ -17803,8 +17890,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
 
                         <!-- Draggable Choice Card -->
                         <g id="pattern-choice" style="cursor:grab; touch-action:none;">
-                            <rect x="-55" y="-12" width="110" height="24" fill="#2196f3" stroke="#0d47a1" stroke-width="3" rx="4" />
-                            <text x="0" y="5" font-size="13" fill="#ffffff" font-weight="bold" text-anchor="middle" font-family="Rubik">בלוק כחול</text>
+                            <rect x="-70" y="-20" width="140" height="40" fill="transparent" pointer-events="auto" />
+                            <rect x="-55" y="-12" width="110" height="24" fill="#2196f3" stroke="#0d47a1" stroke-width="3" rx="4" pointer-events="none" />
+                            <text x="0" y="5" font-size="13" fill="#ffffff" font-weight="bold" text-anchor="middle" font-family="Rubik" pointer-events="none">בלוק כחול</text>
                         </g>
 
                         <!-- Rolling Ball -->
@@ -17835,6 +17923,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             let isDragging = false;
             let startX, startY;
             let initialX, initialY;
+            let activePointerId = null;
 
             const pt = svg.createSVGPoint();
             function getSVGCoords(clientX, clientY) {
@@ -17845,8 +17934,10 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
 
             choice.addEventListener('pointerdown', (e) => {
                 if (!gameActive) return;
+                if (activePointerId !== null) return;
+                activePointerId = e.pointerId;
                 isDragging = true;
-                choice.setPointerCapture(e.pointerId);
+                try { choice.setPointerCapture(e.pointerId); } catch(err) {}
                 choice.style.cursor = 'grabbing';
 
                 const coords = getSVGCoords(e.clientX, e.clientY);
@@ -17857,16 +17948,17 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             });
 
             choice.addEventListener('pointermove', (e) => {
-                if (!isDragging) return;
+                if (!isDragging || e.pointerId !== activePointerId) return;
                 const coords = getSVGCoords(e.clientX, e.clientY);
                 choice.pos.x = initialX + (coords.x - startX);
                 choice.pos.y = initialY + (coords.y - startY);
                 updateChoicePos();
             });
 
-            const endDrag = () => {
-                if (!isDragging) return;
+            const endDrag = (e) => {
+                if (!isDragging || e.pointerId !== activePointerId) return;
                 isDragging = false;
+                activePointerId = null;
                 choice.style.cursor = 'grab';
 
                 const dist = Math.hypot(choice.pos.x - 355, choice.pos.y - 280);
@@ -17919,6 +18011,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 else if (ballX > 480) {
                     isGameOver = true;
                     gameActive = false;
+                    ball.classList.add('animate-bounce-effect');
                     speakSuccess(false, () => {
                         awardStar('can_pattern', currentDifficulty, () => {
                             show('level-complete-overlay');
@@ -17974,23 +18067,26 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                         <rect x="570" y="330" width="220" height="20" fill="#795548" stroke="#4e342e" stroke-width="3" rx="4" />
 
                         <!-- Boy (Left) & Kitten (Right) -->
-                        <text x="100" y="315" font-size="42" text-anchor="middle" id="rescue-boy">🧑</text>
-                        <text x="680" y="315" font-size="42" text-anchor="middle" id="rescue-kitten">🐱</text>
+                        <use href="#prefab-boy" x="100" y="315" id="rescue-boy" />
+                        <use href="#prefab-kitten" x="680" y="315" id="rescue-kitten" />
 
                         <!-- Draggable Wood Planks -->
                         <g id="rescue-p1" class="draggable-plank" style="cursor:grab; touch-action:none;">
-                            <rect x="-80" y="-10" width="160" height="20" fill="#ff7043" stroke="#d84315" stroke-width="3" rx="4" />
-                            <text x="0" y="4" font-size="12" fill="#ffffff" font-weight="bold" text-anchor="middle" font-family="Rubik">לוח קצר</text>
+                            <rect x="-100" y="-20" width="200" height="40" fill="transparent" pointer-events="auto" />
+                            <rect x="-80" y="-10" width="160" height="20" fill="#ff7043" stroke="#d84315" stroke-width="3" rx="4" pointer-events="none" />
+                            <text x="0" y="4" font-size="12" fill="#ffffff" font-weight="bold" text-anchor="middle" font-family="Rubik" pointer-events="none">לוח קצר</text>
                         </g>
 
                         <g id="rescue-p2" class="draggable-plank" style="cursor:grab; touch-action:none;">
-                            <rect x="-195" y="-10" width="390" height="20" fill="#8d6e63" stroke="#4e342e" stroke-width="3" rx="4" />
-                            <text x="0" y="4" font-size="13" fill="#ffffff" font-weight="bold" text-anchor="middle" font-family="Rubik">לוח מתאים (ארוך)</text>
+                            <rect x="-215" y="-20" width="430" height="40" fill="transparent" pointer-events="auto" />
+                            <rect x="-195" y="-10" width="390" height="20" fill="#8d6e63" stroke="#4e342e" stroke-width="3" rx="4" pointer-events="none" />
+                            <text x="0" y="4" font-size="13" fill="#ffffff" font-weight="bold" text-anchor="middle" font-family="Rubik" pointer-events="none">לוח מתאים (ארוך)</text>
                         </g>
 
                         <g id="rescue-p3" class="draggable-plank" style="cursor:grab; touch-action:none;">
-                            <rect x="-260" y="-10" width="520" height="20" fill="#ffb74d" stroke="#f57c00" stroke-width="3" rx="4" />
-                            <text x="0" y="4" font-size="13" fill="#ffffff" font-weight="bold" text-anchor="middle" font-family="Rubik">לוח ענק</text>
+                            <rect x="-280" y="-20" width="560" height="40" fill="transparent" pointer-events="auto" />
+                            <rect x="-260" y="-10" width="520" height="20" fill="#ffb74d" stroke="#f57c00" stroke-width="3" rx="4" pointer-events="none" />
+                            <text x="0" y="4" font-size="13" fill="#ffffff" font-weight="bold" text-anchor="middle" font-family="Rubik" pointer-events="none">לוח ענק</text>
                         </g>
                     </svg>
                 </div>
@@ -18022,6 +18118,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             let boyY = 315;
             let walking = false;
             let fallingInWater = false;
+            let activePointerId = null;
 
             function setupDraggablePlank(element, id) {
                 let isDragging = false;
@@ -18037,8 +18134,10 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
 
                 element.addEventListener('pointerdown', (e) => {
                     if (snappedPlank || !gameActive) return;
+                    if (activePointerId !== null) return;
+                    activePointerId = e.pointerId;
                     isDragging = true;
-                    element.setPointerCapture(e.pointerId);
+                    try { element.setPointerCapture(e.pointerId); } catch(err) {}
                     element.style.cursor = 'grabbing';
 
                     const coords = getSVGCoords(e.clientX, e.clientY);
@@ -18049,16 +18148,17 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 });
 
                 element.addEventListener('pointermove', (e) => {
-                    if (!isDragging) return;
+                    if (!isDragging || e.pointerId !== activePointerId) return;
                     const coords = getSVGCoords(e.clientX, e.clientY);
                     element.pos.x = initialX + (coords.x - startX);
                     element.pos.y = initialY + (coords.y - startY);
                     updatePlankTransform(element);
                 });
 
-                const endDrag = () => {
-                    if (!isDragging) return;
+                const endDrag = (e) => {
+                    if (!isDragging || e.pointerId !== activePointerId) return;
                     isDragging = false;
+                    activePointerId = null;
                     element.style.cursor = 'grab';
 
                     const dist = Math.hypot(element.pos.x - 400, element.pos.y - 340);
@@ -18117,7 +18217,8 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                         if (boyX >= 620) {
                             walking = false;
                             gameActive = false;
-                            kitten.textContent = '😸❤️';
+                            kitten.setAttribute('href', '#prefab-kitten-happy');
+                            kitten.classList.add('animate-bounce-effect');
 
                             speakSuccess(false, () => {
                                 awardStar('can_rescue', currentDifficulty, () => {
@@ -18141,7 +18242,8 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 fallingInWater = false;
                 boy.setAttribute('x', boyX);
                 boy.setAttribute('y', boyY);
-                kitten.textContent = '🐱';
+                kitten.setAttribute('href', '#prefab-kitten');
+                kitten.classList.remove('animate-bounce-effect');
 
                 rp1.pos = { x: 160, y: 440 };
                 rp2.pos = { x: 400, y: 440 };
@@ -18260,26 +18362,39 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     const char = isOdd ? currentSet.odd : currentSet.dominant;
                     const distance = i * charSpacing;
 
+                    const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                    group.style.cursor = isOdd ? 'pointer' : 'default';
+
+                    const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                    rect.setAttribute('x', '-35');
+                    rect.setAttribute('y', '-55');
+                    rect.setAttribute('width', '70');
+                    rect.setAttribute('height', '70');
+                    rect.setAttribute('fill', 'transparent');
+                    rect.setAttribute('pointer-events', 'auto');
+                    group.appendChild(rect);
+
                     const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
                     text.setAttribute('font-size', '70');
                     text.setAttribute('font-weight', 'bold');
                     text.setAttribute('fill', '#00ff66');
                     text.setAttribute('text-anchor', 'middle');
                     text.setAttribute('font-family', 'Rubik');
+                    text.setAttribute('pointer-events', 'none');
                     text.textContent = char;
+                    group.appendChild(text);
 
                     if (isOdd) {
-                        text.style.cursor = 'pointer';
-                        text.addEventListener('pointerdown', (e) => {
+                        group.addEventListener('pointerdown', (e) => {
                             e.stopPropagation();
-                            onOddClicked(text);
+                            onOddClicked(group, text);
                         });
                     } else {
                         text.setAttribute('fill-opacity', '0.85');
                     }
 
-                    streamGroup.appendChild(text);
-                    characters.push({ element: text, distance, isOdd });
+                    streamGroup.appendChild(group);
+                    characters.push({ element: group, textElement: text, distance, isOdd });
                 }
 
                 updatePositions();
@@ -18290,20 +18405,22 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     let rowIndex = Math.floor(c.distance / rowWidth);
                     let offset = c.distance % rowWidth;
                     let tx = startX + offset;
-                    let ty = startY + rowIndex * rowHeight;
-                    c.element.setAttribute('x', tx);
-                    c.element.setAttribute('y', ty + 24);
+                    let ty = startY + rowIndex * rowHeight + 24;
+                    c.element.setAttribute('transform', `translate(${tx}, ${ty})`);
                 });
             }
 
-            function onOddClicked(element) {
+            function onOddClicked(group, text) {
                 if (!gameActive) return;
                 playClickSound();
                 score++;
                 scoreText.textContent = `הצלחות: ${score}/3`;
 
-                const tx = parseFloat(element.getAttribute('x'));
-                const ty = parseFloat(element.getAttribute('y')) - 24;
+                let match = group.getAttribute('transform').match(/translate\(([^,]+),\s*([^)]+)\)/);
+                const tx = match ? parseFloat(match[1]) : 400;
+                const ty = match ? parseFloat(match[2]) - 24 : 250;
+
+                text.classList.add('animate-bounce-effect');
 
                 let sparkHtml = '';
                 for (let i = 0; i < 8; i++) {
@@ -18325,7 +18442,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                         });
                     });
                 } else {
-                    spawnNewOddSet();
+                    setTimeout(spawnNewOddSet, 350);
                 }
             }
 
