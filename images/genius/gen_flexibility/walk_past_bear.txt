@@ -1,0 +1,4 @@
+File: walk_past_bear.png
+Generated directly in ChatGPT (single image, not a sprite sheet).
+Prompt: "New unrelated image, square 1024x1024. Flat 2D children's storybook illustration style, colorful, cheerful, thick clean outlines. A cartoon boy tiptoeing carefully very close past a big sleeping brown bear, no text."
+Date: 2026-08-08
