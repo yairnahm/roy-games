@@ -3426,6 +3426,8 @@
                 else if(currentGameMode === 'can_flashlight') initSvgFlashlightGame();
                 else if(currentGameMode === 'can_tower') initSvgTowerGame();
                 else if(currentGameMode === 'can_shelter') initSvgShelterGame();
+                else if(currentGameMode === 'can_pattern') initSvgPatternGame();
+                else if(currentGameMode === 'can_rescue') initSvgRescueGame();
                 else if(currentGameMode.startsWith('can_')) initPhaserGame(currentGameMode);
                 else if(currentGameMode.startsWith('sto_')) initStoryGame(currentGameMode);
                 else if(currentGameMode === 'tidyup') initTidyupGame();
@@ -17450,6 +17452,398 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 });
                 bird.textContent = '🐦';
                 windActive = false;
+            }
+
+            const oldQuit = window.quitActiveGame;
+            window.quitActiveGame = function() {
+                gameActive = false;
+                if (oldQuit) oldQuit();
+            };
+        }
+
+        function initSvgPatternGame() {
+            if (currentPhaserInstance) {
+                currentPhaserInstance.destroy(true);
+                currentPhaserInstance = null;
+            }
+
+            const promptText = "השלימו את תבנית הגשר! גררו את הבלוק המתאים למקום הריק לפני שהכדור המגלגל יגיע ויפול!";
+            get('game-workspace').innerHTML = `
+                <div class="solve-gemini-bot" id="solve-bot-bubble" style="margin-bottom:10px;">
+                    <span class="solve-gemini-bot-icon">🤖</span>
+                    <div style="flex:1; font-weight:bold; color:#0d47a1; font-size:clamp(15px, 3vw, 19px);" id="solve-bot-text">${promptText}</div>
+                </div>
+                <div id="svg-game-container" style="position:relative; width:100%; max-width:750px; aspect-ratio: 800 / 500; border-radius:24px; border:4px solid #3f51b5; overflow:hidden; background:#fff; box-shadow: 0 10px 25px rgba(0,0,0,0.15); margin: 10px auto; touch-action:none; user-select:none; -webkit-user-select:none;">
+                    <svg viewBox="0 0 800 500" width="100%" height="100%" id="pattern-svg" style="display:block; background: linear-gradient(to bottom, #e8f5e9, #c8e6c9);">
+                        <!-- River -->
+                        <rect x="0" y="350" width="800" height="150" fill="#0288d1" fill-opacity="0.8" />
+
+                        <!-- Bridge Pillars -->
+                        <rect x="100" y="290" width="40" height="70" fill="#78909c" />
+                        <rect x="500" y="290" width="40" height="70" fill="#78909c" />
+
+                        <!-- Bridge segments -->
+                        <rect x="20" y="270" width="120" height="20" fill="#f44336" stroke="#b71c1c" stroke-width="2" />
+                        <rect x="150" y="270" width="80" height="20" fill="#2196f3" stroke="#0d47a1" stroke-width="2" />
+                        <rect x="230" y="270" width="60" height="20" fill="#f44336" stroke="#b71c1c" stroke-width="2" />
+
+                        <!-- Gap Zone Outline -->
+                        <rect x="300" y="270" width="110" height="20" fill="#b3e5fc" stroke="#0288d1" stroke-width="3" stroke-dasharray="5,5" id="pattern-gap" />
+
+                        <!-- Red Segment 5 -->
+                        <rect x="415" y="270" width="100" height="20" fill="#f44336" stroke="#b71c1c" stroke-width="2" />
+
+                        <!-- Draggable Choice Card -->
+                        <g id="pattern-choice" style="cursor:grab; touch-action:none;">
+                            <rect x="-55" y="-12" width="110" height="24" fill="#2196f3" stroke="#0d47a1" stroke-width="3" rx="4" />
+                            <text x="0" y="5" font-size="13" fill="#ffffff" font-weight="bold" text-anchor="middle" font-family="Rubik">בלוק כחול</text>
+                        </g>
+
+                        <!-- Rolling Ball -->
+                        <text x="40" y="260" font-size="32" text-anchor="middle" id="pattern-ball" style="display:block; transform-box: fill-box; transform-origin: center;">🥎</text>
+                    </svg>
+                </div>
+            `;
+
+            speakLetter(promptText, 'he');
+
+            const svg = document.getElementById('pattern-svg');
+            const ball = document.getElementById('pattern-ball');
+            const choice = document.getElementById('pattern-choice');
+            const gap = document.getElementById('pattern-gap');
+
+            choice.pos = { x: 400, y: 440 };
+            function updateChoicePos() {
+                choice.style.transform = `translate(${choice.pos.x}px, ${choice.pos.y}px)`;
+            }
+            updateChoicePos();
+
+            let gameActive = true;
+            let snapped = false;
+            let ballX = 40;
+            let ballY = 254;
+            let ballAngle = 0;
+
+            let isDragging = false;
+            let startX, startY;
+            let initialX, initialY;
+
+            const pt = svg.createSVGPoint();
+            function getSVGCoords(clientX, clientY) {
+                pt.x = clientX;
+                pt.y = clientY;
+                return pt.matrixTransform(svg.getScreenCTM().inverse());
+            }
+
+            choice.addEventListener('pointerdown', (e) => {
+                if (!gameActive) return;
+                isDragging = true;
+                choice.setPointerCapture(e.pointerId);
+                choice.style.cursor = 'grabbing';
+
+                const coords = getSVGCoords(e.clientX, e.clientY);
+                startX = coords.x;
+                startY = coords.y;
+                initialX = choice.pos.x;
+                initialY = choice.pos.y;
+            });
+
+            choice.addEventListener('pointermove', (e) => {
+                if (!isDragging) return;
+                const coords = getSVGCoords(e.clientX, e.clientY);
+                choice.pos.x = initialX + (coords.x - startX);
+                choice.pos.y = initialY + (coords.y - startY);
+                updateChoicePos();
+            });
+
+            const endDrag = () => {
+                if (!isDragging) return;
+                isDragging = false;
+                choice.style.cursor = 'grab';
+
+                const dist = Math.hypot(choice.pos.x - 355, choice.pos.y - 280);
+                if (dist < 45) {
+                    snapped = true;
+                    choice.pos.x = 355;
+                    choice.pos.y = 280;
+                    updateChoicePos();
+                    choice.style.pointerEvents = 'none';
+                    playClickSound();
+                } else {
+                    choice.style.transition = 'transform 0.4s ease-out';
+                    choice.pos.x = 400;
+                    choice.pos.y = 440;
+                    updateChoicePos();
+                    setTimeout(() => { choice.style.transition = 'none'; }, 400);
+                }
+            };
+
+            choice.addEventListener('pointerup', endDrag);
+            choice.addEventListener('pointercancel', endDrag);
+
+            let lastTime = performance.now();
+            let isGameOver = false;
+
+            function animateBall(time) {
+                if (!gameActive || isGameOver) return;
+                let dt = (time - lastTime) / 1000;
+                lastTime = time;
+                if (dt > 0.1) dt = 0.016;
+
+                ballX += 48 * dt;
+                ballAngle += 150 * dt;
+
+                if (ballX >= 300 && ballX <= 410) {
+                    if (!snapped) {
+                        ballY += 300 * dt;
+                    }
+                }
+
+                ball.setAttribute('x', ballX);
+                ball.setAttribute('y', ballY);
+                ball.style.transform = `rotate(${ballAngle}deg)`;
+
+                if (ballY > 330) {
+                    isGameOver = true;
+                    speakLetter("אוי! הכדור נפל לתוך הפער. בואו ננסה להשלים את התבנית שוב!", 'he');
+                    setTimeout(resetCurrentGame, 2000);
+                }
+                else if (ballX > 480) {
+                    isGameOver = true;
+                    gameActive = false;
+                    speakSuccess(false, () => {
+                        awardStar('can_pattern', currentDifficulty, () => {
+                            show('level-complete-overlay');
+                        });
+                    });
+                } else {
+                    requestAnimationFrame(animateBall);
+                }
+            }
+
+            requestAnimationFrame(animateBall);
+
+            function resetCurrentGame() {
+                isGameOver = false;
+                snapped = false;
+                ballX = 40;
+                ballY = 254;
+                ballAngle = 0;
+                choice.style.pointerEvents = 'auto';
+                choice.pos = { x: 400, y: 440 };
+                updateChoicePos();
+                lastTime = performance.now();
+                requestAnimationFrame(animateBall);
+            }
+
+            const oldQuit = window.quitActiveGame;
+            window.quitActiveGame = function() {
+                gameActive = false;
+                if (oldQuit) oldQuit();
+            };
+        }
+
+        function initSvgRescueGame() {
+            if (currentPhaserInstance) {
+                currentPhaserInstance.destroy(true);
+                currentPhaserInstance = null;
+            }
+
+            const originalPrompt = "החתלתול תקוע על הגג! גררו את הקרש המתאים כדי לגשר על הפער, ואז עזרו לילד לעבור ולהציל אותו!";
+            get('game-workspace').innerHTML = `
+                <div class="solve-gemini-bot" id="solve-bot-bubble" style="margin-bottom:10px;">
+                    <span class="solve-gemini-bot-icon">🤖</span>
+                    <div style="flex:1; font-weight:bold; color:#0d47a1; font-size:clamp(15px, 3vw, 19px);" id="solve-bot-text">${originalPrompt}</div>
+                </div>
+                <div id="svg-game-container" style="position:relative; width:100%; max-width:750px; aspect-ratio: 800 / 500; border-radius:24px; border:4px solid #3f51b5; overflow:hidden; background:#fff; box-shadow: 0 10px 25px rgba(0,0,0,0.15); margin: 10px auto; touch-action:none; user-select:none; -webkit-user-select:none;">
+                    <svg viewBox="0 0 800 500" width="100%" height="100%" id="rescue-svg" style="display:block; background: linear-gradient(to bottom, #e1f5fe, #b3e5fc);">
+                        <!-- Water -->
+                        <rect x="0" y="350" width="800" height="150" fill="#0288d1" fill-opacity="0.9" />
+
+                        <!-- Start Cliff (Left) -->
+                        <rect x="10" y="330" width="220" height="20" fill="#795548" stroke="#4e342e" stroke-width="3" rx="4" />
+                        <!-- Target Cliff (Right) -->
+                        <rect x="570" y="330" width="220" height="20" fill="#795548" stroke="#4e342e" stroke-width="3" rx="4" />
+
+                        <!-- Boy (Left) & Kitten (Right) -->
+                        <text x="100" y="315" font-size="42" text-anchor="middle" id="rescue-boy">🧑</text>
+                        <text x="680" y="315" font-size="42" text-anchor="middle" id="rescue-kitten">🐱</text>
+
+                        <!-- Draggable Wood Planks -->
+                        <g id="rescue-p1" class="draggable-plank" style="cursor:grab; touch-action:none;">
+                            <rect x="-80" y="-10" width="160" height="20" fill="#ff7043" stroke="#d84315" stroke-width="3" rx="4" />
+                            <text x="0" y="4" font-size="12" fill="#ffffff" font-weight="bold" text-anchor="middle" font-family="Rubik">לוח קצר</text>
+                        </g>
+
+                        <g id="rescue-p2" class="draggable-plank" style="cursor:grab; touch-action:none;">
+                            <rect x="-195" y="-10" width="390" height="20" fill="#8d6e63" stroke="#4e342e" stroke-width="3" rx="4" />
+                            <text x="0" y="4" font-size="13" fill="#ffffff" font-weight="bold" text-anchor="middle" font-family="Rubik">לוח מתאים (ארוך)</text>
+                        </g>
+
+                        <g id="rescue-p3" class="draggable-plank" style="cursor:grab; touch-action:none;">
+                            <rect x="-260" y="-10" width="520" height="20" fill="#ffb74d" stroke="#f57c00" stroke-width="3" rx="4" />
+                            <text x="0" y="4" font-size="13" fill="#ffffff" font-weight="bold" text-anchor="middle" font-family="Rubik">לוח ענק</text>
+                        </g>
+                    </svg>
+                </div>
+            `;
+
+            speakLetter(originalPrompt, 'he');
+
+            const svg = document.getElementById('rescue-svg');
+            const boy = document.getElementById('rescue-boy');
+            const kitten = document.getElementById('rescue-kitten');
+
+            const rp1 = document.getElementById('rescue-p1');
+            const rp2 = document.getElementById('rescue-p2');
+            const rp3 = document.getElementById('rescue-p3');
+
+            rp1.pos = { x: 160, y: 440 };
+            rp2.pos = { x: 400, y: 440 };
+            rp3.pos = { x: 640, y: 440 };
+
+            function updatePlankTransform(element) {
+                element.style.transform = `translate(${element.pos.x}px, ${element.pos.y}px)`;
+            }
+
+            [rp1, rp2, rp3].forEach(updatePlankTransform);
+
+            let gameActive = true;
+            let snappedPlank = null;
+            let boyX = 100;
+            let boyY = 315;
+            let walking = false;
+            let fallingInWater = false;
+
+            function setupDraggablePlank(element, id) {
+                let isDragging = false;
+                let startX, startY;
+                let initialX, initialY;
+
+                const pt = svg.createSVGPoint();
+                function getSVGCoords(clientX, clientY) {
+                    pt.x = clientX;
+                    pt.y = clientY;
+                    return pt.matrixTransform(svg.getScreenCTM().inverse());
+                }
+
+                element.addEventListener('pointerdown', (e) => {
+                    if (snappedPlank || !gameActive) return;
+                    isDragging = true;
+                    element.setPointerCapture(e.pointerId);
+                    element.style.cursor = 'grabbing';
+
+                    const coords = getSVGCoords(e.clientX, e.clientY);
+                    startX = coords.x;
+                    startY = coords.y;
+                    initialX = element.pos.x;
+                    initialY = element.pos.y;
+                });
+
+                element.addEventListener('pointermove', (e) => {
+                    if (!isDragging) return;
+                    const coords = getSVGCoords(e.clientX, e.clientY);
+                    element.pos.x = initialX + (coords.x - startX);
+                    element.pos.y = initialY + (coords.y - startY);
+                    updatePlankTransform(element);
+                });
+
+                const endDrag = () => {
+                    if (!isDragging) return;
+                    isDragging = false;
+                    element.style.cursor = 'grab';
+
+                    const dist = Math.hypot(element.pos.x - 400, element.pos.y - 340);
+                    if (dist < 55) {
+                        snappedPlank = id;
+                        element.pos.x = 400;
+                        element.pos.y = 340;
+                        updatePlankTransform(element);
+                        [rp1, rp2, rp3].forEach(p => p.style.pointerEvents = 'none');
+                        playClickSound();
+
+                        walking = true;
+                    } else {
+                        element.style.transition = 'transform 0.4s ease-out';
+                        element.pos.x = id === 1 ? 160 : (id === 2 ? 400 : 640);
+                        element.pos.y = 440;
+                        updatePlankTransform(element);
+                        setTimeout(() => { element.style.transition = 'none'; }, 400);
+                    }
+                };
+
+                element.addEventListener('pointerup', endDrag);
+                element.addEventListener('pointercancel', endDrag);
+            }
+
+            setupDraggablePlank(rp1, 1);
+            setupDraggablePlank(rp2, 2);
+            setupDraggablePlank(rp3, 3);
+
+            let lastTime = performance.now();
+
+            function animateBoy(time) {
+                if (!gameActive) return;
+                let dt = (time - lastTime) / 1000;
+                lastTime = time;
+                if (dt > 0.1) dt = 0.016;
+
+                if (walking) {
+                    if (fallingInWater) {
+                        boyY += 300 * dt;
+                        boy.setAttribute('y', boyY);
+
+                        if (boyY > 450) {
+                            walking = false;
+                            speakLetter("אוי! הלוח היה קצר מדי והילד נפל למים. נסו להשתמש בלוח עץ ארוך יותר!", 'he');
+                            setTimeout(resetCurrentGame, 2000);
+                        }
+                    } else {
+                        boyX += 110 * dt;
+                        boy.setAttribute('x', boyX);
+
+                        if (snappedPlank === 1 && boyX >= 230) {
+                            fallingInWater = true;
+                        }
+
+                        if (boyX >= 620) {
+                            walking = false;
+                            gameActive = false;
+                            kitten.textContent = '😸❤️';
+
+                            speakSuccess(false, () => {
+                                awardStar('can_rescue', currentDifficulty, () => {
+                                    show('level-complete-overlay');
+                                });
+                            });
+                        }
+                    }
+                }
+
+                requestAnimationFrame(animateBoy);
+            }
+
+            requestAnimationFrame(animateBoy);
+
+            function resetCurrentGame() {
+                snappedPlank = null;
+                boyX = 100;
+                boyY = 315;
+                walking = false;
+                fallingInWater = false;
+                boy.setAttribute('x', boyX);
+                boy.setAttribute('y', boyY);
+                kitten.textContent = '🐱';
+
+                rp1.pos = { x: 160, y: 440 };
+                rp2.pos = { x: 400, y: 440 };
+                rp3.pos = { x: 640, y: 440 };
+
+                [rp1, rp2, rp3].forEach(p => {
+                    p.style.pointerEvents = 'auto';
+                    p.style.transition = 'none';
+                    updatePlankTransform(p);
+                });
             }
 
             const oldQuit = window.quitActiveGame;
