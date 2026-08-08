@@ -1,0 +1,4 @@
+File: tree_scene.png
+Generated directly in ChatGPT (single image, not a sprite sheet).
+Prompt: "New unrelated image, square 1024x1024. Flat 2D children's storybook illustration style, colorful, cheerful, thick clean outlines, matching a forest picture-book art style. A colorful ball stuck high up in the branches of a tall tree, a monkey and an elephant standing at the base of the tree looking up at it together, no text."
+Date: 2026-08-08

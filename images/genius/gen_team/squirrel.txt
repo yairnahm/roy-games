@@ -1,0 +1,4 @@
+File: squirrel.png
+Generated directly in ChatGPT (single image, not a sprite sheet).
+Prompt: "New unrelated image, square 1024x1024. Flat 2D children's storybook illustration style, colorful, cheerful, thick clean outlines. A single cute cartoon squirrel character, full body, standing, friendly smile, holding an acorn, on a simple pastel background, centered, no text, no other animals."
+Date: 2026-08-07
