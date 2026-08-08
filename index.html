@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-08-08-v159-phase6-collection-plus-starbadge-fix -->
+<!DOCTYPE html><!-- build: 2026-08-08-v160-phase7-bot-idle-animation -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -1443,6 +1443,11 @@
             border-radius: 16px; padding: 12px; margin: 10px auto; max-width: 600px;
             direction: rtl; text-align: right; box-shadow: 0 4px 12px rgba(33, 150, 243, 0.05);
         }
+        /* Project 2 Phase 7: give the mascot a little life — gentle idle bob, shared
+           by every game that uses the prefab-bot symbol (no per-game changes needed). */
+        @keyframes botIdleBob { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-3px) scale(1.04); } }
+        .solve-gemini-bot-icon { animation: botIdleBob 2.6s ease-in-out infinite; transform-origin: center bottom; flex-shrink: 0; }
+        @media (prefers-reduced-motion: reduce) { .solve-gemini-bot-icon { animation: none; } }
         .solve-clue-box {
             display: flex; gap: 10px; justify-content: center; margin: 12px 0; flex-wrap: wrap;
         }
