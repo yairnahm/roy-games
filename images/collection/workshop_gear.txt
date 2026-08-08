@@ -1,0 +1,6 @@
+File: workshop_gear.png
+Used for: "משחקי קנבס ופיזיקה" (canvas_solve category) collectible in the Project 2 Phase 6 item-collection reward system.
+Prompt: Cute flat vector sticker of a friendly orange gear/cog with a happy smiling face in the center, thick white outline, simple 2D children's app icon style, transparent background, no text, flat colors only
+Generated: 2026-08-08
+Not cropped from a sprite sheet — standalone generation.
+Note: source download was named "workshop_gear).png" (stray parenthesis from browser dedup naming) — renamed to workshop_gear.png on import.

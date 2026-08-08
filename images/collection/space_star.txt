@@ -1,0 +1,5 @@
+File: space_star.png
+Used for: "עולם הפתרונות של GEMINI" (gemini_solve category) collectible in the Project 2 Phase 6 item-collection reward system.
+Prompt: Cute flat vector sticker of a purple five-point star wearing a tiny astronaut helmet, happy smiling face, thick white outline, simple 2D children's app icon style, transparent background, no text, flat colors only
+Generated: 2026-08-08
+Not cropped from a sprite sheet — standalone generation.

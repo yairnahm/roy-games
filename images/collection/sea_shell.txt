@@ -1,0 +1,5 @@
+File: sea_shell.png
+Used for: "עולם סביבנו" (world category) collectible in the Project 2 Phase 6 item-collection reward system.
+Prompt: Cute flat vector sticker of a blue spiral seashell with a happy smiling face peeking out, thick white outline, simple 2D children's app icon style, transparent background, no text, flat colors only
+Generated: 2026-08-08
+Not cropped from a sprite sheet — standalone generation.
