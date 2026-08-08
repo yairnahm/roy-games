@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-08-08-v155-solve-tile-theme -->
+<!DOCTYPE html><!-- build: 2026-08-08-v156-fix-prefab-bot-and-preload -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -1620,6 +1620,19 @@
                     img.onerror = () => {
                         itemLoaded();
                     };
+                } else if (cleanSrc.endsWith('.mp4') || cleanSrc.endsWith('.webm') || cleanSrc.endsWith('.mov')) {
+                    const video = document.createElement('video');
+                    video.preload = 'auto';
+                    video.muted = true;
+                    video.src = cleanSrc;
+                    video.oncanplaythrough = () => {
+                        preloadedAssets[cleanSrc] = video;
+                        itemLoaded();
+                    };
+                    video.onerror = () => {
+                        itemLoaded();
+                    };
+                    video.load();
                 } else {
                     itemLoaded();
                 }
@@ -15849,7 +15862,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             let round = game.rounds[currentStep];
             get('game-workspace').innerHTML = `
                 <div class="solve-gemini-bot" id="solve-bot-bubble" style="margin-bottom:10px; width:95%; max-width:700px; box-sizing:border-box;">
-                    <span class="solve-gemini-bot-icon">🤖</span>
+                    <svg width="45" height="45" viewBox="0 0 80 80" class="solve-gemini-bot-icon"><use href="#prefab-bot"></use></svg>
                     <div style="flex:1; font-weight:bold; color:#0d47a1; font-size:clamp(15px, 3vw, 19px);" id="solve-bot-text">${round.prompt}</div>
                 </div>
                 <div id="solve-scene-area" class="large-target" style="padding:0;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden; border-radius:24px; border:4px solid #b0bec5; box-shadow: 0 10px 25px rgba(0,0,0,0.1); margin: 10px auto; min-height:30vh; width:95%; max-width:700px;"></div>
@@ -15875,6 +15888,14 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             );
 
             speakLetter(round.prompt, 'he');
+
+            // Prefetch the next round's media in the background so its scene/choice
+            // images and videos are warm in cache before the child gets there.
+            let nextRound = game.rounds[currentStep + 1];
+            if (nextRound) {
+                let nextAssets = [nextRound.scene].concat((nextRound.choices || []).map(c => c.img).filter(Boolean));
+                preloadMedia(nextAssets.filter(Boolean));
+            }
         }
 
         function handleSolveChoice(gameId, choiceIdx, btn) {
@@ -16170,7 +16191,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
 
                 <!-- Gemini Bot NPC Box -->
                 <div class="solve-gemini-bot" id="solve-bot-bubble">
-                    <span class="solve-gemini-bot-icon">🤖</span>
+                    <svg width="45" height="45" viewBox="0 0 80 80" class="solve-gemini-bot-icon"><use href="#prefab-bot"></use></svg>
                     <div style="flex:1; font-weight:bold; color:#0d47a1; font-size:clamp(15px, 3vw, 19px);" id="solve-bot-text">טוען משחק...</div>
                 </div>
 
@@ -17903,7 +17924,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             const promptText = "החדר חשוך! גררו את הפנס כדי למצוא את 3 רמזי הרגשות המסתתרים, ואז גלו איך רועי מרגיש!";
             get('game-workspace').innerHTML = `
                 <div class="solve-gemini-bot" id="solve-bot-bubble" style="margin-bottom:10px;">
-                    <span class="solve-gemini-bot-icon">🤖</span>
+                    <svg width="45" height="45" viewBox="0 0 80 80" class="solve-gemini-bot-icon"><use href="#prefab-bot"></use></svg>
                     <div style="flex:1; font-weight:bold; color:#0d47a1; font-size:clamp(15px, 3vw, 19px);" id="solve-bot-text">${promptText}</div>
                 </div>
                 <div id="svg-game-container" style="position:relative; width:100%; max-width:750px; aspect-ratio: 800 / 500; border-radius:24px; border:4px solid #3f51b5; overflow:hidden; background:#fff; box-shadow: 0 10px 25px rgba(0,0,0,0.15); margin: 10px auto; touch-action:none; user-select:none; -webkit-user-select:none;">
@@ -18039,7 +18060,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             const promptText = "עזרו לרובי לבנות מגדל יציב בגובה של 4 קוביות! לחצו כדי להפיל קוביה מהמשגר, והקפידו על בסיס רחב!";
             get('game-workspace').innerHTML = `
                 <div class="solve-gemini-bot" id="solve-bot-bubble" style="margin-bottom:10px;">
-                    <span class="solve-gemini-bot-icon">🤖</span>
+                    <svg width="45" height="45" viewBox="0 0 80 80" class="solve-gemini-bot-icon"><use href="#prefab-bot"></use></svg>
                     <div style="flex:1; font-weight:bold; color:#0d47a1; font-size:clamp(15px, 3vw, 19px);" id="solve-bot-text">${promptText}</div>
                 </div>
                 <div id="svg-game-container" style="position:relative; width:100%; max-width:750px; aspect-ratio: 800 / 500; border-radius:24px; border:4px solid #3f51b5; overflow:hidden; background:#fff; box-shadow: 0 10px 25px rgba(0,0,0,0.15); margin: 10px auto; touch-action:none; user-select:none; -webkit-user-select:none;">
@@ -18260,7 +18281,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             const promptText = "גררו את קורות העץ כדי לבנות מחסה חזק מעל הגוזל, ואז הפעילו את הרוח כדי לבדוק את היציבות שלו!";
             get('game-workspace').innerHTML = `
                 <div class="solve-gemini-bot" id="solve-bot-bubble" style="margin-bottom:10px;">
-                    <span class="solve-gemini-bot-icon">🤖</span>
+                    <svg width="45" height="45" viewBox="0 0 80 80" class="solve-gemini-bot-icon"><use href="#prefab-bot"></use></svg>
                     <div style="flex:1; font-weight:bold; color:#0d47a1; font-size:clamp(15px, 3vw, 19px);" id="solve-bot-text">${promptText}</div>
                 </div>
                 <div id="svg-game-container" style="position:relative; width:100%; max-width:750px; aspect-ratio: 800 / 500; border-radius:24px; border:4px solid #3f51b5; overflow:hidden; background:#fff; box-shadow: 0 10px 25px rgba(0,0,0,0.15); margin: 10px auto; touch-action:none; user-select:none; -webkit-user-select:none;">
@@ -18492,7 +18513,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             const promptText = "השלימו את תבנית הגשר! גררו את הבלוק המתאים למקום הריק לפני שהכדור המגלגל יגיע ויפול!";
             get('game-workspace').innerHTML = `
                 <div class="solve-gemini-bot" id="solve-bot-bubble" style="margin-bottom:10px;">
-                    <span class="solve-gemini-bot-icon">🤖</span>
+                    <svg width="45" height="45" viewBox="0 0 80 80" class="solve-gemini-bot-icon"><use href="#prefab-bot"></use></svg>
                     <div style="flex:1; font-weight:bold; color:#0d47a1; font-size:clamp(15px, 3vw, 19px);" id="solve-bot-text">${promptText}</div>
                 </div>
                 <div id="svg-game-container" style="position:relative; width:100%; max-width:750px; aspect-ratio: 800 / 500; border-radius:24px; border:4px solid #3f51b5; overflow:hidden; background:#fff; box-shadow: 0 10px 25px rgba(0,0,0,0.15); margin: 10px auto; touch-action:none; user-select:none; -webkit-user-select:none;">
@@ -18680,7 +18701,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             const originalPrompt = "החתלתול תקוע על הגג! גררו את הקרש המתאים כדי לגשר על הפער, ואז עזרו לילד לעבור ולהציל אותו!";
             get('game-workspace').innerHTML = `
                 <div class="solve-gemini-bot" id="solve-bot-bubble" style="margin-bottom:10px;">
-                    <span class="solve-gemini-bot-icon">🤖</span>
+                    <svg width="45" height="45" viewBox="0 0 80 80" class="solve-gemini-bot-icon"><use href="#prefab-bot"></use></svg>
                     <div style="flex:1; font-weight:bold; color:#0d47a1; font-size:clamp(15px, 3vw, 19px);" id="solve-bot-text">${originalPrompt}</div>
                 </div>
                 <div id="svg-game-container" style="position:relative; width:100%; max-width:750px; aspect-ratio: 800 / 500; border-radius:24px; border:4px solid #3f51b5; overflow:hidden; background:#fff; box-shadow: 0 10px 25px rgba(0,0,0,0.15); margin: 10px auto; touch-action:none; user-select:none; -webkit-user-select:none;">
@@ -18899,7 +18920,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             const promptText = "מטרות רצות במורד המסך! ספרה אחת ביניהן שונה. מצאו ולחצו עליה מהר לפני שתיעלם!";
             get('game-workspace').innerHTML = `
                 <div class="solve-gemini-bot" id="solve-bot-bubble" style="margin-bottom:10px;">
-                    <span class="solve-gemini-bot-icon">🤖</span>
+                    <svg width="45" height="45" viewBox="0 0 80 80" class="solve-gemini-bot-icon"><use href="#prefab-bot"></use></svg>
                     <div style="flex:1; font-weight:bold; color:#0d47a1; font-size:clamp(15px, 3vw, 19px);" id="solve-bot-text">${promptText}</div>
                 </div>
                 <div id="svg-game-container" style="position:relative; width:100%; max-width:750px; aspect-ratio: 800 / 500; border-radius:24px; border:4px solid #3f51b5; overflow:hidden; background:#fff; box-shadow: 0 10px 25px rgba(0,0,0,0.15); margin: 10px auto; touch-action:none; user-select:none; -webkit-user-select:none;">
