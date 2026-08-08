@@ -3423,6 +3423,7 @@
                 else if(currentGameMode === 'towertalk') initTowerGame();
                 else if(currentGameMode === 'cooppuzzle') initCoopPuzzleGame();
             else if(currentGameMode === 'coopmemory') initCoopMemoryGame();
+                else if(currentGameMode === 'can_flashlight') initSvgFlashlightGame();
                 else if(currentGameMode.startsWith('can_')) initPhaserGame(currentGameMode);
                 else if(currentGameMode.startsWith('sto_')) initStoryGame(currentGameMode);
                 else if(currentGameMode === 'tidyup') initTidyupGame();
@@ -3455,6 +3456,10 @@
 
         function quitActiveGame() {
             stopAllSpeech(); // Stop all speech when quitting
+            if (currentPhaserInstance) {
+                currentPhaserInstance.destroy(true);
+                currentPhaserInstance = null;
+            }
             if (levelCompleteAutoTimeout) {
                 clearTimeout(levelCompleteAutoTimeout);
                 levelCompleteAutoTimeout = null;
@@ -16868,6 +16873,148 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
 
 
 
+
+        // ==========================================
+        // מנוע משחקי קנבס ופיזיקה (Phaser.js)
+        // ==========================================
+        let currentPhaserInstance = null;
+
+        function initSvgFlashlightGame() {
+            // Clean up Phaser if somehow running
+            if (currentPhaserInstance) {
+                currentPhaserInstance.destroy(true);
+                currentPhaserInstance = null;
+            }
+
+            const promptText = "החדר חשוך! גררו את הפנס כדי למצוא את 3 רמזי הרגשות המסתתרים, ואז גלו איך רועי מרגיש!";
+            get('game-workspace').innerHTML = `
+                <div class="solve-gemini-bot" id="solve-bot-bubble" style="margin-bottom:10px;">
+                    <span class="solve-gemini-bot-icon">🤖</span>
+                    <div style="flex:1; font-weight:bold; color:#0d47a1; font-size:clamp(15px, 3vw, 19px);" id="solve-bot-text">${promptText}</div>
+                </div>
+                <div id="svg-game-container" style="position:relative; width:100%; max-width:750px; aspect-ratio: 800 / 500; border-radius:24px; border:4px solid #3f51b5; overflow:hidden; background:#fff; box-shadow: 0 10px 25px rgba(0,0,0,0.15); margin: 10px auto; touch-action:none; user-select:none; -webkit-user-select:none;">
+                    <svg viewBox="0 0 800 500" width="100%" height="100%" id="flashlight-svg" style="display:block;">
+                        <defs>
+                            <mask id="flashlight-mask">
+                                <rect x="0" y="0" width="800" height="500" fill="white" />
+                                <circle cx="-200" cy="-200" r="90" fill="black" id="mask-circle" />
+                            </mask>
+                        </defs>
+
+                        <!-- BRIGHT LAYER (Masked) -->
+                        <g id="bright-room">
+                            <rect x="0" y="0" width="800" height="500" fill="#e0f2f1" />
+                            <rect x="0" y="400" width="800" height="100" fill="#bcaaa4" />
+                            <rect x="100" y="60" width="140" height="140" fill="#80deea" stroke="#00acc1" stroke-width="6" />
+                            <line x1="170" y1="60" x2="170" y2="200" stroke="#00acc1" stroke-width="6" />
+                            <line x1="100" y1="130" x2="240" y2="130" stroke="#00acc1" stroke-width="6" />
+                            <rect x="600" y="200" width="120" height="200" fill="#a1887f" />
+                            <rect x="600" y="260" width="120" height="10" fill="#5d4037" />
+                            <rect x="600" y="320" width="120" height="10" fill="#5d4037" />
+                            <rect x="320" y="320" width="160" height="80" fill="#8d6e63" />
+                            <rect x="300" y="310" width="200" height="15" fill="#4e342e" />
+
+                            <text id="svg-clue-1" x="200" y="140" font-size="38" font-weight="bold" fill="#ff3d00" text-anchor="middle" font-family="Rubik">😭 עצוב</text>
+                            <text id="svg-clue-2" x="660" y="240" font-size="38" font-weight="bold" fill="#4caf50" text-anchor="middle" font-family="Rubik">😊 שמח</text>
+                            <text id="svg-clue-3" x="400" y="280" font-size="38" font-weight="bold" fill="#ff9800" text-anchor="middle" font-family="Rubik">🧸 צעצוע</text>
+                        </g>
+
+                        <!-- DARK LAYER (covers everything, masked by the flashlight hole) -->
+                        <rect x="0" y="0" width="800" height="500" fill="#0f0f26" fill-opacity="0.97" mask="url(#flashlight-mask)" id="dark-room-overlay" />
+
+                        <!-- FLASHLIGHT BEAM EFFECTS -->
+                        <polygon id="flashlight-beam-cone" points="" fill="#fff176" fill-opacity="0.22" />
+                        <circle id="flashlight-beam-ring" cx="-200" cy="-200" r="90" fill="none" stroke="#ffeb3b" stroke-width="3" stroke-opacity="0.5" />
+                    </svg>
+                </div>
+            `;
+
+            speakLetter(promptText, 'he');
+
+            const svg = document.getElementById('flashlight-svg');
+            const maskCircle = document.getElementById('mask-circle');
+            const beamCone = document.getElementById('flashlight-beam-cone');
+            const beamRing = document.getElementById('flashlight-beam-ring');
+            const darkOverlay = document.getElementById('dark-room-overlay');
+            const clue1 = document.getElementById('svg-clue-1');
+            const clue2 = document.getElementById('svg-clue-2');
+            const clue3 = document.getElementById('svg-clue-3');
+
+            let foundClues = 0;
+            let c1Found = false, c2Found = false, c3Found = false;
+
+            const pt = svg.createSVGPoint();
+            function getSVGCoords(clientX, clientY) {
+                pt.x = clientX;
+                pt.y = clientY;
+                return pt.matrixTransform(svg.getScreenCTM().inverse());
+            }
+
+            function updateFlashlight(clientX, clientY) {
+                const coords = getSVGCoords(clientX, clientY);
+                const px = coords.x;
+                const py = coords.y;
+
+                maskCircle.setAttribute('cx', px);
+                maskCircle.setAttribute('cy', py);
+
+                beamRing.setAttribute('cx', px);
+                beamRing.setAttribute('cy', py);
+
+                beamCone.setAttribute('points', `0,500 ${px - 90},${py} ${px + 90},${py}`);
+
+                if (!c1Found && Math.hypot(px - 200, py - 130) < 60) {
+                    c1Found = true;
+                    foundClues++;
+                    playClickSound();
+                    clue1.setAttribute('fill', '#ffffff');
+                    clue1.setAttribute('stroke', '#ff3d00');
+                    clue1.setAttribute('stroke-width', '5');
+                }
+                if (!c2Found && Math.hypot(px - 660, py - 230) < 60) {
+                    c2Found = true;
+                    foundClues++;
+                    playClickSound();
+                    clue2.setAttribute('fill', '#ffffff');
+                    clue2.setAttribute('stroke', '#4caf50');
+                    clue2.setAttribute('stroke-width', '5');
+                }
+                if (!c3Found && Math.hypot(px - 400, py - 270) < 60) {
+                    c3Found = true;
+                    foundClues++;
+                    playClickSound();
+                    clue3.setAttribute('fill', '#ffffff');
+                    clue3.setAttribute('stroke', '#ff9800');
+                    clue3.setAttribute('stroke-width', '5');
+                }
+
+                if (foundClues === 3) {
+                    foundClues = 99;
+
+                    darkOverlay.style.display = 'none';
+                    beamCone.style.display = 'none';
+                    beamRing.style.display = 'none';
+
+                    setTimeout(() => {
+                        speakSuccess(false, () => {
+                            awardStar('can_flashlight', currentDifficulty, () => {
+                                show('level-complete-overlay');
+                            });
+                        });
+                    }, 1500);
+                }
+            }
+
+            svg.addEventListener('pointermove', (e) => {
+                if (foundClues === 99) return;
+                updateFlashlight(e.clientX, e.clientY);
+            });
+
+            svg.addEventListener('pointerdown', (e) => {
+                if (foundClues === 99) return;
+                updateFlashlight(e.clientX, e.clientY);
+            });
+        }
 
         // ==========================================
         // מנוע משחקי קנבס ופיזיקה (Phaser.js)
