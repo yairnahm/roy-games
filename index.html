@@ -3424,6 +3424,8 @@
                 else if(currentGameMode === 'cooppuzzle') initCoopPuzzleGame();
             else if(currentGameMode === 'coopmemory') initCoopMemoryGame();
                 else if(currentGameMode === 'can_flashlight') initSvgFlashlightGame();
+                else if(currentGameMode === 'can_tower') initSvgTowerGame();
+                else if(currentGameMode === 'can_shelter') initSvgShelterGame();
                 else if(currentGameMode.startsWith('can_')) initPhaserGame(currentGameMode);
                 else if(currentGameMode.startsWith('sto_')) initStoryGame(currentGameMode);
                 else if(currentGameMode === 'tidyup') initTidyupGame();
@@ -17014,6 +17016,447 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 if (foundClues === 99) return;
                 updateFlashlight(e.clientX, e.clientY);
             });
+        }
+
+        function initSvgTowerGame() {
+            if (currentPhaserInstance) {
+                currentPhaserInstance.destroy(true);
+                currentPhaserInstance = null;
+            }
+
+            const promptText = "עזרו לרובי לבנות מגדל יציב בגובה של 4 קוביות! לחצו כדי להפיל קוביה מהמשגר, והקפידו על בסיס רחב!";
+            get('game-workspace').innerHTML = `
+                <div class="solve-gemini-bot" id="solve-bot-bubble" style="margin-bottom:10px;">
+                    <span class="solve-gemini-bot-icon">🤖</span>
+                    <div style="flex:1; font-weight:bold; color:#0d47a1; font-size:clamp(15px, 3vw, 19px);" id="solve-bot-text">${promptText}</div>
+                </div>
+                <div id="svg-game-container" style="position:relative; width:100%; max-width:750px; aspect-ratio: 800 / 500; border-radius:24px; border:4px solid #3f51b5; overflow:hidden; background:#fff; box-shadow: 0 10px 25px rgba(0,0,0,0.15); margin: 10px auto; touch-action:none; user-select:none; -webkit-user-select:none;">
+                    <svg viewBox="0 0 800 500" width="100%" height="100%" id="tower-svg" style="display:block; background: linear-gradient(to bottom, #81d4fa, #e1f5fe);">
+                        <!-- Clouds -->
+                        <g fill="#ffffff" fill-opacity="0.7">
+                            <circle cx="150" cy="120" r="30" />
+                            <circle cx="180" cy="110" r="40" />
+                            <circle cx="210" cy="120" r="30" />
+                            
+                            <circle cx="600" cy="150" r="30" />
+                            <circle cx="630" cy="140" r="40" />
+                            <circle cx="660" cy="150" r="30" />
+                        </g>
+
+                        <!-- Ground -->
+                        <rect x="0" y="460" width="800" height="40" fill="#4caf50" />
+                        <!-- Platform Base -->
+                        <rect x="305" y="430" width="190" height="20" fill="#8d6e63" stroke="#5d4037" stroke-width="2" />
+
+                        <!-- Robot helper standing on the side -->
+                        <text x="700" y="435" font-size="50">🤖</text>
+                        <!-- Speech Bubble Container -->
+                        <g id="speech-bubble-group" transform="translate(620, 310)">
+                            <rect x="0" y="0" width="150" height="40" rx="10" fill="#ffffff" stroke="#b0bec5" stroke-width="1.5" />
+                            <polygon points="75,40 70,52 85,40" fill="#ffffff" stroke="#b0bec5" stroke-width="1.5" />
+                            <polygon points="73,38 70,50 87,38" fill="#ffffff" />
+                            <text id="robot-speech-text" x="75" y="25" font-size="14" fill="#000000" font-weight="bold" text-anchor="middle" font-family="Rubik">בהצלחה! 🏗️</text>
+                        </g>
+
+                        <!-- Stacking Blocks Container -->
+                        <g id="tower-blocks"></g>
+
+                        <!-- Dispenser (Moving) -->
+                        <circle id="dispenser" cx="400" cy="60" r="18" fill="#0288d1" />
+                    </svg>
+                </div>
+            `;
+
+            speakLetter(promptText, 'he');
+
+            const svg = document.getElementById('tower-svg');
+            const dispenser = document.getElementById('dispenser');
+            const blocksContainer = document.getElementById('tower-blocks');
+            const speechText = document.getElementById('robot-speech-text');
+
+            let blocks = [];
+            let dispenserX = 400;
+            let dispenserDirection = 1;
+            const dispenserMin = 150;
+            const dispenserMax = 650;
+            
+            const speed = 500 / 1.9; // pixels per second
+            let lastTime = performance.now();
+            let gameActive = true;
+            let isFalling = false;
+
+            function animate(time) {
+                if (!gameActive) return;
+                let dt = (time - lastTime) / 1000;
+                lastTime = time;
+                if (dt > 0.1) dt = 0.016;
+
+                dispenserX += dispenserDirection * speed * dt;
+                if (dispenserX >= dispenserMax) {
+                    dispenserX = dispenserMax;
+                    dispenserDirection = -1;
+                } else if (dispenserX <= dispenserMin) {
+                    dispenserX = dispenserMin;
+                    dispenserDirection = 1;
+                }
+                dispenser.setAttribute('cx', dispenserX);
+                requestAnimationFrame(animate);
+            }
+            requestAnimationFrame(animate);
+
+            const cleanup = () => {
+                gameActive = false;
+            };
+            const oldQuit = window.quitActiveGame;
+            window.quitActiveGame = function() {
+                cleanup();
+                if (oldQuit) oldQuit();
+            };
+
+            function dropBlock() {
+                if (isFalling || !gameActive) return;
+                isFalling = true;
+                playClickSound();
+
+                const droppedX = dispenserX;
+                const blockIndex = blocks.length + 1;
+
+                let landingY = 430 - 22.5;
+                let isStable = true;
+
+                let sorted = [...blocks].sort((a, b) => a.y - b.y);
+                let hitBlock = null;
+
+                for (let b of sorted) {
+                    if (Math.abs(droppedX - b.x) < 70) {
+                        hitBlock = b;
+                        break;
+                    }
+                }
+
+                if (hitBlock) {
+                    let overlap = 70 - Math.abs(droppedX - hitBlock.x);
+                    if (overlap >= 35) {
+                        landingY = hitBlock.y - 45;
+                    } else {
+                        isStable = false;
+                        landingY = 460 - 22.5;
+                    }
+                } else {
+                    let left = Math.max(305, droppedX - 35);
+                    let right = Math.min(495, droppedX + 35);
+                    let support = right - left;
+                    if (support >= 35) {
+                        landingY = 430 - 22.5;
+                    } else {
+                        isStable = false;
+                        landingY = 460 - 22.5;
+                    }
+                }
+
+                const blockGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                blockGroup.style.transition = 'transform 0.6s cubic-bezier(0.55, 0.055, 0.675, 0.19)';
+                blockGroup.style.transform = `translate(${droppedX}px, 90px)`;
+
+                const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                rect.setAttribute('x', '-35');
+                rect.setAttribute('y', '-22.5');
+                rect.setAttribute('width', '70');
+                rect.setAttribute('height', '45');
+                rect.setAttribute('rx', '5');
+                rect.setAttribute('fill', '#ba68c8');
+                rect.setAttribute('stroke', '#4a148c');
+                rect.setAttribute('stroke-width', '3');
+
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', '0');
+                text.setAttribute('y', '6');
+                text.setAttribute('font-size', '20');
+                text.setAttribute('fill', '#ffffff');
+                text.setAttribute('font-weight', 'bold');
+                text.setAttribute('text-anchor', 'middle');
+                text.setAttribute('font-family', 'Rubik');
+                text.textContent = blockIndex;
+
+                blockGroup.appendChild(rect);
+                blockGroup.appendChild(text);
+                blocksContainer.appendChild(blockGroup);
+
+                requestAnimationFrame(() => {
+                    if (isStable) {
+                        blockGroup.style.transform = `translate(${droppedX}px, ${landingY}px)`;
+                    } else {
+                        const rotateDir = droppedX > 400 ? 55 : -55;
+                        blockGroup.style.transform = `translate(${droppedX}px, ${landingY}px) rotate(${rotateDir}deg)`;
+                    }
+                });
+
+                setTimeout(() => {
+                    if (!gameActive) return;
+
+                    if (!isStable) {
+                        speechText.textContent = 'אופס! נפל 😭';
+                        speakLetter("אוי, הקוביה נפלה מהבסיס! בואו ננסה שוב ונשמור אותן ישרות.", 'he');
+                        
+                        blockGroup.style.transition = 'transform 0.15s ease-in-out';
+                        blockGroup.style.transform = `${blockGroup.style.transform} scale(0.9)`;
+                        
+                        setTimeout(() => {
+                            resetCurrentGame();
+                        }, 1800);
+                    } else {
+                        speechText.textContent = 'עבודה טובה! 👍';
+                        blocks.push({ x: droppedX, y: landingY, element: blockGroup });
+                        isFalling = false;
+
+                        if (blocks.length >= 4) {
+                            gameActive = false;
+                            speechText.textContent = 'איזה מגדל! 🏆';
+                            
+                            setTimeout(() => {
+                                speakSuccess(false, () => {
+                                    awardStar('can_tower', currentDifficulty, () => {
+                                        show('level-complete-overlay');
+                                    });
+                                });
+                            }, 800);
+                        }
+                    }
+                }, 750);
+            }
+
+            function resetCurrentGame() {
+                blocksContainer.innerHTML = '';
+                blocks = [];
+                isFalling = false;
+                speechText.textContent = 'בהצלחה! 🏗️';
+            }
+
+            svg.addEventListener('pointerdown', (e) => {
+                if (e.target.closest('#speech-bubble-group')) return;
+                dropBlock();
+            });
+        }
+
+        function initSvgShelterGame() {
+            if (currentPhaserInstance) {
+                currentPhaserInstance.destroy(true);
+                currentPhaserInstance = null;
+            }
+
+            const promptText = "גררו את קורות העץ כדי לבנות מחסה חזק מעל הגוזל, ואז הפעילו את הרוח כדי לבדוק את היציבות שלו!";
+            get('game-workspace').innerHTML = `
+                <div class="solve-gemini-bot" id="solve-bot-bubble" style="margin-bottom:10px;">
+                    <span class="solve-gemini-bot-icon">🤖</span>
+                    <div style="flex:1; font-weight:bold; color:#0d47a1; font-size:clamp(15px, 3vw, 19px);" id="solve-bot-text">${promptText}</div>
+                </div>
+                <div id="svg-game-container" style="position:relative; width:100%; max-width:750px; aspect-ratio: 800 / 500; border-radius:24px; border:4px solid #3f51b5; overflow:hidden; background:#fff; box-shadow: 0 10px 25px rgba(0,0,0,0.15); margin: 10px auto; touch-action:none; user-select:none; -webkit-user-select:none;">
+                    <svg viewBox="0 0 800 500" width="100%" height="100%" id="shelter-svg" style="display:block; background: linear-gradient(to bottom, #e1f5fe, #b3e5fc);">
+                        <!-- Tree Branch -->
+                        <rect x="280" y="350" width="240" height="20" fill="#5d4037" stroke="#3e2723" stroke-width="2" rx="5" />
+
+                        <!-- Bird Nest & Baby Bird -->
+                        <text x="400" y="355" font-size="65" text-anchor="middle" id="shelter-nest">🪹</text>
+                        <text x="400" y="325" font-size="40" text-anchor="middle" id="shelter-bird">🐦</text>
+
+                        <!-- Wind breeze graphic lines -->
+                        <g id="breeze-group" stroke="#ffffff" stroke-width="4" stroke-linecap="round" opacity="0.6"></g>
+
+                        <!-- Draggable wood planks -->
+                        <g id="plank-left" class="draggable-plank" style="cursor:grab; touch-action:none;">
+                            <rect x="-55" y="-14" width="110" height="28" fill="#ff7043" stroke="#d84315" stroke-width="3" rx="4" />
+                            <text x="0" y="4" font-size="12" fill="#ffffff" font-weight="bold" text-anchor="middle" font-family="Rubik">עמוד שמאל</text>
+                        </g>
+
+                        <g id="plank-right" class="draggable-plank" style="cursor:grab; touch-action:none;">
+                            <rect x="-55" y="-14" width="110" height="28" fill="#ff7043" stroke="#d84315" stroke-width="3" rx="4" />
+                            <text x="0" y="4" font-size="12" fill="#ffffff" font-weight="bold" text-anchor="middle" font-family="Rubik">עמוד ימין</text>
+                        </g>
+
+                        <g id="plank-roof" class="draggable-plank" style="cursor:grab; touch-action:none;">
+                            <rect x="-90" y="-14" width="180" height="28" fill="#ffb74d" stroke="#f57c00" stroke-width="3" rx="4" />
+                            <text x="0" y="4" font-size="14" fill="#ffffff" font-weight="bold" text-anchor="middle" font-family="Rubik">גג מגן</text>
+                        </g>
+
+                        <g id="wind-button" style="cursor:pointer;" transform="translate(400, 80)">
+                            <rect x="-110" y="-24" width="220" height="48" rx="24" fill="#e3f2fd" stroke="#0d47a1" stroke-width="3" />
+                            <text x="0" y="6" font-size="20" fill="#0d47a1" font-weight="bold" text-anchor="middle" font-family="Rubik">💨 הפעילו את הרוח!</text>
+                        </g>
+                    </svg>
+                </div>
+            `;
+
+            speakLetter(promptText, 'he');
+
+            const svg = document.getElementById('shelter-svg');
+            const bird = document.getElementById('shelter-bird');
+            const breezeGroup = document.getElementById('breeze-group');
+            const windBtn = document.getElementById('wind-button');
+
+            const p1 = document.getElementById('plank-left');
+            const p2 = document.getElementById('plank-right');
+            const p3 = document.getElementById('plank-roof');
+
+            p1.pos = { x: 180, y: 450 };
+            p2.pos = { x: 400, y: 450 };
+            p3.pos = { x: 620, y: 450 };
+
+            function updateTransform(element) {
+                element.style.transform = `translate(${element.pos.x}px, ${element.pos.y}px)`;
+            }
+
+            [p1, p2, p3].forEach(updateTransform);
+
+            let gameActive = true;
+            let windActive = false;
+
+            function setupDraggable(element) {
+                let isDragging = false;
+                let startX, startY;
+                let initialX, initialY;
+
+                const pt = svg.createSVGPoint();
+                function getSVGCoords(clientX, clientY) {
+                    pt.x = clientX;
+                    pt.y = clientY;
+                    return pt.matrixTransform(svg.getScreenCTM().inverse());
+                }
+
+                element.addEventListener('pointerdown', (e) => {
+                    if (windActive || !gameActive) return;
+                    isDragging = true;
+                    element.setPointerCapture(e.pointerId);
+                    element.style.cursor = 'grabbing';
+
+                    const coords = getSVGCoords(e.clientX, e.clientY);
+                    startX = coords.x;
+                    startY = coords.y;
+                    initialX = element.pos.x;
+                    initialY = element.pos.y;
+                });
+
+                element.addEventListener('pointermove', (e) => {
+                    if (!isDragging) return;
+                    const coords = getSVGCoords(e.clientX, e.clientY);
+                    const dx = coords.x - startX;
+                    const dy = coords.y - startY;
+
+                    element.pos.x = initialX + dx;
+                    element.pos.y = initialY + dy;
+                    updateTransform(element);
+                });
+
+                const endDrag = () => {
+                    if (!isDragging) return;
+                    isDragging = false;
+                    element.style.cursor = 'grab';
+                };
+
+                element.addEventListener('pointerup', endDrag);
+                element.addEventListener('pointercancel', endDrag);
+            }
+
+            [p1, p2, p3].forEach(setupDraggable);
+
+            windBtn.addEventListener('pointerdown', () => {
+                if (windActive || !gameActive) return;
+                windActive = true;
+                playClickSound();
+
+                let startTime = performance.now();
+                const windDuration = 3600;
+
+                breezeGroup.innerHTML = `
+                    <line id="br1" x1="800" y1="260" x2="1000" y2="260" />
+                    <line id="br2" x1="900" y1="300" x2="1100" y2="300" />
+                    <line id="br3" x1="850" y1="330" x2="1050" y2="330" />
+                `;
+                const br1 = document.getElementById('br1');
+                const br2 = document.getElementById('br2');
+                const br3 = document.getElementById('br3');
+
+                function animateWind(time) {
+                    if (!windActive) return;
+                    let elapsed = time - startTime;
+                    if (elapsed > windDuration) elapsed = windDuration;
+
+                    let progress = elapsed / 2000;
+                    let val = progress * 600;
+
+                    br1.setAttribute('x1', 800 - val);
+                    br1.setAttribute('x2', 1000 - val);
+                    br2.setAttribute('x1', 900 - val);
+                    br2.setAttribute('x2', 1100 - val);
+                    br3.setAttribute('x1', 850 - val);
+                    br3.setAttribute('x2', 1050 - val);
+
+                    if (elapsed < windDuration) {
+                        requestAnimationFrame(animateWind);
+                    }
+                }
+                requestAnimationFrame(animateWind);
+
+                setTimeout(() => {
+                    if (!gameActive) return;
+
+                    const p1Ok = p1.pos.x >= 280 && p1.pos.x <= 340 && p1.pos.y >= 320 && p1.pos.y <= 350;
+                    const p2Ok = p2.pos.x >= 460 && p2.pos.x <= 520 && p2.pos.y >= 320 && p2.pos.y <= 350;
+                    const p3Ok = p3.pos.x >= 360 && p3.pos.x <= 440 && p3.pos.y >= 280 && p3.pos.y <= 325;
+
+                    const success = p1Ok && p2Ok && p3Ok;
+
+                    [p1, p2, p3].forEach((plank, idx) => {
+                        let isPlankOk = (idx === 0 ? p1Ok : (idx === 1 ? p2Ok : p3Ok));
+                        if (success) {
+                            plank.style.transition = 'transform 2.4s ease-out';
+                            plank.pos.x -= 20;
+                            updateTransform(plank);
+                        } else {
+                            plank.style.transition = 'transform 2s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                            plank.pos.x -= 300 + Math.random() * 100;
+                            plank.pos.y = 450;
+                            plank.style.transform = `translate(${plank.pos.x}px, ${plank.pos.y}px) rotate(${-45 - Math.random() * 30}deg)`;
+                        }
+                    });
+
+                    setTimeout(() => {
+                        if (!gameActive) return;
+                        windActive = false;
+                        breezeGroup.innerHTML = '';
+
+                        if (success) {
+                            bird.textContent = '🐦🥳';
+                            speakSuccess(false, () => {
+                                awardStar('can_shelter', currentDifficulty, () => {
+                                    show('level-complete-overlay');
+                                });
+                            });
+                        } else {
+                            speakLetter("אוי! המחסה עף ברוח. בואו ננסה לבנות מחסה חזק ויציב יותר מעל הגוזל.", 'he');
+                            setTimeout(resetCurrentGame, 1500);
+                        }
+                    }, 2400);
+
+                }, 1200);
+            });
+
+            function resetCurrentGame() {
+                p1.pos = { x: 180, y: 450 };
+                p2.pos = { x: 400, y: 450 };
+                p3.pos = { x: 620, y: 450 };
+                [p1, p2, p3].forEach(p => {
+                    p.style.transition = 'none';
+                    updateTransform(p);
+                });
+                bird.textContent = '🐦';
+                windActive = false;
+            }
+
+            const oldQuit = window.quitActiveGame;
+            window.quitActiveGame = function() {
+                gameActive = false;
+                if (oldQuit) oldQuit();
+            };
         }
 
         // ==========================================
