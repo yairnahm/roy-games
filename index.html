@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-08-08-v152-genius-gen-coaching-images-complete -->
+<!DOCTYPE html><!-- build: 2026-08-08-v154-design-tokens-correct-flash -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -813,6 +813,14 @@
         .option-btn { width: clamp(85px, 20vmin, 160px); height: clamp(85px, 20vmin, 160px); background: #fff; border: 5px solid #4CAF50; border-radius: 20px; cursor: pointer; padding: 0; overflow: hidden; box-shadow: 0 6px 12px rgba(0,0,0,0.15); transition: 0.2s; animation: popIn 0.5s; touch-action: manipulation; outline: none; display: flex; justify-content: center; align-items: center; font-size: clamp(40px, 10vw, 70px);}
         .option-btn * { pointer-events: none; }
         .dimmed { opacity: 0.4; filter: grayscale(100%); pointer-events: none; border-color: #adb5bd; transform: scale(0.95); }
+        /* Non-color-only "correct" indicator: pairs with .dimmed's grayscale so success/failure are never signaled by color alone */
+        .correct-flash { position: relative; border-color: var(--color-success, #4CAF50) !important; }
+        .correct-flash::after {
+            content: '✓'; position: absolute; top: -10px; right: -10px; width: 26px; height: 26px;
+            background: var(--color-success, #4CAF50); color: #fff; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 16px;
+            box-shadow: var(--shadow-sm, 0 3px 8px rgba(0,0,0,0.15)); animation: popIn 0.3s ease; pointer-events: none; z-index: 5;
+        }
  
         #active-game-container { display: flex; flex-direction: column; max-height: 100svh; overflow: hidden; box-sizing: border-box; }
         #game-workspace { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 900px; margin: 0 auto; flex: 1 1 0%; min-height: 0; overflow-y: auto; }
@@ -3604,6 +3612,7 @@
             try {
                 if(isCorrect) {
                     isProcessing = true; let isFinal = (currentStep >= (activeGameRounds - 1));
+                    if(btn) btn.classList.add('correct-flash');
                     playSuccessSound(); if (currentGameMode !== 'goodbad' && !SOLVE_GAMES[currentGameMode]) speakSuccess(isFinal);
                     try { if(typeof confetti === 'function' && !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) confetti({particleCount: 150, origin:{y:0.6}, zIndex:1000}); } catch(e){}
                     showKisses();
