@@ -2181,6 +2181,7 @@
         function stopAllSpeech() {
             try { if (_currentAudio) { _currentAudio.pause(); _currentAudio.currentTime = 0; } } catch(e) {}
             try { if (window.speechSynthesis) speechSynthesis.cancel(); } catch(e) {}
+            hide('floating-audio-skip-btn');
         }
         function playAudio(filename) {
             try {
@@ -2192,7 +2193,13 @@
                 }
                 audio.volume = roySettings.muted ? 0.0 : roySettings.volume;
                 _currentAudio = audio;
-                audio.play().catch(function(){});
+                
+                show('floating-audio-skip-btn');
+                let done = () => hide('floating-audio-skip-btn');
+                audio.onended = done;
+                audio.onerror = done;
+                
+                audio.play().catch(function(){ done(); });
             } catch(e) {}
         }
         function playCoopAudio(filename, speakText, callback, lang) {
@@ -2205,10 +2212,13 @@
                 }
                 audio.volume = roySettings.muted ? 0.0 : roySettings.volume;
                 _currentAudio = audio;
+                
+                show('floating-audio-skip-btn');
                 var finished = false;
                 var safeCallback = function() {
                     if (finished) return;
                     finished = true;
+                    hide('floating-audio-skip-btn');
                     if (callback) callback();
                 };
                 audio.onended = safeCallback;
@@ -2669,7 +2679,22 @@
     </div>
     <div id="feedback-layer" class="hidden feedback-icon"></div>
     <!-- Caching version helper badge -->
-    <div style="position:fixed; bottom:5px; left:5px; font-size:10px; color:#fff; opacity:0.4; z-index:9999; font-family:monospace; pointer-events:none;">v142</div>
+    <div style="position:fixed; bottom:5px; left:5px; font-size:10px; color:#fff; opacity:0.4; z-index:9999; font-family:monospace; pointer-events:none;">v145</div>
+    
+    <!-- Floating Audio Skip Button -->
+    <button id="floating-audio-skip-btn" class="hidden" onclick="skipCurrentAudio()" style="position:fixed; bottom:20px; right:20px; z-index:10000; background:#ffa726; color:white; border:3px solid white; border-radius:50px; padding:12px 24px; font-weight:bold; font-size:18px; box-shadow:0 6px 20px rgba(0,0,0,0.3); display:flex; align-items:center; gap:8px; cursor:pointer; font-family:'Rubik',sans-serif; transition:0.2s; outline:none;">
+        <span style="font-size:22px;">⏭️</span>
+        <span>דלג על ההסבר</span>
+    </button>
+    <style>
+        #floating-audio-skip-btn:hover {
+            transform: scale(1.05);
+            background: #fb8c00 !important;
+        }
+        #floating-audio-skip-btn:active {
+            transform: scale(0.95);
+        }
+    </style>
 
         <!-- Train Route Screen (v78) -->
     <div id="train-route-screen" class="hidden" style="background: linear-gradient(135deg, #0288d1, #26c6da); display:flex; flex-direction:column; align-items:center; justify-content:flex-start; min-height:100vh; padding:2vmin; box-sizing:border-box; width:100%; position:fixed; top:0; left:0; z-index:150; overflow-y:auto;">
@@ -2910,10 +2935,12 @@
                 audio.volume = roySettings.muted ? 0.0 : roySettings.volume;
                 _currentAudio = audio;
                 
+                show('floating-audio-skip-btn');
                 let called = false;
                 let done = () => {
                     if (called) return;
                     called = true;
+                    hide('floating-audio-skip-btn');
                     if (callback) callback();
                 };
                 audio.onended = done;
@@ -3256,7 +3283,10 @@
             updateWalletDisplay();
         }
 
-        function hideAllScreens() { ['start-screen', 'gender-screen', 'player-selection-screen', 'category-screen', 'settings-screen', 'hub-screen', 'unified-diff-screen', 'active-game-container', 'level-complete-overlay', 'missing-lang-screen', 'firstletter-lang-screen', 'faces-lang-screen', 'faces-mode-screen', 'faces-summary-screen', 'toy-shelf-overlay', 'toy-confirm-overlay', 'train-route-screen'].forEach(hide); }
+        function hideAllScreens() {
+            stopAllSpeech(); // Stop all audio when switching screens
+            ['start-screen', 'gender-screen', 'player-selection-screen', 'category-screen', 'settings-screen', 'hub-screen', 'unified-diff-screen', 'active-game-container', 'level-complete-overlay', 'missing-lang-screen', 'firstletter-lang-screen', 'faces-lang-screen', 'faces-mode-screen', 'faces-summary-screen', 'toy-shelf-overlay', 'toy-confirm-overlay', 'train-route-screen'].forEach(hide);
+        }
 
         function backToHub() { playClickSound(); hideAllScreens(); setAppBackground('hub'); show('hub-screen'); updateWalletDisplay(); }
         function backToCategories() { playClickSound(); hideAllScreens(); setAppBackground('hub'); show('category-screen'); updateWalletDisplay(); }
@@ -3424,6 +3454,7 @@
         }
 
         function quitActiveGame() {
+            stopAllSpeech(); // Stop all speech when quitting
             if (levelCompleteAutoTimeout) {
                 clearTimeout(levelCompleteAutoTimeout);
                 levelCompleteAutoTimeout = null;
@@ -7839,7 +7870,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
 
         function speakLetter(text, lang, onEnd) {
             var completed = false;
-            var safeOnEnd = function() { if (completed) return; completed = true; if (onEnd) onEnd(); };
+            var safeOnEnd = function() { if (completed) return; completed = true; hide('floating-audio-skip-btn'); if (onEnd) onEnd(); };
 
             if (lang === 'he' && text) {
                 // Apply masculine vocalization (Nikkud) overrides to force correct pronunciation for a boy (Roy)
@@ -7877,6 +7908,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             }
 
             stopAllSpeech();
+            show('floating-audio-skip-btn');
 
             try {
                 // Try Google Translate TTS online first to guarantee a high-quality female voice
@@ -17969,6 +18001,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
         }
 
         window.quitStoryGame = function() {
+            stopAllSpeech(); // Stop all speech when quitting
             if (currentPhaserInstance) {
                 currentPhaserInstance.destroy(true);
                 currentPhaserInstance = null;
@@ -17977,6 +18010,11 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             setAppBackground('hub');
             show('hub-screen');
             updateWalletDisplay();
+        };
+
+        window.skipCurrentAudio = function() {
+            playClickSound();
+            stopAllSpeech();
         };
 
 
