@@ -1,0 +1,4 @@
+File: curtain_color.png
+Generated directly in ChatGPT (single image, not a sprite sheet).
+Prompt: "New unrelated image, square 1024x1024. Flat 2D children's storybook illustration style, colorful, cheerful, thick clean outlines. A purple theater curtain with a small question mark speech bubble next to it, isolated on a simple pastel background, centered, no other text."
+Date: 2026-08-08
