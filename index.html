@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-08-08-v162-world-map-bg-art -->
+<!DOCTYPE html><!-- build: 2026-08-08-v163-fix-gemini-id-collision -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -926,9 +926,9 @@
         @keyframes popIn { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
         /* Ambient background motion (clouds/leaves/etc.) — subtle depth, respects reduced-motion */
         @keyframes bgCloudDrift { 0% { transform: translateX(0); } 50% { transform: translateX(18px); } 100% { transform: translateX(0); } }
-        .bg-cloud-drift { animation-name: bgCloudDrift; animation-timing-function: ease-in-out; animation-iteration-count: infinite; }
+        .bg-cloud-drift { animation-name: bgCloudDrift; animation-timing-function: ease-in-out; animation-iteration-count: infinite; pointer-events: none; }
         @keyframes bgWaterShimmer { 0%, 100% { opacity: 0.6; transform: translateX(0); } 50% { opacity: 1; transform: translateX(10px); } }
-        .bg-water-shimmer { animation: bgWaterShimmer 3.5s ease-in-out infinite; }
+        .bg-water-shimmer { animation: bgWaterShimmer 3.5s ease-in-out infinite; pointer-events: none; }
         @media (prefers-reduced-motion: reduce) { .bg-cloud-drift, .bg-water-shimmer { animation: none; } }
         @keyframes superPop { 0% { transform: scale(0); opacity: 0; } 50% { transform: scale(1.3); } 100% { transform: scale(1); opacity: 1; } }
         @keyframes starPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
@@ -2112,6 +2112,7 @@
                     localStorage.setItem('starWallet', JSON.stringify(starWallet));
                     localStorage.setItem('awardedStars', JSON.stringify(awardedStars));
                     updateWalletDisplay();
+                    syncStarBadges();
                     alert('ההתקדמות אופסה בהצלחה!');
                     closeParentSettings();
                 }
@@ -2206,6 +2207,7 @@
                 localStorage.setItem('awardedStars', JSON.stringify(awardedStars));
             } catch(e) {}
             updateWalletDisplay();
+            syncStarBadges();
             showStarToast(type);
             
             if (starText) {
@@ -2288,10 +2290,17 @@
         // ever completed, instead of the hardcoded ⭐ every card was born with.
         function syncStarBadges() {
             document.querySelectorAll('.star-badge[data-game]').forEach(el => {
-                let type = getStarType(el.dataset.game);
-                if (type === 'full') { el.textContent = '⭐'; el.style.display = ''; }
-                else if (type === 'half') { el.textContent = '✨'; el.style.display = ''; }
-                else { el.style.display = 'none'; }
+                let gameId = el.dataset.game;
+                let hasStar = Object.keys(awardedStars || {}).some(k => k.startsWith(gameId + '-'));
+                if (hasStar) {
+                    let type = getStarType(gameId);
+                    if (type === 'full') { el.textContent = '⭐'; el.style.display = ''; }
+                    else if (type === 'half') { el.textContent = '✨'; el.style.display = ''; }
+                    else if (type === 'quarter') { el.textContent = '🌗'; el.style.display = ''; }
+                    else { el.style.display = 'none'; }
+                } else {
+                    el.style.display = 'none';
+                }
             });
         }
     </script>
@@ -2553,6 +2562,10 @@
             <button id="toy-shelf-btn" class="icon-tooltip" data-tip="מדף הצעצועים שלי 🧸" onclick="openToyShelf()" style="position:relative; width:clamp(55px,12vw,70px); height:clamp(55px,12vw,70px); background:rgba(255,255,255,0.9); border:4px solid #ff9800; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; padding:0; box-shadow:0 4px 10px rgba(0,0,0,0.1); outline:none; transition: transform 0.15s; margin-left:5px;">
                 <span style="font-size:clamp(24px,5vw,36px); line-height:1; display:inline-block;">🧸</span>
             </button>
+            <!-- Toggle View button -->
+            <button id="toggle-view-btn" class="icon-tooltip" data-tip="תצוגת מפה 🗺️" onclick="toggleHomeView()" style="position:relative; width:clamp(55px,12vw,70px); height:clamp(55px,12vw,70px); background:rgba(255,255,255,0.9); border:4px solid #2196F3; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; padding:0; box-shadow:0 4px 10px rgba(0,0,0,0.1); outline:none; transition: transform 0.15s; margin-left:5px;">
+                <span id="toggle-view-icon" style="font-size:clamp(24px,5vw,36px); line-height:1; display:inline-block;">🗺️</span>
+            </button>
             <!-- Wallet / Purse shape (Max-Stock bag) -->
             <div id="star-wallet-purse" class="icon-tooltip" data-tip="שקית הפרסים של מקס סטוק" style="position:relative; width:clamp(70px,16vw,110px); height:clamp(70px,16vw,110px); display:flex; align-items:center; justify-content:center;">
                 <img id="max-stock-bag-img" src="images/max_stock_bag.png" style="width:100%; height:100%; object-fit:contain; filter:drop-shadow(0 4px 8px rgba(0,0,0,0.15));" />
@@ -2586,7 +2599,84 @@
             </div>
         </div>
         <h3>באיזו קטגוריה נרצה לשחק?</h3>
-        <div id="world-map-root"></div>
+        <div id="category-grid-container" class="hub-container">
+            <div class="hub-card" style="background: linear-gradient(135deg, #fffde7, #fff59d); border: 3px solid #fbc02d; box-shadow: 0 4px 10px rgba(251,192,45,0.3);" onclick="startTrainRoute()">
+                <div class="hub-icon">🚂</div>
+                <div class="hub-title" style="font-weight:900; color:#e65100;">מסלול הרכבת!</div>
+                <div style="font-size:clamp(11px,2.5vw,14px);color:#f57c00;margin-top:2px;font-weight:bold;">הרפתקת משחקים 💡</div>
+            </div>
+            <div class="hub-card" onclick="openCategory('lang','שפה ואותיות')">
+                <div class="hub-icon">🔤</div>
+                <div class="hub-title">שפה ואותיות</div>
+                <div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">משחק 1</div>
+            </div>
+            <div class="hub-card" onclick="openCategory('think','חשיבה וזיכרון')">
+                <div class="hub-icon">🧠</div>
+                <div class="hub-title">חשיבה וזיכרון</div>
+                <div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">7 משחקים</div>
+            </div>
+            <div class="hub-card" onclick="openCategory('emotion','רגשות ואנשים')">
+                <div class="hub-icon">😊</div>
+                <div class="hub-title">רגשות ואנשים</div>
+                <div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">7 משחקים</div>
+            </div>
+            <div class="hub-card" onclick="openCategory('numbers','מספרים וסדר')">
+                <div class="hub-icon">🔢</div>
+                <div class="hub-title">מספרים וסדר</div>
+                <div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">4 משחקים</div>
+            </div>
+            <div class="hub-card" onclick="openCategory('world','עולם סביבנו')">
+                <div class="hub-icon">🌍</div>
+                <div class="hub-title">עולם סביבנו</div>
+                <div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">7 משחקים</div>
+            </div>
+            <div class="hub-card" onclick="openCategory('create','יצירה וחידות')">
+                <div class="hub-icon">🎨</div>
+                <div class="hub-title">יצירה וחידות</div>
+                <div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">5 משחקים</div>
+            </div>
+            <div class="hub-card" onclick="openCategory('action','משחקי פעולה')">
+                <div class="hub-icon">🎮</div>
+                <div class="hub-title">משחקי פעולה</div>
+                <div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">2 משחקים</div>
+            </div>
+            <div class="hub-card" onclick="openCategory('success','סיפורי הצלחה')">
+                <div class="hub-icon">🏪</div>
+                <div class="hub-title">סיפורי הצלחה</div>
+                <div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">10 משחקים</div>
+            </div>
+            <div class="hub-card" onclick="openCategory('problem','פתרון בעיות')">
+                <div class="hub-icon">💡</div>
+                <div class="hub-title">פתרון בעיות</div>
+                <div style="font-size:clamp(11px,2.5vw,14px);color:#888;margin-top:2px;">10 משחקים</div>
+            </div>
+            <div class="hub-card" style="background: var(--theme-forest-bg); border: 3px solid var(--theme-forest); box-shadow: var(--shadow-md);" onclick="openCategory('solve','פותרים ונהנים')">
+                <div class="hub-icon">🧠✨</div>
+                <div class="hub-title" style="font-weight:900; color: var(--theme-forest);">פותרים ונהנים</div>
+                <div style="font-size:clamp(11px,2.5vw,14px);color:#00695c;margin-top:2px;font-weight:bold;">10 משחקים 💡</div>
+            </div>
+            <div class="hub-card" style="background: linear-gradient(135deg, #e3f2fd, #bbdefb); border: 3px solid #2196f3; box-shadow: 0 4px 10px rgba(33,150,243,0.3);" onclick="openCategory('gemini_solve','עולם הפתרונות של GEMINI')">
+                <div class="hub-icon">🤖✨</div>
+                <div class="hub-title" style="font-weight:900; color:#0d47a1;">עולם הפתרונות של GEMINI</div>
+                <div style="font-size:clamp(11px,2.5vw,14px);color:#1976d2;margin-top:2px;font-weight:bold;">10 משחקים 💡</div>
+            </div>
+            <div class="hub-card" style="background: linear-gradient(135deg, #f3e5f5, #e1bee7); border: 3px solid #9c27b0; box-shadow: 0 4px 10px rgba(156,39,176,0.3);" onclick="openCategory('genius_solve','פתרון בעיות - לגאונים')">
+                <div class="hub-icon">🎓🧠</div>
+                <div class="hub-title" style="font-weight:900; color:#4a148c;">פתרון בעיות - לגאונים</div>
+                <div style="font-size:clamp(11px,2.5vw,14px);color:#7b1fa2;margin-top:2px;font-weight:bold;">10 משחקים 💡</div>
+            </div>
+            <div class="hub-card" style="background: linear-gradient(135deg, #e8eaf6, #c5cae9); border: 3px solid #3f51b5; box-shadow: 0 4px 10px rgba(63,81,181,0.3);" onclick="openCategory('canvas_solve','משחקי קנבס ופיזיקה')">
+                <div class="hub-icon">🎮⚙️</div>
+                <div class="hub-title" style="font-weight:900; color:#1a237e;">משחקי קנבס ופיזיקה</div>
+                <div style="font-size:clamp(11px,2.5vw,14px);color:#303f9f;margin-top:2px;font-weight:bold;">5 משחקים 💡</div>
+            </div>
+            <div class="hub-card" style="background: linear-gradient(135deg, #f1f8e9, #d1c4e9); border: 3px solid #673ab7; box-shadow: 0 4px 10px rgba(103,58,183,0.3);" onclick="openCategory('story_solve','סיפורים והרפתקאות')">
+                <div class="hub-icon">📖✨</div>
+                <div class="hub-title" style="font-weight:900; color:#311b92;">סיפורים והרפתקאות</div>
+                <div style="font-size:clamp(11px,2.5vw,14px);color:#5e35b1;margin-top:2px;font-weight:bold;">הרפתקה אינטראקטיבית 💡</div>
+            </div>
+        </div>
+        <div id="world-map-root" class="hidden"></div>
     </div>
 
     <div id="hub-screen" class="hidden">
@@ -3265,6 +3355,7 @@
             syncStarBadges();
             renderCollectionStrip();
             renderWorldMap();
+            updateHomeViewUI();
             
             // Wire long press settings button
             let btn = get('parent-settings-btn');
@@ -3531,7 +3622,7 @@
                 <g class="world-island" tabindex="0" role="button" aria-label="${p.name}, ${p.count}" data-island="${p.id}">
                     <g class="world-island-land">
                         ${worldMapBgAvailable
-                            ? `<circle cx="${p.x}" cy="${p.y}" r="95" fill="transparent"/>`
+                            ? `<circle cx="${p.x}" cy="${p.y}" r="95" fill="#ffffff" opacity="0"/>`
                             : `<circle cx="${p.x}" cy="${p.y}" r="72" fill="${p.bg}" stroke="${p.color}" stroke-width="5"/>`}
                         <text x="${p.x}" y="${p.y - 8}" font-size="${worldMapBgAvailable ? 52 : 40}" text-anchor="middle" dominant-baseline="middle">${p.icon}</text>
                     </g>
@@ -3562,6 +3653,34 @@
                 el.addEventListener('click', item.action);
                 el.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); item.action(); } });
             });
+        }
+
+        function updateHomeViewUI() {
+            let preference = localStorage.getItem('homeViewPreference') || 'grid';
+            let gridContainer = get('category-grid-container');
+            let mapContainer = get('world-map-root');
+            let toggleIcon = get('toggle-view-icon');
+            let toggleBtn = get('toggle-view-btn');
+
+            if (preference === 'map') {
+                if (gridContainer) gridContainer.classList.add('hidden');
+                if (mapContainer) mapContainer.classList.remove('hidden');
+                if (toggleIcon) toggleIcon.textContent = '🗂️';
+                if (toggleBtn) toggleBtn.setAttribute('data-tip', 'תצוגת רשימה 🗂️');
+            } else {
+                if (gridContainer) gridContainer.classList.remove('hidden');
+                if (mapContainer) mapContainer.classList.add('hidden');
+                if (toggleIcon) toggleIcon.textContent = '🗺️';
+                if (toggleBtn) toggleBtn.setAttribute('data-tip', 'תצוגת מפה 🗺️');
+            }
+        }
+
+        function toggleHomeView() {
+            playClickSound();
+            let current = localStorage.getItem('homeViewPreference') || 'grid';
+            let next = (current === 'grid') ? 'map' : 'grid';
+            localStorage.setItem('homeViewPreference', next);
+            updateHomeViewUI();
         }
 
         function openCategory(catId, catName) {
@@ -3774,7 +3893,7 @@
                 if(isCorrect) {
                     isProcessing = true; let isFinal = (currentStep >= (activeGameRounds - 1));
                     if(btn) btn.classList.add('correct-flash');
-                    playSuccessSound(); if (currentGameMode !== 'goodbad' && !SOLVE_GAMES[currentGameMode]) speakSuccess(isFinal);
+                    playSuccessSound(); if (currentGameMode !== 'goodbad' && currentGameMode !== 'freeze' && currentGameMode !== 'candle' && currentGameMode !== 'rescue' && currentGameMode !== 'calm' && currentGameMode !== 'store' && !SOLVE_GAMES[currentGameMode]) speakSuccess(isFinal);
                     try { if(typeof confetti === 'function' && !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) confetti({particleCount: 150, origin:{y:0.6}, zIndex:1000}); } catch(e){}
                     showKisses();
                     let fl = get('feedback-layer');
@@ -5119,17 +5238,162 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             });
         }
         
+        const ODD_ONE_CATEGORIES = [
+            {
+                name: "animals",
+                nameHe: "חיות",
+                items: ["🐶", "🐱", "🦁", "🐯", "🐮", "🐷", "🐵", "🐻", "🐨", "🐰", "🦊", "🐸", "🐧", "🦆", "🐢", "🐘", "🦒", "🦓", "🦄", "🐔", "🐙", "🦀", "🐠", "🐝", "🦋"]
+            },
+            {
+                name: "fruits_veggies",
+                nameHe: "פירות וירקות",
+                items: ["🍎", "🍌", "🍊", "🍇", "🍓", "🍍", "🥝", "🍉", "🍒", "🥕", "🥦", "🌽", "🍅", "🍆", "🍏", "🍐", "🍋", "🧅", "🥔", "🥑"]
+            },
+            {
+                name: "vehicles",
+                nameHe: "כלי תחבורה",
+                items: ["🚗", "🚌", "🚂", "✈️", "🚀", "🚢", "🚲", "🚁", "🏍️", "🚜", "🚕", "🚒", "🚑", "🚓", "🚛", "🛴", "🛹", "🛶", "🛸"]
+            },
+            {
+                name: "clothes",
+                nameHe: "בגדים",
+                items: ["👕", "👗", "👖", "🎩", "🧦", "🧥", "👟", "🧣", "🧤", "👑", "🎒", "👓", "👚", "👠", "🩳", "👞", "🧢"]
+            },
+            {
+                name: "stationery",
+                nameHe: "כלי כתיבה",
+                items: ["✏️", "📐", "✂️", "🎒", "📕", "🎨", "🖋️", "🖍️", "📔", "📁", "📏", "🖌️", "📌"]
+            },
+            {
+                name: "music",
+                nameHe: "כלי נגינה",
+                items: ["🎸", "🎹", "🎺", "🥁", "🎻", "🎷", "🪗", "🪕", "🎵", "🎶"]
+            },
+            {
+                name: "toys",
+                nameHe: "צעצועים",
+                items: ["🧸", "🎈", "🪁", "🎲", "👾", "🎮", "🪀", "🛹", "🧩", "🎳", "🎯", "🤖"]
+            },
+            {
+                name: "food",
+                nameHe: "מאכלים וקינוחים",
+                items: ["🍕", "🍔", "🍟", "🍩", "🍪", "🍫", "🍬", "🧁", "🍦", "🍰", "🌭", "🍿", "🍳", "🧇", "🥞"]
+            }
+        ];
+
         function initOddOneGame() {
             get('game-workspace').innerHTML = `
+                <style>
+                    #oddone-grid {
+                        display: grid;
+                        grid-template-columns: repeat(2, 1fr);
+                        gap: 16px;
+                        max-width: 480px;
+                        width: 100%;
+                        margin: 15px auto;
+                    }
+                    .oddone-card {
+                        background: #ffffff;
+                        border: 4px solid #fff;
+                        border-radius: 24px;
+                        aspect-ratio: 1.1;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+                        cursor: pointer;
+                        transition: all 0.2s ease;
+                        outline: none;
+                        user-select: none;
+                        -webkit-tap-highlight-color: transparent;
+                    }
+                    .oddone-card:active {
+                        transform: scale(0.95);
+                        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                    }
+                    .oddone-card.correct-flash {
+                        animation: oddone-correct 0.6s ease;
+                        border-color: #4CAF50;
+                        background: #e8f5e9;
+                    }
+                    .oddone-card.dimmed {
+                        opacity: 0.5;
+                        transform: scale(0.9);
+                        filter: grayscale(100%);
+                        pointer-events: none;
+                    }
+                    .oddone-emoji {
+                        font-size: clamp(48px, 11vw, 76px);
+                    }
+                    @keyframes oddone-correct {
+                        0%, 100% { transform: scale(1); }
+                        50% { transform: scale(1.15); }
+                    }
+                </style>
                 <div class="solve-gemini-bot" id="solve-bot-bubble" style="margin-bottom:15px;">
                     <svg width="45" height="45" viewBox="0 0 80 80" class="solve-gemini-bot-icon">
                         <use href="#prefab-bot"></use>
                     </svg>
-                    <div style="flex:1; font-weight:bold; color:#0d47a1; font-size:clamp(15px, 3vw, 19px);" id="solve-bot-text">מי יוצא דופן פה? 🍎</div>
+                    <div style="flex:1; font-weight:bold; color:#0d47a1; font-size:clamp(15px, 3vw, 19px);" id="solve-bot-text">מי לא שייך לקבוצה? 🤔</div>
                 </div>
-                <div id="diff-grid"></div>`;
-            diffOrder = shuffle(createRange(dPuz.length)).slice(0, 4);
-            loadDiffRound();
+                <div id="oddone-grid"></div>`;
+            
+            activeGameRounds = 4;
+            loadOddoneRound();
+        }
+
+        function loadOddoneRound() {
+            isProcessing = false;
+            let totalItems = 4;
+            if (currentDifficulty === 3) {
+                totalItems = 5;
+            } else if (currentDifficulty >= 4) {
+                totalItems = 6;
+            }
+            let majorityCount = totalItems - 1;
+
+            let cats = shuffle([...ODD_ONE_CATEGORIES]);
+            let majorityCat = cats[0];
+            let oddCat = cats[1];
+
+            let majorityItems = shuffle([...majorityCat.items]).slice(0, majorityCount);
+            let oddItem = shuffle([...oddCat.items])[0];
+
+            let options = [];
+            majorityItems.forEach(item => {
+                options.push({ emoji: item, isOdd: false });
+            });
+            options.push({ emoji: oddItem, isOdd: true });
+            options = shuffle(options);
+
+            let grid = get('oddone-grid');
+            if (grid) {
+                grid.innerHTML = '';
+                if (totalItems >= 5) {
+                    grid.style.gridTemplateColumns = 'repeat(3, 1fr)';
+                } else {
+                    grid.style.gridTemplateColumns = 'repeat(2, 1fr)';
+                }
+
+                options.forEach(opt => {
+                    let btn = D.createElement('button');
+                    btn.className = 'oddone-card';
+                    btn.innerHTML = `<span class="oddone-emoji">${opt.emoji}</span>`;
+                    btn.onclick = (e) => {
+                        if (isProcessing) return;
+                        handleOddOneAnswer(opt.isOdd, btn);
+                    };
+                    grid.appendChild(btn);
+                });
+            }
+
+            if (currentStep === 0) {
+                speakLetter("מי לא שייך לקבוצה?", "he");
+            }
+        }
+
+        function handleOddOneAnswer(isCorrect, btn) {
+            handleAnswer(isCorrect, btn, loadOddoneRound, null);
         }
 
         // ==========================================
@@ -6706,13 +6970,17 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
         }
 
         function clearFreezeTimers() {
+            stopFreezeSynthLoop();
             if (freezeTimer) { clearInterval(freezeTimer); freezeTimer = null; }
             if (freezeTimeout) { clearTimeout(freezeTimeout); freezeTimeout = null; }
             if (freezeDanceDurationTimer) { clearTimeout(freezeDanceDurationTimer); freezeDanceDurationTimer = null; }
+            if (freezeReactionTimer) { clearTimeout(freezeReactionTimer); freezeReactionTimer = null; }
             freezeActive = false;
+            freezeIsHolding = false;
+            isProcessing = false;
         }
 
-                function initFreezeGame() {
+        function initFreezeGame() {
             setAppBackground('create');
             clearFreezeTimers();
             freezeStarted = false;
@@ -6725,16 +6993,6 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
         let freezeTargetTime = 0;
         let freezeReactionTimer = null;
         let freezeMusicTimer = null;
-
-        function clearFreezeTimers() {
-            stopFreezeSynthLoop();
-            if (freezeTimer) { clearInterval(freezeTimer); freezeTimer = null; }
-            if (freezeTimeout) { clearTimeout(freezeTimeout); freezeTimeout = null; }
-            if (freezeReactionTimer) { clearTimeout(freezeReactionTimer); freezeReactionTimer = null; }
-            freezeActive = false;
-            freezeIsHolding = false;
-            isProcessing = false;
-        }
 
         function playFreezeSynthLoop() {
             try {
@@ -16345,7 +16603,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 </div>
 
                 <!-- Central Visual Playground with Hotspots -->
-                <div id="solve-scene-area" style="padding:0; background:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; overflow:visible; min-height:35vh; width:95%; max-width:700px; border-radius:24px; border:4px solid #b0bec5; position:relative; box-shadow: 0 10px 25px rgba(0,0,0,0.1); margin-bottom:15px;"></div>
+                <div id="gem-scene-area" style="padding:0; background:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; overflow:visible; min-height:35vh; width:95%; max-width:700px; border-radius:24px; border:4px solid #b0bec5; position:relative; box-shadow: 0 10px 25px rgba(0,0,0,0.1); margin-bottom:15px;"></div>
                 
                 <!-- Clue Status & Trigger Button -->
                 <div id="solve-clue-zone" class="solve-clue-status-bar">
@@ -16365,7 +16623,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 </div>
 
                 <!-- Option Selection Grid -->
-                <div id="solve-options-area" class="solve-choice-container hidden"></div>
+                <div id="gem-options-area" class="solve-choice-container hidden"></div>
 
                 <!-- Justification Cards -->
                 <div id="solve-justification-area" class="hidden" style="text-align:center; width:100%;">
@@ -16390,7 +16648,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             `;
 
             // Draw scene image or inline SVG inside wrapper
-            let sceneArea = get('solve-scene-area');
+            let sceneArea = get('gem-scene-area');
             sceneArea.innerHTML = `
                 <div id="solve-scene-wrapper" style="position:relative; width:100%; max-width:100%; aspect-ratio: 400 / 220; overflow:visible; border-radius:20px; display:block;">
                 </div>
@@ -16494,7 +16752,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
         function showGeminiChoices(gameId) {
             let game = GEMINI_GAMES[gameId];
             let round = game.rounds[currentStep];
-            let oArea = get('solve-options-area');
+            let oArea = get('gem-options-area');
             oArea.innerHTML = '';
             
             // Update banner
@@ -16529,7 +16787,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 
                 oArea.appendChild(card);
             });
-            show('solve-options-area');
+            show('gem-options-area');
         }
 
         function selectGeminiChoice(gameId, choiceIdx) {
@@ -16544,14 +16802,14 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             speakLetter(choice.feedbackText, 'he');
 
             // Visual outcome
-            let sceneArea = get('solve-scene-area');
+            let sceneArea = get('gem-scene-area');
             if (choice.outcomeScene.trim().startsWith('<svg')) {
                 sceneArea.innerHTML = choice.outcomeScene;
             } else {
                 sceneArea.innerHTML = `<img src="${choice.outcomeScene}" style="width:100%; max-height:32vh; object-fit:contain; border-radius:20px;" />`;
             }
 
-            hide('solve-options-area');
+            hide('gem-options-area');
             hide('solve-clue-board'); // Hide clue board during outcome
 
             // Show Selected Choice & Outcome Board
@@ -16622,7 +16880,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             banner.style.borderColor = '#d1c4e9';
             banner.style.color = '#4a148c';
 
-            hide('solve-scene-area'); // Hide scene illustration during justification step to clear up screen space
+            hide('gem-scene-area'); // Hide scene illustration during justification step to clear up screen space
             show('solve-justification-area');
         }
 
@@ -16647,7 +16905,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 banner.style.borderColor = '#ffcc80';
                 banner.style.color = '#e65100';
 
-                hide('solve-scene-area'); // Keep scene hidden during calibration
+                hide('gem-scene-area'); // Keep scene hidden during calibration
                 show('solve-calibration-area');
             }, 1800);
         }
