@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-09-26-v194-friction-batch4 -->
+<!DOCTYPE html><!-- build: 2026-09-26-v195-friction-batch5 -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -3039,7 +3039,7 @@
     </div>
     <div id="feedback-layer" class="hidden feedback-icon"></div>
     <!-- Caching version helper badge -->
-    <div style="position:fixed; bottom:5px; left:5px; font-size:10px; color:#fff; opacity:0.4; z-index:9999; font-family:monospace; pointer-events:none;">v194</div>
+    <div style="position:fixed; bottom:5px; left:5px; font-size:10px; color:#fff; opacity:0.4; z-index:9999; font-family:monospace; pointer-events:none;">v195</div>
     
     <!-- Floating Audio Skip Button -->
     <button id="floating-audio-skip-btn" class="hidden" onclick="skipCurrentAudio()" style="position:fixed; bottom:20px; right:20px; z-index:10000; background:#ffa726; color:white; border:3px solid white; border-radius:50px; padding:12px 24px; font-weight:bold; font-size:18px; box-shadow:0 6px 20px rgba(0,0,0,0.3); display:flex; align-items:center; gap:8px; cursor:pointer; font-family:'Rubik',sans-serif; transition:0.2s; outline:none;">
@@ -12037,10 +12037,10 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     return;
                 }
 
-                // Normal progression
-                playCoopAudio('coop/towertalk_' + towertalkType + '_block' + block.id + '.mp3', block.text);
-
-                setTimeout(() => {
+                // Normal progression — wait for the block-name narration to actually
+                // finish before announcing the next turn, instead of a fixed timer
+                // that could cut a longer phrase (e.g. "צריח הטירה") off mid-word.
+                playCoopAudio('coop/towertalk_' + towertalkType + '_block' + block.id + '.mp3', block.text, () => {
                     currentStep++;
                     updateProgressUI();
 
@@ -12087,7 +12087,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                         isProcessing = false;
                         renderHands();
                     }
-                }, 1600);
+                });
             }
 
             function triggerTowerCollapse() {
@@ -13004,8 +13004,11 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                         
                     } else {
                         let nameStr = currentTurn === 'roy' ? 'רועי' : 'אבא';
-                        get('coop-memory-status').textContent = `לא זהה! מתהפך חזרה... ⏳`;
-                        
+                        let mismatchMsg = `לא זהה, ${nameStr}! מתהפך חזרה...`;
+                        get('coop-memory-status').textContent = mismatchMsg + ' ⏳';
+                        playErrorSound();
+                        speakLetter(mismatchMsg, 'he');
+
                         failTimeout = setTimeout(() => {
                             failTimeout = null;
                             firstCard.flipped = false;
@@ -14043,8 +14046,14 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 imgCont.onpointerup = function(e) {
                     if (e.pointerId !== optActivePointerId) return;
                     optActivePointerId = null;
-                    if (diffsceneState === 'memorize') {
-                        switchToTestPhase();
+                    // Only the explicit "ready" button ends the memorize phase — a tap
+                    // on the picture itself (very likely while still studying it) no
+                    // longer rushes the child into the timed test early. During the
+                    // test phase, a tap that misses the hotspot now gets real feedback
+                    // instead of silence (the hotspot's own handler already stopped
+                    // propagation for a hit, so this only fires on an actual miss).
+                    if (diffsceneState === 'test') {
+                        onDiffsceneMiss();
                     }
                 };
             }
@@ -14096,6 +14105,21 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 get('diffscene-question').textContent = testText + ' 🔊';
                 speakLetter(testText, 'he');
             }, 1250);
+        }
+
+        function onDiffsceneMiss() {
+            if (isProcessing || !diffscenePlayable) return;
+            playErrorSound();
+            let imgCont = get('diffscene-image-container');
+            if (imgCont) {
+                imgCont.animate([
+                    { transform: 'translateX(0)' },
+                    { transform: 'translateX(-6px)' },
+                    { transform: 'translateX(6px)' },
+                    { transform: 'translateX(0)' }
+                ], { duration: 300 });
+            }
+            speakLetter('לא זה, הבט היטב בתמונה ונסה לגלות מה השתנה!', 'he');
         }
 
         function onHotspotClicked(idx, el) {
@@ -20280,7 +20304,14 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
 
         window.skipCurrentAudio = function() {
             playClickSound();
+            // capture the pending completion handler before stopAllSpeech pauses the
+            // audio — pause() never fires 'ended', so without this the skip button
+            // only silenced playback but never unblocked whatever was waiting on it.
+            let pendingOnEnded = _currentAudio ? _currentAudio.onended : null;
             stopAllSpeech();
+            if (pendingOnEnded) {
+                try { pendingOnEnded(); } catch(e) {}
+            }
         };
 
 
