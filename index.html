@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-09-26-v165-a11y-aria-labels-alt-text -->
+<!DOCTYPE html><!-- build: 2026-09-26-v166-a11y-diffscene-diffvideo-alt -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -2936,7 +2936,7 @@
     </div>
     <div id="feedback-layer" class="hidden feedback-icon"></div>
     <!-- Caching version helper badge -->
-    <div style="position:fixed; bottom:5px; left:5px; font-size:10px; color:#fff; opacity:0.4; z-index:9999; font-family:monospace; pointer-events:none;">v165</div>
+    <div style="position:fixed; bottom:5px; left:5px; font-size:10px; color:#fff; opacity:0.4; z-index:9999; font-family:monospace; pointer-events:none;">v166</div>
     
     <!-- Floating Audio Skip Button -->
     <button id="floating-audio-skip-btn" class="hidden" onclick="skipCurrentAudio()" style="position:fixed; bottom:20px; right:20px; z-index:10000; background:#ffa726; color:white; border:3px solid white; border-radius:50px; padding:12px 24px; font-weight:bold; font-size:18px; box-shadow:0 6px 20px rgba(0,0,0,0.3); display:flex; align-items:center; gap:8px; cursor:pointer; font-family:'Rubik',sans-serif; transition:0.2s; outline:none;">
@@ -13595,7 +13595,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 </div>
                 
                 <div id="diffscene-image-container" style="width: min(90vw, 550px, 52vh); aspect-ratio: 4/3; margin: 0 auto; position: relative; border-radius: 24px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.2); cursor: pointer; border: 4px solid #fff; transition: transform 0.2s;">
-                    <img id="diffscene-img-element" src="${data.baseImage}" style="width:100%; height:100%; object-fit:cover; pointer-events:none;" />
+                    <img id="diffscene-img-element" src="${data.baseImage}" alt="תמונת חדר לזיהוי הבדלים" style="width:100%; height:100%; object-fit:cover; pointer-events:none;" />
                     <div id="diffscene-items-overlay" style="position:absolute; left:0; top:0; width:100%; height:100%; pointer-events:none;"></div>
                     <div id="diffscene-black-mask" style="position:absolute; left:0; top:0; width:100%; height:100%; background:#000; z-index:20; display:none;"></div>
                 </div>
@@ -14751,7 +14751,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             if (/\.(mp4|webm|mov)$/i.test(src)) {
                 return `<video src="${src}" autoplay loop muted playsinline style="${style}"></video>`;
             }
-            return `<img src="${src}" style="${style}">`;
+            return `<img src="${src}" alt="" style="${style}">`;
         }
 
         function loadDiffvideoRound() {
