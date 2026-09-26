@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-09-26-v190-mgamish-fix -->
+<!DOCTYPE html><!-- build: 2026-09-26-v191-friction-systemic-1 -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -1038,7 +1038,7 @@
         #active-game-container:has(#sh-choices) { height:100svh; }
         #active-game-container:has(#sh-choices) #active-game-title { font-size:clamp(12px,2vh,18px); margin-bottom:1px !important; }
         .sharing-scene { display:flex; flex-direction:column; align-items:center; gap:8px; padding:0 1vmin 6px; max-width:700px; margin:0 auto; width:100%; flex:1 1 0; min-height:0; }
-        .sharing-question { font-size:clamp(10px,1.6vh,14px); font-weight:700; color:#333; margin:0; line-height:1.3; text-align:center; max-width:90vw; background:rgba(255,255,255,0.88); padding:4px 1.8vmin; border-radius:10px; cursor:pointer; flex-shrink:0; }
+        .sharing-question { font-size:clamp(16px,2.2vh,20px); font-weight:700; color:#333; margin:0; line-height:1.3; text-align:center; max-width:90vw; background:rgba(255,255,255,0.88); padding:4px 1.8vmin; border-radius:10px; cursor:pointer; flex-shrink:0; }
         .sharing-situation-img { width:min(86vw,540px); flex:1 1 0; min-height:0; max-height:260px; border-radius:14px; object-fit:contain; box-shadow:0 4px 14px rgba(0,0,0,0.18); display:block; background:#f0f0f0; }
         .sharing-img-choices { display:flex; gap:2vmin; justify-content:center; width:100%; flex-shrink:0; }
         .sharing-img-btn { flex:1 1 0; max-width:min(43vw,250px); aspect-ratio:4/3; border:4px solid rgba(255,255,255,0.85); border-radius:16px; overflow:hidden; cursor:pointer; padding:0; background:#fff; box-shadow:0 5px 16px rgba(0,0,0,0.2); transition:transform 0.15s,box-shadow 0.15s,border-color 0.2s; touch-action:manipulation; outline:none; animation:popIn 0.35s; }
@@ -3035,7 +3035,7 @@
     </div>
     <div id="feedback-layer" class="hidden feedback-icon"></div>
     <!-- Caching version helper badge -->
-    <div style="position:fixed; bottom:5px; left:5px; font-size:10px; color:#fff; opacity:0.4; z-index:9999; font-family:monospace; pointer-events:none;">v190</div>
+    <div style="position:fixed; bottom:5px; left:5px; font-size:10px; color:#fff; opacity:0.4; z-index:9999; font-family:monospace; pointer-events:none;">v191</div>
     
     <!-- Floating Audio Skip Button -->
     <button id="floating-audio-skip-btn" class="hidden" onclick="skipCurrentAudio()" style="position:fixed; bottom:20px; right:20px; z-index:10000; background:#ffa726; color:white; border:3px solid white; border-radius:50px; padding:12px 24px; font-weight:bold; font-size:18px; box-shadow:0 6px 20px rgba(0,0,0,0.3); display:flex; align-items:center; gap:8px; cursor:pointer; font-family:'Rubik',sans-serif; transition:0.2s; outline:none;">
@@ -4544,10 +4544,12 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 b.className='option-btn';
                 b.style.cssText = 'font-size:clamp(50px,12vw,90px); position:relative; min-width:90px; min-height:90px; padding:12px;';
                 b.textContent=o;
-                
+                if (o === memItems[memHide]) b.setAttribute('data-correct', '1');
+
                 b.onpointerdown=(ev)=>{
                     if(isProcessing || optActivePointerId !== null) return;
                     optActivePointerId = ev.pointerId;
+                    try { b.setPointerCapture(ev.pointerId); } catch(err) {}
                 };
                 b.onpointerup=(ev)=>{
                     if(ev.pointerId !== optActivePointerId) return;
@@ -5060,10 +5062,12 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     b.className='sequence-option-btn';
                     b.style.cssText = 'position:relative; width:100%; padding:15px 25px; min-height:80px;';
                     b.innerHTML = o.map(x=>`<span class="seq-opt-item" style="font-size:clamp(32px, 6vw, 55px); margin:0 6px;">${x}</span>`).join('');
-                    
+                    if (o.join('')===seqTarget.join('')) b.setAttribute('data-correct', '1');
+
                     b.onpointerdown=(ev)=>{
                         if(isProcessing || optActivePointerId !== null) return;
                         optActivePointerId = ev.pointerId;
+                        try { b.setPointerCapture(ev.pointerId); } catch(err) {}
                     };
                     b.onpointerup=(ev)=>{
                         if(ev.pointerId !== optActivePointerId) return;
@@ -5298,10 +5302,12 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 b.className='diff-option';
                 b.style.cssText = 'position:relative; padding:15px; min-width:100px; min-height:100px;';
                 b.innerHTML=`<svg viewBox="0 0 100 100" style="pointer-events:none; width:100%; height:100%;">${o.s}</svg>`;
-                
+                if (o.is) b.setAttribute('data-correct', '1');
+
                 b.onpointerdown=(ev)=>{
                     if(isProcessing || optActivePointerId !== null) return;
                     optActivePointerId = ev.pointerId;
+                    try { b.setPointerCapture(ev.pointerId); } catch(err) {}
                 };
                 b.onpointerup=(ev)=>{
                     if(ev.pointerId !== optActivePointerId) return;
@@ -5355,7 +5361,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             {
                 name: "clothes",
                 nameHe: "בגדים",
-                items: ["👕", "👗", "👖", "🎩", "🧦", "🧥", "👟", "🧣", "🧤", "👑", "🎒", "👓", "👚", "👠", "🩳", "👞", "🧢"]
+                items: ["👕", "👗", "👖", "🎩", "🧦", "🧥", "👟", "🧣", "🧤", "👑", "👓", "👚", "👠", "🩳", "👞", "🧢"]
             },
             {
                 name: "stationery",
@@ -5370,7 +5376,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             {
                 name: "toys",
                 nameHe: "צעצועים",
-                items: ["🧸", "🎈", "🪁", "🎲", "👾", "🎮", "🪀", "🛹", "🧩", "🎳", "🎯", "🤖"]
+                items: ["🧸", "🎈", "🪁", "🎲", "👾", "🎮", "🪀", "🧩", "🎳", "🎯", "🤖"]
             },
             {
                 name: "food",
@@ -5476,6 +5482,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 options.forEach(opt => {
                     let btn = D.createElement('button');
                     btn.className = 'oddone-card';
+                    if (opt.isOdd) btn.setAttribute('data-correct', '1');
                     btn.innerHTML = `<span class="oddone-emoji">${opt.emoji}</span>`;
                     btn.onclick = (e) => {
                         if (isProcessing) return;
@@ -5998,11 +6005,13 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 let b=D.createElement('button'); 
                 b.className='action-btn option-btn'; 
                 b.style.cssText = 'font-size:clamp(55px,12vw,95px); position:relative; min-width:90px; min-height:90px; padding:12px;'; 
-                b.textContent=t; 
-                
+                b.textContent=t;
+                if (t===p) b.setAttribute('data-correct', '1');
+
                 b.onpointerdown=(ev)=>{
                     if(isProcessing || optActivePointerId !== null) return;
                     optActivePointerId = ev.pointerId;
+                    try { b.setPointerCapture(ev.pointerId); } catch(err) {}
                 };
                 b.onpointerup=(ev)=>{
                     if(ev.pointerId !== optActivePointerId) return;
@@ -6078,11 +6087,13 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 let b=D.createElement('button'); 
                 b.className='action-btn option-btn'; 
                 b.style.cssText = 'font-size:clamp(60px,15vw,100px); position:relative; min-width:90px; min-height:90px; padding:12px;'; 
-                b.innerHTML=`<div class="half-right" style="pointer-events:none;">${t}</div>`; 
-                
+                b.innerHTML=`<div class="half-right" style="pointer-events:none;">${t}</div>`;
+                if (t===p) b.setAttribute('data-correct', '1');
+
                 b.onpointerdown=(ev)=>{
                     if(isProcessing || optActivePointerId !== null) return;
                     optActivePointerId = ev.pointerId;
+                    try { b.setPointerCapture(ev.pointerId); } catch(err) {}
                 };
                 b.onpointerup=(ev)=>{
                     if(ev.pointerId !== optActivePointerId) return;
@@ -6249,11 +6260,20 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 b.onpointerdown=(ev)=>{
                     if(isProcessing || w.classList.contains('hidden') || optActivePointerId !== null) return;
                     optActivePointerId = ev.pointerId;
+                    try { b.setPointerCapture(ev.pointerId); } catch(err) {}
                 };
                 b.onpointerup=(ev)=>{
                     if(ev.pointerId !== optActivePointerId) return;
                     optActivePointerId = null;
                     if(isProcessing || w.classList.contains('hidden')) return;
+                    if (o !== p[cSelected.length]) {
+                        // not the next item in the sequence yet — give feedback but let the
+                        // child try again immediately, instead of resetting the whole round
+                        // (this item may still be needed at a later position).
+                        playErrorSound();
+                        b.animate([{transform:'translateX(0)'},{transform:'translateX(-8px)'},{transform:'translateX(8px)'},{transform:'translateX(0)'}], {duration:300});
+                        return;
+                    }
                     playClickSound();
                     speakLetter(o.desc, 'he');
                     w.classList.add('hidden');
@@ -6432,7 +6452,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
 
             finalChoices.forEach(ch => {
                 let card = D.createElement('div');
+                card.className = 'assemble-part-card';
                 card.style.cssText = 'background:#fff; border:4px solid #cfd8dc; border-radius:24px; width:clamp(85px, 22vw, 115px); height:clamp(85px, 22vw, 115px); cursor:pointer; box-shadow:0 6px 14px rgba(0,0,0,0.06); transition:all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275); display:flex; flex-direction:column; align-items:center; justify-content:center; overflow:hidden; position:relative; touch-action:none;';
+                if (ch.id === part.id && ch._group === item.name) card.setAttribute('data-correct', '1');
 
                 card.innerHTML = `
                     <div style="width:clamp(45px, 12vw, 65px); height:clamp(45px, 12vw, 65px); margin-bottom:6px; display:flex; align-items:center; justify-content:center; pointer-events:none; filter: drop-shadow(0 3px 3px rgba(0,0,0,0.15));">
@@ -9117,6 +9139,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             opts.forEach((val) => {
                 let w = D.createElement('div'); w.className = 'option-wrapper';
                 let btn = D.createElement('button'); btn.className = 'option-btn';
+                if (val === correctVal) btn.setAttribute('data-correct', '1');
                 btn.style.width = 'clamp(120px, 35vw, 250px)'; btn.style.height = 'clamp(120px, 35vw, 250px)';
                 btn.style.display = 'flex'; btn.style.flexWrap = 'wrap'; btn.style.justifyContent = 'center'; btn.style.alignContent = 'center'; btn.style.gap = 'clamp(2px, 1vw, 8px)'; btn.style.padding = '15px';
 
@@ -9161,6 +9184,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             emoLabels.forEach((lbl) => {
                 let btn = D.createElement('button');
                 btn.className = 'action-btn option-btn';
+                if (lbl.id === p.ans) btn.setAttribute('data-correct', '1');
                 btn.style.width = 'clamp(70px, 20vmin, 150px)'; btn.style.height = 'auto'; btn.style.padding = '10px'; btn.style.display = 'flex'; btn.style.flexDirection = 'column'; btn.style.gap = '5px';
                 btn.innerHTML = `<span style="font-size:clamp(30px, 8vw, 60px);">${lbl.e}</span><span style="font-size:clamp(16px, 4vw, 24px); line-height:1;">${lbl.t}</span>`;
                 btn.onclick = (e) => { if(isProcessing) return; handleAnswer(lbl.id === p.ans, btn, loadEmotionRound, null); };
@@ -9269,6 +9293,8 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 opts.forEach((o) => {
                     let oName = o[nameField] || o.nameHe;
                     let b = D.createElement('button');
+                    b.className = 'faces-name-btn';
+                    if (oName === correctName) b.setAttribute('data-correct', '1');
                     b.style.cssText = `width:100%;padding:clamp(10px,2vmin,18px) 8px;border:4px solid #FF9800;border-radius:16px;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,0.15);transition:0.2s;touch-action:manipulation;outline:none;background:#fff;font-size:clamp(22px,5.25vmin,33px);font-weight:800;color:#333;direction:${facesLang==='he'?'rtl':'ltr'};`;
                     b.textContent = oName;
                     b.onclick = () => { if (isProcessing) return; handleAnswer(oName === correctName, b, loadFacesRound, null); };
@@ -9283,6 +9309,8 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     let oName = o[nameField] || o.nameHe;
                     let w = D.createElement('div'); w.style.position = 'relative';
                     let b = D.createElement('button');
+                    b.className = 'faces-photo-btn';
+                    if (oName === correctName) b.setAttribute('data-correct', '1');
                     b.style.cssText = 'width:100%;border:5px solid #4CAF50;border-radius:20px;cursor:pointer;padding:0;overflow:hidden;box-shadow:0 6px 14px rgba(0,0,0,0.18);transition:0.2s;touch-action:manipulation;outline:none;background:#f0f0f0;display:flex;flex-direction:column;';
                     let imgWrap = D.createElement('div'); imgWrap.style.cssText = 'width:100%;aspect-ratio:1/1;overflow:hidden;flex-shrink:0;max-height:clamp(100px,30vmin,220px);';
                     let mediaPath = FACES_BASE + encodeURIComponent(o.file);
@@ -9403,6 +9431,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
 
                 const btn = D.createElement('button');
                 btn.className = 'emp-opt-btn';
+                if (isCorrect) btn.setAttribute('data-correct', '1');
                 btn.style.width = 'clamp(120px,28vmin,185px)';
                 btn.style.aspectRatio = '3/1';
 
@@ -9418,6 +9447,15 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     btn.classList.add(isCorrect ? 'correct-flash' : 'wrong-flash');
                     // disable all buttons during animation
                     opts.querySelectorAll('.emp-opt-btn').forEach(b => b.style.pointerEvents = 'none');
+
+                    if (!isCorrect) {
+                        // wrong pick: just shake/dim the button, never place it on the face
+                        setTimeout(() => {
+                            opts.querySelectorAll('.emp-opt-btn').forEach(b => b.style.pointerEvents = '');
+                            handleAnswer(false, btn, loadEmPartsRound, null);
+                        }, 550);
+                        return;
+                    }
 
                     // create flying clone from button to face
                     const btnRect  = btn.getBoundingClientRect();
@@ -9715,6 +9753,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 var isCorrect = (letter === correctLetter);
                 var btn = D.createElement('button');
                 btn.className = 'fl-letter-btn';
+                if (isCorrect) btn.setAttribute('data-correct', '1');
                 btn.textContent = letter;
                 btn.onclick = function() {
                     if (isProcessing) return;
@@ -10229,8 +10268,8 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     '<p class="sharing-question" id="sh-q">' + scene.question + ' 🔊</p>' +
                     renderMediaHTML('sh-situation', 'sharing-situation-img', scene.situation) +
                     '<div class="sharing-img-choices" id="sh-choices">' +
-                    '<button class="sharing-img-btn" id="sh-left">' + renderMediaHTML('', '', leftImg) + '</button>' +
-                    '<button class="sharing-img-btn" id="sh-right">' + renderMediaHTML('', '', rightImg) + '</button>' +
+                    '<button class="sharing-img-btn" id="sh-left"' + (goodOnRight ? '' : ' data-correct="1"') + '>' + renderMediaHTML('', '', leftImg) + '</button>' +
+                    '<button class="sharing-img-btn" id="sh-right"' + (goodOnRight ? ' data-correct="1"' : '') + '>' + renderMediaHTML('', '', rightImg) + '</button>' +
                     '</div></div>';
 
                 playAudioWithCallback(scene.qAudio, null, scene.speakQ);
@@ -13585,6 +13624,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 b.onpointerdown=(ev)=>{
                     if (isProcessing || optActivePointerId !== null) return;
                     optActivePointerId = ev.pointerId;
+                    try { b.setPointerCapture(ev.pointerId); } catch(err) {}
                 };
                 b.onpointerup=(ev)=>{
                     if (ev.pointerId !== optActivePointerId) return;
@@ -13943,6 +13983,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 el.onpointerdown = function(e) {
                     if (isProcessing || optActivePointerId !== null) return;
                     optActivePointerId = e.pointerId;
+                    try { el.setPointerCapture(e.pointerId); } catch(err) {}
                 };
                 el.onpointerup = function(e) {
                     if (e.pointerId !== optActivePointerId) return;
@@ -13966,6 +14007,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 rBtn.onpointerdown = function(e) {
                     if (isProcessing || optActivePointerId !== null) return;
                     optActivePointerId = e.pointerId;
+                    try { rBtn.setPointerCapture(e.pointerId); } catch(err) {}
                 };
                 rBtn.onpointerup = function(e) {
                     if (e.pointerId !== optActivePointerId) return;
@@ -16575,7 +16617,8 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     dropZoneEl.classList.remove('drag-hover');
                     if (!moved) {
                         b.style.transform = ''; b.style.zIndex = '';
-                        if (onTap) onTap(c, i, b);
+                        if (onDrop) onDrop(c, i, b);
+                        else if (onTap) onTap(c, i, b);
                         return;
                     }
                     let br = b.getBoundingClientRect();
