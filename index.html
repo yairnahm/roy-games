@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-09-26-v187-all-remaining-games-aurora -->
+<!DOCTYPE html><!-- build: 2026-09-26-v188-scene-glass-frames -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -122,6 +122,31 @@
         body.bg-can_rescue { background: linear-gradient(120deg, #0575e6, #00f260, #0575e6); background-size: 300% 300%; animation: auroraFlow 11s ease-in-out infinite; }
         body.bg-can_speed_odd { background: linear-gradient(120deg, #ffe259, #ffa751, #ffe259); background-size: 300% 300%; animation: auroraFlow 7s ease-in-out infinite; }
         body.bg-sto_rescue { background: linear-gradient(120deg, #134e5e, #f7b733, #134e5e); background-size: 300% 300%; animation: auroraFlow 13s ease-in-out infinite; }
+
+        /* Themed frame + soft glass for the shared solve/gemini/genius scene container
+           (its own inline style sets a fixed gray border + flat white bg every round,
+           so !important is needed here to override that per active game). */
+        body.bg-bridge #solve-scene-area, body.bg-gem_bridge #gem-scene-area { border-color: #536976 !important; background: rgba(255,255,255,0.7) !important; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+        body.bg-key #solve-scene-area { border-color: #f7971e !important; background: rgba(255,255,255,0.7) !important; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+        body.bg-rescue2 #solve-scene-area, body.bg-gem_rescue2 #gem-scene-area { border-color: #134e5e !important; background: rgba(255,255,255,0.7) !important; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+        body.bg-inventor #solve-scene-area, body.bg-gem_inventor #gem-scene-area { border-color: #ff512f !important; background: rgba(255,255,255,0.7) !important; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+        body.bg-predict #solve-scene-area, body.bg-gem_predict #gem-scene-area { border-color: #6a3093 !important; background: rgba(255,255,255,0.7) !important; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+        body.bg-cluegrow #solve-scene-area, body.bg-gem_cluegrow #gem-scene-area { border-color: #56ab2f !important; background: rgba(255,255,255,0.7) !important; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+        body.bg-nestfix #solve-scene-area, body.bg-gem_nestfix #gem-scene-area { border-color: #4b6cb7 !important; background: rgba(255,255,255,0.7) !important; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+        body.bg-fairswing #solve-scene-area, body.bg-gem_fairswing #gem-scene-area { border-color: #11998e !important; background: rgba(255,255,255,0.7) !important; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+        body.bg-carefulfast #solve-scene-area, body.bg-gem_carefulfast #gem-scene-area { border-color: #eb5757 !important; background: rgba(255,255,255,0.7) !important; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+        body.bg-stopthink #solve-scene-area, body.bg-gem_stopthink #gem-scene-area { border-color: #1e3c72 !important; background: rgba(255,255,255,0.7) !important; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+        body.bg-together2 #solve-scene-area, body.bg-gem_together2 #gem-scene-area { border-color: #f857a6 !important; background: rgba(255,255,255,0.7) !important; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+        body.bg-gen_missing #gem-scene-area { border-color: #2c5364 !important; background: rgba(255,255,255,0.7) !important; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+        body.bg-gen_team #gem-scene-area { border-color: #ee0979 !important; background: rgba(255,255,255,0.7) !important; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+        body.bg-gen_unexpected #gem-scene-area { border-color: #8e2de2 !important; background: rgba(255,255,255,0.7) !important; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+        body.bg-gen_inquiry #gem-scene-area { border-color: #0072ff !important; background: rgba(255,255,255,0.7) !important; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+        body.bg-gen_better #gem-scene-area { border-color: #4b6cb7 !important; background: rgba(255,255,255,0.7) !important; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+        body.bg-gen_flexibility #gem-scene-area { border-color: #00b09b !important; background: rgba(255,255,255,0.7) !important; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+        body.bg-gen_patterns #gem-scene-area { border-color: #f7b733 !important; background: rgba(255,255,255,0.7) !important; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+        body.bg-gen_decisions #gem-scene-area { border-color: #3a6073 !important; background: rgba(255,255,255,0.7) !important; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+        body.bg-gen_iteration #gem-scene-area { border-color: #6f86d6 !important; background: rgba(255,255,255,0.7) !important; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+        body.bg-gen_coaching #gem-scene-area { border-color: #fc67fa !important; background: rgba(255,255,255,0.7) !important; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
         body.bg-diff { background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); }
         body.bg-fly { background: linear-gradient(135deg, #a8e063 0%, #56ab2f 100%); }
         body.bg-cop { background: linear-gradient(135deg, #ff9a56 0%, #ff6361 100%); }
@@ -955,7 +980,7 @@
         body.bg-tools .large-target,
         body.bg-habitat .large-target,
         body.bg-origins .large-target,
-        body.bg-families .large-target { background: rgba(255,255,255,0.55); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border: 1px solid rgba(255,255,255,0.6); }
+        body.bg-families .large-target { background: rgba(255,255,255,0.55) !important; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border: 1px solid rgba(255,255,255,0.6) !important; }
         .drag-drop-zone { min-height: 90px; width: 100%; max-width: 500px; margin: 14px auto 0; border: 4px dashed #90a4ae; border-radius: 20px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.5); transition: all 0.2s ease; font-size: clamp(14px,3vw,18px); color: #78909c; font-weight: bold; text-align: center; padding: 10px; }
         .drag-drop-zone.drag-hover { border-color: #4CAF50; border-style: solid; background: rgba(76,175,80,0.15); transform: scale(1.03); color: #2e7d32; }
         .drag-drop-zone.target-mode { border: none; background: transparent; padding: 0; }
@@ -3010,7 +3035,7 @@
     </div>
     <div id="feedback-layer" class="hidden feedback-icon"></div>
     <!-- Caching version helper badge -->
-    <div style="position:fixed; bottom:5px; left:5px; font-size:10px; color:#fff; opacity:0.4; z-index:9999; font-family:monospace; pointer-events:none;">v187</div>
+    <div style="position:fixed; bottom:5px; left:5px; font-size:10px; color:#fff; opacity:0.4; z-index:9999; font-family:monospace; pointer-events:none;">v188</div>
     
     <!-- Floating Audio Skip Button -->
     <button id="floating-audio-skip-btn" class="hidden" onclick="skipCurrentAudio()" style="position:fixed; bottom:20px; right:20px; z-index:10000; background:#ffa726; color:white; border:3px solid white; border-radius:50px; padding:12px 24px; font-weight:bold; font-size:18px; box-shadow:0 6px 20px rgba(0,0,0,0.3); display:flex; align-items:center; gap:8px; cursor:pointer; font-family:'Rubik',sans-serif; transition:0.2s; outline:none;">
