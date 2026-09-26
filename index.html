@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-09-26-v196-friction-batch6 -->
+<!DOCTYPE html><!-- build: 2026-09-26-v197-friction-batch7 -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -3039,7 +3039,7 @@
     </div>
     <div id="feedback-layer" class="hidden feedback-icon"></div>
     <!-- Caching version helper badge -->
-    <div style="position:fixed; bottom:5px; left:5px; font-size:10px; color:#fff; opacity:0.4; z-index:9999; font-family:monospace; pointer-events:none;">v196</div>
+    <div style="position:fixed; bottom:5px; left:5px; font-size:10px; color:#fff; opacity:0.4; z-index:9999; font-family:monospace; pointer-events:none;">v197</div>
     
     <!-- Floating Audio Skip Button -->
     <button id="floating-audio-skip-btn" class="hidden" onclick="skipCurrentAudio()" style="position:fixed; bottom:20px; right:20px; z-index:10000; background:#ffa726; color:white; border:3px solid white; border-radius:50px; padding:12px 24px; font-weight:bold; font-size:18px; box-shadow:0 6px 20px rgba(0,0,0,0.3); display:flex; align-items:center; gap:8px; cursor:pointer; font-family:'Rubik',sans-serif; transition:0.2s; outline:none;">
@@ -17325,7 +17325,12 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             
             let game = GEMINI_GAMES[gameId];
             let botText = get('solve-bot-text');
-            let successPraise = "כל הכבוד! פתרתם את האתגר בצורה נפלאה!";
+            let calibrationPraise = {
+                sure: "כל הכבוד! הייתם בטוחים, ובדיוק בשביל זה בדקתם את כל הרמזים!",
+                maybe: "כל הכבוד! גם כשלא הייתם בטוחים לגמרי, חשבתם על זה נכון!",
+                guess: "כל הכבוד! הצלחתם! בפעם הבאה נסו לבדוק שוב את הרמזים כדי להרגיש בטוחים יותר."
+            };
+            let successPraise = calibrationPraise[calValue] || "כל הכבוד! פתרתם את האתגר בצורה נפלאה!";
             botText.textContent = successPraise;
 
             // Trigger level-end reward
@@ -17384,7 +17389,38 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             playClickSound();
             mistakesInLevel++;
             hide('solve-rewind-area');
+            let previouslyFoundClues = geminiClickedClues.slice();
             loadGeminiRound(gameId);
+            // Only the chosen solution was suboptimal — the clues the child already
+            // found are re-applied instantly instead of making them search the whole
+            // scene again from scratch.
+            if (previouslyFoundClues.length > 0) {
+                let game = GEMINI_GAMES[gameId];
+                let round = game.rounds[currentStep];
+                let cluesList = get('solve-clues-list');
+                previouslyFoundClues.forEach(idx => {
+                    if (geminiClickedClues.includes(idx) || !round.clues[idx]) return;
+                    geminiClickedClues.push(idx);
+                    let el = get(`solve-hotspot-${idx}`);
+                    if (el) {
+                        el.classList.add('clicked');
+                        let dot = el.querySelector('.solve-hotspot-dot');
+                        if (dot) dot.textContent = '✅';
+                    }
+                    if (cluesList) {
+                        let div = D.createElement('div');
+                        div.style.fontWeight = 'bold';
+                        div.style.color = '#e65100';
+                        div.style.fontSize = '14px';
+                        div.style.margin = '4px 0';
+                        div.textContent = `✔️ ${round.clues[idx].revealedText}`;
+                        cluesList.appendChild(div);
+                    }
+                });
+                show('solve-clue-board');
+                hide('solve-clue-zone');
+                showGeminiChoices(gameId);
+            }
         };
 
 
