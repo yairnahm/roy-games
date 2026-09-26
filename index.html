@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-09-26-v186-games-42-46-aurora -->
+<!DOCTYPE html><!-- build: 2026-09-26-v187-all-remaining-games-aurora -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -87,6 +87,41 @@
         body.bg-candle { background: linear-gradient(120deg, #ff9a56, #f9d423, #ff9a56); background-size: 250% 250%; animation: auroraFlow 16s ease-in-out infinite; }
         body.bg-detective { background: linear-gradient(120deg, #360033, #f9d423, #360033); background-size: 300% 300%; animation: auroraFlow 11s ease-in-out infinite; }
         body.bg-museum { background: linear-gradient(120deg, #6a3805, #d4a017, #6a3805); background-size: 300% 300%; animation: auroraFlow 13s ease-in-out infinite; }
+
+        /* Solve-family scenarios + their GEMINI-narrative reskins share the same
+           per-scenario color identity, so the two tiers read as the same puzzle. */
+        body.bg-bridge, body.bg-gem_bridge { background: linear-gradient(120deg, #536976, #292e49, #536976); background-size: 300% 300%; animation: auroraFlow 11s ease-in-out infinite; }
+        body.bg-key { background: linear-gradient(120deg, #f7971e, #ffd200, #f7971e); background-size: 300% 300%; animation: auroraFlow 9s ease-in-out infinite; }
+        body.bg-rescue2, body.bg-gem_rescue2 { background: linear-gradient(120deg, #134e5e, #71b280, #134e5e); background-size: 300% 300%; animation: auroraFlow 12s ease-in-out infinite; }
+        body.bg-inventor, body.bg-gem_inventor { background: linear-gradient(120deg, #ff512f, #f09819, #ff512f); background-size: 300% 300%; animation: auroraFlow 10s ease-in-out infinite; }
+        body.bg-predict, body.bg-gem_predict { background: linear-gradient(120deg, #6a3093, #a044ff, #6a3093); background-size: 300% 300%; animation: auroraFlow 13s ease-in-out infinite; }
+        body.bg-cluegrow, body.bg-gem_cluegrow { background: linear-gradient(120deg, #56ab2f, #a8e063, #56ab2f); background-size: 300% 300%; animation: auroraFlow 11s ease-in-out infinite; }
+        body.bg-nestfix, body.bg-gem_nestfix { background: linear-gradient(120deg, #4b6cb7, #82589f, #4b6cb7); background-size: 300% 300%; animation: auroraFlow 12s ease-in-out infinite; }
+        body.bg-fairswing, body.bg-gem_fairswing { background: linear-gradient(120deg, #11998e, #38ef7d, #11998e); background-size: 300% 300%; animation: auroraFlow 10s ease-in-out infinite; }
+        body.bg-carefulfast, body.bg-gem_carefulfast { background: linear-gradient(120deg, #eb5757, #2f80ed, #eb5757); background-size: 300% 300%; animation: auroraFlow 9s ease-in-out infinite; }
+        body.bg-stopthink, body.bg-gem_stopthink { background: linear-gradient(120deg, #1e3c72, #2a5298, #1e3c72); background-size: 300% 300%; animation: auroraFlow 14s ease-in-out infinite; }
+        body.bg-together2, body.bg-gem_together2 { background: linear-gradient(120deg, #f857a6, #ff5858, #f857a6); background-size: 300% 300%; animation: auroraFlow 11s ease-in-out infinite; }
+
+        /* "Genius" tier (genius_solve): a distinct indigo/intellect family per scenario */
+        body.bg-gen_missing { background: linear-gradient(120deg, #0f2027, #2c5364, #0f2027); background-size: 300% 300%; animation: auroraFlow 11s ease-in-out infinite; }
+        body.bg-gen_team { background: linear-gradient(120deg, #ff6a00, #ee0979, #ff6a00); background-size: 300% 300%; animation: auroraFlow 10s ease-in-out infinite; }
+        body.bg-gen_unexpected { background: linear-gradient(120deg, #8e2de2, #4a00e0, #8e2de2); background-size: 300% 300%; animation: auroraFlow 12s ease-in-out infinite; }
+        body.bg-gen_inquiry { background: linear-gradient(120deg, #00c6ff, #0072ff, #00c6ff); background-size: 300% 300%; animation: auroraFlow 9s ease-in-out infinite; }
+        body.bg-gen_better { background: linear-gradient(120deg, #f2994a, #4b6cb7, #f2994a); background-size: 300% 300%; animation: auroraFlow 13s ease-in-out infinite; }
+        body.bg-gen_flexibility { background: linear-gradient(120deg, #00b09b, #96c93d, #00b09b); background-size: 300% 300%; animation: auroraFlow 11s ease-in-out infinite; }
+        body.bg-gen_patterns { background: linear-gradient(120deg, #fc4a1a, #f7b733, #fc4a1a); background-size: 300% 300%; animation: auroraFlow 10s ease-in-out infinite; }
+        body.bg-gen_decisions { background: linear-gradient(120deg, #16222a, #3a6073, #16222a); background-size: 300% 300%; animation: auroraFlow 12s ease-in-out infinite; }
+        body.bg-gen_iteration { background: linear-gradient(120deg, #48c6ef, #6f86d6, #48c6ef); background-size: 300% 300%; animation: auroraFlow 9s ease-in-out infinite; }
+        body.bg-gen_coaching { background: linear-gradient(120deg, #f4c4f3, #fc67fa, #f4c4f3); background-size: 300% 300%; animation: auroraFlow 14s ease-in-out infinite; }
+
+        /* Canvas/physics games (Phaser-adjacent inline-SVG) + the interactive story */
+        body.bg-can_flashlight { background: linear-gradient(120deg, #232526, #ff9a56, #232526); background-size: 300% 300%; animation: auroraFlow 11s ease-in-out infinite; }
+        body.bg-can_tower { background: linear-gradient(120deg, #ff9966, #ff5e62, #ff9966); background-size: 300% 300%; animation: auroraFlow 9s ease-in-out infinite; }
+        body.bg-can_shelter { background: linear-gradient(120deg, #00c9ff, #92fe9d, #00c9ff); background-size: 300% 300%; animation: auroraFlow 10s ease-in-out infinite; }
+        body.bg-can_pattern { background: linear-gradient(120deg, #7f00ff, #e100ff, #7f00ff); background-size: 300% 300%; animation: auroraFlow 12s ease-in-out infinite; }
+        body.bg-can_rescue { background: linear-gradient(120deg, #0575e6, #00f260, #0575e6); background-size: 300% 300%; animation: auroraFlow 11s ease-in-out infinite; }
+        body.bg-can_speed_odd { background: linear-gradient(120deg, #ffe259, #ffa751, #ffe259); background-size: 300% 300%; animation: auroraFlow 7s ease-in-out infinite; }
+        body.bg-sto_rescue { background: linear-gradient(120deg, #134e5e, #f7b733, #134e5e); background-size: 300% 300%; animation: auroraFlow 13s ease-in-out infinite; }
         body.bg-diff { background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); }
         body.bg-fly { background: linear-gradient(135deg, #a8e063 0%, #56ab2f 100%); }
         body.bg-cop { background: linear-gradient(135deg, #ff9a56 0%, #ff6361 100%); }
@@ -2975,7 +3010,7 @@
     </div>
     <div id="feedback-layer" class="hidden feedback-icon"></div>
     <!-- Caching version helper badge -->
-    <div style="position:fixed; bottom:5px; left:5px; font-size:10px; color:#fff; opacity:0.4; z-index:9999; font-family:monospace; pointer-events:none;">v186</div>
+    <div style="position:fixed; bottom:5px; left:5px; font-size:10px; color:#fff; opacity:0.4; z-index:9999; font-family:monospace; pointer-events:none;">v187</div>
     
     <!-- Floating Audio Skip Button -->
     <button id="floating-audio-skip-btn" class="hidden" onclick="skipCurrentAudio()" style="position:fixed; bottom:20px; right:20px; z-index:10000; background:#ffa726; color:white; border:3px solid white; border-radius:50px; padding:12px 24px; font-weight:bold; font-size:18px; box-shadow:0 6px 20px rgba(0,0,0,0.3); display:flex; align-items:center; gap:8px; cursor:pointer; font-family:'Rubik',sans-serif; transition:0.2s; outline:none;">
@@ -8814,7 +8849,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
         }
 
         function initKeyGame() {
-            setAppBackground('emotion');
+            setAppBackground('key');
             clearKeyTimers();
             loadWcKeyRound();
         }
