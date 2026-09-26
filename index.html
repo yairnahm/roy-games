@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-09-26-v167-color-contrast-fixes -->
+<!DOCTYPE html><!-- build: 2026-09-26-v168-games-11-15-audit -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -875,6 +875,9 @@
         .diff-option svg { width: 100%; height: 100%; pointer-events: none; }
         .diff-highlight-circle { position: absolute; border: 5px solid red; border-radius: 50%; transform: translate(-50%, -50%); animation: pulseCircle 0.8s infinite alternate; pointer-events: none; z-index: 10; }
         @keyframes pulseCircle { from { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 0 0 rgba(255,0,0,0.7); } to { transform: translate(-50%, -50%) scale(1.1); box-shadow: 0 0 0 15px rgba(255,0,0,0); } }
+        .pattern-question-pulse { animation: patternQuestionPulse 1.5s ease-in-out infinite; }
+        @keyframes patternQuestionPulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.6; transform: scale(1.06); } }
+        @media (prefers-reduced-motion: reduce) { .pattern-question-pulse { animation: none; } }
 
         /* איזו אות חסרה */
         #missing-word-display { font-size: clamp(40px, 8vw, 80px); font-weight: 900; color: #333; background: rgba(255,255,255,0.8); padding: 20px; border-radius: 20px; margin: 20px auto; max-width: 800px; width: 100%; display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 5px; box-shadow: 0 8px 15px rgba(0,0,0,0.1); min-height: 100px; }
@@ -2936,7 +2939,7 @@
     </div>
     <div id="feedback-layer" class="hidden feedback-icon"></div>
     <!-- Caching version helper badge -->
-    <div style="position:fixed; bottom:5px; left:5px; font-size:10px; color:#fff; opacity:0.4; z-index:9999; font-family:monospace; pointer-events:none;">v167</div>
+    <div style="position:fixed; bottom:5px; left:5px; font-size:10px; color:#fff; opacity:0.4; z-index:9999; font-family:monospace; pointer-events:none;">v168</div>
     
     <!-- Floating Audio Skip Button -->
     <button id="floating-audio-skip-btn" class="hidden" onclick="skipCurrentAudio()" style="position:fixed; bottom:20px; right:20px; z-index:10000; background:#ffa726; color:white; border:3px solid white; border-radius:50px; padding:12px 24px; font-weight:bold; font-size:18px; box-shadow:0 6px 20px rgba(0,0,0,0.3); display:flex; align-items:center; gap:8px; cursor:pointer; font-family:'Rubik',sans-serif; transition:0.2s; outline:none;">
@@ -5761,7 +5764,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
         }
         function loadVPartsRound() {
             let p = vpData[vpartsOrder[currentStep]];
-            get('vp-target').innerHTML = `<div style="position:relative; width:100%; height:100%;"><img src="${p.img}" style="width:100%; height:100%; object-fit:cover;"><div class="vp-patch" style="width:${p.cw}%; height:${p.ch}%; left:${p.cx - p.cw/2}%; top:${p.cy - p.ch/2}%;">❓</div></div>`;
+            get('vp-target').innerHTML = `<div style="position:relative; width:100%; height:100%;"><img src="${p.img}" alt="תמונת רכב" style="width:100%; height:100%; object-fit:cover;"><div class="vp-patch" style="width:${p.cw}%; height:${p.ch}%; left:${p.cx - p.cw/2}%; top:${p.cy - p.ch/2}%;">❓</div></div>`;
             let otherParts = []; for(let i=0; i<vpData.length; i++) { if(vpData[i] !== p) otherParts.push(vpData[i]); }
             let opts = shuffle([p].concat(shuffle(otherParts).slice(0, 3)));
             let oArea = get('vp-opts'); oArea.innerHTML = '';
@@ -5771,7 +5774,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 let posX = o.cw < 100 ? ((o.cx - o.cw/2) / (100 - o.cw)) * 100 : 50; let posY = o.ch < 100 ? ((o.cy - o.ch/2) / (100 - o.ch)) * 100 : 50;
                 b.innerHTML = `<div class="vp-option-inner" style="width:100%; height:100%; border-radius:12px; background-image:url('${o.img}'); background-size:${bgSizeX}% ${bgSizeY}%; background-position:${posX}% ${posY}%; pointer-events:none;"></div>`;
                 if (o === p) b.setAttribute('data-correct','1');
-                b.onclick = (e) => { if (isProcessing) return; if (o === p) { get('vp-target').innerHTML = `<img src="${p.img}" style="width:100%; height:100%; object-fit:cover; animation: superPop 0.5s ease-out forwards;">`; get('vp-target').style.borderColor = '#4CAF50'; handleAnswer(true, null, loadVPartsRound, null); } else { handleAnswer(false, b, null, null); } };
+                b.onclick = (e) => { if (isProcessing) return; if (o === p) { get('vp-target').innerHTML = `<img src="${p.img}" alt="תמונת רכב" style="width:100%; height:100%; object-fit:cover; animation: superPop 0.5s ease-out forwards;">`; get('vp-target').style.borderColor = '#4CAF50'; handleAnswer(true, null, loadVPartsRound, null); } else { handleAnswer(false, b, null, null); } };
                 let n = D.createElement('div'); n.className = 'option-number'; n.textContent = i + 1; w.appendChild(b); w.appendChild(n); oArea.appendChild(w);
             });
             get('vp-target').style.borderColor = '#2196F3';
@@ -13204,7 +13207,8 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             p.sequence.forEach(symbol => {
                 if (symbol === '❓') {
                     questionBox = D.createElement('div');
-                    questionBox.style.cssText = 'width:clamp(60px, 12vmin, 90px); height:clamp(60px, 12vmin, 90px); background:#fff; border:3px dashed #ff5722; border-radius:18px; display:flex; align-items:center; justify-content:center; font-size:clamp(32px, 6vmin, 48px); font-weight:bold; color:#ff5722; animation: pulse 1.5s infinite;';
+                    questionBox.style.cssText = 'width:clamp(60px, 12vmin, 90px); height:clamp(60px, 12vmin, 90px); background:#fff; border:3px dashed #ff5722; border-radius:18px; display:flex; align-items:center; justify-content:center; font-size:clamp(32px, 6vmin, 48px); font-weight:bold; color:#ff5722;';
+                    questionBox.classList.add('pattern-question-pulse');
                     questionBox.textContent = '❓';
                     seqArea.appendChild(questionBox);
                 } else {
@@ -13224,7 +13228,8 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             
             if (!hasPlaceholder) {
                 questionBox = D.createElement('div');
-                questionBox.style.cssText = 'width:clamp(60px, 12vmin, 90px); height:clamp(60px, 12vmin, 90px); background:#fff; border:3px dashed #ff5722; border-radius:18px; display:flex; align-items:center; justify-content:center; font-size:clamp(32px, 6vmin, 48px); font-weight:bold; color:#ff5722; animation: pulse 1.5s infinite;';
+                questionBox.style.cssText = 'width:clamp(60px, 12vmin, 90px); height:clamp(60px, 12vmin, 90px); background:#fff; border:3px dashed #ff5722; border-radius:18px; display:flex; align-items:center; justify-content:center; font-size:clamp(32px, 6vmin, 48px); font-weight:bold; color:#ff5722;';
+                questionBox.classList.add('pattern-question-pulse');
                 questionBox.textContent = '❓';
                 seqArea.appendChild(questionBox);
             }
@@ -13327,6 +13332,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
         function getShapeImgUrl(q) {
             return `https://tse1.mm.bing.net/th?q=${encodeURIComponent(q)}&w=800&h=800&c=7&rs=1`;
         }
+        const SHAPE_CAT_LABELS_HE = { animals: 'תמונת חיה', food: 'תמונת מאכל', vehicles: 'תמונת כלי תחבורה', nature: 'תמונת נוף', toys: 'תמונת צעצוע' };
         const shapeQuadrants = [
             { cx: 25, cy: 25 }, { cx: 75, cy: 25 }, { cx: 25, cy: 75 }, { cx: 75, cy: 75 }
         ];
@@ -13367,7 +13373,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             let quad = shapeQuadrants[shapeQuadIdx[currentStep]];
             let imgUrl = getShapeImgUrl(p.q);
             let overlay = getShapeOverlay(currentDifficulty);
-            get('shape-target').innerHTML = `<div style="position:relative; width:100%; height:100%; overflow:hidden; border-radius:16px;"><img src="${imgUrl}" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:1;">${overlay}<div class="vp-patch" style="width:50%; height:50%; left:${quad.cx - 25}%; top:${quad.cy - 25}%; z-index:4;">❓</div></div>`;
+            get('shape-target').innerHTML = `<div style="position:relative; width:100%; height:100%; overflow:hidden; border-radius:16px;"><img src="${imgUrl}" alt="${SHAPE_CAT_LABELS_HE[p.cat] || 'תמונה'}" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:1;">${overlay}<div class="vp-patch" style="width:50%; height:50%; left:${quad.cx - 25}%; top:${quad.cy - 25}%; z-index:4;">❓</div></div>`;
             get('shape-target').style.borderColor = '#2196F3';
 
             let others = shapeData.filter((item, idx) => idx !== shapeOrder[currentStep]);
@@ -13388,7 +13394,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 b.onclick = () => {
                     if (isProcessing) return;
                     if (o.correct) {
-                        get('shape-target').innerHTML = `<img src="${imgUrl}" style="width:100%; height:100%; object-fit:cover; border-radius:16px; animation: superPop 0.5s ease-out forwards;">`;
+                        get('shape-target').innerHTML = `<img src="${imgUrl}" alt="${SHAPE_CAT_LABELS_HE[p.cat] || 'תמונה'}" style="width:100%; height:100%; object-fit:cover; border-radius:16px; animation: superPop 0.5s ease-out forwards;">`;
                         get('shape-target').style.borderColor = '#4CAF50';
                         handleAnswer(true, null, loadShapeRound, null);
                     } else {
