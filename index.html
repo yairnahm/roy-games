@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-09-26-v195-friction-batch5 -->
+<!DOCTYPE html><!-- build: 2026-09-26-v196-friction-batch6 -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -3039,7 +3039,7 @@
     </div>
     <div id="feedback-layer" class="hidden feedback-icon"></div>
     <!-- Caching version helper badge -->
-    <div style="position:fixed; bottom:5px; left:5px; font-size:10px; color:#fff; opacity:0.4; z-index:9999; font-family:monospace; pointer-events:none;">v195</div>
+    <div style="position:fixed; bottom:5px; left:5px; font-size:10px; color:#fff; opacity:0.4; z-index:9999; font-family:monospace; pointer-events:none;">v196</div>
     
     <!-- Floating Audio Skip Button -->
     <button id="floating-audio-skip-btn" class="hidden" onclick="skipCurrentAudio()" style="position:fixed; bottom:20px; right:20px; z-index:10000; background:#ffa726; color:white; border:3px solid white; border-radius:50px; padding:12px 24px; font-weight:bold; font-size:18px; box-shadow:0 6px 20px rgba(0,0,0,0.3); display:flex; align-items:center; gap:8px; cursor:pointer; font-family:'Rubik',sans-serif; transition:0.2s; outline:none;">
@@ -19302,7 +19302,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                             });
                         } else {
                             speakLetter("אוי! המחסה עף ברוח. בואו ננסה לבנות מחסה חזק ויציב יותר מעל הגוזל.", 'he');
-                            setTimeout(resetCurrentGame, 1500);
+                            setTimeout(() => { if (gameActive) resetCurrentGame(); }, 1500);
                         }
                     }, 2400);
 
@@ -19324,6 +19324,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             const oldQuit = window.quitActiveGame;
             window.quitActiveGame = function() {
                 gameActive = false;
+                windActive = false;
                 if (oldQuit) oldQuit();
             };
         }
@@ -19483,7 +19484,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 if (ballY > 330) {
                     isGameOver = true;
                     speakLetter("אוי! הכדור נפל לתוך הפער. בואו ננסה להשלים את התבנית שוב!", 'he');
-                    setTimeout(resetCurrentGame, 2000);
+                    setTimeout(() => { if (gameActive) resetCurrentGame(); }, 2000);
                 }
                 else if (ballX > 480) {
                     isGameOver = true;
@@ -19686,7 +19687,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                         if (boyY > 450) {
                             walking = false;
                             speakLetter("אוי! הלוח היה קצר מדי והילד נפל למים. נסו להשתמש בלוח עץ ארוך יותר!", 'he');
-                            setTimeout(resetCurrentGame, 2000);
+                            setTimeout(() => { if (gameActive) resetCurrentGame(); }, 2000);
                         }
                     } else {
                         boyX += 110 * dt;
