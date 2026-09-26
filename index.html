@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-09-26-v177-games-1-5-visual-theming -->
+<!DOCTYPE html><!-- build: 2026-09-26-v178-games-6-10-visual-theming -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -83,6 +83,9 @@
         body.bg-sequence { background: linear-gradient(135deg, #fccb90 0%, #d57eeb 100%); }
         body.bg-path { background: linear-gradient(135deg, #cfd9df 0%, #e2ebf0 100%); }
         body.bg-diff { background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); }
+        body.bg-fly { background: linear-gradient(135deg, #a8e063 0%, #56ab2f 100%); }
+        body.bg-cop { background: linear-gradient(135deg, #ff9a56 0%, #ff6361 100%); }
+        body.bg-oddone { background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%); }
         body.bg-missing { background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); }
         body.bg-tools { background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%); }
         body.bg-context { background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%); }
@@ -846,6 +849,8 @@
         .canvas-container { position: relative; width: 100%; max-width: 600px; aspect-ratio: 1/1; background: #fafafa; border: 4px dashed #ddd; border-radius: 20px; box-shadow: inset 0 0 15px rgba(0,0,0,0.05); overflow:hidden; }
         body.bg-tracing .canvas-container { border-color: #2196F3; }
         body.bg-counting .canvas-container { border-color: #00897b; }
+        body.bg-fly .canvas-container { border-color: #2e7d32; }
+        body.bg-cop .canvas-container { border-color: #d84315; }
         .drawing-canvas { width: 100%; height: 100%; display: block; cursor: crosshair; touch-action: none; transition: 0.3s; border: none; padding: 0; margin: 0; }
         #minimap-area { width: 30%; max-width: 180px; background: rgba(255,255,255,0.9); border: 3px solid #2196F3; border-radius: 20px; padding: 10px; display: flex; flex-direction: column; align-items: center; }
         #previewCanvas { width: 100%; height: auto; aspect-ratio: 1/1; border: 2px dashed #ccc; border-radius: 10px; background: #fafafa; }
@@ -857,6 +862,7 @@
 
         /* סדר נכון / מהתחלה לסוף */
         .seq-target-area { display: flex; flex-direction: row; justify-content: center; align-items: center; gap: clamp(10px, 2vw, 20px); background: white; padding: 20px; border-radius: 20px; margin: 20px auto; max-width: 600px; width: 100%; box-shadow: 0 8px 15px rgba(0,0,0,0.1); transition: 0.5s; min-height: 120px; direction: ltr; }
+        body.bg-sequence .seq-target-area { border: 4px solid #ab47bc; }
         .seq-target-item { font-size: clamp(40px, 10vw, 80px); }
         .chrono-empty { border: 4px dashed #ccc; border-radius: 20px; width: clamp(65px, 14vmin, 110px); height: clamp(65px, 14vmin, 110px); display: flex; justify-content: center; align-items: center; overflow: hidden; background: rgba(0,0,0,0.03); transition: all 0.2s ease; }
         .chrono-empty img { width: 100%; height: 100%; object-fit: contain; background: #fff; }
@@ -879,6 +885,7 @@
         #diff-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(10px, 3vw, 20px); max-width: 500px; width: 100%; margin: 10px auto; }
         .diff-option-wrap { position: relative; display: flex; align-items: center; justify-content: center; }
         .diff-option { width: 100%; aspect-ratio: 1/1; background: white; border: 5px solid #2196F3; border-radius: 20px; cursor: pointer; padding: 10px; transition: 0.2s; touch-action: manipulation; outline: none; position: relative;}
+        body.bg-diff .diff-option { border-color: #ff7043; }
         .diff-option svg { width: 100%; height: 100%; pointer-events: none; }
         .diff-highlight-circle { position: absolute; border: 5px solid red; border-radius: 50%; transform: translate(-50%, -50%); animation: pulseCircle 0.8s infinite alternate; pointer-events: none; z-index: 10; }
         @keyframes pulseCircle { from { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 0 0 rgba(255,0,0,0.7); } to { transform: translate(-50%, -50%) scale(1.1); box-shadow: 0 0 0 15px rgba(255,0,0,0); } }
@@ -2947,7 +2954,7 @@
     </div>
     <div id="feedback-layer" class="hidden feedback-icon"></div>
     <!-- Caching version helper badge -->
-    <div style="position:fixed; bottom:5px; left:5px; font-size:10px; color:#fff; opacity:0.4; z-index:9999; font-family:monospace; pointer-events:none;">v177</div>
+    <div style="position:fixed; bottom:5px; left:5px; font-size:10px; color:#fff; opacity:0.4; z-index:9999; font-family:monospace; pointer-events:none;">v178</div>
     
     <!-- Floating Audio Skip Button -->
     <button id="floating-audio-skip-btn" class="hidden" onclick="skipCurrentAudio()" style="position:fixed; bottom:20px; right:20px; z-index:10000; background:#ffa726; color:white; border:3px solid white; border-radius:50px; padding:12px 24px; font-weight:bold; font-size:18px; box-shadow:0 6px 20px rgba(0,0,0,0.3); display:flex; align-items:center; gap:8px; cursor:pointer; font-family:'Rubik',sans-serif; transition:0.2s; outline:none;">
@@ -5304,7 +5311,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     }
                     .oddone-card {
                         background: #ffffff;
-                        border: 4px solid #fff;
+                        border: 4px solid #8e24aa;
                         border-radius: 24px;
                         aspect-ratio: 1.1;
                         display: flex;
