@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-09-26-v174-restore-museum-game -->
+<!DOCTYPE html><!-- build: 2026-09-26-v175-games-47-51-audit -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -2940,7 +2940,7 @@
     </div>
     <div id="feedback-layer" class="hidden feedback-icon"></div>
     <!-- Caching version helper badge -->
-    <div style="position:fixed; bottom:5px; left:5px; font-size:10px; color:#fff; opacity:0.4; z-index:9999; font-family:monospace; pointer-events:none;">v174</div>
+    <div style="position:fixed; bottom:5px; left:5px; font-size:10px; color:#fff; opacity:0.4; z-index:9999; font-family:monospace; pointer-events:none;">v175</div>
     
     <!-- Floating Audio Skip Button -->
     <button id="floating-audio-skip-btn" class="hidden" onclick="skipCurrentAudio()" style="position:fixed; bottom:20px; right:20px; z-index:10000; background:#ffa726; color:white; border:3px solid white; border-radius:50px; padding:12px 24px; font-weight:bold; font-size:18px; box-shadow:0 6px 20px rgba(0,0,0,0.3); display:flex; align-items:center; gap:8px; cursor:pointer; font-family:'Rubik',sans-serif; transition:0.2s; outline:none;">
@@ -8830,7 +8830,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     
                     <!-- Helper character (moves to help) -->
                     <div id="key-helper" class="key-helper-character" style="position:absolute; left:230px; bottom:20px; width:110px; height:135px; transition:all 0.8s ease; opacity:0.55; filter:grayscale(100%);" onclick="handleKeyHelperClick()">
-                        <img src="${helper.img}" style="width:100%; height:100%; object-fit:contain;" />
+                        <img src="${helper.img}" alt="${helper.name}" style="width:100%; height:100%; object-fit:contain;" />
                         <div style="position:absolute; top:-25px; left:0; width:100%; text-align:center; font-weight:bold; font-size:14px; background:rgba(255,255,255,0.85); border-radius:6px; border:1px solid #ccc; padding:2px 0;">${helper.name}</div>
                     </div>
 
@@ -8847,7 +8847,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     <!-- Roy -->
                     <div id="key-roy" style="position:absolute; left:110px; bottom:20px; width:90px; height:150px; cursor:pointer;" onclick="handleKeyRoyJump()">
                         <div id="roy-key-overlay" class="hidden" style="position:absolute; top:-30px; right:-15px; font-size:35px; z-index:10; pointer-events:none; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.25));">🔑</div>
-                        <img id="key-roy-img" src="images/winners/key_roy_reach.png" style="width:100%; height:100%; object-fit:contain;" />
+                        <img id="key-roy-img" src="images/winners/key_roy_reach.png" alt="רועי מנסה להגיע למפתח" style="width:100%; height:100%; object-fit:contain;" />
                     </div>
                 </div>
 
