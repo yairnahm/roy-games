@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-09-26-v193-vparts-offline -->
+<!DOCTYPE html><!-- build: 2026-09-26-v194-friction-batch4 -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -3039,7 +3039,7 @@
     </div>
     <div id="feedback-layer" class="hidden feedback-icon"></div>
     <!-- Caching version helper badge -->
-    <div style="position:fixed; bottom:5px; left:5px; font-size:10px; color:#fff; opacity:0.4; z-index:9999; font-family:monospace; pointer-events:none;">v193</div>
+    <div style="position:fixed; bottom:5px; left:5px; font-size:10px; color:#fff; opacity:0.4; z-index:9999; font-family:monospace; pointer-events:none;">v194</div>
     
     <!-- Floating Audio Skip Button -->
     <button id="floating-audio-skip-btn" class="hidden" onclick="skipCurrentAudio()" style="position:fixed; bottom:20px; right:20px; z-index:10000; background:#ffa726; color:white; border:3px solid white; border-radius:50px; padding:12px 24px; font-weight:bold; font-size:18px; box-shadow:0 6px 20px rgba(0,0,0,0.3); display:flex; align-items:center; gap:8px; cursor:pointer; font-family:'Rubik',sans-serif; transition:0.2s; outline:none;">
@@ -7996,12 +7996,10 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     }
                 </style>
 
-                <div id="candle-question" style="display:none;"></div>
-
                 <div class="candle-container" id="candle-stage-box">
-                    
-                    <div id="candle-status" style="font-size:clamp(17px,3.8vw,22px); font-weight:bold; color:#d84315; direction:rtl; text-align:center; height:30px; line-height:30px; text-shadow:0 1px 0 #fff;">
-                        ${roundItem.desc}! נעזור לו להירגע 🌬️
+
+                    <div id="candle-status" style="font-size:clamp(17px,3.8vw,22px); font-weight:bold; color:#d84315; direction:rtl; text-align:center; height:30px; line-height:30px; text-shadow:0 1px 0 #fff; cursor:pointer;">
+                        ${roundItem.desc}! נעזור לו להירגע 🌬️ 🔊
                     </div>
 
                     <!-- Split visual: Character on left, Candle on right -->
@@ -8031,7 +8029,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 </div>
             `;
 
-            let qEl = get('candle-question');
+            let qEl = get('candle-status');
             if (qEl) {
                 qEl.onclick = () => {
                     playCoopAudio(roundItem.audioIntro, roundItem.audioIntroText);
@@ -8772,10 +8770,13 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
         function initMuseumGame() {
             setAppBackground('museum');
             clearMuseumTimers();
-            playCoopAudio('winners/museum/intro.mp3', 'ברוך הבא למוזיאון של רועי! לחץ על כל תערוכה כדי ללמוד עליה, ואז ענה על השאלות.');
-            loadMuseumRound();
+            playCoopAudio('winners/museum/intro.mp3', 'ברוך הבא למוזיאון של רועי! לחץ על כל תערוכה כדי ללמוד עליה, ואז ענה על השאלות.', () => {
+                let ex = WC_MUSEUM_EXHIBITS[currentStep] || WC_MUSEUM_EXHIBITS[0];
+                playCoopAudio(ex.audio, ex.text);
+            });
+            loadMuseumRound(true);
         }
-        function loadMuseumRound() {
+        function loadMuseumRound(skipAutoAudio) {
             isProcessing = false;
             wcMuseumQuizIdx = -1;
             let ex = WC_MUSEUM_EXHIBITS[currentStep] || WC_MUSEUM_EXHIBITS[0];
@@ -8814,7 +8815,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 </div>
             `;
             playMuseumFx(ex.fx);
-            setTimeout(() => playCoopAudio(ex.audio, ex.text), 350);
+            if (!skipAutoAudio) setTimeout(() => playCoopAudio(ex.audio, ex.text), 350);
 
             let exImg = get('wc-museum-ex-img');
             if (exImg) {
@@ -8854,6 +8855,8 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             let optsEl = get('wc-museum-quiz-opts');
             opts.forEach(([label, correct]) => {
                 let btn = D.createElement('button');
+                btn.className = 'wc-museum-quiz-btn';
+                if (correct) btn.setAttribute('data-correct', '1');
                 btn.textContent = label;
                 btn.style.cssText = 'width:100%; height:clamp(55px,12vw,70px); border-radius:20px; border:none; background:linear-gradient(135deg,#42a5f5,#1565c0); color:#fff; font-size:clamp(16px,4vw,20px); font-weight:900; box-shadow:0 6px 16px rgba(21,101,192,0.3); direction:rtl;';
                 btn.onclick = () => {
@@ -8882,10 +8885,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                             }
                         }, 700);
                     } else {
-                        playErrorSound();
-                        btn.style.transform = 'translateX(-6px)';
-                        setTimeout(() => { btn.style.transform = 'translateX(6px)'; }, 100);
-                        setTimeout(() => { btn.style.transform = 'scale(1)'; }, 220);
+                        handleAnswer(false, btn, null, null);
                     }
                 };
                 optsEl.appendChild(btn);
@@ -8939,10 +8939,8 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     }
                 </style>
 
-                <div id="key-question" style="display:none;"></div>
-
-                <div id="key-status" style="font-size:17px; font-weight:bold; color:#455a64; text-align:center; direction:rtl; margin-bottom:12px; min-height:24px; transition: color 0.3s ease;">
-                    נסו להגיע למפתח התלוי למעלה! 🔑
+                <div id="key-status" style="font-size:17px; font-weight:bold; color:#455a64; text-align:center; direction:rtl; margin-bottom:12px; min-height:24px; transition: color 0.3s ease; cursor:pointer;">
+                    נסו להגיע למפתח התלוי למעלה! 🔑 🔊
                 </div>
 
                 <div style="position:relative; width:min(95vw,500px); height:320px; margin:0 auto; background:linear-gradient(to bottom, #cfd8dc, #eceff1); border-radius:24px; border:4px solid #b0bec5; overflow:hidden;">
@@ -8975,7 +8973,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 <div id="key-ask-area" style="min-height:75px; display:flex; justify-content:center; align-items:center;"></div>
             `;
 
-            let qEl = get('key-question');
+            let qEl = get('key-status');
             if (qEl) {
                 qEl.onclick = () => {
                     playCoopAudio('winners/key/intro.mp3', 'המפתח הגבוה! נסה להגיע למפתח לבד, ואם לא תצליח – בקש עזרה בנימוס.');
@@ -8988,9 +8986,15 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
         }
 
         window.handleKeyRoyJump = function() {
-            if (isProcessing || wcKeyTried) return;
+            if (isProcessing) return;
             let roy = get('key-roy');
             if (!roy) return;
+            if (wcKeyTried) {
+                // already tried alone — gentle nudge back toward asking for help
+                playClickSound();
+                roy.animate([{transform:'translateY(0)'},{transform:'translateY(-15px)'},{transform:'translateY(0)'}], {duration:300});
+                return;
+            }
 
             isProcessing = true;
             playClickSound();
@@ -9035,7 +9039,14 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
         };
 
         window.handleKeyHelperClick = function() {
-            if (isProcessing || !wcKeyTried) return;
+            if (isProcessing) return;
+            if (!wcKeyTried) {
+                // encourage trying alone first, but still acknowledge the tap
+                playClickSound();
+                let helper = get('key-helper');
+                if (helper) helper.animate([{transform:'scale(1)'},{transform:'scale(1.08)'},{transform:'scale(1)'}], {duration:300});
+                return;
+            }
             triggerKeyAskRequest();
         };
 
@@ -11358,6 +11369,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             let royPlayed = [false, false, false, false, false];
             let abaPlayed = [false, false, false, false, false];
             let currentTurn = 'roy'; // Roy starts
+            let lastRoyPlayedIdx = -1;
 
             function getRandomNumber(lvl) {
                 if (lvl === 1) return rand(1, 15);
@@ -11496,6 +11508,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             function playRoyCard(idx) {
                 isProcessing = true;
                 royPlayed[idx] = true;
+                lastRoyPlayedIdx = idx;
                 currentTurn = 'aba'; registerTurnSwitch();
                 renderHands();
 
@@ -11535,7 +11548,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 
                 // Compare after a short delay
                 setTimeout(() => {
-                    compareCards(royHand[royPlayed.lastIndexOf(true)], abaHand[idx], royPlayed.lastIndexOf(true), idx);
+                    compareCards(royHand[lastRoyPlayedIdx], abaHand[idx], lastRoyPlayedIdx, idx);
                 }, 1500);
             }
 
