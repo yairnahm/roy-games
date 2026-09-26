@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-09-26-v189-reward-audit -->
+<!DOCTYPE html><!-- build: 2026-09-26-v190-mgamish-fix -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -3035,7 +3035,7 @@
     </div>
     <div id="feedback-layer" class="hidden feedback-icon"></div>
     <!-- Caching version helper badge -->
-    <div style="position:fixed; bottom:5px; left:5px; font-size:10px; color:#fff; opacity:0.4; z-index:9999; font-family:monospace; pointer-events:none;">v189</div>
+    <div style="position:fixed; bottom:5px; left:5px; font-size:10px; color:#fff; opacity:0.4; z-index:9999; font-family:monospace; pointer-events:none;">v190</div>
     
     <!-- Floating Audio Skip Button -->
     <button id="floating-audio-skip-btn" class="hidden" onclick="skipCurrentAudio()" style="position:fixed; bottom:20px; right:20px; z-index:10000; background:#ffa726; color:white; border:3px solid white; border-radius:50px; padding:12px 24px; font-weight:bold; font-size:18px; box-shadow:0 6px 20px rgba(0,0,0,0.3); display:flex; align-items:center; gap:8px; cursor:pointer; font-family:'Rubik',sans-serif; transition:0.2s; outline:none;">
@@ -13413,6 +13413,8 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             if(side === puz.flex) {
                 isProcessing = true;
                 playMgFunnySound();
+                try { if(typeof confetti === 'function' && !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) confetti({particleCount: 150, origin:{y:0.6}, zIndex:1000}); } catch(e){}
+                showKisses();
                 let src = puz.success ? (MG_BASE + puz.success) : (MG_BASE + 'char.jpg');
                 let fl = get('feedback-layer');
                 fl.style.background = 'rgba(0,0,0,0.88)';
@@ -13421,7 +13423,6 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 gameErrorTimeout = setTimeout(() => {
                     fl.style.background = '';
                     hide('feedback-layer');
-                    mistakesInLevel++;
                     currentStep++; updateProgressUI();
                     isProcessing = false;
                     if(currentStep > 3) {
