@@ -1,8 +1,18 @@
-const CACHE_NAME = 'roy-games-v192';
+const CACHE_NAME = 'roy-games-v193';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './images/roys_store_bg.jpg',
+  './images/vparts/vp1.jpg',
+  './images/vparts/vp2.jpg',
+  './images/vparts/vp3.jpg',
+  './images/vparts/vp4.jpg',
+  './images/vparts/vp5.jpg',
+  './images/vparts/vp6.jpg',
+  './images/vparts/vp7.jpg',
+  './images/vparts/vp8.jpg',
+  './images/vparts/vp9.jpg',
+  './images/vparts/vp10.jpg',
   './images/freeze/teddy_dancing.png',
   './images/freeze/teddy_frozen.png',
   './images/gen_missing_r1.png',

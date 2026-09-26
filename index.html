@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-09-26-v192-friction-systemic-2 -->
+<!DOCTYPE html><!-- build: 2026-09-26-v193-vparts-offline -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -3039,7 +3039,7 @@
     </div>
     <div id="feedback-layer" class="hidden feedback-icon"></div>
     <!-- Caching version helper badge -->
-    <div style="position:fixed; bottom:5px; left:5px; font-size:10px; color:#fff; opacity:0.4; z-index:9999; font-family:monospace; pointer-events:none;">v192</div>
+    <div style="position:fixed; bottom:5px; left:5px; font-size:10px; color:#fff; opacity:0.4; z-index:9999; font-family:monospace; pointer-events:none;">v193</div>
     
     <!-- Floating Audio Skip Button -->
     <button id="floating-audio-skip-btn" class="hidden" onclick="skipCurrentAudio()" style="position:fixed; bottom:20px; right:20px; z-index:10000; background:#ffa726; color:white; border:3px solid white; border-radius:50px; padding:12px 24px; font-weight:bold; font-size:18px; box-shadow:0 6px 20px rgba(0,0,0,0.3); display:flex; align-items:center; gap:8px; cursor:pointer; font-family:'Rubik',sans-serif; transition:0.2s; outline:none;">
@@ -5843,16 +5843,16 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
         // 11. איזה חלק חסר? 
         // ==========================================
         const vpData = [
-            { img: 'https://images.unsplash.com/photo-1517524008697-84bbe3c3fd98?w=800&q=80', cx: 20, cy: 75, cw: 25, ch: 25 }, 
-            { img: 'https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?w=800&q=80', cx: 80, cy: 60, cw: 20, ch: 20 }, 
-            { img: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800&q=80', cx: 25, cy: 50, cw: 20, ch: 20 }, 
-            { img: 'https://images.unsplash.com/photo-1471506480208-91b3a4cc78be?w=800&q=80', cx: 80, cy: 70, cw: 20, ch: 20 }, 
-            { img: 'https://images.unsplash.com/photo-1569263979104-865ab7cd8d13?w=800&q=80', cx: 50, cy: 80, cw: 20, ch: 20 }, 
-            { img: 'https://images.unsplash.com/photo-1559293424-65ab3cbfa502?w=800&q=80', cx: 50, cy: 50, cw: 20, ch: 20 }, 
-            { img: 'https://images.unsplash.com/photo-1583508915901-b5f84c1dcde1?w=800&q=80', cx: 20, cy: 40, cw: 25, ch: 25 }, 
-            { img: 'https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=800&q=80', cx: 80, cy: 80, cw: 20, ch: 20 }, 
-            { img: 'https://images.unsplash.com/photo-1605806616949-1e87b487cb2a?w=800&q=80', cx: 50, cy: 30, cw: 20, ch: 20 }, 
-            { img: 'https://images.unsplash.com/photo-1519003722824-194d4455a60c?w=800&q=80', cx: 30, cy: 60, cw: 20, ch: 20 }  
+            { img: 'images/vparts/vp1.jpg', cx: 20, cy: 75, cw: 25, ch: 25 },
+            { img: 'images/vparts/vp2.jpg', cx: 80, cy: 60, cw: 20, ch: 20 },
+            { img: 'images/vparts/vp3.jpg', cx: 25, cy: 50, cw: 20, ch: 20 },
+            { img: 'images/vparts/vp4.jpg', cx: 80, cy: 70, cw: 20, ch: 20 },
+            { img: 'images/vparts/vp5.jpg', cx: 50, cy: 80, cw: 20, ch: 20 },
+            { img: 'images/vparts/vp6.jpg', cx: 50, cy: 50, cw: 20, ch: 20 },
+            { img: 'images/vparts/vp7.jpg', cx: 20, cy: 40, cw: 25, ch: 25 },
+            { img: 'images/vparts/vp8.jpg', cx: 80, cy: 80, cw: 20, ch: 20 },
+            { img: 'images/vparts/vp9.jpg', cx: 50, cy: 30, cw: 20, ch: 20 },
+            { img: 'images/vparts/vp10.jpg', cx: 30, cy: 60, cw: 20, ch: 20 }
         ];
         let vpartsOrder = [];
         function initVPartsGame() {
