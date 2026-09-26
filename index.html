@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-09-26-v197-friction-batch7 -->
+<!DOCTYPE html><!-- build: 2026-09-26-v198-friction-batch8 -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -3039,7 +3039,7 @@
     </div>
     <div id="feedback-layer" class="hidden feedback-icon"></div>
     <!-- Caching version helper badge -->
-    <div style="position:fixed; bottom:5px; left:5px; font-size:10px; color:#fff; opacity:0.4; z-index:9999; font-family:monospace; pointer-events:none;">v197</div>
+    <div style="position:fixed; bottom:5px; left:5px; font-size:10px; color:#fff; opacity:0.4; z-index:9999; font-family:monospace; pointer-events:none;">v198</div>
     
     <!-- Floating Audio Skip Button -->
     <button id="floating-audio-skip-btn" class="hidden" onclick="skipCurrentAudio()" style="position:fixed; bottom:20px; right:20px; z-index:10000; background:#ffa726; color:white; border:3px solid white; border-radius:50px; padding:12px 24px; font-weight:bold; font-size:18px; box-shadow:0 6px 20px rgba(0,0,0,0.3); display:flex; align-items:center; gap:8px; cursor:pointer; font-family:'Rubik',sans-serif; transition:0.2s; outline:none;">
@@ -6661,7 +6661,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
 
                 isProcessing = true;
                 let fl = get('feedback-layer');
-                let errText = `בוא ננסה שוב, זה לא ${part.text}`;
+                let errText = `זה ${selectedPart.text}, אנחנו מחפשים את ${part.text}. בוא ננסה שוב!`;
                 fl.innerHTML = `<span>🤔</span><div class="feedback-msg">${errText}</div>`;
                 show('feedback-layer');
                 
@@ -12298,10 +12298,10 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                             <div class="numwar-arena-title" id="arena-status">${currentPlayerName || 'רועי'}, בחר חלק פאזל ולחץ על המקום הנכון! 🧩</div>
                             
                             <div class="coop-puzzle-grid" id="puzzle-grid" style="direction: ltr;">
-                                <div class="coop-puzzle-slot" data-index="0">1</div>
-                                <div class="coop-puzzle-slot" data-index="1">2</div>
-                                <div class="coop-puzzle-slot" data-index="2">3</div>
-                                <div class="coop-puzzle-slot" data-index="3">4</div>
+                                <div class="coop-puzzle-slot" data-index="0" style="background-image:linear-gradient(rgba(255,255,255,0.4),rgba(255,255,255,0.4)), url('${selectedPuzzleImage}'); background-size:200% 200%; background-position:${puzzlePieces[0].bgPos};">1</div>
+                                <div class="coop-puzzle-slot" data-index="1" style="background-image:linear-gradient(rgba(255,255,255,0.4),rgba(255,255,255,0.4)), url('${selectedPuzzleImage}'); background-size:200% 200%; background-position:${puzzlePieces[1].bgPos};">2</div>
+                                <div class="coop-puzzle-slot" data-index="2" style="background-image:linear-gradient(rgba(255,255,255,0.4),rgba(255,255,255,0.4)), url('${selectedPuzzleImage}'); background-size:200% 200%; background-position:${puzzlePieces[2].bgPos};">3</div>
+                                <div class="coop-puzzle-slot" data-index="3" style="background-image:linear-gradient(rgba(255,255,255,0.4),rgba(255,255,255,0.4)), url('${selectedPuzzleImage}'); background-size:200% 200%; background-position:${puzzlePieces[3].bgPos};">4</div>
                             </div>
                         </div>
 
@@ -12393,7 +12393,14 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             }
 
             function onSlotClicked(slotIdx, slotEl) {
-                if (selectedPieceIndex === null || isProcessing) return;
+                if (isProcessing) return;
+                if (selectedPieceIndex === null) {
+                    // tapped the board before picking up a piece — nudge instead of silence
+                    playClickSound();
+                    speakLetter('קודם בחרו חלק פאזל, ואז הניחו אותו כאן', 'he');
+                    if (slotEl) slotEl.animate([{transform:'scale(1)'},{transform:'scale(1.06)'},{transform:'scale(1)'}], {duration:250});
+                    return;
+                }
 
                 if (slotIdx === selectedPieceIndex) {
                     // Correct placement!
@@ -17489,9 +17496,9 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                         }
                     ],
                     justifications: [
-                        { icon: "🤝", text: "חלוקת זמן הוגנת עם טיימר עוזרת לכולם לשחק יחד בשמחה." },
-                        { icon: "📢", text: "מי שבוכה חזק יותר צריך תמיד לקבל הכל ראשון." },
-                        { icon: "🧱", text: "מי שהגיע ראשון לנדנדה הוא הבעלים שלה לתמיד." }
+                        { icon: "🤝", text: "חלוקת זמן הוגנת עם טיימר עוזרת לכולם לשחק יחד בשמחה.", correct: true },
+                        { icon: "📢", text: "מי שבוכה חזק יותר צריך תמיד לקבל הכל ראשון.", correct: false },
+                        { icon: "🧱", text: "מי שהגיע ראשון לנדנדה הוא הבעלים שלה לתמיד.", correct: false }
                     ]
                 }
             ]
