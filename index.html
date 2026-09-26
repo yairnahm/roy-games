@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-09-26-v179-games-11-15-aurora-glassmorphism -->
+<!DOCTYPE html><!-- build: 2026-09-26-v180-games-16-20-premium-aurora -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -92,12 +92,12 @@
         body.bg-tools { background: linear-gradient(120deg, #d4fc79, #96e6a1, #43cea2, #185a9d, #d4fc79); background-size: 300% 300%; animation: auroraFlow 10s ease-in-out infinite; }
         body.bg-context { background: linear-gradient(120deg, #43e97b, #38f9d7, #667eea, #f6d365, #43e97b); background-size: 300% 300%; animation: auroraFlow 12s ease-in-out infinite; }
         body.bg-vparts { background: linear-gradient(120deg, #e0eafc, #cfdef3, #f7971e, #e0eafc); background-size: 300% 300%; animation: auroraFlow 9s ease-in-out infinite; }
-        body.bg-habitat { background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%); }
+        body.bg-habitat { background: linear-gradient(120deg, #a8e6cf, #56c596, #1b8a5a, #a8e6cf); background-size: 300% 300%; animation: auroraFlow 11s ease-in-out infinite; }
         body.bg-shadow { background: linear-gradient(135deg, #cfd9df 0%, #e2ebf0 100%); }
         body.bg-halfhalf { background: linear-gradient(135deg, #fccb90 0%, #d57eeb 100%); }
         body.bg-chrono { background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); }
-        body.bg-bigger { background: linear-gradient(135deg, #ffe259 0%, #ffa751 100%); }
-        body.bg-emotion { background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); }
+        body.bg-bigger { background: linear-gradient(120deg, #ff5f6d, #ffc371, #ff5f6d); background-size: 300% 300%; animation: auroraFlow 10s ease-in-out infinite; }
+        body.bg-emotion { background: linear-gradient(120deg, #f6d365, #fda085, #fbc2eb, #f6d365); background-size: 300% 300%; animation: auroraFlow 13s ease-in-out infinite; }
         body.bg-faces { background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%); }
         body.bg-mgamish { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
         body.bg-emparts { background: linear-gradient(135deg, #f9d423 0%, #ff4e50 100%); }
@@ -110,8 +110,8 @@
         body.bg-tidyup { background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); }
         body.bg-patterns { background: linear-gradient(120deg, #fddb92, #d1fdff, #f6d365, #a18cd1, #fddb92); background-size: 300% 300%; animation: auroraFlow 11s ease-in-out infinite; }
         body.bg-shape { background: linear-gradient(120deg, #ff9a9e, #fecfef, #a1c4fd, #c2e9fb, #d4fc79, #ff9a9e); background-size: 400% 400%; animation: auroraFlow 14s ease-in-out infinite; }
-        body.bg-origins { background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); }
-        body.bg-families { background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); }
+        body.bg-origins { background: linear-gradient(120deg, #4facfe, #00f2fe, #4facfe); background-size: 300% 300%; animation: auroraFlow 12s ease-in-out infinite; }
+        body.bg-families { background: linear-gradient(120deg, #f2994a, #f2c94c, #f2994a); background-size: 300% 300%; animation: auroraFlow 9s ease-in-out infinite; }
         body.bg-whatneeds { background: linear-gradient(135deg, #fce4ec 0%, #e1f5fe 100%); }
         body.bg-calm { background: linear-gradient(135deg, #d4e6f1 0%, #a9cce3 100%); }
 
@@ -904,7 +904,10 @@
 
         /* כלים והקשרים */
         .large-target { background: rgba(255, 255, 255, 0.8); border-radius: 30px; padding: 4vmin; display: inline-block; margin: 2vmin auto; box-shadow: 0 8px 20px rgba(0,0,0,0.15); font-size: clamp(60px, 15vw, 120px); border: 5px solid #fff; }
-        body.bg-tools .large-target { background: rgba(255,255,255,0.55); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border: 1px solid rgba(255,255,255,0.6); }
+        body.bg-tools .large-target,
+        body.bg-habitat .large-target,
+        body.bg-origins .large-target,
+        body.bg-families .large-target { background: rgba(255,255,255,0.55); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border: 1px solid rgba(255,255,255,0.6); }
         .drag-drop-zone { min-height: 90px; width: 100%; max-width: 500px; margin: 14px auto 0; border: 4px dashed #90a4ae; border-radius: 20px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.5); transition: all 0.2s ease; font-size: clamp(14px,3vw,18px); color: #78909c; font-weight: bold; text-align: center; padding: 10px; }
         .drag-drop-zone.drag-hover { border-color: #4CAF50; border-style: solid; background: rgba(76,175,80,0.15); transform: scale(1.03); color: #2e7d32; }
         .drag-drop-zone.target-mode { border: none; background: transparent; padding: 0; }
@@ -2959,7 +2962,7 @@
     </div>
     <div id="feedback-layer" class="hidden feedback-icon"></div>
     <!-- Caching version helper badge -->
-    <div style="position:fixed; bottom:5px; left:5px; font-size:10px; color:#fff; opacity:0.4; z-index:9999; font-family:monospace; pointer-events:none;">v179</div>
+    <div style="position:fixed; bottom:5px; left:5px; font-size:10px; color:#fff; opacity:0.4; z-index:9999; font-family:monospace; pointer-events:none;">v180</div>
     
     <!-- Floating Audio Skip Button -->
     <button id="floating-audio-skip-btn" class="hidden" onclick="skipCurrentAudio()" style="position:fixed; bottom:20px; right:20px; z-index:10000; background:#ffa726; color:white; border:3px solid white; border-radius:50px; padding:12px 24px; font-weight:bold; font-size:18px; box-shadow:0 6px 20px rgba(0,0,0,0.3); display:flex; align-items:center; gap:8px; cursor:pointer; font-family:'Rubik',sans-serif; transition:0.2s; outline:none;">
