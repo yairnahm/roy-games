@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-09-26-v185-fix-shared-theme-bug -->
+<!DOCTYPE html><!-- build: 2026-09-26-v186-games-42-46-aurora -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -83,7 +83,10 @@
         body.bg-diffscene { background: linear-gradient(135deg, #e6b980 0%, #eacda3 100%); }
         body.bg-diffvideo { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
         body.bg-sequence { background: linear-gradient(135deg, #fccb90 0%, #d57eeb 100%); }
-        body.bg-path { background: linear-gradient(135deg, #cfd9df 0%, #e2ebf0 100%); }
+        body.bg-path { background: linear-gradient(120deg, #bdc3c7, #2c3e91, #bdc3c7); background-size: 300% 300%; animation: auroraFlow 12s ease-in-out infinite; }
+        body.bg-candle { background: linear-gradient(120deg, #ff9a56, #f9d423, #ff9a56); background-size: 250% 250%; animation: auroraFlow 16s ease-in-out infinite; }
+        body.bg-detective { background: linear-gradient(120deg, #360033, #f9d423, #360033); background-size: 300% 300%; animation: auroraFlow 11s ease-in-out infinite; }
+        body.bg-museum { background: linear-gradient(120deg, #6a3805, #d4a017, #6a3805); background-size: 300% 300%; animation: auroraFlow 13s ease-in-out infinite; }
         body.bg-diff { background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); }
         body.bg-fly { background: linear-gradient(135deg, #a8e063 0%, #56ab2f 100%); }
         body.bg-cop { background: linear-gradient(135deg, #ff9a56 0%, #ff6361 100%); }
@@ -107,7 +110,7 @@
         body.bg-sharing { background: linear-gradient(120deg, #f2994a, #fbc2eb, #f2994a); background-size: 300% 300%; animation: auroraFlow 11s ease-in-out infinite; }
         body.bg-goodbad { background: linear-gradient(120deg, #f2c94c, #56cbf1, #f2c94c); background-size: 300% 300%; animation: auroraFlow 9s ease-in-out infinite; }
         body.bg-numwar { background: linear-gradient(120deg, #ff416c, #2c3e91, #ff416c); background-size: 300% 300%; animation: auroraFlow 9s ease-in-out infinite; }
-        body.bg-towertalk { background: linear-gradient(135deg, #fff5cc 0%, #ffdf80 100%); }
+        body.bg-towertalk { background: linear-gradient(120deg, #fff5cc, #d4a017, #fff5cc); background-size: 300% 300%; animation: auroraFlow 10s ease-in-out infinite; }
         body.bg-cooppuzzle { background: linear-gradient(120deg, #f2c94c, #4facfe, #f2c94c); background-size: 300% 300%; animation: auroraFlow 13s ease-in-out infinite; }
         body.bg-coopmemory { background: linear-gradient(120deg, #4facfe, #43e97b, #4facfe); background-size: 300% 300%; animation: auroraFlow 10s ease-in-out infinite; }
         body.bg-tidyup { background: linear-gradient(120deg, #a8e6cf, #43e97b, #a8e6cf); background-size: 300% 300%; animation: auroraFlow 11s ease-in-out infinite; }
@@ -2972,7 +2975,7 @@
     </div>
     <div id="feedback-layer" class="hidden feedback-icon"></div>
     <!-- Caching version helper badge -->
-    <div style="position:fixed; bottom:5px; left:5px; font-size:10px; color:#fff; opacity:0.4; z-index:9999; font-family:monospace; pointer-events:none;">v185</div>
+    <div style="position:fixed; bottom:5px; left:5px; font-size:10px; color:#fff; opacity:0.4; z-index:9999; font-family:monospace; pointer-events:none;">v186</div>
     
     <!-- Floating Audio Skip Button -->
     <button id="floating-audio-skip-btn" class="hidden" onclick="skipCurrentAudio()" style="position:fixed; bottom:20px; right:20px; z-index:10000; background:#ffa726; color:white; border:3px solid white; border-radius:50px; padding:12px 24px; font-weight:bold; font-size:18px; box-shadow:0 6px 20px rgba(0,0,0,0.3); display:flex; align-items:center; gap:8px; cursor:pointer; font-family:'Rubik',sans-serif; transition:0.2s; outline:none;">
@@ -7829,7 +7832,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
         }
 
         function initCandleGame() {
-            setAppBackground('calm');
+            setAppBackground('candle');
             clearCandleTimers();
             loadCandleRound();
         }
@@ -8163,7 +8166,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
         }
 
         function initDetectiveGame() {
-            setAppBackground('create');
+            setAppBackground('detective');
             clearDetectiveTimers();
             loadDetectiveRound();
         }
@@ -8681,7 +8684,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
             }
         }
         function initMuseumGame() {
-            setAppBackground('world');
+            setAppBackground('museum');
             clearMuseumTimers();
             playCoopAudio('winners/museum/intro.mp3', 'ברוך הבא למוזיאון של רועי! לחץ על כל תערוכה כדי ללמוד עליה, ואז ענה על השאלות.');
             loadMuseumRound();
