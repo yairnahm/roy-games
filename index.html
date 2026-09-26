@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-09-26-v175-games-47-51-audit -->
+<!DOCTYPE html><!-- build: 2026-09-26-v176-perf-font-loading -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -8,9 +8,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>המרכז של רועי - פרימיום</title>
     <link rel="manifest" href="manifest.webmanifest">
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;700;900&display=swap">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js" defer></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;700;900&display=swap');
 
         /* ==========================================
            World Design Tokens — shared visual language
@@ -2940,7 +2942,7 @@
     </div>
     <div id="feedback-layer" class="hidden feedback-icon"></div>
     <!-- Caching version helper badge -->
-    <div style="position:fixed; bottom:5px; left:5px; font-size:10px; color:#fff; opacity:0.4; z-index:9999; font-family:monospace; pointer-events:none;">v175</div>
+    <div style="position:fixed; bottom:5px; left:5px; font-size:10px; color:#fff; opacity:0.4; z-index:9999; font-family:monospace; pointer-events:none;">v176</div>
     
     <!-- Floating Audio Skip Button -->
     <button id="floating-audio-skip-btn" class="hidden" onclick="skipCurrentAudio()" style="position:fixed; bottom:20px; right:20px; z-index:10000; background:#ffa726; color:white; border:3px solid white; border-radius:50px; padding:12px 24px; font-weight:bold; font-size:18px; box-shadow:0 6px 20px rgba(0,0,0,0.3); display:flex; align-items:center; gap:8px; cursor:pointer; font-family:'Rubik',sans-serif; transition:0.2s; outline:none;">
