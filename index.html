@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-09-26-v191-friction-systemic-1 -->
+<!DOCTYPE html><!-- build: 2026-09-26-v192-friction-systemic-2 -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -2013,26 +2013,30 @@
                 } else {
                     closed = true;
                     playErrorSound();
-                    
+
                     overlay.style.transition = 'opacity 0.2s ease-out';
                     overlay.style.opacity = '0';
                     setTimeout(() => {
                         overlay.remove();
-                        verificationPending = false;
-                        turnVerificationCounter = 0;
-                        
+
                         let expectedName = expectedTurn === 'roy' ? 'רועי' : 'אבא יאיר';
                         let wrongName = expectedTurn === 'roy' ? 'אבא יאיר' : 'רועי';
-                        let ruleText = `עכשיו תור ${expectedName} ולכן ${expectedName} צריך ללחוץ. כאשר יגיע התור של ${wrongName} רק הוא צריך ללחוץ. אלה הכללים.`;
+                        let ruleText = `עכשיו תור ${expectedName} ולכן ${expectedName} צריך ללחוץ. כאשר יגיע התור של ${wrongName} רק הוא צריך ללחוץ. בואו ננסה שוב.`;
                         let ruleFile = expectedTurn === 'roy' ? 'coop/coop_rule_roy.mp3' : 'coop/coop_rule_aba.mp3';
                         playCoopAudio(ruleFile, ruleText);
-                        
+
                         let fl = get('feedback-layer');
                         if (fl) {
                             fl.innerHTML = `<span>🛑</span><div class="feedback-msg" style="font-size: clamp(20px, 4vw, 32px); line-height: 1.4;">לא נכון!<br>${ruleText}</div>`;
                             show('feedback-layer');
-                            setTimeout(() => { hide('feedback-layer'); }, 5000);
                         }
+                        // Give another chance instead of silently dropping the action the
+                        // child already made (card flip / piece placement / item pick) —
+                        // re-open the same check with the same pending callback.
+                        setTimeout(() => {
+                            hide('feedback-layer');
+                            showTurnVerificationModal(callback);
+                        }, 3200);
                     }, 200);
                 }
             }
@@ -3035,7 +3039,7 @@
     </div>
     <div id="feedback-layer" class="hidden feedback-icon"></div>
     <!-- Caching version helper badge -->
-    <div style="position:fixed; bottom:5px; left:5px; font-size:10px; color:#fff; opacity:0.4; z-index:9999; font-family:monospace; pointer-events:none;">v191</div>
+    <div style="position:fixed; bottom:5px; left:5px; font-size:10px; color:#fff; opacity:0.4; z-index:9999; font-family:monospace; pointer-events:none;">v192</div>
     
     <!-- Floating Audio Skip Button -->
     <button id="floating-audio-skip-btn" class="hidden" onclick="skipCurrentAudio()" style="position:fixed; bottom:20px; right:20px; z-index:10000; background:#ffa726; color:white; border:3px solid white; border-radius:50px; padding:12px 24px; font-weight:bold; font-size:18px; box-shadow:0 6px 20px rgba(0,0,0,0.3); display:flex; align-items:center; gap:8px; cursor:pointer; font-family:'Rubik',sans-serif; transition:0.2s; outline:none;">
@@ -3984,7 +3988,7 @@
         }
         function updateProgressUI() { for(let i=0;i<activeGameRounds;i++) { let d = get(`active-progress-container-dot-${i}`); if(d){ if(i < currentStep) d.classList.add('fill'); else d.classList.remove('fill'); } } }
 
-        function handleAnswer(isCorrect, btn, successCallback, failCallback, isScribble = false) {
+        function handleAnswer(isCorrect, btn, successCallback, failCallback, isScribble = false, skipErrorAudio = false) {
             if(isProcessing) return; 
             clearTimeout(gameErrorTimeout); hide('feedback-layer');
             try {
@@ -4038,7 +4042,7 @@
                     let hintKey = currentGameMode + '-' + currentDifficulty + '-' + currentStep;
                     if (hintRoundKey === hintKey) { roundErrorCount++; } else { hintRoundKey = hintKey; roundErrorCount = 1; }
                     let fl = get('feedback-layer'); fl.innerHTML = `<span>🤔</span><div class="feedback-msg">${isScribble ? 'קשקשנו קצת, בוא ננסה שוב' : 'בוא ננסה שוב'}</div>`; show('feedback-layer');
-                    playAudio(isScribble ? 'err2.mp3' : 'err1.mp3');
+                    if (!skipErrorAudio) playAudio(isScribble ? 'err2.mp3' : 'err1.mp3');
                     if (roundErrorCount >= 2) showAnswerHint();
                     gameErrorTimeout = setTimeout(() => { try { hide('feedback-layer'); if(failCallback) failCallback(); } catch(err) { console.error('failCallback error:', err); } }, 1500);
                 }
@@ -15349,17 +15353,16 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     handleAnswer(true, card, loadDiffvideoRound, null);
                 });
             } else {
-                playErrorSound();
                 card.style.borderColor = '#F44336';
                 card.style.boxShadow = '0 0 15px rgba(244,67,54,0.4)';
                 card.style.background = '#ffebee';
-                let errStr = 'לא זה — הסתכל שוב!';
+                let errStr = 'לא זה, בואו ננסה שוב!';
                 speakLetter(errStr, 'he');
                 handleAnswer(false, card, null, function() {
                     card.style.borderColor = '#e0e0e0';
                     card.style.boxShadow = '0 4px 14px rgba(0,0,0,0.12)';
                     card.style.background = '#fff';
-                });
+                }, false, true);
             }
         }
 
@@ -15661,13 +15664,12 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                     handleAnswer(true, btnElement, loadGoodBadRound, null);
                 });
             } else {
-                playErrorSound();
                 btnElement.classList.add('wrong-flash');
                 let retryText = 'נסו שוב! האם זה באמת טוב או לא טוב?';
                 speakLetter(retryText, 'he');
                 handleAnswer(false, btnElement, null, function() {
                     btnElement.classList.remove('wrong-flash');
-                });
+                }, false, true);
             }
         }
 
@@ -16046,7 +16048,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                         playCoopAudio(e.audio, e.label, function() { isProcessing = false; handleAnswer(true, b, loadFeelwhenRound, null); });
                     } else {
                         playCoopAudio(e.audio, e.label);
-                        handleAnswer(false, b, null, null);
+                        handleAnswer(false, b, null, null, false, true);
                     }
                 };
                 let lbl = D.createElement('div');
@@ -16101,7 +16103,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                         speakLetter(o.name, 'he', function() { isProcessing = false; handleAnswer(true, b, loadSoundsRound, null); });
                     } else {
                         speakLetter(o.name, 'he');
-                        handleAnswer(false, b, null, null);
+                        handleAnswer(false, b, null, null, false, true);
                     }
                 };
                 oArea.appendChild(b);
