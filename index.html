@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- build: 2026-09-26-v170-games-21-25-audit -->
+<!DOCTYPE html><!-- build: 2026-09-26-v171-games-26-30-audit -->
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -1685,6 +1685,7 @@
                 el.playsInline = true;
             } else {
                 el = D.createElement('img');
+                el.alt = '';
                 el.onload = () => el.classList.add('loaded');
                 el.onerror = () => el.classList.add('loaded');
                 el.src = srcPath;
@@ -2939,7 +2940,7 @@
     </div>
     <div id="feedback-layer" class="hidden feedback-icon"></div>
     <!-- Caching version helper badge -->
-    <div style="position:fixed; bottom:5px; left:5px; font-size:10px; color:#fff; opacity:0.4; z-index:9999; font-family:monospace; pointer-events:none;">v170</div>
+    <div style="position:fixed; bottom:5px; left:5px; font-size:10px; color:#fff; opacity:0.4; z-index:9999; font-family:monospace; pointer-events:none;">v171</div>
     
     <!-- Floating Audio Skip Button -->
     <button id="floating-audio-skip-btn" class="hidden" onclick="skipCurrentAudio()" style="position:fixed; bottom:20px; right:20px; z-index:10000; background:#ffa726; color:white; border:3px solid white; border-radius:50px; padding:12px 24px; font-weight:bold; font-size:18px; box-shadow:0 6px 20px rgba(0,0,0,0.3); display:flex; align-items:center; gap:8px; cursor:pointer; font-family:'Rubik',sans-serif; transition:0.2s; outline:none;">
@@ -9016,6 +9017,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
         // ==========================================
         const EMPARTS_BASE = './images/emotions/';
         const EM_EMOTIONS  = ['happy','sad','angry','surprised','scared'];
+        const EM_EMOTIONS_HE = { happy:'שמח', sad:'עצוב', angry:'כועס', surprised:'מופתע', scared:'מפחד' };
         let emPartsRounds  = [];
 
         function initEmPartsGame() {
@@ -9042,7 +9044,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                                 border-radius:22px;overflow:hidden;
                                 box-shadow:0 8px 28px rgba(0,0,0,0.3);border:6px solid #fff;
                                 background:#f0f0f0;flex-shrink:0;">
-                        <img id="emp-face-img" style="width:100%;height:100%;object-fit:cover;display:block;">
+                        <img id="emp-face-img" alt="תמונת פרצוף" style="width:100%;height:100%;object-fit:cover;display:block;">
                         <img id="emp-face-overlay" src="" alt="">
                     </div>
                     <!-- שאלה -->
@@ -9091,7 +9093,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 img.onload = () => img.classList.add('loaded');
                 img.onerror = () => img.classList.add('loaded');
                 img.src = imgSrc;
-                img.alt = emo;
+                img.alt = EM_EMOTIONS_HE[emo] || emo;
                 btn.appendChild(img);
 
                 btn.onclick = () => {
@@ -15255,7 +15257,7 @@ const sharedData = { categories: { 'fruits': ['🍎','🍌','🍇','🍓','🍉'
                 <div class="goodbad-scene">
                     <div class="goodbad-question" id="goodbad-q-banner">${roundData.question} 🔊</div>
                     <div class="goodbad-img-wrap">
-                        <img src="${roundData.img}" class="goodbad-img" alt="behavior situation">
+                        <img src="${roundData.img}" class="goodbad-img" alt="תמונת מצב להערכה">
                     </div>
                     <div class="goodbad-choices">
                         <button class="goodbad-btn" id="goodbad-btn-dislike" style="border-color:#f44336; background:#fff8f8;">
